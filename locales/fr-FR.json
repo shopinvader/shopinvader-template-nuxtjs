@@ -1,0 +1,15 @@
+{
+  "localeswitcher": {
+    "fr": "Français",
+    "en": "Anglais",
+    "es": "Espagnol"
+  },
+  "search": {
+    "noresults": "Aucun résultat"
+  },
+  "404": {
+    "title": "Page introuvable",
+    "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
+    "home": "Retour à l'accueil"
+  }
+}

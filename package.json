@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^5.3.5",
+    "daisyui": "^2.31.0",
+    "nuxt": "3.0.0-rc.11",
+    "sass": "^1.55.0",
+    "sass-loader": "^13.1.0"
+  },
+  "dependencies": {
+    "@nuxt/types": "^2.15.8",
+    "@nuxtjs/i18n": "^8.0.0-beta.4",
+    "@nuxtjs/strapi": "^1.6.1",
+    "elastic-builder": "^2.16.0",
+    "lodash": "^4.17.21"
+  }
+}
