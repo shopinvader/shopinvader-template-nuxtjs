@@ -5,11 +5,23 @@
     "es": "Espagnol"
   },
   "search": {
-    "noresults": "Aucun résultat"
+    "noresults": "Aucun résultat",
+    "filter": "Filtrer",
+    "results":{
+      "count": "{count} résultat(s)"
+    },
+    "sort": {
+      "label": "Trier par"
+    }
   },
   "404": {
     "title": "Page introuvable",
     "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
     "home": "Retour à l'accueil"
+  },
+  "product": {
+    "cart": {
+      "add": "Ajouter au panier"
+    }
   }
 }

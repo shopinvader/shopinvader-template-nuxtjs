@@ -1,33 +1,37 @@
 <template>
-  <header class="header">
-    <div class="navbar bg-base-100">
-      <div class="flex-1">
+  <aside-menu name="header" class-content="navbar border-b container mx-auto">
+    <template #button>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-6 h-6 stroke-current">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </template>
+    <template #title>
+      <nuxt-link :to="localePath({ name: 'index' })" class="flex items-center">
         <logo :height="20" :width="20"></logo>
-        HEADER
-      </div>
-      <div class="flex-none">
-        <ul class="menu menu-horizontal p-0">
-          <li>
-            <NuxtLink to="search">
-              Search
-            </NuxtLink>
-          </li>
-        </ul>
-      </div>
+      </nuxt-link>
+    </template>
+    <template #menu>
+      <header-nav></header-nav>
+    </template>
+    <template #content>
       <local-switcher></local-switcher>
-    </div>
-  </header>
+    </template>
+  </aside-menu>
 </template>
 <script lang="ts">
   import Logo from '~/components/global/Logo.vue'
   import LocalSwitcher from '~/components/global/LocalSwitcher.vue'
+  import HeaderNavVue from './HeaderNav.vue'
+  import AsideMenu from './AsideMenu.vue'
   export default {
     name: 'Header',
     components: {
       'logo': Logo,
-      'local-switcher': LocalSwitcher
+      'local-switcher': LocalSwitcher,
+      'header-nav': HeaderNavVue,
+      'aside-menu': AsideMenu
     },
-    setup(props) {
+    async setup(props) {
       
     }
   }

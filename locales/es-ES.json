@@ -5,11 +5,23 @@
     "es": "Español"
   },
   "search": {
-      "noresults": "Sin resultados"
+      "noresults": "Sin resultados",
+      "filter": "Filtrar",
+      "results":{
+        "count": "{count} resultado(s)"
+      },
+      "sort": {
+        "label": "Ordenar por"
+      }
   },
   "404": {
     "title": "Página no encontrada",
     "description": "La página que estás buscando no existe.",
     "home": "Volver a la página de inicio"
+  },
+  "product": {
+    "cart": {
+      "add": "Añadir al carrito"
+    }
   }
 }
