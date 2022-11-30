@@ -21,8 +21,20 @@
   </div>
 </template>
 <script lang="ts">
-import { MatchAllQuery, TermsAggregation, FilterAggregation, TermsQuery, BoolQuery, NestedAggregation, Aggregation, NestedQuery, Query, TermQuery } from 'elastic-builder';
 import { inject, reactive } from 'vue'
+import {
+  Aggregation,
+  BoolQuery,
+  FilterAggregation,
+  MatchAllQuery,
+  NestedAggregation,
+  NestedQuery,
+  Query,
+  TermsAggregation,
+  TermsQuery,
+  TermQuery
+} from 'elastic-builder';
+
 import { Filter } from './SearchBase.vue';
 export default {
   props: {
@@ -73,7 +85,7 @@ export default {
       default: null
     }
   },
-  setup(props) {
+  async setup(props) {
     const data = reactive({
       selected: [],
       items: [],
@@ -101,9 +113,9 @@ export default {
           query = props.transformQuery(query, props.name, props.field)
         }
       }
-
       return new FilterAggregation(props.name, query || new MatchAllQuery()).aggregation(agg)
     }
+
     const getQueryAggregation = () => {
       let aggs:Query = null
       
@@ -122,19 +134,22 @@ export default {
      data.selected = values || []
      refreshSearch()
     }
+    declareFilter (
+      {
+        name: props?.name || '',
+        title: props.title,
+        values: data?.selected,
+        setValues: setValues,
+        getValuesLabels,
+        getFilterAggregation,
+        getQueryAggregation
+      } as Filter
+    )
 
-    declareFilter ({
-      name: props.name,
-      title: props.title,
-      values: data.selected,
-      setValues: setValues,
-      getValuesLabels,
-      getFilterAggregation,
-      getQueryAggregation
-    } as Filter)
     const onSelectItem = () => {
       refreshSearch()
     }
+
     const refreshSearch = () => {
       if(props.urlParam) {
         const $router = useRouter()
@@ -150,6 +165,7 @@ export default {
       
       search()
     }
+
     return {
       response,
       data,
@@ -162,23 +178,18 @@ export default {
         if(this.urlParam) {
           const $route = useRoute()
           try {
-            const query:string = $route.query?.[this.urlParam] as string
-            const values:string[] = JSON.parse(query)
-            console.log('values', JSON.parse(query))
+            const query:string = $route.query?.[this.urlParam] as string || '[]'
+            const values:string[] = JSON.parse(query) || []
             if(query?.length > 0 && this.data.selected !== values) {
               this.data.selected = values
             }
           } catch(e) {
-            console.log(e)
             const $router = useRouter()
             let query = { ...$route.query }
             delete query[this.urlParam]
             $router.replace({ path: $route.path, query })
 
           }
-          // const values:string[] = JSON.parse($route.query[this.urlParam] || '[]')
-          
-          // this.data.selected = values
         }
       },
       immediate: true

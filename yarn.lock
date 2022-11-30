@@ -818,6 +818,15 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
+"@shopinvader/fetch@https://github.com/shopinvader/shopinvader-js-fetch#typescript":
+  version "1.1.0"
+  resolved "https://github.com/shopinvader/shopinvader-js-fetch#bde4841a157036166efb36ab29464e07c8db735d"
+
+"@shopinvader/services@file:../nuxt-module/shopinvader-services":
+  version "0.0.3"
+  dependencies:
+    "@shopinvader/fetch" "https://github.com/shopinvader/shopinvader-js-fetch#typescript"
+
 "@trysound/sax@0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"

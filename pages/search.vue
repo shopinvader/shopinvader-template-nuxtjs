@@ -1,7 +1,7 @@
 <template>
   <search-base
     :size="30"
-    :transformResult="transformResult">
+    :provider="providerFunction">
     <template #filters>
       <search-terms-aggregation name="categories" nestedPath="categories" field="categories.name" title="Categories" :aggregationQuery="categoryQuery" url-param="category"></search-terms-aggregation>
       <search-terms-aggregation name="name" field="name" title="Name" url-param="name"></search-terms-aggregation>
@@ -24,7 +24,7 @@ import { Product } from '~/models/Product';
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue';
 import SearchBaseVue from '~~/components/search/SearchBase.vue';
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue';
-import { BoolQuery, FilterAggregation, NestedQuery, Query, TermQuery, TermsQuery } from 'elastic-builder';
+import { BoolQuery, TermQuery } from 'elastic-builder';
 
 export default {
   layout: "default",
@@ -47,6 +47,10 @@ export default {
     transformResult(result:any) {
       return result?.hits?.hits?.map((data:any) => new Product(data._source))
 
+    },
+    providerFunction(body) {
+      const services = useShopinvaderServices()
+      return services.products.search(body)
     },
     categoryQuery(query:BoolQuery, field:string, name:string) {
       if (query !== null) {
