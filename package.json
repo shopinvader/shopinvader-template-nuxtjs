@@ -18,6 +18,7 @@
     "@nuxt/types": "^2.15.8",
     "@nuxtjs/i18n": "^8.0.0-beta.4",
     "@nuxtjs/strapi": "^1.6.1",
+    "@shopinvader/services": "file:../nuxt-module/shopinvader-services",
     "elastic-builder": "^2.16.0",
     "lodash": "^4.17.21"
   }
