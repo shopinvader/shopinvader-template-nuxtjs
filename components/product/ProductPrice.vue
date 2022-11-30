@@ -11,7 +11,10 @@
           VAT Incl.
         </sub>
       </div>
-      <div class="product-price__original">
+      <div
+        v-if="price.original_value !== price.value"
+        class="product-price__original"
+      >
         {{ $filter.currency(price.value) }}
       </div>
     </slot>
@@ -36,7 +39,7 @@ export default {
   display: flex;
   flex-direction: column;
   &__value {
-    @apply pb-0 font-bold text-lg leading-3;
+    @apply pb-0 text-lg leading-3;
   }
   &__tax {
     @apply text-gray-500 text-xs font-normal;

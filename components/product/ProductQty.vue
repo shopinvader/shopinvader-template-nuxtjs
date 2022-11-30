@@ -27,7 +27,6 @@ export default {
       }
     },
     keyDown(e: KeyboardEvent) {
-      console.log(e.key)
       if (e.key === 'ArrowUp') {
         this.up();
       } else if (e.key === 'ArrowDown') {

@@ -4,11 +4,13 @@
     :class="{'product-hit--inline': inline}"
   >
     <slot name="header"></slot>
-    <slot name="images" v-bind:images="product.images">
+    <slot name="images"
+      v-bind:images="product.images">
       <product-image
         v-if="product.images.length > 0"
         :image="product.images[0]"
         class="product-hit__image"
+        @click="linkToProduct()"
       >
       </product-image>
     </slot>
@@ -16,7 +18,7 @@
       <slot name="body" v-bind:product="product">
         <div class="body__title">
           <slot name="title" v-bind:product="product">
-            <nuxt-link :to="product.urlKey">
+            <nuxt-link :to="localePath({ path: '/'+product.urlKey })">
               {{ product.name }}
             </nuxt-link>
           </slot>
@@ -47,7 +49,6 @@
         </div>
       </slot>
     </div>
-    
     <div class="product-hit__footer">
       <slot name="footer" v-bind:product="product"></slot>
     </div>
@@ -85,10 +86,7 @@ export default {
   methods: {
     linkToProduct() {
       this.$router.push({
-        name: 'p',
-        params: {
-          slug: this.product.urlKey
-        }
+        path: '/' + this.product.urlKey
       });
     }
   }
