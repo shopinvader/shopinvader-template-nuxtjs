@@ -60,8 +60,7 @@ export class CartService {
     this.erp = erp
     this.productService = productService
     const { vueApp } = useNuxtApp()
-    const pinia = createPinia()
-    vueApp.use(pinia)
+    const pinia = usePinia()
     let productStore: Product[] = []
     this.store = defineStore('shopinvader', {
       state: () => (
