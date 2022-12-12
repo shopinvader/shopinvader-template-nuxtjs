@@ -3,7 +3,7 @@
     class="product-cart"
   >
     <slot name="price" v-bind:product="product" v-bind:cartLine="cartLine">
-      <button class="btn btn-primary">
+      <button class="btn btn-primary" type="button" @click="addToCart">
         {{ $t('product.cart.add') }}
       </button>
     </slot>
@@ -28,6 +28,15 @@ export default {
     cartLine() {
       return null;
     }
+  },
+  methods: {
+    addToCart() {
+      const cartService = useShopinvaderServices()?.cart
+      if(cartService) {
+        cartService.addProduct(this.product, 1)
+      }
+      console.log('addToCart');
+    } 
   }
 }
 </script>

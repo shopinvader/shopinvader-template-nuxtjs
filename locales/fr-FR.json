@@ -23,5 +23,16 @@
     "cart": {
       "add": "Ajouter au panier"
     }
+  },
+  "cart": {
+    "title": "Panier",
+    "line": {
+      "quantity": "Quantité",
+      "total": "Total"
+    },
+    "empty": "Votre panier est vide",
+    "total": {
+      "title": "Total"
+    }
   }
 }

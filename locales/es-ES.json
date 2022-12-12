@@ -23,5 +23,16 @@
     "cart": {
       "add": "Añadir al carrito"
     }
+  },
+  "cart": {
+    "title": "Carrito de la compra",
+    "line": {
+      "quantity": "Cantidad",
+      "total": "Total"
+    },
+    "empty": "Tu carrito está vacío",
+    "total": {
+      "title": "Total"
+    }
   }
 }

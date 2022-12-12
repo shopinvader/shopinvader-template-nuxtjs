@@ -10,9 +10,16 @@
 <script lang="ts">
 export default {
   name: 'ProductQty',
-  data() {
+  props : {
+    quantity: {
+      type: Number,
+      default: 1
+    }
+  },
+  setup(props) {
+    const value = ref(props?.quantity || 1)
     return {
-      value: 1
+      value
     }
   },
   methods: {

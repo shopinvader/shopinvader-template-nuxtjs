@@ -122,7 +122,9 @@ export class CartService {
     })
     this.cart = new Cart(this.erp, new WebStorageCartStorage(window.localStorage))
     this.cart.registerObserver(observer)
-    this.cart.addTransaction(new CartTransaction(43, 1));
     const cartData = this.cart.getData()
+  }
+  addProduct(product: Product, qty: number = 1) {
+    this.cart.addTransaction(new CartTransaction(product?.id, qty));
   }
 }
