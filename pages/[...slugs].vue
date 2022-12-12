@@ -37,7 +37,7 @@ export default({
         const services = useShopinvaderServices()
         const result = await services.catalog.getByURLKey(path)
         if(result?.hits !== null) {
-          entity = result?.hits[0]
+          entity = result?.hits?.[0] || null
           
         }
       }
