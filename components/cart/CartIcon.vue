@@ -10,7 +10,6 @@
   </nuxt-link>
 </template>
 <script lang="ts">
-import MdiIconVue from '../global/MdiIcon.vue'
   export default {
     name: 'CartIcon',
     components: {
@@ -18,9 +17,6 @@ import MdiIconVue from '../global/MdiIcon.vue'
     async setup(props) {
       return {
         linesCount: computed(():boolean | string => {
-          if(!process.client) {
-            return false
-          }
           let linesCount = useCart()?.linesCount || false
           if(linesCount > 100) {
             linesCount = '99+'

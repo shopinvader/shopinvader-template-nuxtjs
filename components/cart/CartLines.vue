@@ -19,14 +19,17 @@ export default({
   components: {
     CartLine
   },
-  setup(props) {
-    console.log('client', process.client)
-   if(process.client) {
-      const cart = useCart()
+  setup() {
+  const cart = useCart()
+   if(cart != null) {
       return {
-        lines: computed(() => cart?.lines ),
+        lines: computed(() => cart?.lines || [] ),
         cart: computed(() => cart)
       }
+   }
+   return {
+      lines: [],
+      cart: null
    }
   }
 })
