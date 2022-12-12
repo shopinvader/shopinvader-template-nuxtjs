@@ -1,4 +1,32 @@
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      shopinvader: {
+        erp: {
+          website_key: process.env.WEBSITE_KEY || '',
+          api_url: process.env.ERP_HOST || '',
+          default_role: 'default'
+        },
+
+        endpoint: 'shopinvader',
+        elasticsearch: {
+          url: 'https://index.demo14.shopinvader.com',
+          indices: [
+            {
+              name: 'categories',
+              index: 'demo_elasticsearch_backend_shopinvader_category',
+              body: {}
+            },
+            {
+              name: 'products',
+              index: 'demo_elasticsearch_backend_shopinvader_variant',
+              body: {}
+            }
+          ]
+        }
+      }
+    }
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n'
@@ -30,5 +58,10 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: 'locales',
     defaultLocale: 'en'
+  },
+  build: {
+    transpile: [
+      '@shopinvader/cart'
+    ]
   }
 });
