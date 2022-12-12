@@ -1,14 +1,13 @@
+import { ElasticFetch } from '@shopinvader/fetch'
 import { Product, ProductResult } from '../models/Product'
-import { ShopinvaderService, ElasticFetch } from '@shopinvader/services'
 
-export class ProductService extends ShopinvaderService {
-  getProvider(): ElasticFetch | null {
-    return this.providers?.['products'] as ElasticFetch || null
+export class ProductService {
+  provider: ElasticFetch = null
+  constructor(provider: ElasticFetch) {
+    this.provider = provider
   }
-
   async search(body: any): Promise<ProductResult> {
-    const provider = this.getProvider()
-    if (provider == null) {
+    if (this.provider == null) {
       throw new Error('No provider found for products')
     }
     body.collapse = {
@@ -20,7 +19,7 @@ export class ProductService extends ShopinvaderService {
         }
       ]
     }
-    const result = await provider?.search(body)
+    const result = await this.provider?.search(body)
     const hits = result?.hits?.hits?.map((hit: any) => {
       const variants = hit?.inner_hits?.variants?.hits?.hits?.map((variant: any) => variant._source)
       return this.jsonToModel({

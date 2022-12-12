@@ -1,12 +1,16 @@
-import { ShopinvaderService, ElasticFetch } from '@shopinvader/services'
+import { ElasticFetch } from '@shopinvader/fetch'
 import { Category } from '~~/models/Category'
 import { Product } from '~~/models/Product'
 import { CatalogResult } from '~~/models/Catalog'
 
-export class CatalogService extends ShopinvaderService {
+export class CatalogService {
+  provider: ElasticFetch = null
+  constructor(provider: ElasticFetch) {
+    this.provider = provider
+  }
+
   async search(body: any): Promise<CatalogResult> {
-    const provider = this.getProvider()
-    if (provider == null) {
+    if (this.provider == null) {
       throw new Error('No provider found for categories')
     }
     body.collapse = {
@@ -18,7 +22,7 @@ export class CatalogService extends ShopinvaderService {
         }
       ]
     }
-    const result = await provider?.search(body)
+    const result = await this.provider?.search(body)
     const hits = result?.hits?.hits?.map((hit: any) => {
       if (hit._index.includes('category')) {
         return new Category(hit._source)
@@ -42,9 +46,5 @@ export class CatalogService extends ShopinvaderService {
     terms[field] = value
     const body = { query: { terms } }
     return this.search(body)
-  }
-
-  getProvider(): ElasticFetch | null {
-    return this.providers?.['elastic'] as ElasticFetch || null
   }
 }
