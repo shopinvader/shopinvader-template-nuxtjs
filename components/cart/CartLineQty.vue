@@ -80,6 +80,7 @@ methods: {
     }
   },
   incrQuantity (): void {
+    
     this.applyDeltaOnItem(1)
   },
   decrQuantity (): void {
@@ -116,7 +117,8 @@ methods: {
 </script>
 <style lang="scss">
 .cartline-qty {
-  @apply form-control w-6 max-w-fit mx-3;
+  @apply form-control w-10 max-w-fit mx-3;
+  ;
   &__btn {
     @apply btn btn-outline text-3xl;
     &.min {
@@ -127,7 +129,7 @@ methods: {
     }
   }
   &__input {
-    @apply input border border-x-0 border-gray-900 text-center; 
+    @apply input border border-x-0 border-gray-900 text-center w-full; 
   }  
 }
 </style>
