@@ -44,6 +44,9 @@
           <slot name="price" v-bind:price="variant.price"></slot>
         </template>
       </product-price>
+      <client-only>
+        <product-cart v-if="variant !== null" :product="variant"></product-cart>
+      </client-only>
     </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
@@ -55,6 +58,7 @@ import { Product } from '~~/models/Product'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductImageVue from '~/components/product/ProductImage.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
+import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
 
 export default {
@@ -62,7 +66,8 @@ export default {
     'product-image': ProductImageVue,
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
-    'product-variants': ProductVariants
+    'product-variants': ProductVariants,
+    'product-cart': ProductCartVue
   },
   props: {
     product: {

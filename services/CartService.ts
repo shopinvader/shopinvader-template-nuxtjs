@@ -52,10 +52,10 @@ class CartObserver {
 export class CartService {
   erp: any // ErpFetch
   cart: any | null
-  id: number | null // Cart ID
+  id: number | null = null // Cart ID
   store: any
   products: Product[] = []
-  productService: ProductService = null
+  productService: ProductService | null = null
   constructor(erp: any, productService: ProductService) {
     this.erp = erp
     this.productService = productService
@@ -80,7 +80,7 @@ export class CartService {
         setHasPendingTransactions(status: boolean) {
           this.cart.hasPendingTransactions = status
         },
-        async setCart(data: CartModel) {
+        async setCart(data: any) {
           if (productService !== null) {
             const ids = data.lines.map((l: CartLineModel) => l.productId).filter((i: number) => !productStore.some(p => i === p?.id)) || []
             if (ids.length > 0) {
@@ -92,6 +92,7 @@ export class CartService {
 
             for (const line of (data?.lines || [])) {
               const product = productStore.find((p: Product) => p.id === line.productId) || null
+
               if (product !== null) {
                 line.product = product
               }
@@ -116,14 +117,61 @@ export class CartService {
         }
       },
     })
-    const observer = new CartObserver((cart) => {
+    const observer = new CartObserver((cart: any) => {
       this.store().setCart(cart)
     })
     this.cart = new Cart(this.erp, new WebStorageCartStorage(window.localStorage))
     this.cart.registerObserver(observer)
-    const cartData = this.cart.getData()
+    this.cart.syncWithRetry()
   }
-  addProduct(product: Product, qty: number = 1) {
-    this.cart.addTransaction(new CartTransaction(product?.id, qty));
+  addTransaction(id: number, qty: number) {
+    if (id != null && qty != null && !isNaN(qty)) {
+      this.cart.addTransaction(new CartTransaction(id, qty))
+    }
+  }
+
+  applyDeltaOnItem(productId: number, delta: number) {
+    this.addTransaction(productId, delta)
+  }
+
+  /**
+   * addItem : add an item to cart
+   * @param {*} id product Id
+   * @param {*} options Options
+   * @returns Promise
+   */
+  addItem(productId: number, qty: number) {
+    this.addTransaction(productId, qty || 1)
+  }
+
+  /**
+   * updateItem : update a cart line
+   * @param {*} productId product Id
+   * @param {*} options Options
+   * @param {*} lineId line Id
+   * @returns Promise
+   */
+  updateItem(productId: number, qty: number, line: CartLineModel | null) {
+    if (line !== null) {
+      const originalQty = line?.qty || 0
+      qty -= originalQty
+      this.addTransaction(productId, qty)
+    }
+  }
+  /**
+   * deleteItem : delete a cart line
+   * @param {*} id cart line ID
+   */
+  deleteItem(id: number) {
+
+    const cart = this.store().cart
+    const line: CartLineModel = cart.lines.find((line: CartLineModel) => line.id === id) || null
+
+    if (line !== null) {
+      const qty = line.qty * -1
+      const productId: number | null = parseInt(line.productId)
+      this.addTransaction(productId, qty)
+    }
+
   }
 }

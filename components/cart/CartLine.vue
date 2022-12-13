@@ -18,6 +18,9 @@
       <div class="content__header">
         <slot name="header" :line="line"></slot>
       </div>
+      <button type="button" @click="deleteLine">
+        {{ $t('cart.line.delete' )}}
+      </button>
       <div class="content__title">
         <slot name="title" :line="line">
           <template v-if="product">
@@ -33,7 +36,7 @@
             {{ $t('cart.line.quantity') }}
           </div>
           <div class="value">
-            <product-qty :quantity="line.qty"></product-qty>
+            <cart-line-qty :line="line"></cart-line-qty>
           </div>
         </slot>
       </div>
@@ -64,8 +67,8 @@
 <script lang="ts">
 import { PropType } from 'vue'
 import { CartLine } from '~/models';
+import CartLineQtyVue from './CartLineQty.vue';
 import ProductImageVue from '../product/ProductImage.vue';
-import ProductQtyVue from '../product/ProductQty.vue';
 export default({
   name: 'CartLine',
   props: {
@@ -76,7 +79,7 @@ export default({
   },
   components: {
     'product-image': ProductImageVue,
-    'product-qty': ProductQtyVue
+    'cart-line-qty': CartLineQtyVue
   },
   computed: {
     product() {
@@ -91,6 +94,14 @@ export default({
       this.$router.push({
         path: '/' + this.product.urlKey
       });
+    },
+    deleteLine() {
+      const cartService = useShopinvaderServices()?.cart || null
+      if(cartService !== null) {
+        console.log('delete this line', this.line.id)
+        cartService.deleteItem(this.line.id)
+      }
+      this.$emit('deleteLine', this.line)
     }
   }
 })

@@ -2,21 +2,21 @@
   <div v-if="product !== null" 
     class="product-cart"
   >
-    <slot name="price" v-bind:product="product" v-bind:cartLine="cartLine">
-      <button class="btn btn-primary" type="button" @click="addToCart">
-        {{ $t('product.cart.add') }}
-      </button>
-    </slot>
+    <button v-if="line == null" type="button" class="btn btn-primary" @click="addToCart">
+      {{ $t('cart.line.add') }}
+    </button>
+    <cart-line-qty v-else :line="line"></cart-line-qty>
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue';
-import { Product } from '~~/models/Product';
-
+import { PropType } from 'vue'
+import { CartLine } from '~~/models';
+import { Product } from '~~/models/Product'
+import CartLineQtyVue from '../cart/CartLineQty.vue';
 export default {
   name: 'ProductCart',
   components: {
-    
+    'cart-line-qty': CartLineQtyVue
   },
   props: {
     product: {
@@ -25,15 +25,16 @@ export default {
     }
   },
   computed: {
-    cartLine() {
-      return null;
+    line():CartLine | null {
+      const cart = useCart()
+      return cart?.lines?.find((line:CartLine) => line.productId === this.product.id) || null
     }
   },
   methods: {
     addToCart() {
       const cartService = useShopinvaderServices()?.cart
-      if(cartService) {
-        cartService.addProduct(this.product, 1)
+      if(cartService && this.product !== null) {
+        cartService.addItem(this.product.id, 1)
       }
       console.log('addToCart');
     } 
