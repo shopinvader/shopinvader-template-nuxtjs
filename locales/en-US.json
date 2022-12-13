@@ -28,7 +28,9 @@
     "title": "Shopping Cart",
     "line": {
       "quantity": "Quantity",
-      "total": "Total"
+      "total": "Total",
+      "delete": "Remove Item",
+      "add":"Add to cart"
     },
     "empty": "Your cart is empty",
     "total": {
