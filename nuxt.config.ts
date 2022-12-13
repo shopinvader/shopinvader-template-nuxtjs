@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     public: {
       shopinvader: {
         erp: {
-          website_key: process.env.WEBSITE_KEY || '',
+          website_key: process.env.ERP_WEBSITE_KEY || '',
           api_url: process.env.ERP_HOST || '',
           default_role: 'default'
         },
@@ -14,12 +14,12 @@ export default defineNuxtConfig({
           indices: [
             {
               name: 'categories',
-              index: 'demo_elasticsearch_backend_shopinvader_category',
+              index: process.env.ELASTIC_CATEGORY || '',
               body: {}
             },
             {
               name: 'products',
-              index: 'demo_elasticsearch_backend_shopinvader_variant',
+              index: process.env.ELASTIC_PRODUCT || '',
               body: {}
             }
           ]
