@@ -1,15 +1,27 @@
 import { ErpFetch, ElasticFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import { CategoryService, ProductService, CatalogService, CartService } from '../services'
-let providers = null
-let services = null
+
+export interface ShopinvaderProvidersList {
+  [key: string]: ErpFetch | ElasticFetch
+}
+
+export interface ShopinvaderServiceList {
+  products: ProductService
+  categories: CategoryService
+  catalog: CatalogService
+  cart: CartService | null
+}
+
+let providers: ShopinvaderProvidersList | null = null
+let services: ShopinvaderServiceList | null = null
 
 export const fetchAPI = (url: string, options: any) => {
   return fetch(url, options)
 }
 
-export const initProviders = (isoLocale) => {
-  let providers = {}
+export const initProviders = (isoLocale: string | null = null) => {
+  let providers: ShopinvaderProvidersList = {}
   const options = useRuntimeConfig()?.shopinvader || null
   let { elasticsearch, erp } = options
 
@@ -48,16 +60,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
   if (services === null) {
     services = {
-      products: new ProductService(providers?.products),
-      categories: new CategoryService(providers?.categories),
-      catalog: new CatalogService(providers?.elasticsearch),
+      products: new ProductService(providers?.products as ElasticFetch),
+      categories: new CategoryService(providers?.categories as ElasticFetch),
+      catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
+      cart: null
     }
 
   }
-  if (process?.client) {
-    services.cart = new CartService(providers?.erp, services?.products)
-  }
-
   return {
     provide: {
       shopinvader: {
@@ -68,18 +77,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 })
 
-export interface ShopinvaderServiceList {
-  products: ProductService
-  categories: CategoryService
-  catalog: CatalogService
-  cart: CartService
-}
-
 export interface Shopinvader {
   services: ShopinvaderServiceList
-  providers: {
-    [key: string]: any
-  }
+  providers: ShopinvaderProvidersList
 }
 
 declare module '#app' {

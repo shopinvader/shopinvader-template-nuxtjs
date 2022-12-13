@@ -33,7 +33,8 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   plugins: [
-    '~/plugins/shopinvader.ts'
+    '~/plugins/shopinvader.ts',
+    '~/plugins/shopinvader-cart.client.ts',
   ],
   pages: true,
   imports: true,
