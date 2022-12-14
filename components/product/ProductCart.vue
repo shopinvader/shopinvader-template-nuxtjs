@@ -1,6 +1,6 @@
 <template>
   <template v-if="product !== null">
-    <button v-if="line == null" type="button" class="btn btn-primary" @click="addToCart">
+    <button v-if="line == null" type="button" class="btn btn-primary mt-5" @click="addToCart">
       {{ $t('cart.line.add') }}
     </button>
     <cart-line-qty v-else :line="line"></cart-line-qty>
