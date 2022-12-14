@@ -6,10 +6,10 @@
       <div>
         <div class="product-price__value">
           {{ $filter.currency(price.value) }}
-        </div>
         <sub class="product-price__tax" v-if="price.tax_included">
           VAT Incl.
         </sub>
+        </div>
       </div>
       <div
         v-if="price.original_value !== price.value"
@@ -37,12 +37,13 @@ export default {
 .product-price {
 
   display: flex;
-  flex-direction: column;
+  flex-direction: start;
+  margin-top: 30px;
   &__value {
     @apply pb-0 text-lg leading-3;
   }
   &__tax {
-    @apply text-gray-500 text-xs font-normal;
+    @apply text-gray-500 text-xs font-normal mt-5;
   }
   &__original {
     @apply text-gray-500 line-through text-sm font-normal;
