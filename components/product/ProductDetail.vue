@@ -24,18 +24,10 @@
       <h1 class="text-xl font-bold">
         {{ variant.name }}
       </h1>
+      <div> {{ variant.marque }}</div>
       <div>
-        {{ variant.sku }}
+        SKU: {{ variant.sku }}
       </div>
-      <p>
-        {{ variant.shortDescription }}
-      </p>
-      <product-variants
-        v-if="variants !== null"
-        :variants="variants"
-        @selectVariant="changeVariant"
-      >
-      </product-variants>
       <product-price
         :price="variant.price"
         class="py-4 text-right"
@@ -44,9 +36,19 @@
           <slot name="price" v-bind:price="variant.price"></slot>
         </template>
       </product-price>
-      <client-only>
+     <div> En stock : Livraison rapide</div>
+     <div class="mt-3"> LIVRAISON OFFERTE àpd 500€ pour les meubles</div>
+     <client-only>
         <product-cart v-if="variant !== null" :product="variant"></product-cart>
       </client-only>
+      <product-variants
+        v-if="variants !== null"
+        :variants="variants"
+        @selectVariant="changeVariant"
+      >
+      </product-variants>
+      <div v-html="variant.shortDescription">
+      </div>
     </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
@@ -102,7 +104,7 @@ export default {
       @apply w-full sm:w-1/2 lg:w-1/3;
     }
     &__content {
-      @apply w-full sm:w-1/2 lg:w-2/3 pt-5;
+      @apply w-full sm:w-1/2 lg:w-2/3 pt-5 pl-20;
     }
   }
 </style>
