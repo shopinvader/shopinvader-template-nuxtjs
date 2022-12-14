@@ -32,7 +32,10 @@ export class Product {
   price: ProductPrice | null = null
   images: ProductImageSet[] | null
   variants: Product[] | null = null
+  marque: string | null = null
+  stock_qty: number | null = 0
   constructor(data: any) {
+    console.log('collection', this.collection);
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
     this.urlKey = data?.url_key || null
@@ -49,10 +52,10 @@ export class Product {
     this.categories = []
     if (Array.isArray(data?.categories)) {
       this.categories = data?.categories
-        .map((category: any) => {
-          return new ProductCategory(category)
-        })
-        .sort((a: any, b: any) => a?.level - b?.level)
+      .map((category: any) => {
+        return new ProductCategory(category)
+      })
+      .sort((a: any, b: any) => a?.level - b?.level)
     }
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
@@ -70,5 +73,7 @@ export class Product {
         return new Product(variant)
       })
     }
+    this.marque = data?.MARQUE || null
+    this.stock_qty = data?.stock?.globla?.qty || 0
   }
 }
