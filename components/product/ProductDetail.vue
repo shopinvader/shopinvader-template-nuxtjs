@@ -14,12 +14,7 @@
       </slot>
     </div>
     <div class="product-detail__image">      
-      <div v-for="image in variant.images"  >
-        <product-image        
-        :image="image"
-        >
-      </product-image>
-       </div>
+      <image-list :images="variant.images || []" :slider="false" />
     </div>
     <div class="product-detail__content">
       <h1 class="text-xl font-bold">
@@ -54,17 +49,16 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { ProductImage } from '~~/models/ProductImage'
 import { Product } from '~~/models/Product'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
-import ProductImageVue from '~/components/product/ProductImage.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
+import ImageListVue from './ImageList.vue'
 
 export default {
   components: {
-    'product-image': ProductImageVue,
+    'image-list': ImageListVue,    
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
