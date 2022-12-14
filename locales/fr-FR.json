@@ -28,7 +28,8 @@
     "title": "Panier",
     "line": {
       "quantity": "Quantité",
-      "total": "Total"
+      "total": "Total",
+      "delete": "Supprimer"
     },
     "empty": "Votre panier est vide",
     "total": {

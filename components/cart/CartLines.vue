@@ -1,7 +1,10 @@
 <template>
-  <div>
+  <div class="cart-lines">
+    <div v-if="lines == null">
+      <spinner></spinner>
+    </div>
     <CartLine
-      v-if="lines.length > 0"
+      v-else-if="lines.length > 0"
       v-for="line in lines"
       :key="line.id"
       :line="line"
@@ -14,23 +17,20 @@
 </template>
 <script lang="ts">
 import CartLine from '~/components/cart/CartLine.vue'
+import SpinnerVue from '../global/Spinner.vue'
 export default({
   name: 'CartLines',
   components: {
-    CartLine
+    'cart-line':CartLine,
+    'spinner': SpinnerVue 
   },
-  setup() {
-  const cart = useCart()
-   if(cart != null) {
-      return {
-        lines: computed(() => cart?.lines || [] ),
-        cart: computed(() => cart)
-      }
-   }
-   return {
-      lines: [],
-      cart: null
-   }
+  computed: {
+    cart() {
+      return 
+    },
+    lines() {
+      return useCart()?.lines || null
+    }
   }
 })
 </script>
