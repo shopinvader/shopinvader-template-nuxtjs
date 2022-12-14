@@ -23,7 +23,10 @@ export default defineNuxtConfig({
               body: {}
             }
           ]
-        }
+        }        
+      },
+      theme: {
+        logo: process.env.VUE_APP_LOGO_URL || ''
       }
     }
   },
