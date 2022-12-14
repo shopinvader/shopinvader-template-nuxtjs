@@ -29,7 +29,8 @@
     "line": {
       "quantity": "Quantité",
       "total": "Total",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "add": "Ajouter au panier"
     },
     "empty": "Votre panier est vide",
     "total": {
