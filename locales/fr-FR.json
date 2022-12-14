@@ -22,6 +22,9 @@
   "product": {
     "cart": {
       "add": "Ajouter au panier"
+    },
+    "cross_selling": {
+      "title": "Produits liés à cet articles"
     }
   },
   "cart": {

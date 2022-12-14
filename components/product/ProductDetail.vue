@@ -48,6 +48,18 @@
         <product-cart v-if="variant !== null" :product="variant"></product-cart>
       </client-only>
     </div>
+    <div>
+      <product-links v-if="variant" :links="variant.links?.crossLink || []">
+        <template #head>
+          <h1>{{$t('product.cross_selling.title')}}</h1>          
+        </template>
+      </product-links>
+      <product-links v-if="variant" :links="variant?.links?.upLink || []">
+        <template #head>
+          <h1>{{$t('product.up_selling.title')}}</h1>          
+        </template>
+      </product-links>
+    </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
 </template>
@@ -60,6 +72,7 @@ import ProductImageVue from '~/components/product/ProductImage.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
+import ProductLinksVue from './ProductLinks.vue';
 
 export default {
   components: {
@@ -67,7 +80,8 @@ export default {
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
-    'product-cart': ProductCartVue
+    'product-cart': ProductCartVue,
+    'product-links': ProductLinksVue
   },
   props: {
     product: {
