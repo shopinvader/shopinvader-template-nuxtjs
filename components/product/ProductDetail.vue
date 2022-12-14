@@ -13,12 +13,13 @@
         </div>
       </slot>
     </div>
-    <div class="product-detail__image">
-      <product-image
-        v-if="variant.images.length > 0"
-        :image="variant.images[0]"
-      >
+    <div class="product-detail__image">      
+      <div v-for="image in variant.images"  >
+        <product-image        
+        :image="image"
+        >
       </product-image>
+       </div>
     </div>
     <div class="product-detail__content">
       <h1 class="text-xl font-bold">
@@ -99,10 +100,10 @@ export default {
       @apply w-full flex-grow;
     }
     &__image {
-      @apply w-full sm:w-1/2 lg:w-1/3;
+      @apply w-full sm:w-1/2 lg:w-3/5 px-3;
     }
     &__content {
-      @apply w-full sm:w-1/2 lg:w-2/3 pt-5;
+      @apply w-full sm:w-1/2 lg:w-2/5 pt-5 px-2;
     }
   }
 </style>
