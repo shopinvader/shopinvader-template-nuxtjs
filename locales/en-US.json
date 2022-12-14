@@ -22,6 +22,9 @@
   "product": {
     "cart": {
       "add": "Add to cart"
+    },
+    "cross_selling": {
+      "title": "Related products"
     }
   },
   "cart": {

@@ -24,12 +24,11 @@
           </slot>
         </div>
         <div class="body__desc">
-          <slot name="desc" v-bind:product="product">
-            {{ product.description }}
+          <slot name="desc" v-bind:product="product">          
           </slot>
         </div>
         <div class="body__price">
-          <product-price :price="product.price">
+          <product-price v-if="product.price !== null" :price="product.price">
             <template #price>
               <slot name="price" v-bind:price="product.price"></slot>
             </template>
