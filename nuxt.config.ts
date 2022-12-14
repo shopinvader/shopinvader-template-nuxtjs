@@ -10,7 +10,7 @@ export default defineNuxtConfig({
 
         endpoint: 'shopinvader',
         elasticsearch: {
-          url: 'https://index.demo14.shopinvader.com',
+          url: process.env.ELASTIC_URL || '',
           indices: [
             {
               name: 'categories',
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
       },
       {
         code: 'fr',
-        iso: 'fr_be',
+        iso: 'fr_fr',
         file: 'fr-FR.json'
       }
     ],
