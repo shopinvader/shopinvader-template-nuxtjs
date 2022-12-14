@@ -3,23 +3,23 @@ export default defineNuxtConfig({
     public: {
       shopinvader: {
         erp: {
-          website_key: process.env.WEBSITE_KEY || '',
+          website_key: process.env.ERP_WEBSITE_KEY || '',
           api_url: process.env.ERP_HOST || '',
           default_role: 'default'
         },
 
         endpoint: 'shopinvader',
         elasticsearch: {
-          url: 'https://index.demo14.shopinvader.com',
+          url: process.env.ELASTIC_URL || '',
           indices: [
             {
               name: 'categories',
-              index: 'demo_elasticsearch_backend_shopinvader_category',
+              index: process.env.ELASTIC_CATEGORY || '',
               body: {}
             },
             {
               name: 'products',
-              index: 'demo_elasticsearch_backend_shopinvader_variant',
+              index: process.env.ELASTIC_PRODUCT || '',
               body: {}
             }
           ]
@@ -52,7 +52,7 @@ export default defineNuxtConfig({
       },
       {
         code: 'fr',
-        iso: 'fr_be',
+        iso: 'fr_fr',
         file: 'fr-FR.json'
       }
     ],
