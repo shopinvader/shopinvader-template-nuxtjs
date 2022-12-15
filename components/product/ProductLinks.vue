@@ -1,6 +1,6 @@
 <template>
   <div v-if="links.length > 0" class="product-links">
-    <div class="product-links__title">
+    <div class="product-links__head">
       <slot name="head"></slot>
     </div>
     <div class="product-links__items">

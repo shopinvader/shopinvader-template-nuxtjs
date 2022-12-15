@@ -47,12 +47,12 @@
     <div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
         <template #head>
-          <h1>{{$t('product.cross_selling.title')}}</h1>
+          <h2>{{$t('product.cross_selling.title')}}</h2>
         </template>
       </product-links>
       <product-links v-if="variant" :links="variant?.links?.upLink || []">
         <template #head>
-          <h1>{{$t('product.up_selling.title')}}</h1>
+          <h2>{{$t('product.up_selling.title')}}</h2>
         </template>
       </product-links>
     </div>
