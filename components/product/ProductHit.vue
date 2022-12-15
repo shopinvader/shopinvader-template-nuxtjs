@@ -1,35 +1,35 @@
 <template>
   <div v-if="product !== null" 
-    class="product-hit"
+    class="product-hit card card-compact w-96 bg-base-100"
     :class="{'product-hit--inline': inline}"
   >
     <slot name="header"></slot>
     <slot name="images"
-      v-bind:images="product.images">
+      :images="product.images">
       <product-image
-        v-if="product.images.length > 0"
+        v-if="product.images != null && product.images.length > 0"
         :image="product.images[0]"
         class="product-hit__image"
         @click="linkToProduct()"
       >
       </product-image>
     </slot>
-    <div class="product-hit__body">
+    <div class="product-hit__body card-body">
       <slot name="body" v-bind:product="product">
         <div class="body__title">
           <slot name="title" v-bind:product="product">
             <nuxt-link :to="localePath({ path: '/'+product.urlKey })">
-              {{ product.name }}
+              {{ product.name }} description
             </nuxt-link>
           </slot>
         </div>
-        <div class="body__desc">
+        <div class="body__desc" v-if="product.marque != null">
           <slot name="desc" v-bind:product="product">
-            {{ product.description }}
+            {{ product.marque }}
           </slot>
         </div>
         <div class="body__price">
-          <product-price :price="product.price">
+          <product-price :price="product.price" v-if="product.price != null">
             <template #price>
               <slot name="price" v-bind:price="product.price"></slot>
             </template>
@@ -106,8 +106,12 @@ export default {
     @apply card-body px-0 py-2 md:p-3;
     
     .body__title {
-      @apply font-bold;
-      flex-grow: 1;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      // @apply font-bold;
+      // flex-grow: 3;
       cursor: pointer;
     }
     .body__body {
