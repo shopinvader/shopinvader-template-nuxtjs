@@ -40,7 +40,13 @@
     },
     "empty": "Your cart is empty",
     "total": {
-      "title": "Total"
+      "title": "Total",
+      "subtotal": "Subtotal"
     }
+  },
+  "account": {
+    "loading": "Loading...",
+    "title": "My account",
+    "logout": "Logout"
   }
 }
