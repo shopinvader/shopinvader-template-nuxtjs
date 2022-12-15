@@ -23,6 +23,12 @@
         title="Color"
         url-param="name"
       ></search-terms-aggregation>
+      <search-range-aggregation
+        name="price"
+        field="price.default.value"
+        title="Price"
+        url-param="price"
+      ></search-range-aggregation>
     </template>
     <template #header>
       <div class="pt-4">
