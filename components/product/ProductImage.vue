@@ -18,7 +18,7 @@ import { ProductImageSet } from '~~/models/ProductImageSet';
       size: {
         type: String as PropType<string>,
         required: false,
-        default: 'large'
+        default: 'medium'
       }
     },
     computed: {
