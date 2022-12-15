@@ -15,7 +15,7 @@
     </div>
     <div class="product-detail__image">
       <product-image
-        v-if="variant.images.length > 0"
+        v-if="variant?.images && variant.images.length > 0"
         :image="variant.images[0]"
       >
       </product-image>
@@ -26,14 +26,15 @@
       </h1>
       <div> {{ variant.marque }}</div>
       <div>
-        SKU: {{ variant.sku }}
+       {{ $t('product.line.sku') }} : {{ variant.sku }}
       </div>
       <product-price
+        v-if="variant.price != null"
         :price="variant.price"
         class="py-4 text-right"
       >
         <template #price>
-          <slot name="price" v-bind:price="variant.price"></slot>
+          <slot name="price" :price="variant.price"></slot>
         </template>
       </product-price>
      <div> En stock : Livraison rapide</div>
