@@ -4,7 +4,7 @@
     <div class="drawer-content flex flex-col">
       <div :class="classContent">
         <div class="flex-none lg:hidden">
-          <label :for="name" class="btn-ghost btn btn-square">
+          <label :for="name" class="btn-ghost btn-square btn">
             <slot name="button"></slot>
           </label>
         </div>
@@ -20,22 +20,27 @@
     <div class="drawer-side">
       <label :for="name" class="drawer-overlay"></label>
       <div class="bg-base-100">
-        <div class="flex justify-end border-b">
-          <label :for="name" class="btn-ghost btn btn-square">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              class="inline-block h-6 w-6 stroke-current"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
-          </label>
+        <div class="flex justify-between border-b py-2">
+          <div class="flex px-3">
+            <logo :height="50" />
+          </div>
+          <div class="flex">
+            <label :for="name" class="btn-ghost btn-square btn">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                class="inline-block h-6 w-6 stroke-current"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </label>
+          </div>
         </div>
         <slot name="menu" class="bg-red-500"></slot>
       </div>
