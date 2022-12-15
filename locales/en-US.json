@@ -25,6 +25,9 @@
     },
     "cross_selling": {
       "title": "Related products"
+    },
+    "up_selling": {
+      "title": "Other products"
     }
   },
   "cart": {

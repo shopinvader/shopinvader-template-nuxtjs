@@ -4,20 +4,22 @@
       <slot name="head"></slot>
     </div>
     <div class="product-links__items">
-      <product-hit v-for="prod in productLinks" :product="prod" :inline="false" class="items__product">
-        <template #actions>
-          <span></span>
-        </template>
-      </product-hit>
+      <div v-for="product in productLinks" class="items__product">
+        <product-hit :product="product" :inline="false">
+          <template #actions>
+            <span></span>
+          </template>
+        </product-hit>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Product } from '~~/models';
 import { linkId } from '~~/models/ProductLinks';
 import ProductHitVue from './ProductHit.vue';
-export default {
+
+export default defineNuxtComponent({
   components: {
     'product-hit': ProductHitVue
   },
@@ -28,24 +30,14 @@ export default {
       required: true
     }
   },
-  data ()
-  {
+  async setup (props) {
+    const service = useShopinvaderServices()?.products
     return {
-      productLinks: null as Product[] | null
-    };
-  },
-  methods: {
-    async getProducts ()
-    {
-      const service = useShopinvaderServices()?.products;
-      this.productLinks = (await service?.getByIds(this.links.map(item => item.id)))?.hits || null;
+      productLinks: (await service?.getByIds(props.links.map(item => item.id)))?.hits || null
     }
-  },
-  async mounted ()
-  {
-    await this.getProducts();
   }
-};
+})
+
 </script>
 
 <style lang="scss">
@@ -60,7 +52,11 @@ export default {
     flex-wrap: wrap;
 
     .items__product {
-      @apply w-full md:w-1/3 lg:w-1/4;
+      @apply w-full md:w-1/3 lg:w-1/4 p-4;
+
+      .product-hit {
+        @apply card bg-base-100 shadow-xl
+      }
     }
   }
 
