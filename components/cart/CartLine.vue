@@ -18,9 +18,11 @@
       <div class="content__header">
         <slot name="header" :line="line"></slot>
       </div>
-      <button type="button" @click="deleteLine">
-        {{ $t('cart.line.delete' )}}
-      </button>
+      <div class="content__delete">
+        <button type="button" class="btn btn-ghost btn-circle" @click="deleteLine" :title="$t('cart.line.delete' )">
+          <Icon icon="ph:trash" class="text-xl" />
+        </button>
+      </div>
       <div class="content__title">
         <slot name="title" :line="line">
           <template v-if="product">
@@ -124,6 +126,9 @@ export default({
     @apply flex-grow flex flex-col px-4;
     .content {
       &__header {
+      }
+      &__delete {
+        @apply flex flex-row justify-end;
       }
       &__title {
         .title {

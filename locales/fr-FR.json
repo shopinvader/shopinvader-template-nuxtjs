@@ -39,7 +39,13 @@
     },
     "empty": "Votre panier est vide",
     "total": {
-      "title": "Total"
+      "title": "Total",
+      "subtotal": "Subtotal"
     }
+  },
+  "account": {
+    "loading": "Chargement...",
+    "title": "Mon compte",
+    "logout": "Déconnexion"
   }
 }

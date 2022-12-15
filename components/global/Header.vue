@@ -15,6 +15,7 @@
     </template>
     <template #content>
       <cart-icon></cart-icon>
+      <header-user></header-user>
       <local-switcher></local-switcher>
     </template>
   </aside-menu>
@@ -25,6 +26,7 @@
   import HeaderNavVue from './HeaderNav.vue'
   import CartIconVue from '../cart/CartIcon.vue'
   import AsideMenu from './AsideMenu.vue'
+  import HeaderUser from './HeaderUser.vue'
   export default {
     name: 'Header',
     components: {
@@ -32,7 +34,8 @@
       'local-switcher': LocalSwitcher,
       'header-nav': HeaderNavVue,
       'aside-menu': AsideMenu,
-      'cart-icon': CartIconVue
+      'cart-icon': CartIconVue,
+      'header-user': HeaderUser
     },
 
     async setup(props) {
