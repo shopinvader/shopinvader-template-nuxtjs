@@ -36,6 +36,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   plugins: [
+    '~/plugins/iconify.ts',
     '~/plugins/shopinvader.ts',
     '~/plugins/shopinvader-cart.client.ts',
   ],
