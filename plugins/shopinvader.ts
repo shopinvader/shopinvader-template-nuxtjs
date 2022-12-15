@@ -16,8 +16,16 @@ export interface ShopinvaderServiceList {
 let providers: ShopinvaderProvidersList | null = null
 let services: ShopinvaderServiceList | null = null
 
-export const fetchAPI = (url: string, options: any) => {
-  return fetch(url, options)
+export const fetchAPI = async (url: string, options: any) => {
+  const auth = useAuth()
+  if (auth !== null && auth?.getUser !== null) {
+    const user = await auth.getUser()
+    options.headers = {
+      ...options.headers,
+      ...{ Authorization: `Bearer ${user?.access_token}` }
+    }
+  }
+  return await fetch(url, options)
 }
 
 export const initProviders = (isoLocale: string | null = null) => {
@@ -45,10 +53,10 @@ export const initProviders = (isoLocale: string | null = null) => {
 
   if (elasticsearch && elasticsearch?.url !== null && Array.isArray(indices)) {
     for (const index of indices) {
-      providers[index.name] = new ElasticFetch(elasticsearch.url, index?.index, fetchAPI)
+      providers[index.name] = new ElasticFetch(elasticsearch.url, index?.index, fetch)
     }
     const allIndex = indices.map((index) => index.index).join(',')
-    providers['elasticsearch'] = new ElasticFetch(elasticsearch.url, allIndex, fetchAPI)
+    providers['elasticsearch'] = new ElasticFetch(elasticsearch.url, allIndex, fetch)
   }
   return providers
 }
