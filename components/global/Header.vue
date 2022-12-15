@@ -7,7 +7,7 @@
     </template>
     <template #title>
       <nuxt-link :to="localePath({ name: 'index' })" class="flex items-center">
-        <logo :height="20" :width="20"></logo>
+        <logo :height="100" :width="240"></logo>
       </nuxt-link>
     </template>
     <template #menu>
