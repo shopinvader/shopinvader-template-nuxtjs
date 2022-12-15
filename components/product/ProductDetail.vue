@@ -8,12 +8,12 @@
               <nuxt-link :to="localePath({ path: '/'+category.urlKey })">
                 {{ category.name }}
               </nuxt-link>
-            </li> 
+            </li>
           </ul>
         </div>
       </slot>
     </div>
-    <div class="product-detail__image">      
+    <div class="product-detail__image">
       <image-list :images="variant.images || []" :slider="false" />
     </div>
     <div class="product-detail__content">
@@ -44,6 +44,18 @@
         <product-cart v-if="variant !== null" :product="variant"></product-cart>
       </client-only>
     </div>
+    <div>
+      <product-links v-if="variant" :links="variant.links?.crossLink || []">
+        <template #head>
+          <h2>{{$t('product.cross_selling.title')}}</h2>
+        </template>
+      </product-links>
+      <product-links v-if="variant" :links="variant?.links?.upLink || []">
+        <template #head>
+          <h2>{{$t('product.up_selling.title')}}</h2>
+        </template>
+      </product-links>
+    </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
 </template>
@@ -54,15 +66,17 @@ import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
+import ProductLinksVue from './ProductLinks.vue';
 import ImageListVue from './ImageList.vue'
 
 export default {
   components: {
-    'image-list': ImageListVue,    
+    'image-list': ImageListVue,
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
-    'product-cart': ProductCartVue
+    'product-cart': ProductCartVue,
+    'product-links': ProductLinksVue
   },
   props: {
     product: {
