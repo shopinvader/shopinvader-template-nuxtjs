@@ -100,7 +100,6 @@ export default({
     deleteLine() {
       const cartService = useShopinvaderServices()?.cart || null
       if(cartService !== null) {
-        console.log('delete this line', this.line.id)
         cartService.deleteItem(this.line.id)
       }
       this.$emit('deleteLine', this.line)

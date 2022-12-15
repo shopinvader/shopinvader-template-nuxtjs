@@ -18,7 +18,6 @@ export default {
   methods: {
     async getUser() {
       const customerService = useShopinvaderServices()?.customer || {}
-      console.log(await customerService.get())
     },
     async signin () {
       await useAuth()?.login()

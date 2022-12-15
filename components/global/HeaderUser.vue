@@ -32,7 +32,6 @@
     },
     methods: {
       async signin() {
-        console.log('signin', useAuth());
         await useAuth()?.login()
       },
       async logout() {

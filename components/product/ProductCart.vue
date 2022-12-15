@@ -34,8 +34,7 @@ export default {
       if(cartService && this.product !== null) {
         cartService.addItem(this.product.id, 1)
       }
-      console.log('addToCart');
-    } 
+    }
   }
 }
 </script>
