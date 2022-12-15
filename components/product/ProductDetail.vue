@@ -8,7 +8,7 @@
               <nuxt-link :to="localePath({ path: '/'+category.urlKey })">
                 {{ category.name }}
               </nuxt-link>
-            </li> 
+            </li>
           </ul>
         </div>
       </slot>
@@ -51,12 +51,12 @@
     <div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
         <template #head>
-          <h1>{{$t('product.cross_selling.title')}}</h1>          
+          <h1>{{$t('product.cross_selling.title')}}</h1>
         </template>
       </product-links>
       <product-links v-if="variant" :links="variant?.links?.upLink || []">
         <template #head>
-          <h1>{{$t('product.up_selling.title')}}</h1>          
+          <h1>{{$t('product.up_selling.title')}}</h1>
         </template>
       </product-links>
     </div>
