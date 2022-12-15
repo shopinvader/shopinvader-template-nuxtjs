@@ -1,12 +1,10 @@
 <template>
-  <div v-if="product !== null" 
-    class="product-cart"
-  >
+  <template v-if="product !== null">
     <button v-if="line == null" type="button" class="btn btn-primary" @click="addToCart">
       {{ $t('cart.line.add') }}
     </button>
     <cart-line-qty v-else :line="line"></cart-line-qty>
-  </div>
+  </template>
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
@@ -41,8 +39,3 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-.product-cart {
-  display: flex;
-}
-</style>
