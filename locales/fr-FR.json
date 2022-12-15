@@ -22,7 +22,11 @@
   "product": {
     "cart": {
       "add": "Ajouter au panier"
+    },
+    "line":{
+      "sku": "Réference"
     }
+    
   },
   "cart": {
     "title": "Panier",
