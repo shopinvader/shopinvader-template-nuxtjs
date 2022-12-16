@@ -25,6 +25,12 @@
     },
     "line":{
       "sku": "Réference"
+    },
+    "cross_selling": {
+      "title": "Produits liés à cet article"
+    },
+    "up_selling": {
+      "title": "Autres produits"
     }
     
   },

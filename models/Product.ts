@@ -2,6 +2,7 @@ import { ProductModel } from './ProductModel'
 import { ProductCategory } from './ProductCategory'
 import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
+import { ProductLinks } from './ProductLinks'
 export interface ProductResult {
   hits: Product[]
   total: number
@@ -11,7 +12,6 @@ export interface ProductResult {
 export interface VariantAttributes {
   [key: string]: string | number
 }
-
 export class Product {
   id: number | null = null
   model: ProductModel | null = null
@@ -34,8 +34,8 @@ export class Product {
   variants: Product[] | null = null
   brand: string | null = null
   stock_qty: number | null = 0
+  links: ProductLinks | null = null
   constructor(data: any) {
-    console.log('collection', this.collection);
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
     this.urlKey = data?.url_key || null
@@ -67,6 +67,7 @@ export class Product {
         return new ProductImageSet(image)
       })
     }
+    this.links = new ProductLinks(data?.links)
     this.variants = []
     if (Array.isArray(data?.variants)) {
       this.variants = data?.variants.map((variant: any) => {

@@ -8,17 +8,13 @@
               <nuxt-link :to="localePath({ path: '/'+category.urlKey })">
                 {{ category.name }}
               </nuxt-link>
-            </li> 
+            </li>
           </ul>
         </div>
       </slot>
     </div>
     <div class="product-detail__image">
-      <product-image
-        v-if="variant?.images && variant.images.length > 0"
-        :image="variant.images[0]"
-      >
-      </product-image>
+      <image-list :images="variant.images || []" :slider="false" />
     </div>
     <div class="product-detail__content">
       <h1 class="text-xl font-bold">
@@ -51,26 +47,39 @@
       <div v-html="variant.shortDescription">
       </div>
     </div>
+    <div>
+      <product-links v-if="variant" :links="variant.links?.crossLink || []">
+        <template #head>
+          <h2>{{$t('product.cross_selling.title')}}</h2>
+        </template>
+      </product-links>
+      <product-links v-if="variant" :links="variant?.links?.upLink || []">
+        <template #head>
+          <h2>{{$t('product.up_selling.title')}}</h2>
+        </template>
+      </product-links>
+    </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { ProductImage } from '~~/models/ProductImage'
 import { Product } from '~~/models/Product'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
-import ProductImageVue from '~/components/product/ProductImage.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
+import ProductLinksVue from './ProductLinks.vue';
+import ImageListVue from './ImageList.vue'
 
 export default {
   components: {
-    'product-image': ProductImageVue,
+    'image-list': ImageListVue,
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
-    'product-cart': ProductCartVue
+    'product-cart': ProductCartVue,
+    'product-links': ProductLinksVue
   },
   props: {
     product: {
@@ -102,10 +111,10 @@ export default {
       @apply w-full flex-grow;
     }
     &__image {
-      @apply w-full sm:w-1/2 lg:w-1/3;
+      @apply w-full sm:w-1/2 lg:w-3/5 px-3;
     }
     &__content {
-      @apply w-full sm:w-1/2 lg:w-2/3 pt-5 pl-20;
+      @apply w-full sm:w-1/2 lg:w-2/5 pt-5 px-2;
     }
   }
 </style>
