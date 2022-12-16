@@ -8,13 +8,13 @@
             <slot name="button"></slot>
           </label>
         </div> 
-        <div class="flex-1 lg:flex-none px-2 mx-2">
-          <slot name="title"></slot>
-        </div>
         <div class="flex-1 hidden lg:block">
-          <slot name="menu"></slot>
+          <slot name="menu"></slot> menu
         </div>
-        <slot name="content"></slot>
+        <div class="flex-none lg:flex-none px-2 mx-2">
+          <slot name="title"></slot> title
+        </div>
+        <slot name="content"></slot> content
       </div>
     </div>
     <div class="drawer-side">
