@@ -34,8 +34,11 @@ export default defineNuxtConfig({
         response_type: "code",
         scope: "openid email",
         automaticSilentRenew: true,
-      }
-    }
+        }        
+      },
+      theme: {
+        logo: process.env.VUE_APP_LOGO_URL || ''
+      }    
   },
   modules: [
     '@nuxtjs/tailwindcss',
