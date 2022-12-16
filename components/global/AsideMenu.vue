@@ -4,24 +4,22 @@
     <div class="drawer-content flex flex-col">
       <div :class="classContent">
         <div class="flex-none lg:hidden">
-          <label :for="name" class="btn-ghost btn btn-square">
+          <label :for="name" class="btn-ghost btn-square btn">
             <slot name="button"></slot>
           </label>
-        </div> 
-        <div class="flex-1 hidden lg:block">
-          <slot name="menu"></slot>
         </div>
-        <div class="flex-none lg:flex-none drawer-content-title">
-          <slot name="title"></slot>
+        <div class="hidden flex-1 lg:block"><slot name="menu"></slot> menu</div>
+        <div class="mx-2 flex-none px-2 lg:flex-none">
+          <slot name="title"></slot> title
         </div>
-        <slot name="content"></slot>
+        <slot name="content"></slot> content
       </div>
     </div>
     <div class="drawer-side">
       <label :for="name" class="drawer-overlay"></label>
       <div class="bg-base-100">
         <div class="flex justify-end border-b">
-          <label :for="name" class="btn-ghost btn btn-square">
+          <label :for="name" class="btn-ghost btn-square btn">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -61,24 +59,18 @@ export default {
 }
 </script>
 <style lang="scss">
-  .drawer {
-    @apply h-auto;
-    overflow: visible;
-    .drawer-content {
-      overflow-y: visible;
-      .drawer-content-title {
-        padding-right: 20rem;
-      }
+.drawer {
+  @apply h-auto;
+  overflow: visible;
+  .drawer-content {
+    overflow-y: visible;
+    .drawer-content-title {
+      padding-right: 20rem;
     }
-    .drawer-toggle {
-      &:checked ~ .drawer-side {
-        @apply relative h-screen w-screen border;
-      }
-    }
-    .drawer-side {
-      @apply border lg:hidden;
-      height: 0;
-      width: 0;
+  }
+  .drawer-toggle {
+    &:checked ~ .drawer-side {
+      @apply relative h-screen w-screen border;
     }
   }
   .drawer-side {
@@ -86,5 +78,10 @@ export default {
     height: 0;
     width: 0;
   }
+}
+.drawer-side {
+  @apply border lg:hidden;
+  height: 0;
+  width: 0;
 }
 </style>
