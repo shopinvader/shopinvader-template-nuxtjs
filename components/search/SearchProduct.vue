@@ -60,7 +60,6 @@ import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vu
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
 import esb, { BoolQuery, TermQuery } from 'elastic-builder'
-// import {useI18n} from "#imports" useI18n().t("text")
 
 export default {
   components: {
@@ -84,6 +83,7 @@ export default {
     }
   },
   data() {
+    const i18n = useI18n()
     return {
       layout: 'grid',
       facets: {
