@@ -7,14 +7,14 @@
           <label :for="name" class="btn-ghost btn btn-square">
             <slot name="button"></slot>
           </label>
+        </div> 
+        <div class="flex-1 hidden lg:block">
+          <slot name="menu"></slot> menu
         </div>
-        <div class="mx-2 flex-1 px-2 lg:flex-none">
-          <slot name="title"></slot>
+        <div class="flex-none lg:flex-none px-2 mx-2">
+          <slot name="title"></slot> title
         </div>
-        <div class="hidden flex-1 lg:block">
-          <slot name="menu"></slot>
-        </div>
-        <slot name="content"></slot>
+        <slot name="content"></slot> content
       </div>
     </div>
     <div class="drawer-side">
