@@ -24,7 +24,7 @@
       <h1 class="text-xl font-bold">
         {{ variant.name }}
       </h1>
-      <div> {{ variant.marque }}</div>
+      <div> {{ variant.brand }}</div>
       <div>
        {{ $t('product.line.sku') }} : {{ variant.sku }}
       </div>

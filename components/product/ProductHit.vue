@@ -23,9 +23,9 @@
             </nuxt-link>
           </slot>
         </div>
-        <div class="body__desc" v-if="product.marque != null">
+        <div class="body__desc" v-if="product.brand != null">
           <slot name="desc" v-bind:product="product">
-            {{ product.marque }}
+            {{ product.brand }}
           </slot>
         </div>
         <div class="body__price">

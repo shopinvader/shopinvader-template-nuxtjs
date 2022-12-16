@@ -32,7 +32,7 @@ export class Product {
   price: ProductPrice | null = null
   images: ProductImageSet[] | null
   variants: Product[] | null = null
-  marque: string | null = null
+  brand: string | null = null
   stock_qty: number | null = 0
   constructor(data: any) {
     console.log('collection', this.collection);
@@ -73,7 +73,7 @@ export class Product {
         return new Product(variant)
       })
     }
-    this.marque = data?.MARQUE || null
+    this.brand = data?.MARQUE || null
     this.stock_qty = data?.stock?.globla?.qty || 0
   }
 }
