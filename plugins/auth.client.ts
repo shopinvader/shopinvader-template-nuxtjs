@@ -1,25 +1,18 @@
-import { User, UserManager } from 'oidc-client-ts';
+import { User, UserManager, UserManagerSettings, SignoutResponse } from 'oidc-client-ts';
 import { defineStore } from 'pinia'
 
 export class AuthService {
 
   userManager: UserManager;
-  store: any = null;
-  constructor() {
+  private store: any = null;
+  constructor(options: UserManagerSettings) {
     const localePath = useLocalePath()
-    const redirectURI = window.location.origin + localePath({ path: 'account/signin-callback' })
-    console.log('$i18n', redirectURI)
-    const settings = {
-      authority: "https://keycloak.demo14.shopinvader.com/auth/realms/master/",
-      client_id: "demo14.shopinvader.com",
-      redirect_uri: redirectURI,
-      silent_redirect_uri: redirectURI,
-      response_type: "code",
-      scope: "openid email",
-      automaticSilentRenew: true,
+    if (options?.redirect_uri == null) {
+      options.redirect_uri = window.location.origin + localePath({ path: '/account/signin-callback' })
     }
+    this.userManager = new UserManager(options)
 
-    this.userManager = new UserManager(settings)
+    /** Store Login state with Pinia */
     this.store = defineStore('auth', {
       state: () => (
         {
@@ -52,9 +45,10 @@ export class AuthService {
     return this.store
   }
 
-  public logout(): Promise<void> {
+  public logout(): Promise<any> {
     this.setUser(null)
-    return this.userManager.signoutRedirect();
+    const callback: string = window?.location?.origin || ''
+    return this.userManager.signoutRedirect({ post_logout_redirect_uri: callback })
 
   }
 
@@ -67,8 +61,11 @@ export class AuthService {
   }
 }
 
-export default defineNuxtPlugin(async (nuxtApp) => {
-  const auth = new AuthService()
+export default defineNuxtPlugin(async () => {
+
+  const options: UserManagerSettings = useRuntimeConfig()?.auth || null
+
+  const auth = new AuthService(options)
   auth.setUser(await auth.getUser())
 
   return {
