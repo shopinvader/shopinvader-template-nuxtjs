@@ -27,6 +27,13 @@ export default defineNuxtConfig({
             }
           ]
         }
+      },
+      auth: {
+        authority: process.env.AUTH_AUTHORITY || '',
+        client_id: process.env.AUTH_CLIENT_ID || '',
+        response_type: "code",
+        scope: "openid email",
+        automaticSilentRenew: true,
       }
     }
   },
