@@ -24,6 +24,7 @@
         url-param="name"
       ></search-terms-aggregation>
       <search-range-aggregation
+        :range-items="priceRangeFilter"
         name="price"
         field="price.default.value"
         title="Price"
@@ -59,6 +60,7 @@ import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vu
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
 import esb, { BoolQuery, TermQuery } from 'elastic-builder'
+// import {useI18n} from "#imports" useI18n().t("text")
 
 export default {
   components: {
@@ -87,7 +89,14 @@ export default {
       facets: {
         name: [],
         url: []
-      }
+      },
+      priceRangeFilter: [
+        { to: 50, label: 'To 50€' },
+        { from: 51, to: 100, label: 'From 51 to 100€' },
+        { from: 101, to: 500, label: 'From 101 to 500€' },
+        { from: 501, to: 1000, label: 'From 501 to 1000€' },
+        { from: 1001, label: 'More than 1000€' }
+      ]
     }
   },
   methods: {

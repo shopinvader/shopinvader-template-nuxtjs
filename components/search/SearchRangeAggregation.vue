@@ -8,9 +8,9 @@
     <slot name="items" :items="data.items" :change="onSelectItem">
       <div class="searchfilter__items " v-for="item in data.items">
         <slot name="items" :item="item" :change="onSelectItem">
-          <label class="item" :class="{'item--active': data.selected.includes(item.key)}">
-            <input type="checkbox" class="item__checkbox" @change="onSelectItem()" :value="item.key" v-model="data.selected"/>
-            <span class="item__label">{{ item.key }}</span>
+          <label class="item" :class="{'item--active': data.selected === item.key}">
+            <input type="radio" class="item__radio" @change="onSelectItem()" :value="item.key" v-model="data.selected"/>
+            <span class="item__label">{{ item.label }}</span>
             <span class="item__count">{{ item.doc_count }}</span>
           </label>
         </slot>
@@ -27,12 +27,16 @@ import {
   BoolQuery,
   FilterAggregation,
   MatchAllQuery,
-  Query,
   RangeAggregation,
   RangeQuery
 } from 'elastic-builder';
 
 import { Filter } from './SearchBase.vue';
+export interface RangeItem {
+  from?: Number,
+  to?: Number,
+  label: String
+}
 export default {
   props: {
     name: {
@@ -80,11 +84,16 @@ export default {
       type: String,
       required: false,
       default: null
+    },
+    rangeItems: {
+      type: Array<RangeItem>,
+      required: true,
+      default: null
     }
   },
   async setup(props) {
     const data = reactive({
-      selected: [],
+      selected: null,
       items: [],
       total: 0,
       size: props.size
@@ -93,41 +102,31 @@ export default {
     const search:Function = inject('search');
     const response = inject('response');
     const getValuesLabels = () => {
-      return data.selected.join(', ')
+      return data.selected 
     }
     const getFilterAggregation = (query:BoolQuery):Aggregation => {
-      //apliquer les filters dans selected filters
-      let agg:Aggregation = new RangeAggregation(props.name, props.field).ranges([
-      { from: 0, to: 50 },
-          { from: 51, to: 100 },
-          { from: 101, to: 500 },
-          { from: 501, to: 1000 },
-          { from: 1001 }
-      ]);
-
-        if (props.transformQuery !== null) {
-          query = props.transformQuery(query, props.name, props.field)
-        }
+      let agg:Aggregation = new RangeAggregation(props.name, props.field).ranges(props.rangeItems.map(item => ({from: item.from, to: item.to})))
+      if (props.transformQuery !== null) {
+        query = props.transformQuery(query, props.name, props.field)
+      }
 
       return new FilterAggregation(props.name, query || new MatchAllQuery()).aggregation(agg)
     }
 
     const getQueryAggregation = () => {
-      let aggs: Query = null
+      let aggs: RangeQuery = new RangeQuery(props.field)
 
-      if(data?.selected?.length > 0) {
-        const selectedValue = data?.selected[0]
+      if(data?.selected !== null) {
+        const selectedValue = data?.selected
 
-        const value = data?.items.find((it:any) => it.key === selectedValue)
-        console.log("values ", value?.from, value?.to)
+        const value = data?.items.find((item:any) => item.key === selectedValue)
         aggs = new RangeQuery(props.field).gte(value?.from).lt(value?.to)
       }
-      console.log("aggs ", aggs)
       return aggs
     }
 
-    const setValues = (values:any[]) => {
-     data.selected = values || []
+    const setValues = (values:any) => {
+     data.selected = values || ''
      refreshSearch()
     }
     declareFilter (
@@ -139,7 +138,7 @@ export default {
         getValuesLabels,
         getFilterAggregation,
         getQueryAggregation
-      } as Filter
+      } as unknown as Filter
     )
 
     const onSelectItem = () => {
@@ -150,7 +149,7 @@ export default {
       if(props.urlParam) {
         const $router = useRouter()
         const $route = useRoute()
-        if(data.selected.length > 0) {
+        if(data.selected !== null) {
           $router.push({query: {...$route.query, [props.urlParam]: JSON.stringify(data.selected)}})
         } else {
           const query = {...$route.query}
@@ -174,8 +173,8 @@ export default {
         if(this.urlParam) {
           const $route = useRoute()
           try {
-            const query:string = $route.query?.[this.urlParam] as string || '[]'
-            const values:string[] = JSON.parse(query) || []
+            const query:string = $route.query?.[this.urlParam] as string || ''
+            const values:string = JSON.parse(query) || ''
             if(query?.length > 0 && this.data.selected !== values) {
               this.data.selected = values
             }
@@ -194,6 +193,7 @@ export default {
       handler: function (response) {
         if(response?.aggregations) {
           let name = this.name
+          let rangeItems = this.rangeItems
           let items = []
 
           const aggregations = response?.aggregations || {}
@@ -214,6 +214,10 @@ export default {
               }
             }
           }
+          items = items.map((item:any) => {
+            const label = rangeItems.find(rangeItem => rangeItem.to === item.to && rangeItem.from === item.from)?.label
+            return {...item, label}
+          })
 
           if(this.transformItems !== null) {
             let response = this.transformItems(items)
@@ -238,7 +242,7 @@ export default {
     @apply mt-2 text-xs ;
     .item {
       @apply flex cursor-pointer items-center;
-      &__checkbox {
+      &__checkbox, &__radio {
         @apply mr-2;
       }
       &__label {

@@ -6,7 +6,11 @@
       class="btn-outline btn-primary btn-xs btn"
       @click="filter?.setValues([])"
     >
-      <slot :filter="filter" :clear-filter="clearFilter">
+      <slot
+        v-if="filter.getValuesLabels() && filter.getValuesLabels().length > 0"
+        :filter="filter"
+        :clear-filter="clearFilter"
+      >
         <span class="text-xs">
           {{ filter.title }}: {{ filter.getValuesLabels() }}
         </span>
