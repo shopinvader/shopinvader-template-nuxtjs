@@ -1,6 +1,6 @@
 <template >
-  <div class="dropdown">
-    <label tabindex="0" class="btn m-1">Language
+  <div class="dropdown localeposition">
+    <label tabindex="0" class="m-1">Language
     <svg class="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
     <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
     </label>
@@ -31,6 +31,9 @@ const currentLocale = computed(() => {
 })
 </script>
 <style lang="scss">
+.localeposition {
+  display: block ruby;
+}
 .localeswitcher {
   display: flex;
 
