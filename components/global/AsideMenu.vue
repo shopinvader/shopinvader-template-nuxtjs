@@ -9,12 +9,12 @@
           </label>
         </div> 
         <div class="flex-1 hidden lg:block">
-          <slot name="menu"></slot> menu
+          <slot name="menu"></slot>
         </div>
-        <div class="flex-none lg:flex-none px-2 mx-2">
-          <slot name="title"></slot> title
+        <div class="flex-none lg:flex-none drawer-content-title">
+          <slot name="title"></slot>
         </div>
-        <slot name="content"></slot> content
+        <slot name="content"></slot>
       </div>
     </div>
     <div class="drawer-side">
@@ -61,15 +61,24 @@ export default {
 }
 </script>
 <style lang="scss">
-.aside-menu.drawer {
-  @apply h-auto;
-  overflow: visible;
-  .drawer-content {
-    overflow-y: visible;
-  }
-  .drawer-toggle {
-    &:checked ~ .drawer-side {
-      @apply relative h-screen w-screen border;
+  .drawer {
+    @apply h-auto;
+    overflow: visible;
+    .drawer-content {
+      overflow-y: visible;
+      .drawer-content-title {
+        padding-right: 20rem;
+      }
+    }
+    .drawer-toggle {
+      &:checked ~ .drawer-side {
+        @apply relative h-screen w-screen border;
+      }
+    }
+    .drawer-side {
+      @apply border lg:hidden;
+      height: 0;
+      width: 0;
     }
   }
   .drawer-side {
