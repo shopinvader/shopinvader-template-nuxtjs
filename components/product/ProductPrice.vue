@@ -6,7 +6,7 @@
       <div>
         <div class="product-price__value">
           {{ $filter.currency(price.value) }}
-        <sub class="product-price__tax" v-if="price.tax_included">
+        <sub class="product-price__tax" v-if="price.tax_included !== null">
           VAT Incl.
         </sub>
         </div>
