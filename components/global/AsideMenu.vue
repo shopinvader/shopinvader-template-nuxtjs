@@ -8,11 +8,13 @@
             <slot name="button"></slot>
           </label>
         </div>
-        <div class="hidden flex-1 lg:block"><slot name="menu"></slot> menu</div>
-        <div class="mx-2 flex-none px-2 lg:flex-none">
-          <slot name="title"></slot> title
+        <div class="hidden flex-1 lg:block">
+          <slot name="menu"></slot>
         </div>
-        <slot name="content"></slot> content
+        <div class="drawer-content-title flex-none lg:flex-none">
+          <slot name="title"></slot>
+        </div>
+        <slot name="content"></slot>
       </div>
     </div>
     <div class="drawer-side">
@@ -73,11 +75,16 @@ export default {
       @apply relative h-screen w-screen border;
     }
   }
-  .drawer-side {
-    @apply border lg:hidden;
-    height: 0;
-    width: 0;
+}
+.drawer-toggle {
+  &:checked ~ .drawer-side {
+    @apply relative h-screen w-screen border;
   }
+}
+.drawer-side {
+  @apply border lg:hidden;
+  height: 0;
+  width: 0;
 }
 .drawer-side {
   @apply border lg:hidden;
