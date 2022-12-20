@@ -33,12 +33,12 @@ export default defineNuxtConfig({
         client_id: process.env.AUTH_CLIENT_ID || '',
         response_type: "code",
         scope: "openid email",
-        automaticSilentRenew: true,
-        }        
+        automaticSilentRenew: true
       },
       theme: {
-        logo: process.env.VUE_APP_LOGO_URL || ''
-      }    
+        logo: process.env.VUE_APP_LOGO_URL || ''
+      }
+    }
   },
   modules: [
     '@nuxtjs/tailwindcss',
