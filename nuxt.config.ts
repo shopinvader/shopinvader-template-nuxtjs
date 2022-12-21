@@ -26,10 +26,17 @@ export default defineNuxtConfig({
               body: {}
             }
           ]
-        }        
+        }
+      },
+      auth: {
+        authority: process.env.AUTH_AUTHORITY || '',
+        client_id: process.env.AUTH_CLIENT_ID || '',
+        response_type: "code",
+        scope: "openid email",
+        automaticSilentRenew: true
       },
       theme: {
-        logo: process.env.VUE_APP_LOGO_URL || ''
+        logo: process.env.VUE_APP_LOGO_URL || ''
       }
     }
   },
@@ -39,6 +46,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt'
   ],
   plugins: [
+    '~/plugins/iconify.ts',
     '~/plugins/shopinvader.ts',
     '~/plugins/shopinvader-cart.client.ts',
   ],

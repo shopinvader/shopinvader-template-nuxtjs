@@ -10,27 +10,26 @@
       :line="line"
     >
     </CartLine>
-    <div v-else>
-      {{ $t('cart.empty') }}
-    </div>
   </div>
 </template>
 <script lang="ts">
-import CartLine from '~/components/cart/CartLine.vue'
+import CartLineVue from '~/components/cart/CartLine.vue'
+import { CartLine } from '~~/models';
 import SpinnerVue from '../global/Spinner.vue'
 export default({
   name: 'CartLines',
+  props: {
+    lines: {
+      type: Array<CartLine>,
+      default: null
+    }
+  },
   components: {
-    'cart-line':CartLine,
-    'spinner': SpinnerVue 
+    'cart-line':CartLineVue,
+    'spinner': SpinnerVue
   },
   computed: {
-    cart() {
-      return 
-    },
-    lines() {
-      return useCart()?.lines || null
-    }
+
   }
 })
 </script>

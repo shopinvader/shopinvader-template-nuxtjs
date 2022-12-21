@@ -38,7 +38,13 @@
     },
     "empty": "Tu carrito está vacío",
     "total": {
-      "title": "Total"
+      "title": "Total",
+      "subtotal": "Subtotal"
     }
+  },
+  "account": {
+    "loading": "Cargando...",
+    "title": "Mi cuenta",
+    "logout": "Cerrar sesión"
   }
 }

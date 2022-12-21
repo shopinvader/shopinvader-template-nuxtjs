@@ -131,7 +131,6 @@ export class CartService {
   }
 
   applyDeltaOnItem(productId: number, delta: number) {
-    console.log(productId, delta)
     this.addTransaction(productId, delta)
   }
 
