@@ -1,7 +1,7 @@
 
 import { ErpFetch, ElasticFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
-import { CategoryService, ProductService, CatalogService, CartService, SaleService } from '../services'
+import { CategoryService, ProductService, CatalogService, CartService, SaleService, AddressService } from '../services'
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
@@ -13,6 +13,7 @@ export interface ShopinvaderServiceList {
   catalog: CatalogService
   cart: CartService | null
   sales: SaleService | null
+  addresses: AddressService
 }
 
 let providers: ShopinvaderProvidersList | null = null
@@ -89,7 +90,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       categories: new CategoryService(providers?.categories as ElasticFetch),
       catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
       cart: null,
-      sales: new SaleService(providers?.erp as ElasticFetch)
+      sales: new SaleService(providers?.erp as ElasticFetch),
+      addresses: new AddressService(providers.erp as ErpFetch)
     }
   }
   return {
