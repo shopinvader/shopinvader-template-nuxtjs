@@ -1,3 +1,4 @@
+import { Address } from './Address';
 export class Country {
   id: number
   code: string
@@ -62,4 +63,9 @@ export class Address {
     this.zip = data?.zip || null
     this.email = data?.email || null
   }
+}
+
+export interface AddressResult {
+  size: number
+  data: Address[]
 }
