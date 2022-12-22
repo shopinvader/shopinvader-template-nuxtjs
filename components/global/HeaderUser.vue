@@ -19,6 +19,11 @@
               {{ $t('account.logout') }}
             </button>
           </li>
+          <li>
+            <nuxt-link to="/account/addresses" >
+              {{ $t('account.address')}}
+            </nuxt-link>
+          </li>
         </ul>
       </div>
     </template>
