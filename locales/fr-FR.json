@@ -26,11 +26,20 @@
     "line":{
       "sku": "Réference"
     },
+    "price": {
+      "tax": "VAT Incl."
+    },
     "cross_selling": {
       "title": "Produits liés à cet article"
     },
     "up_selling": {
       "title": "Autres produits"
+    },
+    "stock": {
+      "available": "En stock"
+    },
+    "delivery": {
+      "availability": "Livraison rapide"
     }
     
   },

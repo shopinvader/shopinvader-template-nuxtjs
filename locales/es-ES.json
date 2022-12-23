@@ -23,11 +23,20 @@
     "cart": {
       "add": "Añadir al carrito"
     },
+    "price": {
+      "tax": "IVA Incl."
+    },
     "cross_selling": {
       "title": "Productos relacionados"
     },
     "up_selling": {
       "title": "Otros productos"
+    },
+    "stock": {
+      "available": "Disponible en stock"
+    },
+    "delivery": {
+      "availability": "Entrega Rapida"
     }
   },
   "cart": {

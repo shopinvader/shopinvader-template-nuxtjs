@@ -23,11 +23,23 @@
     "cart": {
       "add": "Add to cart"
     },
+    "line":{
+      "sku": "Reference"
+    },
+    "price": {
+      "tax": "VAT Incl."
+    },
     "cross_selling": {
       "title": "Related products"
     },
     "up_selling": {
       "title": "Other products"
+    },
+    "stock": {
+      "available": "In stock"
+    },
+    "delivery": {
+      "availability": "Fast Delivery"
     }
   },
   "cart": {
