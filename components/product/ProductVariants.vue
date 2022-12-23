@@ -13,6 +13,9 @@
       <div class="hit__title">
         {{ product.shortName }}
       </div>
+      <div v-if="product.shortDescription != null">
+      {{ product.shortDescription }}
+      </div>
     </div>
   </div>
 </template>
