@@ -1,11 +1,11 @@
 <template>
-  <div v-if="stock != null">
-    <div v-if="stock.stock_qty > 0 ">
+  <div v-if="stock != null && stock.stock_qty > 0 ">
+    <div>
       {{ $t("product.stock.available") }} : {{ $t("product.delivery.availability") }}
     </div>
-    <div v-else>
-        <div class="mt-3">Out of stock</div>
-    </div>
+  </div>
+  <div v-else>
+      <div class="mt-3">{{ $t('product.stock.unavailable') }}</div>
   </div>
 </template>
 <script lang="ts">
@@ -22,4 +22,3 @@ export default {
   }
 };
 </script>
-<style lang="scss"></style>

@@ -34,8 +34,7 @@
         </template>
       </product-price>
 
-      <product-qty :stock="product.stock_qty">
-      </product-qty>
+      <product-qty :stock="product.stock_qty"></product-qty>
 
      <client-only>
         <product-cart v-if="variant !== null" :product="variant"></product-cart>

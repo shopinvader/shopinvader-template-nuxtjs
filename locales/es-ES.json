@@ -33,7 +33,8 @@
       "title": "Otros productos"
     },
     "stock": {
-      "available": "Disponible en stock"
+      "available": "Disponible en stock",
+      "unavailable": "Fuera de stock"
     },
     "delivery": {
       "availability": "Entrega Rapida"
