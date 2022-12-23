@@ -3,6 +3,7 @@ import { ProductCategory } from './ProductCategory'
 import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
 import { ProductLinks } from './ProductLinks'
+import { ProductQty } from './ProductQty'
 export interface ProductResult {
   hits: Product[]
   total: number
@@ -33,7 +34,7 @@ export class Product {
   images: ProductImageSet[] | null
   variants: Product[] | null = null
   brand: string | null = null
-  stock_qty: number | null = 0
+  stock_qty: ProductQty
   links: ProductLinks | null = null
   constructor(data: any) {
     this.id = data?.id || null
@@ -74,7 +75,7 @@ export class Product {
         return new Product(variant)
       })
     }
-    this.brand = data?.MARQUE || null
-    this.stock_qty = data?.stock?.globla?.qty || 0
+    this.brand = data?.brand || null
+    this.stock_qty = data?.stock_qty || 0
   }
 }
