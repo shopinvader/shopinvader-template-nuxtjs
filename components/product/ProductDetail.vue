@@ -33,8 +33,10 @@
           <slot name="price" :price="variant.price"></slot>
         </template>
       </product-price>
-     <div> En stock : Livraison rapide</div>
-     <div class="mt-3"> LIVRAISON OFFERTE àpd 500€ pour les meubles</div>
+
+      <product-qty :stock="product.stock_qty">
+      </product-qty>
+
      <client-only>
         <product-cart v-if="variant !== null" :product="variant"></product-cart>
       </client-only>
@@ -44,8 +46,6 @@
         @selectVariant="changeVariant"
       >
       </product-variants>
-      <div v-html="variant.shortDescription">
-      </div>
     </div>
     <div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
@@ -68,6 +68,7 @@ import { Product } from '~~/models/Product'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductCartVue from '~~/components/product/ProductCart.vue'
+import ProductQtyVue from './ProductQty.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
 import ProductLinksVue from './ProductLinks.vue';
 import ImageListVue from './ImageList.vue'
@@ -79,7 +80,8 @@ export default {
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
     'product-cart': ProductCartVue,
-    'product-links': ProductLinksVue
+    'product-links': ProductLinksVue,
+    'product-qty': ProductQtyVue
   },
   props: {
     product: {
