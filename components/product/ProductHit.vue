@@ -19,7 +19,7 @@
         <div class="body__title">
           <slot name="title" v-bind:product="product">
             <nuxt-link :to="localePath({ path: '/'+product.urlKey })">
-              {{ product.name }} description
+              {{ product.name }}
             </nuxt-link>
           </slot>
         </div>
