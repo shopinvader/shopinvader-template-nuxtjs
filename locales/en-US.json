@@ -48,5 +48,15 @@
     "loading": "Loading...",
     "title": "My account",
     "logout": "Logout"
+  },
+  "address": {
+    "name": "First and last name",
+    "street": "Postal Address",
+    "zip": "Zip Code",
+    "phone": "Telephone"
+  },
+  "actions": {
+    "modify": "Modify",
+    "update": "Update",
   }
 }

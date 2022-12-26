@@ -21,4 +21,22 @@ export class AddressService {
       data: result?.data?.map( (item:any) => new Address(item))
      } as AddressResult
   }
+
+  /**
+   * updateItem : update a cart line
+   * @param {*} Id address Id
+   * @param {*} options Options
+   * @returns Promise
+   */
+
+  async update(id: number, data: any ) : Promise<AddressResult | null> {
+     
+    return await this.provider?.post("addresses/" + id, { data})
+    .then((data) => {
+      return {
+        size: data?.size || 0,
+        data: data?.data?.map( (item:any) => new Address(item))
+       } as AddressResult
+    }) 
+  }
 }
