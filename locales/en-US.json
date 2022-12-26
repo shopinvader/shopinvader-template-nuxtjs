@@ -59,6 +59,12 @@
 
         }
     },
+    "address": {
+      "name": "First and last name",
+      "street": "Postal Address",
+      "zip": "Zip Code",
+      "phone": "Telephone"
+    },
     "quotations": "My quotations",
     "invoices" : "My invoices",
     "emptylist" : "No data available"
@@ -69,6 +75,11 @@
   "pagination": {
     "showperpage": "Items per page",
     "status": "{boundStart}-{boundStop} of {totalItems}"
+  },
+
+  "actions": {
+    "modify": "Modify",
+    "update": "Update",
   }
 
 }
