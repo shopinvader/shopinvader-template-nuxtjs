@@ -46,5 +46,19 @@
     "loading": "Cargando...",
     "title": "Mi cuenta",
     "logout": "Cerrar sesión"
+  },
+  "address": {
+    "name": "Nombre y apellidos",
+    "street": "Calle",
+    "zip": "Código postal",
+    "city": "Ciudad",
+    "phone": "Téléfono",
+    "country": "País"
+  },
+  "actions": {
+    "modify": "Modificar",
+    "update": "Actualizar",
+    "create": "Crear" ,
+    "validate": "Validar"
   }
 }
