@@ -63,7 +63,9 @@
       "name": "First and last name",
       "street": "Postal Address",
       "zip": "Zip Code",
-      "phone": "Telephone"
+      "city": "City",
+      "phone": "Telephone",
+      "country": "Country"
     },
     "quotations": "My quotations",
     "invoices" : "My invoices",
@@ -80,6 +82,8 @@
   "actions": {
     "modify": "Modify",
     "update": "Update",
+    "create": "Create" ,
+    "validate": "validate"
   }
 
 }

@@ -29,7 +29,7 @@ export class AddressService {
    * @returns Promise
    */
 
-  async update(id: number, data: any ) : Promise<AddressResult | null> {
+  async update(data: any, id: number, ) : Promise<AddressResult | null> {
      
     return await this.provider?.post("addresses/" + id, { data})
     .then((data) => {
@@ -38,5 +38,18 @@ export class AddressService {
         data: data?.data?.map( (item:any) => new Address(item))
        } as AddressResult
     }) 
+    
+  }
+
+  async create( data: any ) : Promise<AddressResult | null> {
+     console.log("data", data)
+    return await this.provider?.post("addresses/" + "create", { data })
+    .then((data) => {
+      return {
+        size: data?.size || 0,
+        data: data?.data?.map( (item:any) => new Address(item))
+       } as AddressResult
+    }) 
+    
   }
 }

@@ -47,5 +47,19 @@
     "loading": "Chargement...",
     "title": "Mon compte",
     "logout": "Déconnexion"
+  },
+  "address": {
+    "name": "Nom et Prénom",
+    "street": "Rue",
+    "zip": "Code postal",
+    "city": "Ville",
+    "phone": "Téléphone",
+    "country": "Pays"
+  },
+  "actions": {
+    "modify": "Modifier",
+    "update": "Actualiser",
+    "create": "Créer " ,
+    "validate": "Valider"
   }
 }

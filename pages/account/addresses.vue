@@ -1,11 +1,29 @@
 <template>
-  <div class="container mx-auto flex  items-start" v-if="addresses">
+  <div class="container mx-auto">
+    <div class="p-4 w-full text-right">
+      <button
+        type="button"
+        @click="toggleForm=!toggleForm"
+        class="btn btn-secondary"
+      >
+        + {{ $t("actions.create") }}
+      </button>
+    </div>
+    <div v-if="toggleForm" class="p-5 flex justify-center">
+      <div class="card md:w-1/2 w-full bg-base-100 shadow-xl md:m-10 h-full">
+      <div class="card-body">
+        <address-form  @sendForm="createAddress"></address-form>
+      </div>
+      </div>
+    </div>
+  </div>
+  <div class="container mx-auto md:flex md:items-start md:m-8 m-5" v-if="addresses">
     <div
-      v-for="address, i in addresses.data"
+      v-for="(address, i) in addresses.data"
       :key="i"
-      class="card md:w-1/3 bg-base-100 shadow-xl m-10 h-full"
+      class="card w-full md:w-1/2  bg-base-100 shadow-xl md:m-10 my-5"
     >
-      <div class="card-body flex-col ">
+      <div class="card-body flex-col">
         <Icon icon="ph:address-book" class="text-5xl text-blue-500" />
         <h2 class="card-title">
           {{ address.displayName }}
@@ -27,116 +45,62 @@
         <p>{{ address.zip }} {{ address.city }}</p>
         <p>{{ address.phone }}</p>
         <div class="card-actions justify-end">
-          <button @click="selectItem(i)" class="btn btn-primary ">
-            {{ i === activeItem && toggle ? 'X' : $t('actions.modify') }}
-            </button>
+          <button @click="selectItem(i)" class="btn btn-primary">
+            {{ i === activeItem && toggle ? "X" : $t("actions.modify") }}
+          </button>
         </div>
       </div>
-      <div v-if="i === activeItem && toggle" class="p-5">
-        <form>
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">{{$t('address.name')}}</span>
-            </label>
-            <input
-              v-model="newAddress.name"
-              type="text"
-              placeholder="Type here"
-              class="input input-bordered w-full max-w-xs"
-            > 
-          </div>
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">{{$t('address.street')}}</span>
-            </label>
-            <input
-              v-model="newAddress.street"
-              type="text"
-              placeholder="Type here"
-              class="input input-bordered w-full max-w-xs"
-            > 
-          </div>
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">{{$t('address.zip')}}</span>
-            </label>
-            <input
-              v-model="newAddress.zip"
-              type="text"
-              placeholder="Type here"
-              class="input input-bordered w-full max-w-xs"
-            > 
-          </div>
-          <div class="form-control w-full max-w-xs">
-            <label class="label">
-              <span class="label-text">{{$t('address.phone')}}</span>
-            </label>
-            <input
-              v-model="newAddress.phone"
-              type="text"
-              placeholder="Type here"
-              class="input input-bordered w-full max-w-xs"
-            > 
-          </div>
-          <div class="py-2">
-            <button type="button" @click="updateAddress(address.id, name)" class="btn btn-primary">{{$t('actions.update')}}</button>
-          </div>
-        </form>
+      <div v-if="i === activeItem && toggle" class="p-5 border-b">
+        <address-form :addressId="address.id" @sendForm="updateAddress"></address-form>
       </div>
-    </div> 
+    </div>
   </div>
 </template>
 <script lang="ts">
-import { ref } from 'vue'
+import { ref } from "vue";
+import addressForm from "~~/components/address/addressForm.vue";
 export default defineNuxtComponent({
-  
-  async setup() { 
-  
+  components: { addressForm },
+  async setup() {
     const services = useShopinvaderServices();
     const addresses = await services?.addresses.getAll();
 
-    const newAddress = ref({
-      name: null,
-      street: null,
-      zip: null,
-      phone: null
-     })
 
-     
-    const activeItem = ref(null)
-    const toggle = ref(false)
+    const activeItem = ref(null);
+    const toggle = ref(false);
 
+    const toggleForm = ref(false);
 
-  function selectItem(i) {
-    activeItem.value = i
-    toggle.value = !toggle.value
-  }
-
-    function updateAddress(id: number, {data}: any) {
-        return services?.addresses.update(id, newAddress.value
-        ).then( async () => {
-          addresses.value = await services?.addresses.getAll();
-        }).then (() => {
-            newAddress.value = {
-              name: null,
-              street: null,
-              zip: null,
-              phone: null
-            }
-        })  
+    function selectItem(i) {
+      activeItem.value = i;
+      toggle.value = !toggle.value;
     }
 
-    
+    function updateAddress(data: any, id: number ) {
+      return services?.addresses
+        .update(data, id )
+        .then(async () => {
+          addresses.value = await services?.addresses.getAll();
+        })
+    }
+
+    function createAddress(data: any) {
+      return services?.addresses
+        .create(data)
+        .then(async () => {
+          addresses.value = await services?.addresses.getAll();
+        })
+    }
 
     return {
       addresses,
       updateAddress,
-      name,
+      createAddress,
       toggle,
       activeItem,
       selectItem,
-      newAddress
-    }
+      toggleForm
+    };
   },
 });
 </script>
