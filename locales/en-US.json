@@ -47,7 +47,10 @@
   "account": {
     "loading": "Loading...",
     "title": "My account",
-    "logout": "Logout"
+    "logout": "Logout",
+    "address": {
+      "title": "My addresses"
+    }
   },
   "address": {
     "name": "First and last name",
@@ -55,12 +58,16 @@
     "zip": "Zip Code",
     "city": "City",
     "phone": "Telephone",
-    "country": "Country"
+    "country": "Country",
+    "noresults": "No address found",
+    "count":"{count} result(s)",
+    "edit":"Update an address"
   },
   "actions": {
     "modify": "Modify",
     "update": "Update",
     "create": "Create" ,
-    "validate": "validate"
+    "validate": "validate",
+    "close": "close"
   }
 }

@@ -1,84 +1,78 @@
 <template>
-  <div class="container mx-auto">
-    <div class="p-4 w-full text-right">
-      <button
-        type="button"
-        @click="toggleForm=!toggleForm"
-        class="btn btn-secondary"
-      >
-        + {{ $t("actions.create") }}
-      </button>
+  <div class="container mx-auto min-h-screen">
+    <div class="flex items-center py-3">
+      <div class="flex items-center flex-grow">
+        <icon icon="ph:address-book" class="text-5xl pr-2"></icon>
+        <h1 class=" text-3xl">
+          {{ $t('account.address.title')}}
+        </h1>
+      </div>
+      <div class="p-4 text-right">
+        <button type="button" @click="toggleForm = !toggleForm" class="btn btn-secondary">
+          + {{ $t("actions.create") }}
+        </button>
+      </div>
     </div>
     <div v-if="toggleForm" class="p-5 flex justify-center">
       <div class="card md:w-1/2 w-full bg-base-100 shadow-xl md:m-10 h-full">
-      <div class="card-body">
-        <address-form  @sendForm="createAddress"></address-form>
-      </div>
-      </div>
-    </div>
-  </div>
-  <div class="container mx-auto md:flex md:items-start md:m-8 m-5" v-if="addresses">
-    <div
-      v-for="(address, i) in addresses.data"
-      :key="i"
-      class="card w-full md:w-1/2  bg-base-100 shadow-xl md:m-10 my-5"
-    >
-      <div class="card-body flex-col">
-        <Icon icon="ph:address-book" class="text-5xl text-blue-500" />
-        <h2 class="card-title">
-          {{ address.displayName }}
-          <div
-            v-if="address.addressType == 'profile'"
-            class="badge badge-secondary"
-          >
-            Adresse de contact
-          </div>
-          <div
-            v-if="address.addressType == 'delivery'"
-            class="badge badge-secondary"
-          >
-            Adresse de livraison
-          </div>
-        </h2>
-        <p>{{ address.email }}</p>
-        <p>{{ address.street }}</p>
-        <p>{{ address.zip }} {{ address.city }}</p>
-        <p>{{ address.phone }}</p>
-        <div class="card-actions justify-end">
-          <button @click="selectItem(i)" class="btn btn-primary">
-            {{ i === activeItem && toggle ? "X" : $t("actions.modify") }}
-          </button>
+        <div class="card-body">
+          <address-form @sendForm="createAddress"></address-form>
         </div>
       </div>
-      <div v-if="i === activeItem && toggle" class="p-5 border-b">
-        <address-form :addressId="address.id" @sendForm="updateAddress"></address-form>
-      </div>
+    </div>
+    <div v-else class="py-8">
+      <client-only>
+        <address-list></address-list>
+      </client-only>
     </div>
   </div>
 </template>
 <script lang="ts">
 import { ref } from "vue";
-import addressForm from "~~/components/address/addressForm.vue";
+import AddressForm from "~~/components/address/AddressForm.vue";
+import AddressList from "~~/components/address/AddressList.vue";
+
+
 export default defineNuxtComponent({
-  components: { addressForm },
+  layout: "account",
+  components: {
+    'address-list': AddressList,
+    'address-form': AddressForm,
+  },
+  data() {
+    return {
+      toggleForm: false,
+
+    };
+  },
   async setup() {
-    const services = useShopinvaderServices();
-    const addresses = await services?.addresses.getAll();
+    const services = useShopinvaderServices()
+    function createAddress(data: any) {
 
-
-    const activeItem = ref(null);
-    const toggle = ref(false);
-
-    const toggleForm = ref(false);
+    }
+    return {
+      createAddress,
+    }
+    /*
+    const user = computed(() => useCurrentUser())
+    const services = useShopinvaderServices()
+    const activeItem = ref(null)
+    const toggle = ref(false)
+    const toggleForm = ref(false)
+    let addresses = ref(null as AddressResult | null)
+    const settings = useSettings()
+    watch(user, async () => {
+      addresses.value = await services?.addresses.getAll() as AddressResult
+    })
 
     function selectItem(i) {
       activeItem.value = i;
       toggle.value = !toggle.value;
     }
 
-    function updateAddress(data: any, id: number ) {
+    function updateAddress(data: any, id: number) {
       return services?.addresses
-        .update(data, id )
+        .update(data, id)
         .then(async () => {
           addresses.value = await services?.addresses.getAll();
         })
@@ -99,8 +93,10 @@ export default defineNuxtComponent({
       toggle,
       activeItem,
       selectItem,
-      toggleForm
+      toggleForm,
+      settings
     };
+    */
   },
 });
 </script>

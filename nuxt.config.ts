@@ -52,6 +52,7 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@pinia/nuxt'],
   plugins: [
     '~/plugins/iconify.ts',
+    '~/plugins/auth.client.ts',
     '~/plugins/shopinvader.ts',
     '~/plugins/shopinvader-cart.client.ts'
   ],
