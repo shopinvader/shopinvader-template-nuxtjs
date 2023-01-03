@@ -1,14 +1,14 @@
 <template>
-  <div class="drawer">
+  <div class="aside-menu drawer">
     <input :id="name" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content flex flex-col">
+    <div class="drawer-content flex flex-col ">
       <div :class="classContent">
         <div class="flex-none lg:hidden">
           <label :for="name" class="btn-ghost btn-square btn">
             <slot name="button"></slot>
           </label>
         </div>
-        <div class="mx-2 flex-1 px-2 lg:flex-none">
+        <div class="flex-1 lg:flex-none px-2 mx-2">
           <slot name="title"></slot>
         </div>
         <div class="hidden flex-1 lg:block">
@@ -61,21 +61,21 @@ export default {
 }
 </script>
 <style lang="scss">
-.drawer {
-  @apply h-auto;
-  overflow: visible;
-  .drawer-content {
-    overflow-y: visible;
-  }
-  .drawer-toggle {
-    &:checked ~ .drawer-side {
-      @apply relative h-screen w-screen border;
+  .aside-menu.drawer {
+    @apply h-auto;
+    overflow: visible;
+    .drawer-content {
+      overflow-y: visible;
+    }
+    .drawer-toggle {
+      &:checked ~ .drawer-side {
+        @apply relative h-screen w-screen border;
+      }
+    }
+    .drawer-side {
+      @apply border lg:hidden;
+      height: 0;
+      width: 0;
     }
   }
-  .drawer-side {
-    @apply border lg:hidden;
-    height: 0;
-    width: 0;
-  }
-}
 </style>

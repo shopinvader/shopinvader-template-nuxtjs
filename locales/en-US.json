@@ -60,12 +60,16 @@
         }
     },
     "address": {
+      "title": "My addresses",
       "name": "First and last name",
       "street": "Postal Address",
       "zip": "Zip Code",
       "city": "City",
       "phone": "Telephone",
-      "country": "Country"
+      "country": "Country",
+      "noresults": "No address found",
+      "count":"{count} result(s)",
+      "edit":"Update an address"
     },
     "quotations": "My quotations",
     "invoices" : "My invoices",
@@ -83,7 +87,8 @@
     "modify": "Modify",
     "update": "Update",
     "create": "Create" ,
-    "validate": "validate"
+    "validate": "validate",
+    "close": "close"
   }
 
 }

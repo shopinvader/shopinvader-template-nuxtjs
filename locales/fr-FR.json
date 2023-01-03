@@ -46,7 +46,10 @@
   "account": {
     "loading": "Chargement...",
     "title": "Mon compte",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "address": {
+      "title": "Mes adresses"
+    }
   },
   "address": {
     "name": "Nom et Prénom",
