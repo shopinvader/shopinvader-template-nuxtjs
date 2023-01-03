@@ -53,7 +53,10 @@
     "zip": "Código postal",
     "city": "Ciudad",
     "phone": "Téléfono",
-    "country": "País"
+    "country": "País",
+    "address": {
+      "title": "Mis direcciones"
+    }
   },
   "actions": {
     "modify": "Modificar",

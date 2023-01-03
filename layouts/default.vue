@@ -1,4 +1,5 @@
 <template>
+  <div id="header-target"></div>
   <header-vue></header-vue>
   <main>
     <slot></slot>
