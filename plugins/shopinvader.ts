@@ -31,17 +31,20 @@ export const fetchAPI = async (url: string, options: any) => {
 }
 
 export const initProviders = (isoLocale: string | null = null) => {
-  let providers: ShopinvaderProvidersList = {}
+  const providers: ShopinvaderProvidersList = {}
   const options = useRuntimeConfig()?.shopinvader || null
-  let { elasticsearch, erp } = options
+  const { elasticsearch, erp } = options
 
   if (options == null) {
     throw new Error('No shopinvader config found')
   }
   let indices = elasticsearch?.indices || []
-  if (isoLocale !== null && elasticsearch !== null && Array.isArray(elasticsearch?.indices) === true) {
-
-    indices = elasticsearch.indices.map((item) => {
+  if (
+    isoLocale !== null &&
+    elasticsearch !== null &&
+    Array.isArray(elasticsearch?.indices) === true
+  ) {
+    indices = elasticsearch.indices.map((item: any) => {
       return {
         ...item,
         ...{ index: `${item.index}_${isoLocale}` }
@@ -50,15 +53,27 @@ export const initProviders = (isoLocale: string | null = null) => {
   }
 
   if (erp && erp?.api_url) {
-    providers['erp'] = new ErpFetch(erp.api_url, erp?.website_key || '', fetchAPI)
+    providers['erp'] = new ErpFetch(
+      erp.api_url,
+      erp?.website_key || '',
+      fetchAPI
+    )
   }
 
   if (elasticsearch && elasticsearch?.url !== null && Array.isArray(indices)) {
     for (const index of indices) {
-      providers[index.name] = new ElasticFetch(elasticsearch.url, index?.index, fetch)
+      providers[index.name] = new ElasticFetch(
+        elasticsearch.url,
+        index?.index,
+        fetch
+      )
     }
     const allIndex = indices.map((index) => index.index).join(',')
-    providers['elasticsearch'] = new ElasticFetch(elasticsearch.url, allIndex, fetch)
+    providers['elasticsearch'] = new ElasticFetch(
+      elasticsearch.url,
+      allIndex,
+      fetch
+    )
   }
   return providers
 }
@@ -76,7 +91,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       cart: null,
       sales: new SaleService(providers?.erp as ElasticFetch)
     }
-
   }
   return {
     provide: {

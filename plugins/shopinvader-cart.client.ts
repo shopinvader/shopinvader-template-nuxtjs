@@ -7,7 +7,10 @@ export default defineNuxtPlugin((nuxtApp) => {
     const { providers, services } = shopinvader
     consola.log(providers)
     if (providers?.erp != undefined || services?.products !== undefined) {
-      shopinvader.services.cart = new CartService(providers?.erp, services?.products)
+      shopinvader.services.cart = new CartService(
+        providers?.erp,
+        services?.products
+      )
     }
   }
 })

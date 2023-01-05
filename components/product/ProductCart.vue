@@ -1,6 +1,11 @@
 <template>
   <template v-if="product !== null">
-    <button v-if="line == null" type="button" class="btn btn-primary" @click="addToCart">
+    <button
+      v-if="line == null"
+      type="button"
+      class="btn-primary btn"
+      @click="addToCart"
+    >
       {{ $t('cart.line.add') }}
     </button>
     <cart-line-qty v-else :line="line"></cart-line-qty>
@@ -8,9 +13,9 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { CartLine } from '~~/models';
+import { CartLine } from '~~/models'
 import { Product } from '~~/models/Product'
-import CartLineQtyVue from '../cart/CartLineQty.vue';
+import CartLineQtyVue from '../cart/CartLineQty.vue'
 export default {
   name: 'ProductCart',
   components: {
@@ -18,20 +23,24 @@ export default {
   },
   props: {
     product: {
-      type:  Object as PropType<Product>,
+      type: Object as PropType<Product>,
       required: true
     }
   },
   computed: {
-    line():CartLine | null {
+    line(): CartLine | null {
       const cart = useCart()
-      return cart?.lines?.find((line:CartLine) => line.productId === this.product.id) || null
+      return (
+        cart?.lines?.find(
+          (line: CartLine) => line.productId === this.product.id
+        ) || null
+      )
     }
   },
   methods: {
     addToCart() {
       const cartService = useShopinvaderServices()?.cart
-      if(cartService && this.product !== null) {
+      if (cartService && this.product?.id !== null) {
         cartService.addItem(this.product.id, 1)
       }
     }
