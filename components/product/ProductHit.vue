@@ -1,13 +1,13 @@
 <template>
-  <div v-if="product !== null" 
+  <div
+    v-if="product !== null"
     class="product-hit"
-    :class="{'product-hit--inline': inline}"
+    :class="{ 'product-hit--inline': inline }"
   >
     <slot name="header"></slot>
-    <slot name="images"
-      v-bind:images="product.images">
+    <slot name="images" :images="product.images">
       <product-image
-        v-if="product.images.length > 0"
+        v-if="product.images && product.images.length > 0"
         :image="product.images[0]"
         class="product-hit__image"
         @click="linkToProduct()"
@@ -15,33 +15,29 @@
       </product-image>
     </slot>
     <div class="product-hit__body">
-      <slot name="body" v-bind:product="product">
+      <slot name="body" :product="product">
         <div class="body__title">
-          <slot name="title" v-bind:product="product">
-            <nuxt-link :to="localePath({ path: '/'+product.urlKey })">
+          <slot name="title" :product="product">
+            <nuxt-link :to="localePath({ path: '/' + product.urlKey })">
               {{ product.name }}
             </nuxt-link>
           </slot>
         </div>
         <div class="body__desc">
-          <slot name="desc" v-bind:product="product">          
-          </slot>
+          <slot name="desc" :product="product"></slot>
         </div>
         <div class="body__price">
           <product-price v-if="product.price !== null" :price="product.price">
             <template #price>
-              <slot name="price" v-bind:price="product.price"></slot>
+              <slot name="price" :price="product.price"></slot>
             </template>
           </product-price>
         </div>
         <div v-if="!readonly" class="body__actions">
-          <slot name="actions" v-bind:product="product">
+          <slot name="actions" :product="product">
             <product-cart :product="product">
               <template #cart>
-                <slot name="cart"
-                  v-bind:product="product"
-                >
-                </slot>
+                <slot name="cart" :product="product"></slot>
               </template>
             </product-cart>
           </slot>
@@ -49,44 +45,43 @@
       </slot>
     </div>
     <div class="product-hit__footer">
-      <slot name="footer" v-bind:product="product"></slot>
+      <slot name="footer" :product="product"></slot>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue';
-import { Product } from '~~/models/Product';
-import ProductPrice from '~/components/product/ProductPrice.vue';
-import ProductImage from '~/components/product/ProductImage.vue';
-import ProductCart from '~/components/product/ProductCart.vue';
-import ProductWhishlist from '~/components/product/ProductWhishlist.vue';
+import { PropType } from 'vue'
+import { Product } from '~~/models/Product'
+import ProductPrice from '~/components/product/ProductPrice.vue'
+import ProductImage from '~/components/product/ProductImage.vue'
+import ProductCart from '~/components/product/ProductCart.vue'
+
 export default {
   name: 'ProductHit',
   components: {
     'product-price': ProductPrice,
     'product-image': ProductImage,
-    'product-cart': ProductCart,
-    'product-whishlist': ProductWhishlist
+    'product-cart': ProductCart
   },
   props: {
     product: {
-      type:  Object as PropType<Product>,
+      type: Object as PropType<Product>,
       required: true
     },
     inline: {
-      type:  Boolean,
+      type: Boolean,
       required: true
     },
     readonly: {
-      type:  Boolean,
+      type: Boolean,
       required: false
-    },
+    }
   },
   methods: {
     linkToProduct() {
       this.$router.push({
         path: '/' + this.product.urlKey
-      });
+      })
     }
   }
 }
@@ -103,7 +98,7 @@ export default {
   }
   &__body {
     @apply card-body px-0 py-2 md:p-3;
-    
+
     .body__title {
       @apply font-bold;
       flex-grow: 1;
@@ -114,7 +109,7 @@ export default {
       cursor: pointer;
     }
     .body__actions {
-      @apply pt-2 card-actions;
+      @apply card-actions pt-2;
     }
     .body__price {
       @apply text-right;
@@ -131,16 +126,16 @@ export default {
       justify-content: space-between;
       gap: 0;
       .body__title {
-        @apply md:w-1/3 md:order-1;
+        @apply md:order-1 md:w-1/3;
       }
       .body__desc {
-        @apply md:w-2/3 md:order-3;
+        @apply md:order-3 md:w-2/3;
       }
       .body__price {
-        @apply md:w-1/3 md:order-2 md:p-3 md:border-l text-right;
+        @apply text-right md:order-2 md:w-1/3 md:border-l md:p-3;
       }
       .body__actions {
-        @apply md:w-1/3 md:order-4 md:p-3 md:border-l;
+        @apply md:order-4 md:w-1/3 md:border-l md:p-3;
       }
     }
   }

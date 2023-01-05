@@ -4,7 +4,11 @@
       <slot name="head"></slot>
     </div>
     <div class="product-links__items">
-      <div v-for="product in productLinks" class="items__product">
+      <div
+        v-for="product in productLinks"
+        :key="product?.id || 0"
+        class="items__product"
+      >
         <product-hit :product="product" :inline="false">
           <template #actions>
             <span></span>
@@ -16,8 +20,8 @@
 </template>
 
 <script lang="ts">
-import { linkId } from '~~/models/ProductLinks';
-import ProductHitVue from './ProductHit.vue';
+import { linkId } from '~~/models/ProductLinks'
+import ProductHitVue from './ProductHit.vue'
 
 export default defineNuxtComponent({
   components: {
@@ -30,19 +34,19 @@ export default defineNuxtComponent({
       required: true
     }
   },
-  async setup (props) {
+  async setup(props) {
     const service = useShopinvaderServices()?.products
     return {
-      productLinks: (await service?.getByIds(props.links.map(item => item.id)))?.hits || null
+      productLinks:
+        (await service?.getByIds(props.links.map((item) => item.id)))?.hits ||
+        null
     }
   }
 })
-
 </script>
 
 <style lang="scss">
 .product-links {
-
   &__title {
     flex-grow: 1;
   }
@@ -52,13 +56,12 @@ export default defineNuxtComponent({
     flex-wrap: wrap;
 
     .items__product {
-      @apply w-full md:w-1/3 lg:w-1/4 p-4;
+      @apply w-full p-4 md:w-1/3 lg:w-1/4;
 
       .product-hit {
-        @apply card bg-base-100 shadow-xl
+        @apply card bg-base-100 shadow-xl;
       }
     }
   }
-
 }
 </style>

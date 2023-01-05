@@ -9,7 +9,7 @@
 import Header from '../components/global/Header.vue'
 import Footer from '../components/global/Footer.vue'
 export default {
-  name: 'default',
+  name: 'Default',
   components: {
     'header-vue': Header,
     'footer-vue': Footer
@@ -17,7 +17,7 @@ export default {
 }
 </script>
 <style lang="scss">
-  main {
-    @apply container mx-auto;
-  }
+main {
+  @apply container mx-auto;
+}
 </style>

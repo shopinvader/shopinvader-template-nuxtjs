@@ -1,18 +1,13 @@
 <template>
-  <ul
-    v-if="availableLocales.length"
-    class="localeswitcher">
-    
+  <ul v-if="availableLocales.length" class="localeswitcher">
     <li
+      v-for="item in availableLocales"
+      :key="item.code"
       class="localeswitcher-item"
-      :class="{'localeswitcher-item--active': locale.code === currentLocale}"
-      v-for="locale in availableLocales" :key="locale.code"
+      :class="{ 'localeswitcher-item--active': item.code === currentLocale }"
     >
-      <nuxt-link
-        :key="locale.code"
-        :to="switchLocalePath(locale.code)"
-      >
-        {{ $t('localeswitcher.'+locale.code) }}
+      <nuxt-link :key="item.code" :to="switchLocalePath(item.code)">
+        {{ $t('localeswitcher.' + item.code) }}
       </nuxt-link>
     </li>
   </ul>
@@ -22,7 +17,7 @@ const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
 const availableLocales = computed(() => {
-  return (locales.value)
+  return locales.value
 })
 const currentLocale = computed(() => {
   return locale.value
@@ -31,15 +26,17 @@ const currentLocale = computed(() => {
 <style lang="scss">
 .localeswitcher {
   display: flex;
+
   .localeswitcher-item {
     @apply border-r px-2;
+
     &:last-child {
       @apply border-r-0;
     }
+
     &--active {
       @apply font-bold;
     }
   }
 }
 </style>
-

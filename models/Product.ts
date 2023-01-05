@@ -16,16 +16,16 @@ export class Product {
   id: number | null = null
   model: ProductModel | null = null
   urlKey: string | null = null
-  redirectUrlKey: object | null = null
-  main: boolean = false
+  redirectUrlKey: string | null = null
+  main = false
   shortDescription: string | null = null
   description: string | null = null
   name: string | null = null
   shortName: string | null = null
   seoTitle: string | null = null
-  metaKeywords: object | null = null
-  metaDescription: object | null = null
-  variantCount: number = 0
+  metaKeywords: string | null = null
+  metaDescription: string | null = null
+  variantCount = 0
   categories: ProductCategory[] | null
   sku: string | null
   variantAttributes: VariantAttributes = {}

@@ -4,7 +4,7 @@ export class ProductCategory {
   name: string
   level: number
 
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.urlKey = data?.url_key
     this.name = data?.name

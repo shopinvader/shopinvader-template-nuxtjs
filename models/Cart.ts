@@ -21,10 +21,10 @@ export class Cart {
   delivery: CartDelivery
   note: string
   data: any
-  hasPendingTransactions: boolean = false
-  hasSyncError: boolean = false
-  syncing: boolean = false
-  syncError: boolean = false
+  hasPendingTransactions = false
+  hasSyncError = false
+  syncing = false
+  syncError = false
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
     this.data = data

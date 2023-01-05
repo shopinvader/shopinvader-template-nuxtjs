@@ -2,10 +2,10 @@
   <div v-if="variant !== null" class="product-detail">
     <div class="product-detail__header">
       <slot name="header">
-        <div class="text-sm breadcrumbs">
+        <div class="breadcrumbs text-sm">
           <ul>
-            <li v-for="category in variant.categories">
-              <nuxt-link :to="localePath({ path: '/'+category.urlKey })">
+            <li v-for="category in variant.categories" :key="category.id">
+              <nuxt-link :to="localePath({ path: '/' + category.urlKey })">
                 {{ category.name }}
               </nuxt-link>
             </li>
@@ -13,8 +13,8 @@
         </div>
       </slot>
     </div>
-    <div class="product-detail__image">      
-      <image-list :images="variant.images || []" :slider="false" />
+    <div class="product-detail__image">
+      <image-list :images="variant.images || []" :slider="false" />
     </div>
     <div class="product-detail__content">
       <h1 class="text-xl font-bold">
@@ -29,15 +29,16 @@
       <product-variants
         v-if="variants !== null"
         :variants="variants"
-        @selectVariant="changeVariant"
+        @select-variant="changeVariant"
       >
       </product-variants>
       <product-price
+        v-if="variant.price !== null"
         :price="variant.price"
         class="py-4 text-right"
       >
         <template #price>
-          <slot name="price" v-bind:price="variant.price"></slot>
+          <slot name="price" :price="variant.price"></slot>
         </template>
       </product-price>
       <client-only>
@@ -47,12 +48,12 @@
     <div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
         <template #head>
-          <h2>{{$t('product.cross_selling.title')}}</h2>
+          <h2>{{ $t('product.cross_selling.title') }}</h2>
         </template>
       </product-links>
       <product-links v-if="variant" :links="variant?.links?.upLink || []">
         <template #head>
-          <h2>{{$t('product.up_selling.title')}}</h2>
+          <h2>{{ $t('product.up_selling.title') }}</h2>
         </template>
       </product-links>
     </div>
@@ -66,12 +67,12 @@ import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
-import ProductLinksVue from './ProductLinks.vue';
+import ProductLinksVue from './ProductLinks.vue'
 import ImageListVue from './ImageList.vue'
 
 export default {
   components: {
-    'image-list': ImageListVue,    
+    'image-list': ImageListVue,
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
@@ -95,23 +96,23 @@ export default {
     }
   },
   computed: {
-    variants () {
+    variants() {
       return this.product?.variants || null
     }
   }
 }
 </script>
 <style lang="scss">
-  .product-detail {
-    @apply p-5 flex flex-wrap;
-    &__header {
-      @apply w-full flex-grow;
-    }
-    &__image {
-      @apply w-full sm:w-1/2 lg:w-3/5 px-3;
-    }
-    &__content {
-      @apply w-full sm:w-1/2 lg:w-2/5 pt-5 px-2;
-    }
+.product-detail {
+  @apply flex flex-wrap p-5;
+  &__header {
+    @apply w-full flex-grow;
   }
+  &__image {
+    @apply w-full px-3 sm:w-1/2 lg:w-3/5;
+  }
+  &__content {
+    @apply w-full px-2 pt-5 sm:w-1/2 lg:w-2/5;
+  }
+}
 </style>

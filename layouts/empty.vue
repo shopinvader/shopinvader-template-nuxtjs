@@ -5,7 +5,6 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'empty',
-
+  name: 'Empty'
 }
 </script>
