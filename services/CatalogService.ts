@@ -4,7 +4,7 @@ import { Product } from '~~/models/Product'
 import { CatalogResult } from '~~/models/Catalog'
 
 export class CatalogService {
-  provider: ElasticFetch = null
+  provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
     this.provider = provider
   }
@@ -18,7 +18,7 @@ export class CatalogService {
       inner_hits: [
         {
           size: 100,
-          name: "variants"
+          name: 'variants'
         }
       ]
     }
@@ -27,7 +27,9 @@ export class CatalogService {
       if (hit._index.includes('category')) {
         return new Category(hit._source)
       } else {
-        const variants = hit?.inner_hits?.variants?.hits?.hits?.map((variant: any) => variant._source)
+        const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
+          (variant: any) => variant._source
+        )
         return new Product({
           ...hit._source,
           ...{ variants }

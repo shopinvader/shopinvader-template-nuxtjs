@@ -1,6 +1,5 @@
 <template>
-
-  <div class="p-4 h-screen flex justify-center items-center">
+  <div class="flex h-screen items-center justify-center p-4">
     <div class="pr-3 text-2xl">
       {{ $t('account.loading') }}
     </div>
@@ -9,23 +8,22 @@
 </template>
 <script lang="ts">
 import SpinnerVue from '~~/components/global/Spinner.vue'
-  export default {
-    layout: 'empty',
-    name: 'signin-callback',
-    data() {
-      return {
-        test: null
-      }
-    },
-    components: {
-      spinner: SpinnerVue
-    },
-    mounted() {
-      const $auth = useNuxtApp()?.$auth || null
-      $auth.userManager.signinCallback()
-      .finally(() => {
-        this.$router.push('/')
-      })
+export default {
+  name: 'SigninCallback',
+  components: {
+    spinner: SpinnerVue
+  },
+  layout: 'empty',
+  data() {
+    return {
+      test: null
     }
+  },
+  mounted() {
+    const $auth = useNuxtApp()?.$auth || null
+    $auth.userManager.signinCallback().finally(() => {
+      this.$router.push('/')
+    })
   }
+}
 </script>

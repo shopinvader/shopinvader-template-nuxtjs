@@ -1,12 +1,12 @@
 <template>
   <figure v-if="imageSized != null">
-    <img :src="imageSized.src" :alt="imageSized.alt">
+    <img :src="imageSized.src" :alt="imageSized.alt" />
   </figure>
 </template>
 <script lang="ts">
-import { PropType } from 'vue';
-import { ProductImage } from '~~/models/ProductImage';
-import { ProductImageSet } from '~~/models/ProductImageSet';
+import { PropType } from 'vue'
+import { ProductImage } from '~~/models/ProductImage'
+import { ProductImageSet } from '~~/models/ProductImageSet'
 
 export default {
   name: 'ProductImage',
@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     imageSized(): ProductImage | null {
-      return this.image?.[this.size] || null
+      return this.image?.[this?.size] || null
     }
   }
 }

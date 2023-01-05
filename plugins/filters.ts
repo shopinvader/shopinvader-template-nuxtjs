@@ -3,8 +3,11 @@ export default defineNuxtPlugin((/* nuxtApp */) => {
     provide: {
       filter: {
         currency(value: number) {
-          const formatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' })
-          return formatter.format(value);
+          const formatter = new Intl.NumberFormat('fr-FR', {
+            style: 'currency',
+            currency: 'EUR'
+          })
+          return formatter.format(value)
         }
       }
     }

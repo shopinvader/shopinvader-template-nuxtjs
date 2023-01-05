@@ -1,12 +1,12 @@
 <template>
   <div
     class="cartline"
-    :class="{'cartline--pending': hasPendingTransactions}"
+    :class="{ 'cartline--pending': hasPendingTransactions }"
   >
     <div class="cartline__image">
-      <slot name="image" v-bind:images="product.images">
+      <slot v-if="product" name="image" :images="product?.images || null">
         <product-image
-          v-if="product && product.images.length > 0"
+          v-if="product && product?.images && product.images.length > 0"
           :image="product.images[0]"
           class="product-hit__image"
           @click="linkToProduct()"
@@ -19,14 +19,22 @@
         <slot name="header" :line="line"></slot>
       </div>
       <div class="content__delete">
-        <button type="button" class="btn btn-ghost btn-circle" @click="deleteLine" :title="$t('cart.line.delete' )">
+        <button
+          type="button"
+          class="btn-ghost btn-circle btn"
+          :title="$t('cart.line.delete')"
+          @click="deleteLine"
+        >
           <Icon icon="ph:trash" class="text-xl" />
         </button>
       </div>
       <div class="content__title">
         <slot name="title" :line="line">
           <template v-if="product">
-            <nuxt-link class="title" :to="localePath({ path: '/'+product.urlKey })">
+            <nuxt-link
+              class="title"
+              :to="localePath({ path: '/' + product.urlKey })"
+            >
               {{ product.name }}
             </nuxt-link>
           </template>
@@ -68,61 +76,64 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { CartLine } from '~/models';
-import CartLineQtyVue from './CartLineQty.vue';
-import ProductImageVue from '../product/ProductImage.vue';
-export default({
+import { CartLine } from '~/models'
+import CartLineQtyVue from './CartLineQty.vue'
+import ProductImageVue from '../product/ProductImage.vue'
+export default {
   name: 'CartLine',
+  components: {
+    'product-image': ProductImageVue,
+    'cart-line-qty': CartLineQtyVue
+  },
   props: {
     line: {
       type: Object as PropType<CartLine>,
       required: true
     }
   },
-  components: {
-    'product-image': ProductImageVue,
-    'cart-line-qty': CartLineQtyVue
-  },
+  emits: ['deleteLine'],
   computed: {
     product() {
-      return this.line?.product || false
+      return this.line?.product || false
     },
     hasPendingTransactions() {
-      return this.line?.hasPendingTransactions || false
+      return this.line?.hasPendingTransactions || false
     }
   },
   methods: {
     linkToProduct() {
-      this.$router.push({
-        path: '/' + this.product.urlKey
-      });
+      if (this.product) {
+        this.$router.push({
+          path: '/' + this.product?.urlKey
+        })
+      }
     },
     deleteLine() {
       const cartService = useShopinvaderServices()?.cart || null
-      if(cartService !== null) {
+      if (cartService !== null) {
         cartService.deleteItem(this.line.id)
       }
       this.$emit('deleteLine', this.line)
     }
   }
-})
+}
 </script>
 
 <style lang="scss">
 .cartline {
-  @apply border p-3 mb-2 flex flex-wrap;
+  @apply mb-2 flex flex-wrap border p-3;
   &--pending {
     .cartline__content {
-     .content__price .value {
-      @apply animate-pulse blur;
-     }
+      .content__price .value {
+        @apply animate-pulse blur;
+      }
     }
   }
   &__image {
     @apply w-32;
   }
   &__content {
-    @apply flex-grow flex flex-col px-4;
+    @apply flex flex-grow flex-col px-4;
     .content {
       &__header {
       }
@@ -141,20 +152,19 @@ export default({
         @apply flex flex-row justify-between py-2;
         .price {
           &__value {
-            @apply pb-0 text-lg leading-3 text-xl;
+            @apply pb-0 text-lg text-xl leading-3;
           }
           &__tax {
-            @apply text-gray-500 text-xs font-normal;
+            @apply text-xs font-normal text-gray-500;
           }
           &__original {
-            @apply text-gray-500 line-through text-sm font-normal;
+            @apply text-sm font-normal text-gray-500 line-through;
           }
         }
       }
       &__footer {
         @apply flex flex-row justify-between;
       }
-
     }
   }
 }
