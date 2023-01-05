@@ -1,7 +1,16 @@
+import eslintPlugin from 'vite-plugin-eslint'
 export default defineNuxtConfig({
-  css: [
-    "@/assets/css/main.scss"
-  ],
+  vite: {
+    plugins: [
+      eslintPlugin({
+        failOnError: false,
+        cache: false,
+        emitWarning: false,
+        emitError: true
+      })
+    ]
+  },
+  css: ['@/assets/css/main.scss'],
   runtimeConfig: {
     public: {
       shopinvader: {
@@ -31,8 +40,8 @@ export default defineNuxtConfig({
       auth: {
         authority: process.env.AUTH_AUTHORITY || '',
         client_id: process.env.AUTH_CLIENT_ID || '',
-        response_type: "code",
-        scope: "openid email",
+        response_type: 'code',
+        scope: 'openid email',
         automaticSilentRenew: true
       },
       theme: {
@@ -40,15 +49,11 @@ export default defineNuxtConfig({
       }
     }
   },
-  modules: [
-    '@nuxtjs/tailwindcss',
-    '@nuxtjs/i18n',
-    '@pinia/nuxt'
-  ],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@pinia/nuxt'],
   plugins: [
     '~/plugins/iconify.ts',
     '~/plugins/shopinvader.ts',
-    '~/plugins/shopinvader-cart.client.ts',
+    '~/plugins/shopinvader-cart.client.ts'
   ],
   pages: true,
   imports: true,
@@ -76,8 +81,6 @@ export default defineNuxtConfig({
     defaultLocale: 'en'
   },
   build: {
-    transpile: [
-      '@shopinvader/cart'
-    ]
+    transpile: ['@shopinvader/cart']
   }
-});
+})
