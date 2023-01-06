@@ -4,13 +4,8 @@
       <div class="flex items-center flex-grow">
         <icon icon="ph:address-book" class="text-5xl pr-2"></icon>
         <h1 class=" text-3xl">
-          {{ $t('account.address.title')}}
+          {{ $t('account.address.title') }}
         </h1>
-      </div>
-      <div class="p-4 text-right">
-        <button type="button" @click="toggleForm = !toggleForm" class="btn btn-secondary">
-          + {{ $t("actions.create") }}
-        </button>
       </div>
     </div>
     <div v-if="toggleForm" class="p-5 flex justify-center">
@@ -21,8 +16,18 @@
       </div>
     </div>
     <div v-else class="py-8">
+      <div class="p-2">
+        <div class="tabs">
+          <div v-for="a of addressTypes" :key="a" class="tab tab-bordered" :class="{ 'tab-active': selectedType === a }"
+            @click="selectedType = a">
+            {{ $t('address.type.'+ a) }}
+          </div>
+        </div>
+      </div>
       <client-only>
-        <address-list></address-list>
+        <div v-for="a of addressTypes" :key="a">
+          <address-list :type="a" v-if="a == selectedType"></address-list>
+        </div>
       </client-only>
     </div>
   </div>
@@ -40,17 +45,36 @@ export default defineNuxtComponent({
     'address-form': AddressForm,
   },
   data() {
+    const $route = useRoute()
     return {
       toggleForm: false,
-
+      selectedType: $route?.query?.type || 'delivery' as string | number,
     };
   },
+  watch: {
+    selectedType: {
+      handler: function (type: string) {
+        const $router = useRouter()
+        const $route = useRoute()
+        if (type !== null) {
+          $router.push({ query: { ...$route.query, type } })
+        } else {
+          const query = { ...$route.query }
+          delete query.type
+          $router.push({ query })
+        }
+      },
+      immediate: true
+    },
+  },
   async setup() {
+    const addressTypes = ['delivery', 'invoice']
     const services = useShopinvaderServices()
     function createAddress(data: any) {
 
     }
     return {
+      addressTypes,
       createAddress,
     }
     /*
@@ -97,6 +121,9 @@ export default defineNuxtComponent({
       settings
     };
     */
+    return {
+      addressTypes,
+    }
   },
 });
 </script>

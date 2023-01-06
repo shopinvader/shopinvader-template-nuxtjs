@@ -46,45 +46,54 @@ export default defineNuxtComponent({
 })
 </script>
 <style lang="scss">
-  .aside-drawer {
-    @apply fixed top-0 left-0 flex justify-start items-start z-50;
-    &__overlay {
-      @apply h-screen w-screen bg-black opacity-25;
-    }
-    &__side {
-      @apply absolute left-0 p-4 bg-white shadow-xl w-1/4 h-screen overflow-y-auto;
-      .side {
-        &__header {
-          @apply flex justify-between items-center p-4;
-        }
-        &__content {
-          @apply flex flex-col justify-start items-start p-4;
-        }
+.aside-drawer {
+  @apply fixed top-0 left-0 flex justify-start items-start z-50;
+
+  &__overlay {
+    @apply h-screen w-screen bg-black opacity-25;
+  }
+
+  &__side {
+    @apply absolute left-0 p-2 bg-white shadow-xl w-11/12 max-w-screen-sm h-screen overflow-y-auto;
+
+    .side {
+      &__header {
+        @apply flex justify-between items-center p-4;
       }
 
-    }
-
-    &-enter-active,
-    &-leave-active {
-      transition: opacity 0.25s ease;
-      .aside-drawer__side {
-
-        transition: all 0.5s ease;
-      }
-    }
-    &-enter-to, &-leave-from {
-      opacity: 1;
-      .aside-drawer__side {
-        left: 0;
+      &__content {
+        @apply flex flex-col justify-start items-start p-4;
       }
     }
 
-    &-enter-from, &-leave-to {
-      opacity: 0;
-      .aside-drawer__side {
-        left: -100%;
-      }
+  }
+
+  &-enter-active,
+  &-leave-active {
+    transition: opacity 0.25s ease;
+
+    .aside-drawer__side {
+
+      transition: all 0.5s ease;
     }
   }
 
+  &-enter-to,
+  &-leave-from {
+    opacity: 1;
+
+    .aside-drawer__side {
+      left: 0;
+    }
+  }
+
+  &-enter-from,
+  &-leave-to {
+    opacity: 0;
+
+    .aside-drawer__side {
+      left: -100%;
+    }
+  }
+}
 </style>
