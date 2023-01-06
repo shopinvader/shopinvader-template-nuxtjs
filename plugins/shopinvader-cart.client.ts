@@ -1,5 +1,4 @@
 import { AddressService, CartService, SettingService } from '../services'
-import consola from 'consola'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const auth = nuxtApp?.$auth
@@ -7,24 +6,23 @@ export default defineNuxtPlugin((nuxtApp) => {
   const { providers, services } = shopinvader
 
   auth.onUserLoaded(() => {
-    let settings, cart, address = null
-    if(shopinvader?.services?.settings === null) {
-      consola.log('init settings')
+    let settings,
+      cart,
+      addresses = null
+    if (shopinvader?.services?.settings === null) {
       if (providers?.erp != undefined) {
         settings = new SettingService(providers.erp)
         settings.init()
       }
     }
     if (shopinvader?.services?.cart === null) {
-      consola.log('init cart')
       if (providers?.erp != undefined || services?.products !== undefined) {
         cart = new CartService(providers?.erp, services?.products)
       }
     }
-    if (shopinvader?.services?.address === null) {
-      consola.log('init address')
+    if (shopinvader?.services?.addresses === null) {
       if (providers?.erp != undefined) {
-        address = new AddressService(providers?.erp, settings?.options)
+        addresses = new AddressService(providers?.erp, settings?.options)
       }
     }
     shopinvader.services = {
@@ -32,9 +30,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...{
         settings,
         cart,
-        address
+        addresses
       }
     }
   })
-
 })

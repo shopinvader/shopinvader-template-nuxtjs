@@ -7,7 +7,7 @@
     </template>
     <template v-else>
       <div class="dropdown-end dropdown">
-        <label tabindex="0" class="btn-ghost btn text-info">
+        <label tabindex="0" class="btn btn-ghost text-info">
           <Icon icon="ph:user" class="text-5xl text-blue-500" />
         </label>
         <ul
@@ -20,8 +20,8 @@
             </button>
           </li>
           <li>
-            <nuxt-link to="/account/addresses" >
-              {{ $t('account.address')}}
+            <nuxt-link to="/account/addresses">
+              {{ $t('account.address') }}
             </nuxt-link>
           </li>
         </ul>

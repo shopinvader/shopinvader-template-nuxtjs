@@ -6,14 +6,21 @@
           {{ $t('address.count', { count: total }) }}
         </template>
       </div>
-      <button type="button" @click="createAddress" class="btn btn-sm">
+      <button type="button" class="btn btn-sm" @click="createAddress">
         <icon icon="mdi:plus" class="text-lg"></icon>
-        {{ $t("actions.create") }}
+        {{ $t('actions.create') }}
       </button>
     </div>
     <div class="addresses__list">
-      <div v-if="errors !== null && errors.length > 0" class="max-w-xl w-full text-center">
-        <div class="alert alert-error justify-center" v-for="error of errors">
+      <div
+        v-if="errors !== null && errors.length > 0"
+        class="w-full max-w-xl text-center"
+      >
+        <div
+          v-for="error of errors"
+          :key="error"
+          class="alert alert-error justify-center"
+        >
           {{ error }}
         </div>
       </div>
@@ -27,17 +34,29 @@
         {{ $t('address.noresult') }}
       </template>
       <div v-else class="list__content">
-        <div class="w-full flex-grow flex flex-wrap py-4">
-          <div v-for="address in addresses" :key="address.id" class="w-full md:w-1/2 lg:w-1/3 flex items-stretch">
+        <div class="flex w-full flex-grow flex-wrap py-4">
+          <div
+            v-for="address in addresses"
+            :key="address.id"
+            class="flex w-full items-stretch md:w-1/2 lg:w-1/3"
+          >
             <div class="w-full p-2">
-              <address-card :address="address" class=" w-full h-full">
+              <address-card :address="address" class="h-full w-full">
                 <template #actions>
-                  <button v-if="address.access?.delete" class="btn btn-circle btn-sm btn-primary"
-                    :title="$t('actions.delete')" @click="deleteAddress(address)">
+                  <button
+                    v-if="address.access?.delete"
+                    class="btn-primary btn btn-sm btn-circle"
+                    :title="$t('actions.delete')"
+                    @click="deleteAddress(address)"
+                  >
                     <icon icon="mdi:trash" class="text-lg text-white"></icon>
                   </button>
-                  <button v-if="address.access?.update" class="btn btn-circle btn-sm btn-primary"
-                    :title="$t('actions.update')" @click="editedAddress = address">
+                  <button
+                    v-if="address.access?.update"
+                    class="btn-primary btn btn-sm btn-circle"
+                    :title="$t('actions.update')"
+                    @click="editedAddress = address"
+                  >
                     <icon icon="mdi:edit" class="text-lg text-white"></icon>
                   </button>
                 </template>
@@ -45,8 +64,14 @@
             </div>
           </div>
         </div>
-        <pagination v-if="addresses !== null && total > addresses?.length" :total="total" :size="perPage" :page="page"
-          @change="fetchAddresses($event)" class="w-full flex-grow px-2">
+        <pagination
+          v-if="addresses !== null && total > addresses?.length"
+          :total="total"
+          :size="perPage"
+          :page="page"
+          class="w-full flex-grow px-2"
+          @change="fetchAddresses($event)"
+        >
         </pagination>
       </div>
     </div>
@@ -55,9 +80,17 @@
         <div class="text-2xl">{{ $t('address.edit') }}</div>
       </template>
       <template #content>
-        <address-form v-if="editedAddress" :address="editedAddress" @saved="saveAddress">
+        <address-form
+          v-if="editedAddress"
+          :address="editedAddress"
+          @saved="saveAddress"
+        >
           <template #actions>
-            <button type="button" class="btn btn-outline" @click="editedAddress = null;">
+            <button
+              type="button"
+              class="btn-outline btn"
+              @click="editedAddress = null"
+            >
               {{ $t('actions.close') }}
             </button>
           </template>
@@ -78,14 +111,14 @@ export default defineNuxtComponent({
     type: {
       type: String,
       required: false,
-      default: 'address',
+      default: 'address'
     }
   },
   components: {
-    'pagination': Pagination,
+    pagination: Pagination,
     'address-form': AddressForm,
     'address-card': AddressCard,
-    'aside-drawer': AsideDrawer,
+    'aside-drawer': AsideDrawer
   },
   data() {
     return {
@@ -94,7 +127,7 @@ export default defineNuxtComponent({
       total: 0,
       page: 1,
       perPage: 6,
-      editedAddress: null as Address | null,
+      editedAddress: null as Address | null
     }
   },
   computed: {
@@ -108,20 +141,23 @@ export default defineNuxtComponent({
         this.fetchAddresses(1)
       },
       immediate: true
-    },
-
+    }
   },
   methods: {
-    async fetchAddresses(page: number = 1) {
+    async fetchAddresses(page = 1) {
       this.page = page
       const services = useShopinvaderServices()
-
+      if (services?.addresses === null) return
       const notifications = useNotification()
       try {
-        const addressResult = await services?.addresses.getAll(this.perPage, page, { type: this.type }) as AddressResult
+        const addressResult = (await services?.addresses.getAll(
+          this.perPage,
+          page,
+          { type: this.type }
+        )) as AddressResult
 
         if (addressResult !== null) {
-          this.addresses = addressResult?.data || [] as Address[]
+          this.addresses = addressResult?.data || ([] as Address[])
           this.total = addressResult?.size || 0
         }
       } catch (e) {
@@ -129,21 +165,23 @@ export default defineNuxtComponent({
         this.errors.push(this.$t('address.fetch.error'))
         notifications.addError(this.$t('address.fetch.error'))
       }
-
     },
     async deleteAddress(address: Address) {
       if (confirm(this.$t('address.delete.confirm', { name: address.name }))) {
         const notifications = useNotification()
         const services = useShopinvaderServices()
+        if (services?.addresses === null) return
+
         try {
           await services?.addresses.delete(address)
           await this.fetchAddresses(this.page)
-          notifications.addMessage(this.$t('address.delete.success', { name: address.name }))
+          notifications.addMessage(
+            this.$t('address.delete.success', { name: address.name })
+          )
         } catch (e) {
           console.error(e)
           notifications.addError(this.$t('address.delete.error'))
         }
-
       }
     },
     async saveAddress(address: Address) {
@@ -153,24 +191,24 @@ export default defineNuxtComponent({
       if (services?.addresses && address) {
         const addressService = services?.addresses
         try {
-          let results: AddressResult
           if (address.id) {
-            await addressService.update(address) || []
+            await addressService.update(address)
           } else {
-            await addressService.create(address) || []
+            await addressService.create(address)
           }
           await this.fetchAddresses(this.page)
-          notifications.addMessage(this.$t('address.save.success', { name: address.name }))
+          notifications.addMessage(
+            this.$t('address.save.success', { name: address.name })
+          )
         } catch (e) {
           console.error(e)
           notifications.addError(this.$t('address.fetch.error'))
         }
       }
-
     },
     createAddress() {
       this.editedAddress = new Address({
-        type: this.type,
+        type: this.type
       })
     }
   }
@@ -181,12 +219,11 @@ export default defineNuxtComponent({
   @apply flex flex-col;
 
   &__header {
-    @apply flex justify-between items-center px-2;
+    @apply flex items-center justify-between px-2;
   }
 
-
   &__list {
-    @apply flex-grow flex justify-center items-center py-2;
+    @apply flex flex-grow items-center justify-center py-2;
 
     .list {
       &__content {
@@ -196,7 +233,7 @@ export default defineNuxtComponent({
   }
 
   &__edit {
-    @apply fixed top-0 left-0 flex justify-start items-start;
+    @apply fixed top-0 left-0 flex items-start justify-start;
 
     .edit {
       &__backdrop {
@@ -204,7 +241,7 @@ export default defineNuxtComponent({
       }
 
       &__form {
-        @apply absolute p-4 bg-white shadow-xl w-1/4 h-screen overflow-y-auto;
+        @apply absolute h-screen w-1/4 overflow-y-auto bg-white p-4 shadow-xl;
       }
     }
   }

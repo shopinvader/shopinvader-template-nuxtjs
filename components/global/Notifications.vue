@@ -1,7 +1,12 @@
 <template>
-  <div class="toast toast-end toast-bottom ">
-    <toast v-for="notification in notifications" :message="notification.message" :type="notification.type"
-      :title="notification.title">
+  <div class="toast-end toast-bottom toast">
+    <toast
+      v-for="notification in notifications"
+      :key="notification.message"
+      :message="notification.message"
+      :type="notification.type"
+      :title="notification.title"
+    >
     </toast>
   </div>
 </template>
@@ -11,13 +16,13 @@ import Toast from './Toast.vue'
 export default defineNuxtComponent({
   name: 'AddressCard',
   components: {
-    'toast': Toast
+    toast: Toast
   },
   computed: {
     notifications() {
       const notifications = useNotification()
       return notifications.messages
     }
-  },
+  }
 })
 </script>

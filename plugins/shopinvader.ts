@@ -88,7 +88,6 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (providers === null) {
     const isoLocale = nuxtApp.$i18n?.localeProperties?.value?.iso || null
     providers = initProviders(isoLocale)
-
   }
 
   if (services === null) {
@@ -98,7 +97,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
       cart: null,
       settings: null,
-      addresses: null,
+      addresses: null
     }
   }
 
