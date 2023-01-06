@@ -1,10 +1,10 @@
 <template>
   <div class="address-card">
     <div class="address-card__header">
-      <icon icon="ic:sharp-location-on" class="text-2xl text-primary"></icon>
+      <icon icon="ic:sharp-location-on" class="text-xl text-primary"></icon>
+      {{ address?.title?.name || ''}}
       {{ address.name }}
     </div>
-    <span class="badge">{{  address.type }}</span>
     <div class="address-card__content">
       <template v-if="!edit">
         <p>{{ address.email }}</p>
@@ -58,14 +58,18 @@ export default defineNuxtComponent({
 <style lang="scss">
 .address-card {
   @apply p-6 rounded bg-base-100 shadow-xl;
+
   &__header {
     @apply flex items-center text-2xl font-bold;
   }
+
   &__content {
     @apply py-3 pl-4;
   }
+
   &__footer {
     @apply flex justify-end;
+
     .footer__actions {
       @apply flex justify-end gap-4;
     }
