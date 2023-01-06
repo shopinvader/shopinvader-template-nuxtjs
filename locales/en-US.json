@@ -69,8 +69,7 @@
       "country": "Country",
       "noresults": "No address found",
       "count":"{count} result(s)",
-      "edit":"Update an address"
-    },
+      "edit":"Update an address",
     "quotations": "My quotations",
     "invoices" : "My invoices",
     "emptylist" : "No data available"
@@ -112,6 +111,13 @@
     "create": "Create" ,
     "validate": "validate",
     "close": "close"
+  },
+  "btn": {
+    "view_more": "View more"
+  },
+  "pagination": {
+    "showperpage": "Items per page",
+    "status": "{boundStart}-{boundStop} of {totalItems}"
   }
 
 }

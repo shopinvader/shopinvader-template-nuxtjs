@@ -1,3 +1,4 @@
+
 import { ErpFetch, ElasticFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import {
@@ -7,8 +8,10 @@ import {
   CartService,
   SaleService,
   AddressService,
-  SettingService
+  SettingService,
+  SaleService
 } from '../services'
+
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
@@ -22,6 +25,7 @@ export interface ShopinvaderServiceList {
   sales: SaleService | null
   addresses: AddressService | null
   settings: SettingService | null
+  sales: SaleService | null
 }
 
 let providers: ShopinvaderProvidersList | null = null
