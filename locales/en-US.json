@@ -49,8 +49,19 @@
     "title": "My account",
     "logout": "Logout",
     "address": {
-      "title": "My addresses"
-    }
+      "title": "My addresses",
+      "name": "First and last name",
+      "street": "Postal Address",
+      "zip": "Zip Code",
+      "city": "City",
+      "phone": "Telephone",
+      "country": "Country",
+      "noresults": "No address found",
+      "count":"{count} result(s)",
+      "edit":"Update an address",
+    "quotations": "My quotations",
+    "invoices" : "My invoices",
+    "emptylist" : "No data available"
   },
   "address": {
     "name": "First and last name",
@@ -82,5 +93,12 @@
     "create": "Create" ,
     "validate": "validate",
     "close": "close"
+  },
+  "btn": {
+    "view_more": "View more"
+  },
+  "pagination": {
+    "showperpage": "Items per page",
+    "status": "{boundStart}-{boundStop} of {totalItems}"
   }
 }
