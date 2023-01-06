@@ -1,14 +1,14 @@
 <template>
   <div class="aside-menu drawer">
     <input :id="name" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content flex flex-col ">
+    <div class="drawer-content flex flex-col">
       <div :class="classContent">
         <div class="flex-none lg:hidden">
-          <label :for="name" class="btn-ghost btn-square btn">
+          <label :for="name" class="btn-ghost btn btn-square">
             <slot name="button"></slot>
           </label>
         </div>
-        <div class="flex-1 lg:flex-none px-2 mx-2">
+        <div class="mx-2 flex-1 px-2 lg:flex-none">
           <slot name="title"></slot>
         </div>
         <div class="hidden flex-1 lg:block">
@@ -21,7 +21,7 @@
       <label :for="name" class="drawer-overlay"></label>
       <div class="bg-base-100">
         <div class="flex justify-end border-b">
-          <label :for="name" class="btn-ghost btn-square btn">
+          <label :for="name" class="btn-ghost btn btn-square">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -61,21 +61,21 @@ export default {
 }
 </script>
 <style lang="scss">
-  .aside-menu.drawer {
-    @apply h-auto;
-    overflow: visible;
-    .drawer-content {
-      overflow-y: visible;
-    }
-    .drawer-toggle {
-      &:checked ~ .drawer-side {
-        @apply relative h-screen w-screen border;
-      }
-    }
-    .drawer-side {
-      @apply border lg:hidden;
-      height: 0;
-      width: 0;
+.aside-menu.drawer {
+  @apply h-auto;
+  overflow: visible;
+  .drawer-content {
+    overflow-y: visible;
+  }
+  .drawer-toggle {
+    &:checked ~ .drawer-side {
+      @apply relative h-screen w-screen border;
     }
   }
+  .drawer-side {
+    @apply border lg:hidden;
+    height: 0;
+    width: 0;
+  }
+}
 </style>

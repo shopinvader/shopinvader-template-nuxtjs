@@ -1,5 +1,5 @@
 <template>
-  <div class="p-7 border">
+  <div class="border p-7">
     account layout
     <slot></slot>
   </div>

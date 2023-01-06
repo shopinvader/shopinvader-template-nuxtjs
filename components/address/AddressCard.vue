@@ -2,14 +2,16 @@
   <div class="address-card">
     <div class="address-card__header">
       <icon icon="ic:sharp-location-on" class="text-xl text-primary"></icon>
-      {{ address?.title?.name || ''}}
+      {{ address?.title?.name || '' }}
       {{ address.name }}
     </div>
     <div class="address-card__content">
       <template v-if="!edit">
         <p>{{ address.email }}</p>
         <p>{{ address.street }}</p>
-        <p>{{ address.zip }} {{ address.city }} - {{ address.country?.name }}</p>
+        <p>
+          {{ address.zip }} {{ address.city }} - {{ address.country?.name }}
+        </p>
         <p v-if="address.phone !== null">
           {{ address.phone }}
         </p>
@@ -37,27 +39,27 @@ export default defineNuxtComponent({
   name: 'AddressCard',
   components: {
     'address-form': AddressFormVue,
-    'icon': Icon
+    icon: Icon
   },
   props: {
     address: {
       type: Object as PropType<Address>,
-      required: true,
-    },
+      required: true
+    }
   },
   data() {
     return {
-      edit: false,
+      edit: false
     }
   },
   setup() {
     return {}
-  },
+  }
 })
 </script>
 <style lang="scss">
 .address-card {
-  @apply p-6 rounded bg-base-100 shadow-xl;
+  @apply rounded bg-base-100 p-6 shadow-xl;
 
   &__header {
     @apply flex items-center text-2xl font-bold;

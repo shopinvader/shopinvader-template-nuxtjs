@@ -99,7 +99,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
       cart: null,
       sales: new SaleService(providers?.erp as ElasticFetch),
-      addresses: new AddressService(providers.erp as ErpFetch)
+      addresses: new AddressService(providers.erp as ErpFetch),
+      settings: null
     }
   }
 
