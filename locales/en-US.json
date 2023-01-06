@@ -47,6 +47,28 @@
   "account": {
     "loading": "Loading...",
     "title": "My account",
-    "logout": "Logout"
+    "logout": "Logout",
+    "profile": "My account information",
+    "sales": {
+      "title": "My sales orders",
+      "table_labels": {
+        "ordernum" : "Order Number",
+        "orderdate" : "Order Date",
+        "pricenet": "Price",
+        "status" : "Status"
+
+        }
+    },
+    "quotations": "My quotations",
+    "invoices" : "My invoices",
+    "emptylist" : "No data available"
+  },
+  "btn": {
+    "view_more": "View more"
+  },
+  "pagination": {
+    "showperpage": "Items per page",
+    "status": "{boundStart}-{boundStop} of {totalItems}"
   }
+
 }

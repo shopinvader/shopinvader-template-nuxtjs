@@ -12,6 +12,11 @@
         </label>
         <ul tabindex="0" class="menu dropdown-content shadow bg-base-100 rounded-box w-64">
           <li>
+            <nuxt-link to="/account" >
+              {{ $t('account.title')}}
+            </nuxt-link>
+          </li>
+          <li>
             <button type="button" @click="logout">
               {{ $t('account.logout')}}
             </button>
