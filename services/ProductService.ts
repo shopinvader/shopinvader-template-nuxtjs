@@ -2,7 +2,7 @@ import { ElasticFetch } from '@shopinvader/fetch'
 import { Product, ProductResult } from '../models/Product'
 
 export class ProductService {
-  provider: ElasticFetch = null
+  provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
     this.provider = provider
   }
@@ -15,13 +15,15 @@ export class ProductService {
       inner_hits: [
         {
           size: 100,
-          name: "variants"
+          name: 'variants'
         }
       ]
     }
     const result = await this.provider?.search(body)
     const hits = result?.hits?.hits?.map((hit: any) => {
-      const variants = hit?.inner_hits?.variants?.hits?.hits?.map((variant: any) => variant._source)
+      const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
+        (variant: any) => variant._source
+      )
       return this.jsonToModel({
         ...hit._source,
         ...{ variants }
@@ -33,10 +35,10 @@ export class ProductService {
   }
 
   /**
-   * 
-   * @param field 
-   * @param value 
-   * @returns 
+   *
+   * @param field
+   * @param value
+   * @returns
    */
   find(field: string, value: string[] | number[]): Promise<ProductResult> {
     const terms: any = {}

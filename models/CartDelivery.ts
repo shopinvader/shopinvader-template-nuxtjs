@@ -1,4 +1,3 @@
-
 import { CartAmount } from './CartAmount'
 import { Carrier } from './Carrier'
 import { Address } from './Address'

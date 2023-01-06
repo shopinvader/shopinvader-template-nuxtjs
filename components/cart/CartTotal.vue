@@ -16,7 +16,7 @@
         {{ $t('cart.total.title') }}
       </div>
       <div class="value">
-        {{ $filter.currency(cart?.amount?.total)}}
+        {{ $filter.currency(cart?.amount?.total) }}
       </div>
     </div>
   </div>
@@ -35,7 +35,7 @@ export default {
 .cart-total {
   @apply bg-gray-100 p-4;
   &__title {
-    @apply text-xl text-center;
+    @apply text-center text-xl;
   }
   &__subtotal {
     @apply flex justify-between;
@@ -55,6 +55,5 @@ export default {
       @apply text-lg;
     }
   }
-
 }
 </style>

@@ -1,7 +1,7 @@
 import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
 import { Cart as CartModel, Product, CartLine as CartLineModel } from '~/models'
 import { ProductService } from './ProductService'
-import { createPinia, defineStore } from 'pinia'
+import { defineStore } from 'pinia'
 
 interface CartStore {
   cart: CartModel
@@ -14,8 +14,8 @@ interface CartStore {
 }
 
 class CartObserver {
-  callback: Function // Nuxt context
-  constructor(callback: Function) {
+  callback: (cart: CartModel, syncError: boolean) => void // Nuxt context
+  constructor(callback: (cart: CartModel, syncError: boolean) => void) {
     this.callback = callback
   }
 
@@ -48,7 +48,6 @@ class CartObserver {
   }
 }
 
-
 export class CartService {
   erp: any // ErpFetch
   cart: any | null
@@ -59,16 +58,14 @@ export class CartService {
   constructor(erp: any, productService: ProductService) {
     this.erp = erp
     this.productService = productService
-    const { vueApp } = useNuxtApp()
-    const pinia = usePinia()
+
     let productStore: Product[] = []
     this.store = defineStore('shopinvader', {
-      state: () => (
-        {
+      state: () =>
+        ({
           lastSale: {},
-          cart: new CartModel({}),
-        } as CartStore
-      ),
+          cart: new CartModel({})
+        } as CartStore),
 
       actions: {
         setSyncError(data: boolean) {
@@ -82,16 +79,23 @@ export class CartService {
         },
         async setCart(data: any) {
           if (productService !== null) {
-            const ids = data.lines.map((l: CartLineModel) => l.productId).filter((i: number) => !productStore.some(p => i === p?.id)) || []
+            const ids =
+              data.lines
+                .map((l: CartLineModel) => l.productId)
+                .filter(
+                  (i: number) => !productStore.some((p) => i === p?.id)
+                ) || []
             if (ids.length > 0) {
-              const products = await productService.getByIds(ids) || []
+              const products = (await productService.getByIds(ids)) || []
               if (Array.isArray(products?.hits)) {
                 productStore = [...productStore, ...products.hits]
               }
             }
 
-            for (const line of (data?.lines || [])) {
-              const product = productStore.find((p: Product) => p.id === line.productId) || null
+            for (const line of data?.lines || []) {
+              const product =
+                productStore.find((p: Product) => p.id === line.productId) ||
+                null
 
               if (product !== null) {
                 line.product = product
@@ -100,27 +104,31 @@ export class CartService {
           }
 
           this.cart = data
-          let unSyncLine: boolean = false
+          let unSyncLine = false
           if (Array.isArray(data?.lines)) {
-            unSyncLine = data.lines.some((i: CartLineModel) => {
-              return i.hasPendingTransactions === true
-            }) || false
+            unSyncLine =
+              data.lines.some((i: CartLineModel) => {
+                return i.hasPendingTransactions === true
+              }) || false
           }
           this.cart.hasPendingTransactions = unSyncLine
           this.cart.loaded = true
         },
-        setLastSale(data) {
+        setLastSale(data: any) {
           this.lastSale = data
         },
         resetCart() {
           this.cart = new CartModel({})
         }
-      },
+      }
     })
     const observer = new CartObserver((cart: any) => {
       this.store().setCart(cart)
     })
-    this.cart = new Cart(this.erp, new WebStorageCartStorage(window.localStorage))
+    this.cart = new Cart(
+      this.erp,
+      new WebStorageCartStorage(window.localStorage)
+    )
     this.cart.registerObserver(observer)
     this.cart.syncWithRetry()
   }
@@ -163,15 +171,16 @@ export class CartService {
    * @param {*} id cart line ID
    */
   deleteItem(id: number) {
-
     const cart = this.store().cart
-    const line: CartLineModel = cart.lines.find((line: CartLineModel) => line.id === id) || null
+    const line: CartLineModel =
+      cart.lines.find((line: CartLineModel) => line.id === id) || null
 
     if (line !== null) {
       const qty = line.qty * -1
-      const productId: number | null = parseInt(line.productId)
-      this.addTransaction(productId, qty)
+      const productId: number | null = line?.productId || null
+      if (productId !== null) {
+        this.addTransaction(productId, qty)
+      }
     }
-
   }
 }

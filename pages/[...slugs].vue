@@ -1,7 +1,9 @@
 <template>
   <div>
-    <CategoryDetail v-if="category !== null" :category="category"></CategoryDetail>
-    <ProductDetail v-else-if="product !== null" :product="product"></ProductDetail>
+    <category-detail v-if="category !== null" :category="category">
+    </category-detail>
+    <product-detail v-else-if="product !== null" :product="product">
+    </product-detail>
     <page-not-found-error v-else></page-not-found-error>
   </div>
 </template>
@@ -13,42 +15,41 @@ import ProductDetail from '~~/components/product/ProductDetail.vue'
 import { Category } from '~~/models/Category'
 
 import { Product } from '~~/models/Product'
-export default({
-  name: 'categoryPage',
-  layout: "default",
+export default {
+  name: 'CategoryPage',
   components: {
-    
-    'page-not-found': PageNotFoundError,
+    'page-not-found-error': PageNotFoundError,
     'category-detail': CategoryDetail,
     'product-detail': ProductDetail
   },
+  layout: 'default',
   async setup() {
     const route = useRoute()
-    let category = ref(null as  Category | null)
-    let product = ref(null as Product  | null)
+    let category = ref(null as Category | null)
+    let product = ref(null as Product | null)
 
-    const slugs:string[] = route.params.slugs as string[] || []
-    const path:string | null = slugs.join('/')  as string || null
+    const slugs: string[] = (route.params.slugs as string[]) || []
+    const path: string | null = (slugs.join('/') as string) || null
 
-
-    const getEntity = async (path):Promise<Product | Category | null> => {
-      let entity:Product | Category = null
-      if(path !== null) {
+    const getEntity = async (
+      path: string
+    ): Promise<Product | Category | null> => {
+      let entity: Product | Category | null = null
+      if (path !== null) {
         const services = useShopinvaderServices()
-        const result = await services.catalog.getByURLKey(path)
-        if(result?.hits !== null) {
+        const result = await services?.catalog?.getByURLKey(path)
+        if (result?.hits !== null) {
           entity = result?.hits?.[0] || null
-          
         }
       }
       return entity
     }
-    
-    if(path !== null) {
+
+    if (path !== null) {
       let entity = await getEntity(path)
-      if(entity instanceof Category) {
+      if (entity instanceof Category) {
         category.value = entity
-      } else if(entity instanceof Product) {
+      } else if (entity instanceof Product) {
         product.value = entity
       }
       useHead({
@@ -66,5 +67,5 @@ export default({
       category
     }
   }
-})
+}
 </script>

@@ -1,5 +1,5 @@
-import { User } from "oidc-client-ts"
-import { AuthService } from "~~/plugins/auth.client"
+import { User } from 'oidc-client-ts'
+import { AuthService } from '~~/plugins/auth.client'
 
 export const useAuth = (): AuthService => {
   return useNuxtApp()?.$auth || null

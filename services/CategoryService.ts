@@ -1,8 +1,9 @@
-import { Category, CategoryResult } from '../models/Category';
+import { ElasticFetch } from '@shopinvader/fetch'
+import { Category, CategoryResult } from '../models/Category'
 
 export class CategoryService {
-  provider: any = null
-  constructor(provider) {
+  provider: ElasticFetch | null = null
+  constructor(provider: ElasticFetch) {
     this.provider = provider
   }
   async search(body: any): Promise<CategoryResult> {
@@ -10,16 +11,18 @@ export class CategoryService {
       throw new Error('No provider found for categories')
     }
     const result = await this.provider?.search(body)
-    const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))
+    const hits = result?.hits?.hits?.map((hit: any) =>
+      this.jsonToModel(hit._source)
+    )
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations }
   }
   /**
-   * 
-   * @param field 
-   * @param value 
-   * @returns 
+   *
+   * @param field
+   * @param value
+   * @returns
    */
   find(field: string, value: string[] | number[]): Promise<CategoryResult> {
     const terms: any = {}

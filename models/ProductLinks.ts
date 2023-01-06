@@ -1,4 +1,4 @@
-export type linkId = {id: number}
+export type linkId = { id: number }
 export class ProductLinks {
   crossLink: linkId[] = []
   upLink: linkId[] = []

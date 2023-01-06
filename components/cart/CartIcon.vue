@@ -3,29 +3,31 @@
     <div>
       <Icon icon="clarity:shopping-bag-line" class="text-5xl" />
     </div>
-    <div
-      v-if="linesCount"
-      class="absolute badge badge-secondary -right-2 -top-1"
-    >
+    <div v-if="hasCart" class="badge-secondary badge absolute -right-2 -top-1">
       {{ linesCount }}
     </div>
   </nuxt-link>
 </template>
 <script lang="ts">
-  export default {
-    name: 'CartIcon',
-    components: {
-    },
-    async setup(props) {
-      return {
-        linesCount: computed(():boolean | string => {
-          let linesCount = useCart()?.linesCount || false
-          if(linesCount > 100) {
-            linesCount = '99+'
-          }
-          return linesCount
-        })
-      }
+export default {
+  name: 'CartIcon',
+  components: {},
+  async setup() {
+    return {
+      hasCart: computed((): boolean => {
+        let linesCount: number = useCart()?.linesCount || 0
+        return linesCount > 0
+      }),
+      linesCount: computed((): string => {
+        let linesCount: boolean | string | number =
+          useCart()?.linesCount || false
+        if (linesCount > 100) {
+          return '99+'
+        } else {
+          return linesCount + ''
+        }
+      })
     }
   }
+}
 </script>
