@@ -1,38 +1,37 @@
-import { ErpFetch } from "@shopinvader/fetch";
-import { AddressResult, Address } from "./../models/Address";
-import { Settings } from "~~/models/Settings";
+import { ErpFetch } from '@shopinvader/fetch'
+import { AddressResult, Address } from './../models/Address'
 export class AddressService {
-  provider: ErpFetch | null = null;
-  constructor(provider: ErpFetch, settings: Settings) {
-    this.provider = provider;
+  provider: ErpFetch | null = null
+  constructor(provider: ErpFetch) {
+    this.provider = provider
   }
 
   async getAll(
-    per_page: number = 2,
-    page: number = 1,
-    scope: {} | null = null
+    per_page = 2,
+    page = 1,
+    scope: object | null = null
   ): Promise<AddressResult | null> {
     if (this.provider == null) {
-      return null;
+      return null
     }
 
     if (scope != null) {
       scope = Object.entries(scope).reduce((acc: any, [key, value]) => {
-        acc["scope[" + key + "]"] = value;
-        return acc;
-      }, {});
+        acc['scope[' + key + ']'] = value
+        return acc
+      }, {})
     }
     const params = {
       per_page,
       page,
-      ...scope,
-    } as any;
+      ...scope
+    } as any
 
-    const result = await this.provider?.get("addresses", params);
+    const result = await this.provider?.get('addresses', params, 'json')
     return {
       size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item)),
-    } as AddressResult;
+      data: result?.data?.map((item: any) => new Address(item))
+    } as AddressResult
   }
 
   /**
@@ -42,15 +41,15 @@ export class AddressService {
    */
   async delete(address: Address): Promise<AddressResult | null> {
     const data = await this.provider?.post(
-      "addresses/" + address.id + "/delete"
-    );
+      'addresses/' + address.id + '/delete'
+    )
     if (data == null) {
       return {
         size: data?.size || 0,
-        data: data?.data?.map((item: any) => new Address(item)),
-      } as AddressResult;
+        data: data?.data?.map((item: any) => new Address(item))
+      } as AddressResult
     }
-    return null;
+    return null
   }
 
   /**
@@ -61,20 +60,20 @@ export class AddressService {
    */
 
   async update(address: Address): Promise<AddressResult> {
-    const data = address.getJSONData();
-    const result = await this.provider?.post("addresses/" + address.id, data);
+    const data = address.getJSONData()
+    const result = await this.provider?.post('addresses/' + address.id, data)
     return {
       size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item)),
-    } as AddressResult;
+      data: result?.data?.map((item: any) => new Address(item))
+    } as AddressResult
   }
 
   async create(address: Address): Promise<AddressResult> {
-    const data = address.getJSONData();
-    const result = await this.provider?.post("addresses/" + "create", data);
+    const data = address.getJSONData()
+    const result = await this.provider?.post('addresses/' + 'create', data)
     return {
       size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item)),
-    } as AddressResult;
+      data: result?.data?.map((item: any) => new Address(item))
+    } as AddressResult
   }
 }

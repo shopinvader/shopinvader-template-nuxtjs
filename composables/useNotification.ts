@@ -1,30 +1,30 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 export interface NotificationMessage {
-  message: string;
-  title?: string;
-  type: "success" | "error" | "info" | "warning";
+  message: string
+  title?: string
+  type: 'success' | 'error' | 'info' | 'warning'
 }
-const notification = defineStore("notification", {
+const notification = defineStore('notification', {
   state: () => ({
-    messages: [] as NotificationMessage[],
+    messages: [] as NotificationMessage[]
   }),
   actions: {
     addMessage(message: string, title?: string) {
       this.messages.push({
         message,
-        type: "success",
-        title,
-      });
+        type: 'success',
+        title
+      })
     },
     addError(message: string, title?: string) {
       this.messages.push({
         message,
-        type: "error",
-        title,
-      });
-    },
-  },
-});
+        type: 'error',
+        title
+      })
+    }
+  }
+})
 export const useNotification = () => {
-  return notification();
-};
+  return notification()
+}
