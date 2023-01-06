@@ -1,8 +1,23 @@
 <template>
-
   <div class="addresses">
+    <div class="addresses__header">
+      <div>
+        <template v-if="total > 0">
+          {{ $t('address.count', { count: total }) }}
+        </template>
+      </div>
+      <button type="button" @click="createAddress" class="btn btn-sm">
+        <icon icon="mdi:plus" class="text-lg"></icon>
+        {{ $t("actions.create") }}
+      </button>
+    </div>
     <div class="addresses__list">
-      <template v-if="addresses == null">
+      <div v-if="errors !== null && errors.length > 0" class="max-w-xl w-full text-center">
+        <div class="alert alert-error justify-center" v-for="error of errors">
+          {{ error }}
+        </div>
+      </div>
+      <template v-else-if="addresses == null">
         <spinner :size="20"></spinner>
         <div class="pr-3 text-xl">
           {{ $t('account.loading') }}
@@ -11,44 +26,27 @@
       <template v-else-if="total == 0">
         {{ $t('address.noresult') }}
       </template>
-      <div v-else class="flex-grow">
-        <div class="text-2xl">
-          {{ $t('address.count', { count: total }) }}
-        </div>
-        <div class="flex flex-wrap">
-          <div
-            v-for="(address, i) in addresses" :key="i"
-            class="w-full md:w-1/2 lg:w-1/3 flex items-stretch"
-          >
-            <address-card :address="address" class="m-2 w-full">
-              <template #actions>
-                <button
-                  v-if="address.access?.delete"
-                  class="btn btn-circle btn-sm btn-primary"
-                  :title="$t('actions.delete')"
-                  @click="deleteAddress(address)"
-                >
-                  <icon icon="mdi:trash" class="text-lg text-white"></icon>
-                </button>
-                <button
-                  v-if="address.access?.update"
-                  class="btn btn-circle btn-sm btn-primary"
-                  :title="$t('actions.update')"
-                  @click="editedAddress=address"
-                >
-                  <icon icon="mdi:edit" class="text-lg text-white"></icon>
-                </button>
-              </template>
-            </address-card>
+      <div v-else class="list__content">
+        <div class="w-full flex-grow flex flex-wrap py-4">
+          <div v-for="address in addresses" :key="address.id" class="w-full md:w-1/2 lg:w-1/3 flex items-stretch">
+            <div class="w-full p-2">
+              <address-card :address="address" class=" w-full h-full">
+                <template #actions>
+                  <button v-if="address.access?.delete" class="btn btn-circle btn-sm btn-primary"
+                    :title="$t('actions.delete')" @click="deleteAddress(address)">
+                    <icon icon="mdi:trash" class="text-lg text-white"></icon>
+                  </button>
+                  <button v-if="address.access?.update" class="btn btn-circle btn-sm btn-primary"
+                    :title="$t('actions.update')" @click="editedAddress = address">
+                    <icon icon="mdi:edit" class="text-lg text-white"></icon>
+                  </button>
+                </template>
+              </address-card>
+            </div>
           </div>
         </div>
-        <pagination
-          v-if="addresses !== null && total > addresses?.length"
-          :total="total"
-          :size="perPage"
-          :from="from"
-          @change="from = $event"
-        >
+        <pagination v-if="addresses !== null && total > addresses?.length" :total="total" :size="perPage" :page="page"
+          @change="fetchAddresses($event)" class="w-full flex-grow px-2">
         </pagination>
       </div>
     </div>
@@ -57,18 +55,9 @@
         <div class="text-2xl">{{ $t('address.edit') }}</div>
       </template>
       <template #content>
-
-        <address-form
-          v-if="editedAddress"
-          :address="editedAddress"
-          @saved="editedAddress=null;"
-        >
+        <address-form v-if="editedAddress" :address="editedAddress" @saved="saveAddress">
           <template #actions>
-            <button
-              type="button"
-              class="btn btn-outline"
-              @click="editedAddress=null;fetchAddresses()"
-            >
+            <button type="button" class="btn btn-outline" @click="editedAddress = null;">
               {{ $t('actions.close') }}
             </button>
           </template>
@@ -83,11 +72,10 @@ import Pagination from '~/components/global/Pagination.vue'
 import AddressCard from '~/components/address/AddressCard.vue'
 import AddressForm from '~/components/address/AddressForm.vue'
 import AsideDrawer from '~/components/global/AsideDrawer.vue'
-import { User } from 'oidc-client-ts'
 
 export default defineNuxtComponent({
   props: {
-    addressType: {
+    type: {
       type: String,
       required: false,
       default: 'address',
@@ -102,9 +90,10 @@ export default defineNuxtComponent({
   data() {
     return {
       addresses: null as Address[] | null,
+      errors: [] as string[],
       total: 0,
-      from: 1,
-      perPage: 10,
+      page: 1,
+      perPage: 6,
       editedAddress: null as Address | null,
     }
   },
@@ -115,48 +104,105 @@ export default defineNuxtComponent({
   },
   watch: {
     user: {
-      handler: function (user: User) {
+      handler: function () {
         this.fetchAddresses(1)
       },
       immediate: true
-    }
+    },
+
   },
   methods: {
-    async fetchAddresses(from: number=1) {
+    async fetchAddresses(page: number = 1) {
+      this.page = page
       const services = useShopinvaderServices()
-      const page = Math.ceil(from / this.perPage)
-      const addressResult = await services?.addresses.getAll(this.perPage, page) as AddressResult
 
-      if(addressResult !== null) {
-        this.addresses = addressResult?.data || [] as Address[]
-        this.total = addressResult?.size || 0
-      }
-    },
-    async deleteAddress(address: Address) {
-      if(confirm(this.$t('address.delete.confirm', { name: address.name }))) {
-        const services = useShopinvaderServices()
-        const addressResult = await services?.addresses.delete(address)
-        if(addressResult !== null) {
+      const notifications = useNotification()
+      try {
+        const addressResult = await services?.addresses.getAll(this.perPage, page, { type: this.type }) as AddressResult
+
+        if (addressResult !== null) {
           this.addresses = addressResult?.data || [] as Address[]
           this.total = addressResult?.size || 0
         }
+      } catch (e) {
+        console.error(e)
+        this.errors.push(this.$t('address.fetch.error'))
+        notifications.addError(this.$t('address.fetch.error'))
       }
+
+    },
+    async deleteAddress(address: Address) {
+      if (confirm(this.$t('address.delete.confirm', { name: address.name }))) {
+        const notifications = useNotification()
+        const services = useShopinvaderServices()
+        try {
+          await services?.addresses.delete(address)
+          await this.fetchAddresses(this.page)
+          notifications.addMessage(this.$t('address.delete.success', { name: address.name }))
+        } catch (e) {
+          console.error(e)
+          notifications.addError(this.$t('address.delete.error'))
+        }
+
+      }
+    },
+    async saveAddress(address: Address) {
+      this.editedAddress = null
+      const services = useShopinvaderServices()
+      const notifications = useNotification()
+      if (services?.addresses && address) {
+        const addressService = services?.addresses
+        try {
+          let results: AddressResult
+          if (address.id) {
+            await addressService.update(address) || []
+          } else {
+            await addressService.create(address) || []
+          }
+          await this.fetchAddresses(this.page)
+          notifications.addMessage(this.$t('address.save.success', { name: address.name }))
+        } catch (e) {
+          console.error(e)
+          notifications.addError(this.$t('address.fetch.error'))
+        }
+      }
+
+    },
+    createAddress() {
+      this.editedAddress = new Address({
+        type: this.type,
+      })
     }
   }
 })
 </script>
 <style lang="scss">
 .addresses {
-  @apply flex;
-  &__list {
-    @apply flex-grow flex justify-center items-center py-8;
+  @apply flex flex-col;
+
+  &__header {
+    @apply flex justify-between items-center px-2;
   }
+
+
+  &__list {
+    @apply flex-grow flex justify-center items-center py-2;
+
+    .list {
+      &__content {
+        @apply w-full flex-grow py-4;
+      }
+    }
+  }
+
   &__edit {
-    @apply fixed top-0 left-0 flex justify-start items-start border;
+    @apply fixed top-0 left-0 flex justify-start items-start;
+
     .edit {
       &__backdrop {
         @apply h-screen w-screen bg-black opacity-25;
       }
+
       &__form {
         @apply absolute p-4 bg-white shadow-xl w-1/4 h-screen overflow-y-auto;
       }

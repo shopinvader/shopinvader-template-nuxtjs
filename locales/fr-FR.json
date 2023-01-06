@@ -57,7 +57,21 @@
     "zip": "Code postal",
     "city": "Ville",
     "phone": "Téléphone",
-    "country": "Pays"
+    "country": "Pays",
+    "noresult": "Aucune adresse",
+    "type" : {
+      "delivery": "Adresse de livraison",
+      "invoice": "Adresse de facturation",
+      "contact": "Adresse de contact"
+    },
+    "fetch": {
+      "error": "Impossible de récupérer les adresses"
+    },
+    "delete": {
+      "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+      "error": "Impossible de supprimer l'adresse",
+      "success": "Adresse supprimée"
+    }
   },
   "actions": {
     "modify": "Modifier",
