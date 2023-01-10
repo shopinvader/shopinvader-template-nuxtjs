@@ -47,6 +47,40 @@
   "account": {
     "loading": "Loading...",
     "title": "My account",
-    "logout": "Logout"
+    "logout": "Logout",
+    "address": {
+      "title": "My addresses"
+    }
+  },
+  "address": {
+    "name": "First and last name",
+    "street": "Postal Address",
+    "zip": "Zip Code",
+    "city": "City",
+    "phone": "Telephone",
+    "country": "Country",
+    "noresult": "No address found",
+    "count":"{count} result(s)",
+    "edit":"Update an address",
+    "fetch": {
+      "error": "An error occured while fetching your addresses"
+    },
+    "type" : {
+      "contact": "Contact address",
+      "delivery": "Delivery address",
+      "invoice": "Invoice address"
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete this address ?",
+      "error": "An error occured while deleting this address",
+      "success": "Address deleted"
+    }
+  },
+  "actions": {
+    "modify": "Modify",
+    "update": "Update",
+    "create": "Create" ,
+    "validate": "validate",
+    "close": "close"
   }
 }

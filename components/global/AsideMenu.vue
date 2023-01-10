@@ -1,10 +1,10 @@
 <template>
-  <div class="drawer">
+  <div class="aside-menu drawer">
     <input :id="name" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <div :class="classContent">
         <div class="flex-none lg:hidden">
-          <label :for="name" class="btn-ghost btn-square btn">
+          <label :for="name" class="btn-ghost btn btn-square">
             <slot name="button"></slot>
           </label>
         </div>
@@ -21,7 +21,7 @@
       <label :for="name" class="drawer-overlay"></label>
       <div class="bg-base-100">
         <div class="flex justify-end border-b">
-          <label :for="name" class="btn-ghost btn-square btn">
+          <label :for="name" class="btn-ghost btn btn-square">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -61,7 +61,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.drawer {
+.aside-menu.drawer {
   @apply h-auto;
   overflow: visible;
   .drawer-content {

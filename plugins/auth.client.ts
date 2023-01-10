@@ -1,4 +1,11 @@
-import { User, UserManager, UserManagerSettings } from 'oidc-client-ts'
+import {
+  User,
+  UserManager,
+  UserManagerSettings,
+  UserLoadedCallback,
+  UserUnloadedCallback,
+  AccessTokenCallback
+} from 'oidc-client-ts'
 import { defineStore } from 'pinia'
 
 export class AuthService {
@@ -28,7 +35,15 @@ export class AuthService {
       this.setUser(user)
     })
   }
-
+  public onUserLoaded(callback: UserLoadedCallback) {
+    this.userManager.events.addUserLoaded(callback)
+  }
+  public onUserUnloaded(callback: UserUnloadedCallback) {
+    this.userManager.events.addUserUnloaded(callback)
+  }
+  public onAccessTokenExpired(callback: AccessTokenCallback) {
+    this.userManager.events.addAccessTokenExpired(callback)
+  }
   public getUser(): Promise<User | null> {
     return this.store().user
   }
@@ -38,13 +53,16 @@ export class AuthService {
   }
 
   public async renewToken(): Promise<User | null> {
-    this.setUser((await this.userManager.signinSilent()) || null)
+    const user = await this.userManager.signinSilent()
+    console.log(user)
+    this.setUser(user)
 
     return this.store
   }
 
   public logout(): Promise<any> {
     this.setUser(null)
+    this.userManager.stopSilentRenew()
     const callback: string = window?.location?.origin || ''
     return this.userManager.signoutRedirect({
       post_logout_redirect_uri: callback
@@ -64,7 +82,15 @@ export default defineNuxtPlugin(async () => {
   const options: UserManagerSettings = useRuntimeConfig()?.auth || null
 
   const auth = new AuthService(options)
-  auth.setUser(await auth.getUser())
+  auth
+    .renewToken()
+    .then(function () {
+      console.log('silent renew success')
+    })
+    .catch(function (err) {
+      console.error(err)
+      console.log(err)
+    })
 
   return {
     provide: {

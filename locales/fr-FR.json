@@ -46,6 +46,37 @@
   "account": {
     "loading": "Chargement...",
     "title": "Mon compte",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "address": {
+      "title": "Mes adresses"
+    }
+  },
+  "address": {
+    "name": "Nom et Prénom",
+    "street": "Rue",
+    "zip": "Code postal",
+    "city": "Ville",
+    "phone": "Téléphone",
+    "country": "Pays",
+    "noresult": "Aucune adresse",
+    "type" : {
+      "delivery": "Adresse de livraison",
+      "invoice": "Adresse de facturation",
+      "contact": "Adresse de contact"
+    },
+    "fetch": {
+      "error": "Impossible de récupérer les adresses"
+    },
+    "delete": {
+      "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+      "error": "Impossible de supprimer l'adresse",
+      "success": "Adresse supprimée"
+    }
+  },
+  "actions": {
+    "modify": "Modifier",
+    "update": "Actualiser",
+    "create": "Créer " ,
+    "validate": "Valider"
   }
 }

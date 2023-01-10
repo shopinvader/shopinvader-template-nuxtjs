@@ -45,6 +45,38 @@
   "account": {
     "loading": "Cargando...",
     "title": "Mi cuenta",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "address": {
+      "title": "Mis direcciones"
+    }
+  },
+  "address": {
+    "name": "Nombre y apellidos",
+    "street": "Calle",
+    "zip": "Código postal",
+    "city": "Ciudad",
+    "phone": "Téléfono",
+    "country": "País",
+    "noresult": "No hay direcciones",
+    "type" : {
+      "delivery": "Dirección de entrega",
+      "invoice": "Dirección de facturación",
+      "contact": "Dirección de contacto"
+    },
+    "fetch": {
+      "error": "No se ha podido recuperar la dirección"
+    },
+    "delete": {
+      "confirm": "¿Estás seguro de que quieres eliminar esta dirección?",
+      "error": "No se ha podido recuperar la dirección",
+      "success": "La dirección ha sido eliminada"
+    }
+
+  },
+  "actions": {
+    "modify": "Modificar",
+    "update": "Actualizar",
+    "create": "Crear" ,
+    "validate": "Validar"
   }
 }

@@ -4,7 +4,9 @@ import {
   CategoryService,
   ProductService,
   CatalogService,
-  CartService
+  CartService,
+  AddressService,
+  SettingService
 } from '../services'
 
 export interface ShopinvaderProvidersList {
@@ -16,11 +18,12 @@ export interface ShopinvaderServiceList {
   categories: CategoryService
   catalog: CatalogService
   cart: CartService | null
+  addresses: AddressService | null
+  settings: SettingService | null
 }
 
 let providers: ShopinvaderProvidersList | null = null
 let services: ShopinvaderServiceList | null = null
-
 export const fetchAPI = async (url: string, options: any) => {
   const auth = useAuth()
   if (auth !== null && auth?.getUser !== null) {
@@ -86,14 +89,18 @@ export default defineNuxtPlugin((nuxtApp) => {
     const isoLocale = nuxtApp.$i18n?.localeProperties?.value?.iso || null
     providers = initProviders(isoLocale)
   }
+
   if (services === null) {
     services = {
       products: new ProductService(providers?.products as ElasticFetch),
       categories: new CategoryService(providers?.categories as ElasticFetch),
       catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
-      cart: null
+      cart: null,
+      settings: null,
+      addresses: null
     }
   }
+
   return {
     provide: {
       shopinvader: {
