@@ -1,22 +1,22 @@
 <template>
   <div class="flex gap-2 py-4">
-    <button
+    <slot
       v-for="filter in activeFilters"
-      :key="filter.name"
-      class="btn-outline btn-primary btn-xs btn"
-      @click="filter?.setValues([])"
+      :key="filter.title"
+      :filter="filter"
+      :clear-filter="clearFilter"
     >
-      <slot
-        v-if="filter.getValuesLabels() && filter.getValuesLabels().length > 0"
-        :filter="filter"
-        :clear-filter="clearFilter"
+      <button
+        v-if="filter.getValuesLabels().length > 0"
+        class="btn-outline btn-primary btn-xs btn"
+        @click="filter?.setValues([])"
       >
         <span class="text-xs">
           {{ filter.title }}: {{ filter.getValuesLabels() }}
         </span>
         <span>X</span>
-      </slot>
-    </button>
+      </button>
+    </slot>
   </div>
 </template>
 <script lang="ts">
