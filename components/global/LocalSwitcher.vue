@@ -16,9 +16,9 @@
       v-if="availableLocales.length"
       class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2"
     >
-      <li v-for="locale in availableLocales" :key="locale.code">
-        <nuxt-link :key="item.code" :to="switchLocalePath(locale.code)">
-          {{ $t('localeswitcher.' + locale.code) }}
+      <li v-for="item in availableLocales" :key="locale.code">
+        <nuxt-link :key="item.code" :to="switchLocalePath(item.code)">
+          {{ $t('localeswitcher.' + item.code) }}
         </nuxt-link>
       </li>
     </ul>
