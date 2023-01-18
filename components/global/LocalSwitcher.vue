@@ -1,7 +1,7 @@
 <template>
   <div class="localeposition dropdown">
-    <label tabindex="0" class="m-1"
-      >Language
+    <label tabindex="0" class="m-1">
+      <span>Language</span>
       <svg
         class="fill-current"
         xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +17,11 @@
       class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2"
     >
       <li v-for="item in availableLocales" :key="item.code">
-        <nuxt-link :key="item.code" :to="switchLocalePath(item.code)">
+        <nuxt-link
+          :key="item.code"
+          :to="switchLocalePath(item.code)"
+          :class="item.code == currentLocale ? 'bg-gray-300' : ''"
+        >
           {{ $t('localeswitcher.' + item.code) }}
         </nuxt-link>
       </li>
