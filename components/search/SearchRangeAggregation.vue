@@ -6,7 +6,11 @@
       </div>
     </slot>
     <slot name="items" :items="data.items" :change="onSelectItem">
-      <div class="searchfilter__items" v-for="item in data.items">
+      <div
+        v-for="item in data.items"
+        :key="item.key"
+        class="searchfilter__items"
+      >
         <slot name="items" :item="item" :change="onSelectItem">
           <label
             class="item"
@@ -19,8 +23,8 @@
               :value="item.key"
               v-model="data.selected"
             />
-            <span class="item__label">{{ item.label }}</span>
-            <span class="item__count">{{ item.doc_count }}</span>
+            <span class="item__label">{{ item?.label || '' }}</span>
+            <span class="item__count">{{ item?.doc_count || '' }}</span>
           </label>
         </slot>
       </div>
@@ -41,9 +45,9 @@ import {
 
 import { Filter } from './SearchBase.vue'
 export interface RangeItem {
-  from?: Number
-  to?: Number
-  label: String
+  from?: number
+  to?: number
+  label: string
 }
 export default {
   props: {
@@ -57,7 +61,8 @@ export default {
     },
     nestedPath: {
       type: String,
-      required: false
+      required: false,
+      default: null
     },
     title: {
       type: String,

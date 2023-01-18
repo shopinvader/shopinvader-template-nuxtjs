@@ -83,7 +83,6 @@ export default {
     }
   },
   data() {
-    const i18n = useI18n()
     return {
       layout: 'grid',
       facets: {

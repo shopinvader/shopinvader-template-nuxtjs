@@ -7,7 +7,7 @@
       :clear-filter="clearFilter"
     >
       <button
-        v-if="filter.getValuesLabels().length > 0"
+        v-if="filter?.getValuesLabels()?.length > 0"
         class="btn-outline btn-primary btn-xs btn"
         @click="filter?.setValues([])"
       >
