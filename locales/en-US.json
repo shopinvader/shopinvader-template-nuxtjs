@@ -55,8 +55,8 @@
       "changepwd": "Change your password",
       "newsletter": {
         "title": "Newsletter subscription",
-        "unsubs": "Subscribe to the Newsletter",
-        "subs": "Unsubscribe from the Newsletter",
+        "unsubs": "Unsubscribe to the Newsletter",
+        "subs": "Subscribe from the Newsletter",
         "subs_btn": "Validate",
         "unsubs_btn": "Validate"
       },
@@ -92,6 +92,9 @@
         "contact": "Contact address",
         "delivery": "Delivery address",
         "invoice": "Invoice address"
+      },
+      "save": {
+        "success": "Address saved successfully"
       },
       "delete": {
         "confirm": "Are you sure you want to delete this address ?",
