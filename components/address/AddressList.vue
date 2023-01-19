@@ -3,7 +3,7 @@
     <div class="addresses__header">
       <div>
         <template v-if="total > 0">
-          {{ $t('address.count', { count: total }) }}
+          {{ $t('account.address.count', { count: total }) }}
         </template>
       </div>
       <button type="button" class="btn btn-sm" @click="createAddress">
@@ -31,7 +31,7 @@
         </div>
       </template>
       <template v-else-if="total == 0">
-        {{ $t('address.noresult') }}
+        {{ $t('account.address.noresult') }}
       </template>
       <div v-else class="list__content">
         <div class="flex w-full flex-grow flex-wrap py-4">
@@ -77,7 +77,7 @@
     </div>
     <aside-drawer :open="editedAddress !== null" @close="editedAddress = null">
       <template #header>
-        <div class="text-2xl">{{ $t('address.edit') }}</div>
+        <div class="text-2xl">{{ $t('account.address.edit') }}</div>
       </template>
       <template #content>
         <address-form
@@ -162,12 +162,12 @@ export default defineNuxtComponent({
         }
       } catch (e) {
         console.error(e)
-        this.errors.push(this.$t('address.fetch.error'))
-        notifications.addError(this.$t('address.fetch.error'))
+        this.errors.push(this.$t('account.address.fetch.error'))
+        notifications.addError(this.$t('account.address.fetch.error'))
       }
     },
     async deleteAddress(address: Address) {
-      if (confirm(this.$t('address.delete.confirm', { name: address.name }))) {
+      if (confirm(this.$t('account.address.delete.confirm', { name: address.name }))) {
         const notifications = useNotification()
         const services = useShopinvaderServices()
         if (services?.addresses === null) return
@@ -176,11 +176,11 @@ export default defineNuxtComponent({
           await services?.addresses.delete(address)
           await this.fetchAddresses(this.page)
           notifications.addMessage(
-            this.$t('address.delete.success', { name: address.name })
+            this.$t('account.address.delete.success', { name: address.name })
           )
         } catch (e) {
           console.error(e)
-          notifications.addError(this.$t('address.delete.error'))
+          notifications.addError(this.$t('account.address.delete.error'))
         }
       }
     },
@@ -198,11 +198,11 @@ export default defineNuxtComponent({
           }
           await this.fetchAddresses(this.page)
           notifications.addMessage(
-            this.$t('address.save.success', { name: address.name })
+            this.$t('account.address.save.success', { name: address.name })
           )
         } catch (e) {
           console.error(e)
-          notifications.addError(this.$t('address.fetch.error'))
+          notifications.addError(this.$t('account.address.fetch.error'))
         }
       }
     },
