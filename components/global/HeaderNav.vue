@@ -37,10 +37,15 @@
 </template>
 <script lang="ts">
 import { Category } from '~~/models/Category'
-export default {
-  async setup() {
+export default defineNuxtComponent({
+  fetchKey: 'categories',
+  data() {
+    return {
+      categories: [] as Category[]
+    }
+  },
+  async asyncData() {
     const services = useShopinvaderServices()
-
     const result = await services?.categories?.search({
       size: 10,
       query: {
@@ -55,7 +60,7 @@ export default {
       categories
     }
   }
-}
+})
 </script>
 <style lang="scss">
 .nav {

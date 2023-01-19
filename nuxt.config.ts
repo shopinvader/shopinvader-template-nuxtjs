@@ -11,6 +11,13 @@ export default defineNuxtConfig({
     ]
   },
   css: ['@/assets/css/main.scss'],
+  routeRules: {
+    '/_nuxt/**': { headers: { 'cache-control': 'max-age=31536000' } },
+    '/*': { swr: true },
+    '/cart/*': { static: true },
+    '/account/*': { static: true },
+    '/cart': { static: true }
+  },
   runtimeConfig: {
     public: {
       shopinvader: {
@@ -57,7 +64,6 @@ export default defineNuxtConfig({
     '~/plugins/shopinvader-cart.client.ts'
   ],
   pages: true,
-  imports: true,
   i18n: {
     locales: [
       {
@@ -83,5 +89,19 @@ export default defineNuxtConfig({
   },
   build: {
     transpile: ['@shopinvader/cart']
+  },
+  sourcemap: {
+    server: false,
+    client: false
+  },
+
+  nitro: {
+    compressPublicAssets: true,
+    routes: {
+      '/**': { swr: 120 }
+    },
+    prerender: {
+      crawlLinks: false
+    }
   }
 })
