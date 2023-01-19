@@ -15,8 +15,8 @@
           class="dropdown-content menu rounded-box w-64 bg-base-100 shadow"
         >
           <li>
-            <nuxt-link to="/account/profile" >
-              {{ $t('account.title')}}
+            <nuxt-link to="/account/profile">
+              {{ $t('account.title') }}
             </nuxt-link>
           </li>
           <li>
@@ -26,7 +26,7 @@
           </li>
           <li>
             <nuxt-link to="/account/addresses">
-              {{ $t('account.address') }}
+              {{ $t('account.address.title') }}
             </nuxt-link>
           </li>
         </ul>
