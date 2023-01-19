@@ -2,34 +2,49 @@
   <nav class="accountNavbar">
     <div class="accountNavbar-content">
       <div class="accountNavbar-content-intro">
-        <NuxtLink to="/">
-          {{ $t("account.title" )}}
+        <NuxtLink to="/account/profile">
+          {{ $t('account.title') }}
         </NuxtLink>
       </div>
-      <ul class="accountNavbar-content-list">
-        <li class="accountNavbar-content-list-item">
-          <NuxtLink to="/account/profile" :class="{ active: slug == 'profile' }">
-            {{ $t("account.profile") }}
+      <ul class="accountNavbar-content-list tabs">
+        <li
+          class="tab tab-bordered"
+          :class="{ 'tab-active': $route.path.includes('profile') }"
+        >
+          <NuxtLink to="/account/profile">
+            {{ $t('account.profile.title') }}
           </NuxtLink>
         </li>
-        <li class="accountNavbar-content-list-item">
-          <NuxtLink to="/account/sales" :class="{ active: slug == 'sales' }">
-            {{ $t("account.sales.title") }}
+        <li
+          class="tab tab-bordered"
+          :class="{ 'tab-active': $route.path.includes('addresses') }"
+        >
+          <NuxtLink to="/account/addresses">
+            {{ $t('account.address.title') }}
           </NuxtLink>
         </li>
-        <li class="accountNavbar-content-list-item">
-          <NuxtLink to="/" :class="{ active: slug == 'quotations' }">
-           {{ $t("account.quotations") }}
+        <li
+          class="tab tab-bordered"
+          :class="{ 'tab-active': $route.path.includes('sales') }"
+        >
+          <NuxtLink to="/account/sales">
+            {{ $t('account.sales.title') }}
           </NuxtLink>
         </li>
-        <li class="accountNavbar-content-list-item">
-          <NuxtLink to="/" :class="{ active: slug == 'quotations' }">
-           {{ $t("account.invoices") }}
+        <li
+          class="tab tab-bordered"
+          :class="{ 'tab-active': $route.path.includes('quotations') }"
+        >
+          <NuxtLink to="/account/profile">
+            {{ $t('account.quotations') }}
           </NuxtLink>
         </li>
-        <li class="accountNavbar-content-list-item">
-          <NuxtLink to="/" :class="{ active: slug == 'quotations' }">
-           {{ $t("account.addresses") }}
+        <li
+          class="tab tab-bordered"
+          :class="{ 'tab-active': $route.path.includes('invoices') }"
+        >
+          <NuxtLink to="/account/profile">
+            {{ $t('account.invoices') }}
           </NuxtLink>
         </li>
       </ul>
@@ -39,55 +54,39 @@
 
 <script lang="ts">
 export default defineNuxtComponent({
-  name: "AccountNavbar",
+  name: 'AccountNavbar',
   components: {},
   props: {
     slug: {
       required: true,
-      type: String,
-    },
+      type: String
+    }
   }
-});
+})
 </script>
 
 <style lang="scss">
 .accountNavbar {
   @apply text-xs
-      xl:text-sm
-      w-full
-      z-20;
+      xl:text-sm;
   &-content {
     @apply flex
+        w-full
         items-stretch
-        text-primary
-        max-w-7xl
-        w-full;
+        text-primary;
     &-intro {
       @apply flex
-          font-sans
           items-center
-          p-2
-          px-5
-          font-bold
-          text-white
+          rounded-br-lg
           bg-primary
-          rounded-br-lg;
+          p-4
+          px-5
+          font-sans
+          font-bold
+          text-white;
     }
     &-list {
-      @apply hidden md:flex flex-grow items-center;
-      &-item {
-        @apply font-sans p-3
-            text-center
-            uppercase
-            font-bold
-            text-primary;
-        a {
-          @apply block p-1 px-2;
-          &.active {
-            @apply rounded font-sans p-1 px-4 bg-primary text-white;
-          }
-        }
-      }
+      @apply hidden flex-grow items-center justify-end md:flex;
     }
   }
 }

@@ -7,7 +7,7 @@
   "search": {
     "noresults": "No result found",
     "filter": "Filter",
-    "results":{
+    "results": {
       "count": "{count} result(s)"
     },
     "sort": {
@@ -36,7 +36,7 @@
       "quantity": "Quantity",
       "total": "Total",
       "delete": "Remove Item",
-      "add":"Add to cart"
+      "add": "Add to cart"
     },
     "empty": "Your cart is empty",
     "total": {
@@ -48,76 +48,73 @@
     "loading": "Loading...",
     "title": "My account",
     "logout": "Logout",
-    "profile": "My account information",
+    "profile": {
+      "title": "My account information",
+      "accountdata": "Your account profile",
+      "contact": "Your contact information",
+      "changepwd": "Change your password",
+      "newsletter": {
+        "title": "Newsletter subscription",
+        "unsubs": "Subscribe to the Newsletter",
+        "subs": "Unsubscribe from the Newsletter",
+        "subs_btn": "Validate",
+        "unsubs_btn": "Validate"
+      },
+      "modify_btn": "Modify your profile info"
+    },
     "sales": {
       "title": "My sales orders",
       "table_labels": {
-        "ordernum" : "Order Number",
-        "orderdate" : "Order Date",
+        "ordernum": "Order Number",
+        "orderdate": "Order Date",
         "pricenet": "Price",
-        "status" : "Status"
-
-        }
+        "status": "Status",
+        "action": "Action"
+      }
     },
     "address": {
       "title": "My addresses",
       "name": "First and last name",
+      "email": "Email",
       "street": "Postal Address",
+      "street2": "Street 2",
       "zip": "Zip Code",
       "city": "City",
       "phone": "Telephone",
       "country": "Country",
-      "noresults": "No address found",
-      "count":"{count} result(s)",
-      "edit":"Update an address",
+      "noresult": "No address found",
+      "count": "{count} result(s)",
+      "edit": "Update an address",
+      "fetch": {
+        "error": "An error occured while fetching your addresses"
+      },
+      "type": {
+        "contact": "Contact address",
+        "delivery": "Delivery address",
+        "invoice": "Invoice address"
+      },
+      "delete": {
+        "confirm": "Are you sure you want to delete this address ?",
+        "error": "An error occured while deleting this address",
+        "success": "Address deleted"
+      }
+    },
     "quotations": "My quotations",
-    "invoices" : "My invoices",
-    "emptylist" : "No data available"
-  },
-  "btn": {
-    "view_more": "View more",
-  "address": {
-    "name": "First and last name",
-    "street": "Postal Address",
-    "zip": "Zip Code",
-    "city": "City",
-    "phone": "Telephone",
-    "country": "Country",
-    "noresult": "No address found",
-    "count":"{count} result(s)",
-    "edit":"Update an address",
-    "fetch": {
-      "error": "An error occured while fetching your addresses"
-    },
-    "type" : {
-      "contact": "Contact address",
-      "delivery": "Delivery address",
-      "invoice": "Invoice address"
-    },
-    "delete": {
-      "confirm": "Are you sure you want to delete this address ?",
-      "error": "An error occured while deleting this address",
-      "success": "Address deleted"
-    }
+    "invoices": "My invoices",
+    "emptylist": "No data available"
   },
   "pagination": {
     "showperpage": "Items per page",
     "status": "{boundStart}-{boundStop} of {totalItems}"
   },
-
   "actions": {
     "modify": "Modify",
     "update": "Update",
-    "create": "Create" ,
+    "create": "Create",
     "validate": "validate",
     "close": "close"
   },
   "btn": {
     "view_more": "View more"
-  },
-  "pagination": {
-    "showperpage": "Items per page",
-    "status": "{boundStart}-{boundStop} of {totalItems}"
   }
-
 }

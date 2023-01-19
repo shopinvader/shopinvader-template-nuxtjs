@@ -2,7 +2,7 @@ import { Address } from './Address'
 
 export class SaleInvoicing {
   address: Address
-  constructor (data: any) {
+  constructor(data: any) {
     this.address = data.address ? new Address(data.address) : null
   }
 }
@@ -11,7 +11,7 @@ export class SaleShippingAmount {
   tax: number
   untaxed: number
   total: number
-  constructor (data: any) {
+  constructor(data: any) {
     this.tax = data?.tax
     this.untaxed = data?.untaxed
     this.total = data?.total
@@ -24,7 +24,7 @@ export class SaleShippingCarrier {
   description: string
   type: string
   code: string
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.name = data?.name
     this.description = data?.description
@@ -37,10 +37,12 @@ export class SaleShipping {
   address: Address
   amount: SaleShippingAmount
   selectedCarrier: SaleShippingCarrier
-  constructor (data: any) {
+  constructor(data: any) {
     this.address = data.address ? new Address(data.address) : null
     this.amount = data.amount ? new SaleShippingAmount(data.amount) : null
-    this.selectedCarrier = data.selected_carrier ? new SaleShippingCarrier(data.selected_carrier) : null
+    this.selectedCarrier = data.selected_carrier
+      ? new SaleShippingCarrier(data.selected_carrier)
+      : null
   }
 }
 
@@ -50,7 +52,7 @@ export class SaleAmount {
   untaxed: number
   total: number
   totalWithoutDiscount: number
-  constructor (data: any) {
+  constructor(data: any) {
     this.price = data?.price
     this.tax = data?.tax
     this.untaxed = data?.untaxed
@@ -63,7 +65,7 @@ export class SaleProductImage {
   src: string
   alt: string
   tag: string
-  constructor (data: any) {
+  constructor(data: any) {
     this.src = data?.src
     this.alt = data?.alt
     this.tag = data?.tag
@@ -74,7 +76,7 @@ export class SaleProductImageSet {
   small: SaleProductImage
   medium: SaleProductImage
   large: SaleProductImage
-  constructor (data: any) {
+  constructor(data: any) {
     this.small = data.small ? new SaleProductImage(data.small) : null
     this.medium = data.small ? new SaleProductImage(data.medium) : null
     this.large = data.small ? new SaleProductImage(data.large) : null
@@ -83,7 +85,7 @@ export class SaleProductImageSet {
 
 export class SaleProductModel {
   name: string
-  constructor (data: any) {
+  constructor(data: any) {
     this.name = data?.name
   }
 }
@@ -96,14 +98,16 @@ export class SaleProduct {
   images: SaleProductImageSet[]
   model: SaleProductModel
   urlKey: string
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.sku = data?.sku
     this.name = data?.name
     this.shortName = data?.short_name
     this.images = []
     if (data && data.images) {
-      data.images.forEach((image: any) => this.images.push(new SaleProductImageSet(image)))
+      data.images.forEach((image: any) =>
+        this.images.push(new SaleProductImageSet(image))
+      )
     }
     this.model = data.model ? new SaleProductModel(data.model) : null
     this.urlKey = data?.url_key
@@ -113,7 +117,7 @@ export class SaleProduct {
 export class SaleDiscount {
   rate: number
   value: number
-  constructor (data: any) {
+  constructor(data: any) {
     this.rate = data?.rate
     this.value = data?.value
   }
@@ -121,7 +125,7 @@ export class SaleDiscount {
 export class SaleUnitPrice {
   untaxedWithDiscount: number
   untaxed: number
-  constructor (data: any) {
+  constructor(data: any) {
     this.untaxedWithDiscount = data?.untaxed_with_discount
     this.untaxed = data?.untaxed
   }
@@ -137,7 +141,7 @@ export class SaleItem {
   amount: SaleAmount
   discount: SaleDiscount
   unitPrice: SaleUnitPrice
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.qty = data?.qty
     this.qtyDelivered = data?.qty_delivered
@@ -153,7 +157,7 @@ export class SaleItem {
 export class SaleLines {
   count: number
   items: SaleItem[]
-  constructor (data: any) {
+  constructor(data: any) {
     this.count = data?.count
     this.items = []
     if (data && data.items) {
@@ -166,7 +170,7 @@ export class SaleInvoice {
   id: number
   name: string
   date: Date
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.name = data?.name
     this.date = data && data.date ? new Date(data.date) : null
@@ -176,7 +180,7 @@ export class SaleInvoice {
 export class SalePaiementMode {
   id: number
   name: string
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.name = data?.name
   }
@@ -184,7 +188,7 @@ export class SalePaiementMode {
 
 export class SalePaiement {
   mode: SalePaiementMode
-  constructor (data: any) {
+  constructor(data: any) {
     this.mode = data.mode ? new SalePaiementMode(data.mode) : null
   }
 }
@@ -205,7 +209,7 @@ export class Sale {
   suiteName: string
   payment: SalePaiement
 
-  constructor (data: any) {
+  constructor(data: any) {
     this.id = data?.id
     this.name = data?.name
     this.date = data && data.date ? new Date(data.date) : null
@@ -215,7 +219,9 @@ export class Sale {
     this.invoicing = data.invoicing ? new SaleInvoicing(data.invoicing) : null
     this.invoices = []
     if (data && data.invoices) {
-      data.invoices.forEach((invoice: any) => this.invoices.push(new SaleInvoice(invoice)))
+      data.invoices.forEach((invoice: any) =>
+        this.invoices.push(new SaleInvoice(invoice))
+      )
     }
     this.lines = data.lines ? new SaleLines(data.lines) : null
     this.amount = data.amount ? new SaleAmount(data.amount) : null
