@@ -14,7 +14,7 @@
       <span v-if="address.addressType !== 'profile'">
         {{ address?.title?.name || '' }}
       </span>
-      {{ address.name }}
+      <span class="mx-1">{{ address.name }}</span>
     </div>
     <div class="address-card__content">
       <template v-if="!edit">
