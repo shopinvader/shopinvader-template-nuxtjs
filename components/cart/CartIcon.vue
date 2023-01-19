@@ -1,9 +1,9 @@
 <template>
   <nuxt-link :to="localePath({ path: '/cart' })" class="relative px-2">
     <div>
-      <Icon icon="clarity:shopping-bag-line" class="text-5xl" />
+      <Icon icon="clarity:shopping-bag-line" class="text-3xl lg:text-5xl" />
     </div>
-    <div v-if="hasCart" class="badge-secondary badge absolute -right-2 -top-1">
+    <div v-if="hasCart" class="absolute-right-2 badge-secondary badge -top-1">
       {{ linesCount }}
     </div>
   </nuxt-link>

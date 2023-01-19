@@ -6,9 +6,9 @@
       </button>
     </template>
     <template v-else>
-      <div class="dropdown-end dropdown">
-        <label tabindex="0" class="btn btn-ghost text-info">
-          <Icon icon="ph:user" class="text-5xl text-blue-500" />
+      <div class="dropdown dropdown-end">
+        <label tabindex="0" class="btn-ghost btn text-info">
+          <Icon icon="ph:user" class="text-3xl text-blue-500 lg:text-5xl" />
         </label>
         <ul
           tabindex="0"
