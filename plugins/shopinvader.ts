@@ -102,7 +102,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       cart: null,
       settings: null,
       addresses: null,
-      sales: new SaleService(providers?.erp as ElasticFetch),
+      sales: null,
       customer: new CustomerService(providers?.erp as ErpFetch)
     }
   }
