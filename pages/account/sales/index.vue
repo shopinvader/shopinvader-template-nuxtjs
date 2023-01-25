@@ -13,10 +13,10 @@
         </div>
       </div>
     </template>
-    <template #content>
+    <template v-if="sales" #content>
       <template v-if="working"> ... </template>
       <div class="overflow-x-auto">
-        <table v-if="sales" class="table-zebra table w-full">
+        <table v-if="sales" class="table-zebra table hidden w-full md:table">
           <thead>
             <tr>
               <th class="px-2 text-left">
@@ -78,6 +78,55 @@
             </template>
           </tbody>
         </table>
+        <div class="sales-table-sm__content">
+          <template v-if="sales.length === 0">
+            <div class="w-full">
+              <div colspan="100%">
+                {{ $t('account.emptylist') }}
+              </div>
+            </div>
+          </template>
+          <template v-else>
+            <div
+              v-for="sale in sales"
+              :key="'' + sale.id"
+              class="sales-table-sm__rows"
+            >
+              <div class="sales-table-sm__col">
+                <div>
+                  <span class="mx-1">
+                    {{ $t('account.sales.table_labels.ordernum') }}
+                  </span>
+                  <span>
+                    {{ sale.name }}
+                  </span>
+                </div>
+                <div v-if="sale.date" class="my-1 text-lg font-bold">
+                  {{ sale.date.toLocaleDateString($i18n.locale) }}
+                </div>
+                <div class="border-l-4 border-primary px-2">
+                  <span class="badge badge-xs p-2 text-xs">
+                    {{ sale.stateLabel }}
+                  </span>
+                </div>
+              </div>
+              <div class="sales-table-sm__col">
+                <div
+                  v-if="sale.amount"
+                  class="flex justify-end align-middle text-lg"
+                >
+                  {{ $filter.currency(sale.amount.total) }}
+
+                  <icon
+                    icon="material-symbols:chevron-right"
+                    class="mr-2 font-bold text-primary text-2xl"
+                    @click="showDetails(sale)"
+                  />
+                </div>
+              </div>
+            </div>
+          </template>
+        </div>
       </div>
 
       <div v-if="count > 0" class="flex flex-col py-3">
@@ -240,3 +289,25 @@ export default defineNuxtComponent({
   }
 })
 </script>
+<style lang="scss">
+.sales-table-sm {
+  @apply block flex w-full md:hidden;
+
+  &__header {
+    @apply w-1/4  font-bold first-line:px-2;
+  }
+
+  &__content {
+    @apply flex flex-col border-b md:hidden;
+  }
+  &__rows {
+    @apply hover flex flex-row flex-wrap border-b py-3;
+  }
+  &__col {
+    @apply flex w-1/2 flex-col justify-center align-middle text-sm first-letter:p-2;
+  }
+  &__action {
+    @apply ml-auto w-full py-2;
+  }
+}
+</style>
