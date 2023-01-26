@@ -15,32 +15,39 @@
       <template v-if="customer">
         <div class="w-full p-2">
           <address-card :address="customer" class="h-full w-full">
-            <template #actions>
-              <div class="form-control w-full flex-row px-0">
-                <label class="label cursor-pointer">
-                  <span class="label-text mr-2 text-base">
-                    {{ $t('account.profile.newsletter.title') }}</span
-                  >
-                  <input
-                    v-model="customer.optIn"
-                    type="checkbox"
-                    class="toggle-primary toggle"
-                    :checked="customer.optIn == true"
-                    @change="toggleNewsletter"
-                  />
-                </label>
-              </div>
-              <button class="btn-primary btn-sm btn" @click="changePassword()">
-                {{ $t('account.profile.changepwd') }}
-              </button>
-              <button
-                v-if="customer.access?.update"
-                class="btn-primary btn-sm btn-circle btn"
-                :title="$t('actions.update')"
-                @click="editedAddress = customer"
+            <template #footer>
+              <div
+                class="flex w-full flex-col content-center justify-center align-middle md:flex-row"
               >
-                <icon icon="mdi:edit" class="text-lg text-white"></icon>
-              </button>
+                <div class="form-control w-full flex-row px-0">
+                  <label class="label cursor-pointer">
+                    <span class="label-text mr-2 mb-2 text-base">
+                      {{ $t('account.profile.newsletter.title') }}
+                    </span>
+                    <input
+                      v-model="customer.optIn"
+                      type="checkbox"
+                      class="toggle-primary toggle"
+                      :checked="customer.optIn == true"
+                      @change="toggleNewsletter"
+                    />
+                  </label>
+                </div>
+                <button
+                  class="btn-primary btn-sm btn mb-2 content-center align-middle md:my-2 md:mr-1"
+                  @click="changePassword()"
+                >
+                  {{ $t('account.profile.changepwd') }}
+                </button>
+                <button
+                  v-if="customer.access?.update"
+                  class="btn-primary btn-sm btn md:my-2 md:btn-circle"
+                  :title="$t('actions.update')"
+                  @click="editedAddress = customer"
+                >
+                  <icon icon="mdi:edit" class="text-lg text-white"></icon>
+                </button>
+              </div>
             </template>
           </address-card>
         </div>
@@ -142,13 +149,10 @@ export default defineNuxtComponent({
       const notifications = useNotification()
 
       try {
-        await services?.customer
-          ?.toggleOptOutCustomer(this.customer, {
-            opt_in: this.customer?.optIn
-          })
-          .then((res) => {
-            this.customer = res
-          })
+        await services?.customer?.toggleOptOutCustomer(this.customer, {
+          opt_in: this.customer?.optIn
+        })
+
         notifications.addMessage(
           this.$t('account.profile.newsletter.modify_success') as string
         )

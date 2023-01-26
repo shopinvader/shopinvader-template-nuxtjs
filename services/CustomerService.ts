@@ -18,11 +18,15 @@ export class CustomerService {
     return null
   }
   async toggleOptOutCustomer(customer: Address, optIn: any): Promise<Address> {
-    const res = await this.provider?.post('addresses/' + customer.id, {
-      optIn
-    })
+    const res = await this.provider?.post(
+      'customer/' + customer.id + '/update',
+      {
+        optIn
+      }
+    )
     if (res) {
-      return new Address(res.data[0])
+      console.log('res', res.data)
+      return new Address(res.data)
     }
     return null
   }
