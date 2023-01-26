@@ -33,6 +33,12 @@
         </li>
       </ul>
     </li>
+    <li class="nav-item-sm">
+      <nuxt-link to="/account">
+        <Icon icon="ph:user" class="text-sm text-blue-500" />
+        {{ $t('account.title') }}
+      </nuxt-link>
+    </li>
   </ul>
 </template>
 <script lang="ts">
@@ -69,6 +75,9 @@ export default {
         @apply text-sm;
       }
     }
+  }
+  &-item-sm {
+    @apply flex md:hidden;
   }
 }
 </style>

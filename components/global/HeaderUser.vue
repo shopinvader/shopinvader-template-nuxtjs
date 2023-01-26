@@ -15,7 +15,7 @@
           class="dropdown-content menu rounded-box w-64 bg-base-100 shadow"
         >
           <li>
-            <nuxt-link to="/account/profile">
+            <nuxt-link to="/account">
               {{ $t('account.title') }}
             </nuxt-link>
           </li>

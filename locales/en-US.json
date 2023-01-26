@@ -49,7 +49,7 @@
     "title": "My account",
     "logout": "Logout",
     "profile": {
-      "title": "My account information",
+      "title": "My personal information",
       "accountdata": "Your account profile",
       "contact": "Your contact information",
       "changepwd": "Change your password",

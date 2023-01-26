@@ -2,7 +2,7 @@
   <nav class="accountNavbar">
     <div class="accountNavbar-content">
       <div class="accountNavbar-content-intro">
-        <NuxtLink to="/account/profile">
+        <NuxtLink to="/account">
           {{ $t('account.title') }}
         </NuxtLink>
       </div>
