@@ -2,13 +2,16 @@
   <div class="align-center relative flex">
     <template v-if="user == null">
       <button @click="signin">
-        <Icon icon="ph:user" class="text-5xl" />
+        <Icon icon="clarity:user-line" class="text-3xl lg:text-5xl" />
       </button>
     </template>
     <template v-else>
-      <div class="dropdown dropdown-end">
+      <div class="dropdown-end dropdown">
         <label tabindex="0" class="btn-ghost btn text-info">
-          <Icon icon="ph:user" class="text-3xl text-blue-500 lg:text-5xl" />
+          <Icon
+            icon="clarity:user-line"
+            class="text-3xl text-blue-500 lg:text-5xl"
+          />
         </label>
         <ul
           tabindex="0"

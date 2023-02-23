@@ -1,27 +1,11 @@
 <template>
-  <search-base :size="30" :provider="providerFunction">
-    <template #filters>
-      <search-terms-aggregation
-        name="categories"
-        nested-path="categories"
-        field="categories.name"
-        title="Categories"
-        :aggregation-query="categoryQuery"
-        url-param="category"
-      ></search-terms-aggregation>
-      <search-terms-aggregation
-        name="name"
-        field="name"
-        title="Name"
-        url-param="name"
-      ></search-terms-aggregation>
-      <search-terms-aggregation
-        name="manufacturer"
-        field="manufacturer.name"
-        title="manufacturer"
-        url-param="manufacturer"
-      ></search-terms-aggregation>
-    </template>
+  <search-base
+    :key="instanceKey"
+    :size="30"
+    :provider="providerFunction"
+    :query="query"
+  >
+    <template #filters> </template>
     <template #header>
       <search-selected-filters></search-selected-filters>
     </template>
@@ -41,35 +25,46 @@
 <script lang="ts">
 import ProductHit from '~/components/product/ProductHit.vue'
 import { Product } from '~/models/Product'
+import { ProductService } from '~/services/ProductService'
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
-import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
-import { BoolQuery, TermQuery } from 'elastic-builder'
+import esb, { BoolQuery, TermQuery } from 'elastic-builder'
 
 export default {
   components: {
     ProductHit,
     'search-base': SearchBaseVue,
-    'search-terms-aggregation': SearchTermsAggregation,
     'search-selected-filters': SearchSelectedFilters
   },
   layout: 'default',
+  setup() {
+    const $route = useRoute()
+    const instanceKey = ref(0)
+    watch($route, () => {
+      instanceKey.value++
+    })
+    return {
+      instanceKey
+    }
+  },
   data() {
     return {
       layout: 'grid',
+      queryFunction: null,
       facets: {
         name: [],
         url: []
       }
     }
   },
+
   methods: {
     transformResult(result: any) {
       return result?.hits?.hits?.map((data: any) => new Product(data._source))
     },
-    providerFunction(body: any) {
+    async providerFunction(body: any) {
       const services = useShopinvaderServices()
-      return services?.products?.search(body) || null
+      return (await services?.products?.search(body)) || null
     },
     categoryQuery(query: BoolQuery) {
       if (query !== null) {
@@ -79,6 +74,15 @@ export default {
       }
 
       return query
+    },
+    query() {
+      const route = useRoute()
+      const query: string | null = route.query?.q || null
+      if (query !== null) {
+        return ProductService.fullTextQuery(query)
+      } else {
+        return esb.matchAllQuery()
+      }
     }
   }
 }

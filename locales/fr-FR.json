@@ -12,6 +12,17 @@
     },
     "sort": {
       "label": "Trier par"
+    },
+    "autocomplete": {
+      "noresults": "Aucun résultat",
+      "search": "Rechercher",
+      "suggestions": "Suggestions de recherche",
+      "category": "Catégories",
+      "product": "Recherche de produit par '{query}'",
+      "products_history": "Produits déjà consultés",
+      "queries": "Mes recherches récentes",
+      "clear": "Effacer",
+      "seeall": "Voir tout"
     }
   },
   "404": {
@@ -28,7 +39,13 @@
     },
     "up_selling": {
       "title": "Autres produits"
+    },
+    "history": {
+      "title": "Produits déjà consultés",
+      "clear": "Effacer"
+
     }
+
   },
   "cart": {
     "title": "Panier",

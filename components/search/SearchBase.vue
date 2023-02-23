@@ -75,6 +75,7 @@
             </div>
           </slot>
         </template>
+
         <template v-else>
           <slot name="no-results" :total="total" :response="response">
             <div>{{ $t('search.noresults') }}</div>
@@ -150,7 +151,7 @@ export default {
     if (provider === null) {
       throw new Error('No provider found for products')
     }
-
+    let error = ref(null)
     let filters = reactive([] as Filter[])
     let loading = ref(true)
     let displayfilters = ref(false)
@@ -264,6 +265,7 @@ export default {
       loading,
       displayfilters,
       sort,
+      error,
       changePage,
       search
     }

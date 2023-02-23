@@ -2,16 +2,16 @@
   <div class="aside-menu drawer">
     <input :id="name" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
-      <div :class="classContent">
-        <div class="flex-none lg:hidden">
+      <div class="content" :class="classContent">
+        <div class="content__button">
           <label :for="name" class="btn-ghost btn-square btn">
             <slot name="button"></slot>
           </label>
         </div>
-        <div class="mx-2 flex-1 px-2 lg:flex-none">
+        <div class="content__title">
           <slot name="title"></slot>
         </div>
-        <div class="hidden flex-1 lg:block">
+        <div class="content__menu">
           <slot name="menu"></slot>
         </div>
         <slot name="content"></slot>
@@ -76,6 +76,20 @@ export default {
   overflow: visible;
   .drawer-content {
     overflow-y: visible;
+    .content {
+      &__button {
+        @apply flex-none lg:hidden;
+      }
+      &__title {
+        @apply mx-2 flex-1 px-2 lg:flex-none;
+      }
+      &__menu {
+        @apply hidden flex-1 lg:flex;
+      }
+      &__content {
+        @apply flex;
+      }
+    }
   }
   .drawer-toggle {
     &:checked ~ .drawer-side {

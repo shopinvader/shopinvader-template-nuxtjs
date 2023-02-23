@@ -5,14 +5,25 @@
     "es": "Español"
   },
   "search": {
+    "noresults": "Sin resultados",
+    "filter": "Filtrar",
+    "results":{
+      "count": "{count} resultado(s)"
+    },
+    "sort": {
+      "label": "Ordenar por"
+    },
+    "autocomplete": {
       "noresults": "Sin resultados",
-      "filter": "Filtrar",
-      "results":{
-        "count": "{count} resultado(s)"
-      },
-      "sort": {
-        "label": "Ordenar por"
-      }
+      "search": "Buscar",
+      "suggestions": "Sugerencias",
+      "category": "Categorías",
+      "product": "Burscar productos '{query}'",
+      "products_history": "Productos buscados recientemente",
+      "queries": "Búsquedas recientes",
+      "clear": "Borrar",
+      "seeall": "Ver todo"
+    }
   },
   "404": {
     "title": "Página no encontrada",
@@ -28,6 +39,10 @@
     },
     "up_selling": {
       "title": "Otros productos"
+    },
+    "history": {
+      "title": "Productos vistos recientemente",
+      "clear": "Borrar"
     }
   },
   "cart": {
