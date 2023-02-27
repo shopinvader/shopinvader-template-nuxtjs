@@ -33,23 +33,34 @@
         </li>
       </ul>
     </li>
+    <li class="nav-item-sm">
+      <nuxt-link to="/account">
+        <Icon icon="ph:user" class="text-sm text-blue-500" />
+        {{ $t('account.title') }}
+      </nuxt-link>
+    </li>
   </ul>
 </template>
 <script lang="ts">
 import { Category } from '~~/models/Category'
 export default {
   async setup() {
-    const services = useShopinvaderServices()
+    let categories: Category[] = []
+    try {
+      const services = useShopinvaderServices()
 
-    const result = await services?.categories?.search({
-      size: 10,
-      query: {
-        term: {
-          level: 0
+      const result = await services?.categories?.search({
+        size: 10,
+        query: {
+          term: {
+            level: 0
+          }
         }
-      }
-    })
-    const categories: Category[] = result?.hits || []
+      })
+      categories = result?.hits || []
+    } catch (error) {
+      console.error(error)
+    }
 
     return {
       categories
@@ -69,6 +80,9 @@ export default {
         @apply text-sm;
       }
     }
+  }
+  &-item-sm {
+    @apply flex md:hidden;
   }
 }
 </style>

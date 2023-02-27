@@ -15,13 +15,18 @@
           class="dropdown-content menu rounded-box w-64 bg-base-100 shadow"
         >
           <li>
+            <nuxt-link to="/account">
+              {{ $t('account.title') }}
+            </nuxt-link>
+          </li>
+          <li>
             <button type="button" @click="logout">
               {{ $t('account.logout') }}
             </button>
           </li>
           <li>
             <nuxt-link to="/account/addresses">
-              {{ $t('account.address') }}
+              {{ $t('account.address.title') }}
             </nuxt-link>
           </li>
         </ul>
