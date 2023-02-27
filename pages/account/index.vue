@@ -39,7 +39,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .account-blocks {
-  @apply w-full px-4;
+  @apply w-full;
   &__list {
     @apply grid grid-cols-2 gap-4 lg:grid-cols-3;
   }

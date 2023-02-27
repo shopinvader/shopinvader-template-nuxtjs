@@ -107,7 +107,7 @@ export default defineNuxtComponent({
         }
       }
       &__content {
-        @apply container mx-auto min-h-screen py-3;
+        @apply container mx-auto min-h-screen p-3;
       }
     }
   }
