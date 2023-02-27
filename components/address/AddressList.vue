@@ -6,7 +6,7 @@
           {{ $t('account.address.count', { count: total }) }}
         </template>
       </div>
-      <button type="button" class="btn btn-sm" @click="createAddress">
+      <button type="button" class="btn-sm btn" @click="createAddress">
         <icon icon="mdi:plus" class="text-lg"></icon>
         {{ $t('actions.create') }}
       </button>
@@ -34,42 +34,39 @@
         {{ $t('account.address.noresult') }}
       </template>
       <div v-else class="list__content">
-        <div class="flex w-full flex-grow flex-wrap py-4">
-          <div
+        <div class="grid gap-4 pb-4 md:grid-cols-2">
+          <address-card
             v-for="address in addresses"
             :key="address.id"
-            class="flex w-full items-stretch md:w-1/2 lg:w-1/3"
+            :address="address"
+            class="h-full w-full"
           >
-            <div class="w-full p-2">
-              <address-card :address="address" class="h-full w-full">
-                <template #actions>
-                  <button
-                    v-if="address.access?.delete"
-                    class="btn-primary btn btn-sm btn-circle"
-                    :title="$t('actions.delete')"
-                    @click="deleteAddress(address)"
-                  >
-                    <icon icon="mdi:trash" class="text-lg text-white"></icon>
-                  </button>
-                  <button
-                    v-if="address.access?.update"
-                    class="btn-primary btn btn-sm btn-circle"
-                    :title="$t('actions.update')"
-                    @click="editedAddress = address"
-                  >
-                    <icon icon="mdi:edit" class="text-lg text-white"></icon>
-                  </button>
-                </template>
-              </address-card>
-            </div>
-          </div>
+            <template #actions>
+              <button
+                v-if="address.access?.delete"
+                class="btn-primary btn-sm btn-circle btn"
+                :title="$t('actions.delete')"
+                @click="deleteAddress(address)"
+              >
+                <icon icon="mdi:trash" class="text-lg text-white"></icon>
+              </button>
+              <button
+                v-if="address.access?.update"
+                class="btn-primary btn-sm btn-circle btn"
+                :title="$t('actions.update')"
+                @click="editedAddress = address"
+              >
+                <icon icon="mdi:edit" class="text-lg text-white"></icon>
+              </button>
+            </template>
+          </address-card>
         </div>
         <pagination
           v-if="addresses !== null && total > addresses?.length"
           :total="total"
           :size="perPage"
           :page="page"
-          class="w-full flex-grow px-2"
+          class="w-full flex-grow"
           @change="fetchAddresses($event)"
         >
         </pagination>
@@ -167,7 +164,11 @@ export default defineNuxtComponent({
       }
     },
     async deleteAddress(address: Address) {
-      if (confirm(this.$t('account.address.delete.confirm', { name: address.name }))) {
+      if (
+        confirm(
+          this.$t('account.address.delete.confirm', { name: address.name })
+        )
+      ) {
         const notifications = useNotification()
         const services = useShopinvaderServices()
         if (services?.addresses === null) return

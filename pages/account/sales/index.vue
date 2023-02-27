@@ -1,5 +1,5 @@
 <template>
-  <AccountLayout slug="sales">
+  <account-layout slug="sales">
     <template #title>
       <div class="flex items-center py-3">
         <div class="flex flex-grow items-center">
@@ -119,7 +119,7 @@
 
                   <icon
                     icon="material-symbols:chevron-right"
-                    class="mr-2 font-bold text-primary text-2xl"
+                    class="mr-2 text-2xl font-bold text-primary"
                     @click="showDetails(sale)"
                   />
                 </div>
@@ -146,22 +146,22 @@
             </option>
           </select>
         </div>
-        <PaginationStatus
+        <pagination-status
           :per-page="perPage"
           :page="page"
           :total-items="count"
           class="mx-auto"
-        ></PaginationStatus>
-        <Pagination
+        ></pagination-status>
+        <pagination
           :total="count"
           :size="perPage"
           :page="page"
           class="mx-auto"
           @change="onChangePage($event)"
-        ></Pagination>
+        ></pagination>
       </div>
     </template>
-  </AccountLayout>
+  </account-layout>
 </template>
 
 <script lang="ts">
@@ -174,9 +174,9 @@ import { ref } from 'vue'
 export default defineNuxtComponent({
   name: 'PageAccountSales',
   components: {
-    AccountLayout,
-    Pagination,
-    PaginationStatus
+    'account-layout': AccountLayout,
+    pagination: Pagination,
+    'pagination-status': PaginationStatus
   },
   setup(props) {
     const router = useRouter()
@@ -248,6 +248,7 @@ export default defineNuxtComponent({
     }
 
     function showDetails(sale: Sale) {
+      console.log('show details', sale)
       alert('not ready yet')
       // const router = useRouter()
       // router.push(localePath('/account/sales/' + sale.id))
