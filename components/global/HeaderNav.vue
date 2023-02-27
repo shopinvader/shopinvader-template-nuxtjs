@@ -45,17 +45,22 @@
 import { Category } from '~~/models/Category'
 export default {
   async setup() {
-    const services = useShopinvaderServices()
+    let categories: Category[] = []
+    try {
+      const services = useShopinvaderServices()
 
-    const result = await services?.categories?.search({
-      size: 10,
-      query: {
-        term: {
-          level: 0
+      const result = await services?.categories?.search({
+        size: 10,
+        query: {
+          term: {
+            level: 0
+          }
         }
-      }
-    })
-    const categories: Category[] = result?.hits || []
+      })
+      categories = result?.hits || []
+    } catch (error) {
+      console.error(error)
+    }
 
     return {
       categories
