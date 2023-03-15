@@ -4,21 +4,17 @@
     </category-detail>
     <product-detail v-else-if="product !== null" :product="product">
     </product-detail>
-    <page-not-found-error v-else></page-not-found-error>
   </div>
 </template>
 <script lang="ts">
-import PageNotFoundError from '~~/components/global/PageNotFoundError.vue'
 import CategoryDetail from '~~/components/category/CategoryDetail.vue'
 import ProductDetail from '~~/components/product/ProductDetail.vue'
-
 import { Category } from '~~/models/Category'
-
 import { Product } from '~~/models/Product'
+
 export default {
   name: 'CategoryPage',
   components: {
-    'page-not-found-error': PageNotFoundError,
     'category-detail': CategoryDetail,
     'product-detail': ProductDetail
   },
@@ -46,21 +42,29 @@ export default {
     }
 
     if (path !== null) {
-      let entity = await getEntity(path)
-      if (entity instanceof Category) {
-        category.value = entity
-      } else if (entity instanceof Product) {
-        product.value = entity
+      try {
+        let entity = await getEntity(path)
+        if (entity instanceof Category) {
+          category.value = entity
+        } else if (entity instanceof Product) {
+          product.value = entity
+        }
+        if (entity) {
+          useHead({
+            title: entity?.name,
+            meta: [
+              {
+                name: 'description',
+                content: entity?.metaDescription || ''
+              }
+            ]
+          })
+        } else {
+          throw createError({ statusCode: 404, message: 'Page not found' })
+        }
+      } catch (error) {
+        throw createError({ statusCode: 500, message: error || 'error' })
       }
-      useHead({
-        title: entity?.name,
-        meta: [
-          {
-            name: 'description',
-            content: entity?.metaDescription || ''
-          }
-        ]
-      })
     }
     return {
       product,

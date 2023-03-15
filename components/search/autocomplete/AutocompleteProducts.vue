@@ -10,7 +10,10 @@
             {{ $t('search.autocomplete.product', { query }) }}
           </div>
         </div>
-        <template v-if="searchResults.hits.length">
+        <div v-if="error" class="autocomplete-error">
+          {{ $t('error.generic') }}
+        </div>
+        <template v-else-if="searchResults.hits.length">
           <div class="autocomplete-products">
             <div
               v-for="product in searchResults.hits"
@@ -82,6 +85,8 @@ export default {
   emits: ['setTotal', 'setSuggestions', 'go-search'],
   setup(props, { emit }) {
     let loading = ref(false)
+    let error = ref(false)
+
     let searchResults = reactive({
       hits: [] as Product[],
       suggestions: [] as any,
@@ -89,21 +94,30 @@ export default {
     } as ProductResult)
 
     const onSearch = async (query: string) => {
-      const productService = useShopinvaderServices()?.products || null
-      loading.value = true
+      try {
+        const productService = useShopinvaderServices()?.products || null
+        loading.value = true
 
-      if (productService) {
-        const { hits, suggestions, total } =
-          (await productService.autocompleteSearch(query, 6)) || null
+        if (productService) {
+          const { hits, suggestions, total } =
+            (await productService.autocompleteSearch(query, 6)) || null
 
-        searchResults.hits = hits
-        searchResults.suggestions = suggestions
-        searchResults.total = total
-        emit('setTotal', total)
-        emit('setSuggestions', suggestions)
+          searchResults.hits = hits
+          searchResults.suggestions = suggestions
+          searchResults.total = total
+          emit('setTotal', total)
+          emit('setSuggestions', suggestions)
+        }
+      } catch (e) {
+        searchResults.hits = []
+        searchResults.suggestions = []
+        searchResults.total = 0
+        error.value = true
+      } finally {
+        loading.value = false
       }
-      loading.value = false
     }
+
     watch(props, async (props) => {
       const { query = '' } = props
       if (!query) {
@@ -118,9 +132,10 @@ export default {
       emit('go-search')
     }
     return {
-      onSearch,
       loading,
       searchResults,
+      error,
+      onSearch,
       goSearchPage
     }
   }
@@ -129,6 +144,9 @@ export default {
 <style lang="scss">
 .autocomplete-loading {
   @apply flex h-32 items-center justify-center;
+}
+.autocomplete-error {
+  @apply m-2 py-10 text-center text-error;
 }
 .autocomplete-products {
   @apply grid grid-cols-2 gap-2 p-3 py-2 md:grid-cols-3;

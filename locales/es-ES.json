@@ -93,5 +93,9 @@
     "update": "Actualizar",
     "create": "Crear" ,
     "validate": "Validar"
+  },
+  "error": {
+    "generic": "Ocurrio un error inesperado, por favor intenta lo más tarde.",
+    "404": "La página que estás buscando no existe.",
   }
 }

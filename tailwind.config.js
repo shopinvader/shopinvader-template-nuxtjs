@@ -4,9 +4,9 @@ module.exports = {
   // daisyUI config (optional)
   daisyui: {
     themes: [
+      'cupcake',
       'light',
       'dark',
-      'cupcake',
       'bumblebee',
       'emerald',
       'corporate',

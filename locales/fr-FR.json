@@ -95,5 +95,8 @@
     "update": "Actualiser",
     "create": "Créer " ,
     "validate": "Valider"
+  },
+  "error": {
+    "generic": "Une erreur est survenue, veuillez essayer à nouveau ultérieurement.",
   }
 }

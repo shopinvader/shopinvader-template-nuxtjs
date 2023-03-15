@@ -40,16 +40,22 @@ import { Category } from '~~/models/Category'
 export default defineNuxtComponent({
   fetchKey: 'category',
   async asyncData() {
-    const services = useShopinvaderServices()
-    const result = await services?.categories?.search({
-      size: 10,
-      query: {
-        term: {
-          level: 0
+    let categories: Category[] = []
+    try {
+      const services = useShopinvaderServices()
+      const result = await services?.categories?.search({
+        size: 10,
+        query: {
+          term: {
+            level: 0
+          }
         }
-      }
-    })
-    const categories: Category[] = result?.hits || []
+      })
+      categories = result?.hits || []
+    } catch (e) {
+      categories = []
+    }
+
     return {
       categories
     }

@@ -97,5 +97,8 @@
     "create": "Create" ,
     "validate": "validate",
     "close": "close"
+  },
+  "error": {
+    "generic": "An error occured, please try again later"
   }
 }

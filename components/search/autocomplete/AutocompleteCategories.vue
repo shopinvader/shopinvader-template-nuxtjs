@@ -30,20 +30,25 @@ export default {
   },
 
   setup(props) {
+    let error = ref('')
     let searchResults = reactive({
       hits: [] as Category[],
       total: null as number | null
     } as CategoryResult)
 
     const onSearch = async (query: string) => {
-      const categoryService = useShopinvaderServices()?.categories || null
+      try {
+        const categoryService = useShopinvaderServices()?.categories || null
 
-      if (categoryService) {
-        const { hits, total } =
-          (await categoryService.autocompleteSearch(query, 6)) || null
+        if (categoryService) {
+          const { hits, total } =
+            (await categoryService.autocompleteSearch(query, 6)) || null
 
-        searchResults.hits = hits
-        searchResults.total = total
+          searchResults.hits = hits
+          searchResults.total = total
+        }
+      } catch (e) {
+        error.value = e as string
       }
     }
 

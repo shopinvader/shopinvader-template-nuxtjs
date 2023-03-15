@@ -36,6 +36,15 @@ export const fetchAPI = async (url: string, options: any) => {
   return await fetch(url, options)
 }
 
+export const fetchElastic = async (url: string, options: any) => {
+  const response = await fetch(url, options)
+  if (response.status !== 200) {
+    console.log('Error', response.status, response.statusText)
+    throw new Error(response.statusText)
+  }
+  return response
+}
+
 export const initProviders = (isoLocale: string | null = null) => {
   const providers: ShopinvaderProvidersList = {}
   const options = useRuntimeConfig()?.shopinvader || null
@@ -71,7 +80,7 @@ export const initProviders = (isoLocale: string | null = null) => {
       providers[index.name] = new ElasticFetch(
         elasticsearch.url,
         index?.index,
-        fetch
+        fetchElastic
       )
     }
     const allIndex = indices.map((index) => index.index).join(',')
