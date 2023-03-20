@@ -33,10 +33,17 @@
         </li>
       </ul>
     </li>
+    <li class="nav-item-sm">
+      <nuxt-link to="/account">
+        <Icon icon="ph:user" class="text-sm text-blue-500" />
+        {{ $t('account.title') }}
+      </nuxt-link>
+    </li>
   </ul>
 </template>
 <script lang="ts">
 import { Category } from '~~/models/Category'
+
 export default defineNuxtComponent({
   fetchKey: 'category',
   async asyncData() {
@@ -52,8 +59,9 @@ export default defineNuxtComponent({
         }
       })
       categories = result?.hits || []
-    } catch (e) {
+    } catch (error) {
       categories = []
+      console.error(error)
     }
 
     return {
@@ -74,6 +82,9 @@ export default defineNuxtComponent({
         @apply text-sm;
       }
     }
+  }
+  &-item-sm {
+    @apply flex md:hidden;
   }
 }
 </style>

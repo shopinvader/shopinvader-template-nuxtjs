@@ -17,7 +17,7 @@
     </div>
     <div class="form-control inline-block w-full">
       <label class="label">
-        <span class="label-text">{{ $t('address.name') }}</span>
+        <span class="label-text">{{ $t('account.address.name') }}</span>
       </label>
       <input
         v-model="value.name"
@@ -29,7 +29,7 @@
     </div>
     <div class="form-control inline-block w-full">
       <label class="label">
-        <span class="label-text">{{ $t('address.street') }}</span>
+        <span class="label-text">{{ $t('account.address.street') }}</span>
       </label>
       <input
         v-model="value.street"
@@ -41,7 +41,7 @@
     </div>
     <div class="form-control inline-block w-full">
       <label class="label">
-        <span class="label-text">{{ $t('address.street2') }}</span>
+        <span class="label-text">{{ $t('account.address.street2') }}</span>
       </label>
       <input
         v-model="value.street2"
@@ -52,7 +52,7 @@
     </div>
     <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
       <label class="label">
-        <span class="label-text">{{ $t('address.zip') }}</span>
+        <span class="label-text">{{ $t('account.address.zip') }}</span>
       </label>
       <input
         v-model="value.zip"
@@ -64,7 +64,7 @@
     </div>
     <div class="form-control inline-block w-full md:w-2/3">
       <label class="label">
-        <span class="label-text">{{ $t('address.city') }}</span>
+        <span class="label-text">{{ $t('account.address.city') }}</span>
       </label>
       <input
         v-model="value.city"
@@ -76,7 +76,7 @@
     </div>
     <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
       <label class="label">
-        <span class="label-text">{{ $t('address.country') }}</span>
+        <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select
         v-model="value.country.id"
@@ -84,7 +84,7 @@
         :disabled="submitted"
         required
       >
-        <option disabled>{{ $t('address.country') }}</option>
+        <option disabled>{{ $t('account.address.country') }}</option>
         <option
           v-for="country of countries"
           :key="country.id"
@@ -97,7 +97,7 @@
     </div>
     <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs">
       <label class="label">
-        <span class="label-text">{{ $t('address.phone') }}</span>
+        <span class="label-text">{{ $t('account.address.phone') }}</span>
       </label>
       <input
         v-model="value.phone"

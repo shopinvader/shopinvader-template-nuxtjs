@@ -1,23 +1,34 @@
 <template>
   <div class="address-card">
     <div class="address-card__header">
-      <icon icon="ic:sharp-location-on" class="text-xl text-primary"></icon>
-      {{ address?.title?.name || '' }}
-      {{ address.name }}
+      <icon
+        v-if="address.addressType !== 'profile'"
+        icon="ic:sharp-location-on"
+        class="text-xl text-primary"
+      ></icon>
+      <icon
+        v-else
+        icon="ic:outline-account-circle"
+        class="text-xl text-primary"
+      ></icon>
+
+      <span class="mx-1">{{ address.name }}</span>
     </div>
     <div class="address-card__content">
       <template v-if="!edit">
         <p>{{ address.email }}</p>
-        <p>{{ address.street }}</p>
-        <p>
-          {{ address.zip }} {{ address.city }} - {{ address.country?.name }}
-        </p>
-        <p v-if="address.phone !== null">
-          {{ address.phone }}
-        </p>
-        <p v-if="address.mobile !== null">
-          {{ address.mobile }}
-        </p>
+        <span v-if="address.addressType !== 'profile'">
+          <p>{{ address.street }}</p>
+          <p>
+            {{ address.zip }} {{ address.city }} - {{ address.country?.name }}
+          </p>
+          <p v-if="address.phone !== null">
+            {{ address.phone }}
+          </p>
+          <p v-if="address.mobile !== null">
+            {{ address.mobile }}
+          </p>
+        </span>
       </template>
       <address-form v-else :address="address"></address-form>
     </div>

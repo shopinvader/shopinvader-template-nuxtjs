@@ -7,7 +7,7 @@
   "search": {
     "noresults": "Sin resultados",
     "filter": "Filtrar",
-    "results":{
+    "results": {
       "count": "{count} resultado(s)"
     },
     "sort": {
@@ -61,41 +61,80 @@
     "loading": "Cargando...",
     "title": "Mi cuenta",
     "logout": "Cerrar sesión",
+    "profile": {
+      "title": "Información de mi cuenta",
+      "accountdata": "Mi Perfil",
+      "contact": "Información de contact",
+      "changepwd": "Cambiar contraseña",
+      "newsletter": {
+        "title": "Suscripción al Newsletter",
+        "unsubs": "Darme de baja al Newsletter",
+        "subs": "Darme de alta al Newsletter",
+        "subs_btn": "Confirmar",
+        "unsubs_btn": "Confirmar baja"
+      },
+      "modify_btn": "Editar la información de perfil"
+    },
+    "sales": {
+      "title": "Mis pedidos",
+      "table_labels": {
+        "ordernum": "Número de pedido",
+        "orderdate": "Fecha de pedido",
+        "pricenet": "Precio",
+        "status": "Estado",
+        "action": "Action"
+      }
+    },
     "address": {
-      "title": "Mis direcciones"
-    }
+      "title": "Mis direcciones",
+      "name": "Nombre y Apellido",
+      "email": "Email",
+      "street": "Postal Address",
+      "street2": "Dirección 2",
+      "zip": "Códgo postal",
+      "city": "Ciudad",
+      "phone": "Teléfno",
+      "country": "País",
+      "noresult": "No se ha encontrado direcciones",
+      "count": "{count} resultado(s)",
+      "edit": "Actualizar dirección",
+      "fetch": {
+        "error": "Ha ocurrido un error al consultar las direcciones"
+      },
+      "type": {
+        "contact": "Dirección de contacto",
+        "delivery": "Dirección de entraga",
+        "invoice": "Dirección de facturación"
+      },
+      "save": {
+        "success": "Dirección guardada exitosamente"
+      },
+      "delete": {
+        "confirm": "Esta seguro que desea eliminar la dirección?",
+        "error": "Ha ocurrido un error eliminando la dirección",
+        "success": "Dirección eliminada"
+      }
+    },
+    "quotations": "Mis presupuestos",
+    "invoices": "Mis facturas",
+    "emptylist": "No data available"
   },
-  "address": {
-    "name": "Nombre y apellidos",
-    "street": "Calle",
-    "zip": "Código postal",
-    "city": "Ciudad",
-    "phone": "Téléfono",
-    "country": "País",
-    "noresult": "No hay direcciones",
-    "type" : {
-      "delivery": "Dirección de entrega",
-      "invoice": "Dirección de facturación",
-      "contact": "Dirección de contacto"
-    },
-    "fetch": {
-      "error": "No se ha podido recuperar la dirección"
-    },
-    "delete": {
-      "confirm": "¿Estás seguro de que quieres eliminar esta dirección?",
-      "error": "No se ha podido recuperar la dirección",
-      "success": "La dirección ha sido eliminada"
-    }
-
+  "pagination": {
+    "showperpage": "Items por página",
+    "status": "{boundStart}-{boundStop} de {totalItems}"
   },
   "actions": {
     "modify": "Modificar",
     "update": "Actualizar",
     "create": "Crear" ,
-    "validate": "Validar"
+    "validate": "Validar",
+    "close": "Cerrar"
   },
   "error": {
     "generic": "Ocurrio un error inesperado, por favor intenta lo más tarde.",
     "404": "La página que estás buscando no existe.",
+  },
+  "btn": {
+    "view_more": "Ver más"
   }
 }

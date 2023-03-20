@@ -6,7 +6,9 @@ import {
   CatalogService,
   CartService,
   AddressService,
-  SettingService
+  SettingService,
+  SaleService,
+  CustomerService
 } from '../services'
 
 export interface ShopinvaderProvidersList {
@@ -20,6 +22,8 @@ export interface ShopinvaderServiceList {
   cart: CartService | null
   addresses: AddressService | null
   settings: SettingService | null
+  sales: SaleService | null
+  customer: CustomerService | null
 }
 
 let providers: ShopinvaderProvidersList | null = null
@@ -106,7 +110,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
       cart: null,
       settings: null,
-      addresses: null
+      addresses: null,
+      sales: null,
+      customer: new CustomerService(providers?.erp as ErpFetch)
     }
   }
 
