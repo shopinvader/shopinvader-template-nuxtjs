@@ -12,6 +12,17 @@
     },
     "sort": {
       "label": "Ordenar por"
+    },
+    "autocomplete": {
+      "noresults": "Sin resultados",
+      "search": "Buscar",
+      "suggestions": "Sugerencias",
+      "category": "Categorías",
+      "product": "Burscar productos '{query}'",
+      "products_history": "Productos buscados recientemente",
+      "queries": "Búsquedas recientes",
+      "clear": "Borrar",
+      "seeall": "Ver todo"
     }
   },
   "404": {
@@ -28,6 +39,10 @@
     },
     "up_selling": {
       "title": "Otros productos"
+    },
+    "history": {
+      "title": "Productos vistos recientemente",
+      "clear": "Borrar"
     }
   },
   "cart": {
@@ -111,9 +126,13 @@
   "actions": {
     "modify": "Modificar",
     "update": "Actualizar",
-    "create": "Crear",
-    "validate": "Confirmar",
+    "create": "Crear" ,
+    "validate": "Validar",
     "close": "Cerrar"
+  },
+  "error": {
+    "generic": "Ocurrio un error inesperado, por favor intenta lo más tarde.",
+    "404": "La página que estás buscando no existe.",
   },
   "btn": {
     "view_more": "Ver más"

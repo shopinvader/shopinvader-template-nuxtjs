@@ -57,6 +57,11 @@
         </template>
       </product-links>
     </div>
+    <div class="product-detail__history">
+      <client-only>
+        <product-history :excluded-id="ids"></product-history>
+      </client-only>
+    </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
 </template>
@@ -69,6 +74,8 @@ import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
 import ProductLinksVue from './ProductLinks.vue'
 import ImageListVue from './ImageList.vue'
+import { useHistoryStore } from '~/stores/history'
+import ProductHistory from './ProductHistory.vue'
 
 export default {
   components: {
@@ -77,7 +84,8 @@ export default {
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
     'product-cart': ProductCartVue,
-    'product-links': ProductLinksVue
+    'product-links': ProductLinksVue,
+    'product-history': ProductHistory
   },
   props: {
     product: {
@@ -87,6 +95,7 @@ export default {
   },
   setup(props) {
     let variant = ref(props.product)
+    useHistoryStore().addProduct(props.product)
     const changeVariant = (item: Product) => {
       variant.value = item
     }
@@ -98,13 +107,19 @@ export default {
   computed: {
     variants() {
       return this.product?.variants || null
+    },
+    ids() {
+      return [
+        this.product?.id,
+        ...(this.product?.variants || []).map((v) => v.id)
+      ]
     }
   }
 }
 </script>
 <style lang="scss">
 .product-detail {
-  @apply flex flex-wrap p-5;
+  @apply flex flex-wrap p-3 md:p-5;
   &__header {
     @apply w-full flex-grow;
   }
@@ -112,7 +127,10 @@ export default {
     @apply w-full px-3 sm:w-1/2 lg:w-3/5;
   }
   &__content {
-    @apply w-full px-2 pt-5 sm:w-1/2 lg:w-2/5;
+    @apply w-full pt-5 sm:w-1/2 md:px-2 lg:w-2/5;
+  }
+  &__history {
+    @apply py-4;
   }
 }
 </style>

@@ -13,6 +13,7 @@
         @click="linkToProduct()"
       >
       </product-image>
+      <div v-else class="product-hit__noimage"></div>
     </slot>
     <div class="product-hit__body">
       <slot name="body" :product="product">
@@ -93,14 +94,21 @@ export default {
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
+  position: inherit;
   &__image {
     cursor: pointer;
   }
+  &__noimage {
+    @apply rounded bg-slate-50;
+    content: '';
+    padding-bottom: 70%;
+    width: 100%;
+  }
   &__body {
-    @apply card-body px-0 py-2 md:p-3;
+    @apply card-body px-0 py-2 text-sm  md:p-3 md:text-base;
 
     .body__title {
-      @apply font-bold;
+      @apply font-bold line-clamp-2;
       flex-grow: 1;
       cursor: pointer;
     }

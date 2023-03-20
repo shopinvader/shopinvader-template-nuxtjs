@@ -49,13 +49,24 @@ export default defineNuxtConfig({
       }
     }
   },
-  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/i18n', '@pinia/nuxt'],
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxtjs/i18n',
+    '@pinia/nuxt',
+    '@pinia-plugin-persistedstate/nuxt'
+  ],
   plugins: [
     '~/plugins/iconify.ts',
     '~/plugins/auth.client.ts',
     '~/plugins/shopinvader.ts',
     '~/plugins/shopinvader-cart.client.ts'
   ],
+  piniaPersistedstate: {
+    cookieOptions: {
+      sameSite: 'strict'
+    },
+    storage: 'localStorage'
+  },
   pages: true,
   imports: true,
   i18n: {

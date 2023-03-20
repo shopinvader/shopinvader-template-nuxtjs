@@ -7,6 +7,7 @@ export interface ProductResult {
   hits: Product[]
   total: number
   aggregations?: any
+  suggestions?: any
 }
 
 export interface VariantAttributes {

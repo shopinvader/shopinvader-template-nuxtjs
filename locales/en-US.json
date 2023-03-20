@@ -12,6 +12,17 @@
     },
     "sort": {
       "label": "Order by"
+    },
+    "autocomplete": {
+      "noresults": "No result found",
+      "search": "Search ",
+      "suggestions": "Suggestions",
+      "category": "Category",
+      "product": "Search product for '{query}'",
+      "products_history": "You have recently viewed",
+      "queries": "My searches",
+      "clear": "Clear",
+      "seeall": "See all results"
     }
   },
   "404": {
@@ -28,6 +39,10 @@
     },
     "up_selling": {
       "title": "Other products"
+    },
+    "history": {
+      "title": "You have recently viewed",
+      "clear": "Clear"
     }
   },
   "cart": {
@@ -116,6 +131,9 @@
     "create": "Create",
     "validate": "validate",
     "close": "close"
+  },
+  "error": {
+    "generic": "An error occured, please try again later"
   },
   "btn": {
     "view_more": "View more"

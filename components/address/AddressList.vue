@@ -237,10 +237,6 @@ export default defineNuxtComponent({
     @apply fixed top-0 left-0 flex items-start justify-start;
 
     .edit {
-      &__backdrop {
-        @apply h-screen w-screen bg-black opacity-25;
-      }
-
       &__form {
         @apply absolute h-screen w-1/4 overflow-y-auto bg-white p-4 shadow-xl;
       }

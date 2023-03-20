@@ -1,11 +1,24 @@
 import { ElasticFetch } from '@shopinvader/fetch'
 import { Product, ProductResult } from '../models/Product'
+import esb, { MultiMatchQuery, Query } from 'elastic-builder'
 
 export class ProductService {
   provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
     this.provider = provider
   }
+  private hits(hits: any[]) {
+    return hits?.map((hit: any) => {
+      const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
+        (variant: any) => variant._source
+      )
+      return this.jsonToModel({
+        ...hit._source,
+        ...{ variants }
+      })
+    })
+  }
+
   async search(body: any): Promise<ProductResult> {
     if (this.provider == null) {
       throw new Error('No provider found for products')
@@ -20,20 +33,34 @@ export class ProductService {
       ]
     }
     const result = await this.provider?.search(body)
-    const hits = result?.hits?.hits?.map((hit: any) => {
-      const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
-        (variant: any) => variant._source
-      )
-      return this.jsonToModel({
-        ...hit._source,
-        ...{ variants }
-      })
-    })
+    const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations }
   }
+  static fullTextQuery(query: string): Query {
+    return new MultiMatchQuery(['name', 'description'], query).type(
+      'phrase_prefix'
+    )
+  }
+  async autocompleteSearch(
+    query: string,
+    limit: number
+  ): Promise<ProductResult> {
+    const body = esb
+      .requestBodySearch()
+      .collapse('url_key', esb.innerHits('variants').size(100), 4)
+      .suggest(esb.termSuggester('suggestion', 'name', query))
+      .query(ProductService.fullTextQuery(query))
+      .size(limit)
 
+    const result = await this.provider?.search(body.toJSON())
+    const hits = this.hits(result?.hits?.hits || [])
+    const aggregations = result?.aggregations || null
+    const total = result?.hits?.total?.value || 0
+    const suggestions = result?.suggest?.suggestion || []
+    return { hits, total, aggregations, suggestions }
+  }
   /**
    *
    * @param field
