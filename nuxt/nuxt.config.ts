@@ -37,6 +37,9 @@ export default defineNuxtConfig({
           ]
         }
       },
+      strapi: {
+        url: process.env.STRAPI_URL || ''
+      },
       auth: {
         authority: process.env.AUTH_AUTHORITY || '',
         client_id: process.env.AUTH_CLIENT_ID || '',
@@ -50,6 +53,7 @@ export default defineNuxtConfig({
     }
   },
   modules: [
+    '@nuxtjs/strapi',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
