@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_section_products",
+  "info": {
+    "displayName": "Products",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "products": {
+      "displayName": "product",
+      "type": "component",
+      "repeatable": true,
+      "component": "catalog.product"
+    }
+  }
+}

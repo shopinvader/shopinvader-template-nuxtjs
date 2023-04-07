@@ -1,0 +1,27 @@
+{
+  "collectionName": "components_text_text_and_images",
+  "info": {
+    "displayName": "Text & Image",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "content": {
+      "type": "customField",
+      "options": {
+        "preset": "blockBaloon"
+      },
+      "customField": "plugin::ckeditor5.CKEditor"
+    },
+    "image": {
+      "type": "component",
+      "repeatable": false,
+      "component": "section.image-banner"
+    },
+    "cta": {
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    }
+  }
+}

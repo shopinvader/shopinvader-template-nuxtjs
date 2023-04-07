@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_shared_cards",
+  "info": {
+    "displayName": "card",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext"
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "cta": {
+      "displayName": "cta",
+      "type": "component",
+      "repeatable": false,
+      "component": "shared.cta"
+    },
+    "style": {
+      "type": "customField",
+      "options": [
+        "compact",
+        "flat",
+        "imageFull"
+      ],
+      "customField": "plugin::multi-select.multi-select"
+    }
+  }
+}
