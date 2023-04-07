@@ -14,24 +14,43 @@
       </slot>
     </div>
     <div class="product-detail__image">
-      <image-list :images="variant.images || []" :slider="false" />
+      <slot name="image">
+        <image-list :images="variant.images || []" :slider="false" />
+      </slot>
     </div>
     <div class="product-detail__content">
-      <h1 class="text-xl font-bold">
-        {{ variant.name }}
-      </h1>
-      <div>
-        {{ variant.sku }}
+      <div class="content__header">
+        <slot name="header">
+          <h1 class="mb-0 text-3xl">
+            {{ variant.model.name }}
+          </h1>
+          <p class="text-xl uppercase">{{ variant.shortName }}</p>
+        </slot>
       </div>
-      <p>
-        {{ variant.shortDescription }}
-      </p>
-      <product-variants
-        v-if="variants !== null"
-        :variants="variants"
-        @select-variant="changeVariant"
-      >
-      </product-variants>
+      <div class="content__ref">
+        <slot name="ref">
+          {{ variant.sku }}
+        </slot>
+      </div>
+      <div class="content__shortDescription">
+        <slot name="shortDescription">
+          <div
+            v-if="variant.shortDescription"
+            v-html="variant.shortDescription"
+          ></div>
+        </slot>
+      </div>
+      <div class="content__variants">
+        <slot name="variants">
+          <product-variants
+            v-if="variants !== null"
+            :variants="variants"
+            @select-variant="changeVariant"
+          >
+          </product-variants>
+        </slot>
+      </div>
+
       <product-price
         v-if="variant.price !== null"
         :price="variant.price"
@@ -48,12 +67,12 @@
     <div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
         <template #head>
-          <h2>{{ $t('product.cross_selling.title') }}</h2>
+          <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
         </template>
       </product-links>
       <product-links v-if="variant" :links="variant?.links?.upLink || []">
         <template #head>
-          <h2>{{ $t('product.up_selling.title') }}</h2>
+          <h2 class="text-xl">{{ $t('product.up_selling.title') }}</h2>
         </template>
       </product-links>
     </div>
@@ -128,6 +147,25 @@ export default {
   }
   &__content {
     @apply w-full pt-5 sm:w-1/2 md:px-2 lg:w-2/5;
+    .content {
+      &__header {
+        @apply mb-4 border-b;
+      }
+      &__variants {
+        .variants {
+          @apply flex flex-wrap;
+        }
+      }
+    }
+    .variants {
+      @apply flex flex-wrap;
+      &__label {
+        @apply w-1/2;
+      }
+      &__value {
+        @apply w-1/2;
+      }
+    }
   }
   &__history {
     @apply py-4;

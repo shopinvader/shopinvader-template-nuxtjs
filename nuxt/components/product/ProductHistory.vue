@@ -2,7 +2,7 @@
   <div v-if="products.length" class="product-history">
     <div class="product-history__header">
       <slot name="header">
-        <h2>{{ $t('product.history.title') }}</h2>
+        <h2 class="border-b text-xl">{{ $t('product.history.title') }}</h2>
       </slot>
     </div>
     <div class="product-history__list">

@@ -1,14 +1,14 @@
 <template>
   <div
-    v-if="product !== null"
+    v-if="variant !== null"
     class="product-hit"
     :class="{ 'product-hit--inline': inline }"
   >
     <slot name="header"></slot>
-    <slot name="images" :images="product.images">
+    <slot name="images" :images="variant.images">
       <product-image
-        v-if="product.images && product.images.length > 0"
-        :image="product.images[0]"
+        v-if="variant.images && variant.images.length > 0"
+        :image="variant.images[0]"
         class="product-hit__image"
         @click="linkToProduct()"
       >
@@ -16,29 +16,36 @@
       <div v-else class="product-hit__noimage"></div>
     </slot>
     <div class="product-hit__body">
-      <slot name="body" :product="product">
+      <slot name="body" :product="variant">
         <div class="body__title">
-          <slot name="title" :product="product">
-            <nuxt-link :to="localePath({ path: '/' + product.urlKey })">
-              {{ product.name }}
+          <slot name="title" :product="variant">
+            <nuxt-link :to="localePath({ path: '/' + variant.urlKey })">
+              {{ variant.name }}
             </nuxt-link>
           </slot>
         </div>
+        <div class="body__variants">
+          <product-variants
+            v-if="variants && variants.length > 1"
+            :variants="variants"
+            @select-variant="changeVariant"
+          />
+        </div>
         <div class="body__desc">
-          <slot name="desc" :product="product"></slot>
+          <slot name="desc" :product="variant"></slot>
         </div>
         <div class="body__price">
-          <product-price v-if="product.price !== null" :price="product.price">
+          <product-price v-if="variant.price !== null" :price="variant.price">
             <template #price>
-              <slot name="price" :price="product.price"></slot>
+              <slot name="price" :price="variant.price"></slot>
             </template>
           </product-price>
         </div>
         <div v-if="!readonly" class="body__actions">
-          <slot name="actions" :product="product">
-            <product-cart :product="product">
+          <slot name="actions" :product="variant">
+            <product-cart :product="variant">
               <template #cart>
-                <slot name="cart" :product="product"></slot>
+                <slot name="cart" :product="variant"></slot>
               </template>
             </product-cart>
           </slot>
@@ -46,7 +53,7 @@
       </slot>
     </div>
     <div class="product-hit__footer">
-      <slot name="footer" :product="product"></slot>
+      <slot name="footer" :product="variant"></slot>
     </div>
   </div>
 </template>
@@ -56,13 +63,15 @@ import { Product } from '~~/models/Product'
 import ProductPrice from '~/components/product/ProductPrice.vue'
 import ProductImage from '~/components/product/ProductImage.vue'
 import ProductCart from '~/components/product/ProductCart.vue'
+import ProductVariants from '~/components/product/ProductVariants.vue'
 
 export default {
   name: 'ProductHit',
   components: {
     'product-price': ProductPrice,
     'product-image': ProductImage,
-    'product-cart': ProductCart
+    'product-cart': ProductCart,
+    'product-variants': ProductVariants
   },
   props: {
     product: {
@@ -78,25 +87,47 @@ export default {
       required: false
     }
   },
+  data() {
+    return {
+      variant: this.product as Product | null
+    }
+  },
+  computed: {
+    variants() {
+      return this.product.variants
+    }
+  },
+  watch: {
+    product(product: Product, oldProduct: Product) {
+      if (product !== null) {
+        this.variant = product
+      } else if (oldProduct !== null && product == null) {
+        this.variant = null
+      }
+    }
+  },
+
   methods: {
     linkToProduct() {
       this.$router.push({
         path: '/' + this.product.urlKey
       })
+    },
+    changeVariant(variant: Product) {
+      this.variant = variant
     }
   }
 }
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card;
-  display: flex;
+  @apply card flex h-full flex-col border-b p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl md:p-5;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
   position: inherit;
   &__image {
-    cursor: pointer;
+    @apply aspect-square max-h-full  cursor-pointer;
   }
   &__noimage {
     @apply rounded bg-slate-50;
@@ -105,7 +136,7 @@ export default {
     width: 100%;
   }
   &__body {
-    @apply card-body px-0 py-2 text-sm  md:p-3 md:text-base;
+    @apply card-body grow  px-0  py-2 text-sm md:p-3 md:text-base;
 
     .body__title {
       @apply font-bold line-clamp-2;
@@ -118,9 +149,46 @@ export default {
     }
     .body__actions {
       @apply card-actions pt-2;
+      .product-cart {
+        &__add {
+          @apply btn-circle;
+          .add-label {
+            @apply hidden;
+          }
+        }
+      }
+      .cart-line-qty {
+        @apply w-40 bg-primary;
+        .cartline-qty {
+          &__btn {
+            @apply bg-inherit text-white;
+
+            &:hover {
+              @apply border-primary bg-secondary;
+            }
+          }
+          &__input {
+            @apply border-0 bg-inherit text-white;
+          }
+        }
+      }
     }
     .body__price {
       @apply text-right;
+    }
+    .body__variants {
+      .variants {
+        @apply py-0;
+        &__hit {
+          @apply h-10 w-10 p-1;
+          .hit__image {
+            @apply p-1;
+          }
+          .hit__title {
+            @apply hidden;
+          }
+        }
+      }
     }
   }
   &--inline {
@@ -129,10 +197,7 @@ export default {
       @apply w-1/5 md:w-1/6;
     }
     .product-hit__body {
-      @apply flex flex-col md:flex-row;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 0;
+      @apply flex flex-col flex-wrap justify-between md:flex-row;
       .body__title {
         @apply md:order-1 md:w-1/3;
       }

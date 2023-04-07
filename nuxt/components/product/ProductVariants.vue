@@ -5,6 +5,8 @@
       :key="product?.id || 0"
       class="variants__hit"
       @click="selectVariant(product)"
+      @mouseover="mouseoverVariant(product)"
+      @mouseleave="mouseleaveVariant(product)"
     >
       <product-image
         v-if="product?.images?.[0]"
@@ -28,7 +30,7 @@ export default {
       required: true
     }
   },
-  emits: ['selectVariant'],
+  emits: ['selectVariant', 'mouseover', 'mouseleave'],
   computed: {
     products(): Product[] {
       return this.variants.filter((variant) => variant.id !== null)
@@ -37,6 +39,12 @@ export default {
   methods: {
     selectVariant(product: Product) {
       this.$emit('selectVariant', product)
+    },
+    mouseoverVariant(product: Product) {
+      this.$emit('mouseover', product)
+    },
+    mouseleaveVariant(product: Product) {
+      this.$emit('mouseleave', product)
     }
   }
 }
