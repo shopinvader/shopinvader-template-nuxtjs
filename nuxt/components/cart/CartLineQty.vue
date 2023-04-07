@@ -111,19 +111,26 @@ export default {
 }
 </script>
 <style lang="scss">
-.cartline-qty {
-  @apply form-control mx-3 w-10 max-w-fit;
-  &__btn {
-    @apply btn-outline btn text-3xl;
-    &.min {
-      @apply border-r-0;
+.cart-line-qty {
+  @apply w-52 rounded-full border-2 border-primary;
+  .cartline-qty {
+    @apply form-control mx-3 w-10 max-w-fit;
+    &__btn {
+      @apply btn-circle btn border-4 border-transparent bg-inherit text-3xl text-primary;
+      &.max {
+        @apply text-4xl;
+      }
+      &.min {
+        @apply text-xl;
+      }
+      &:hover {
+        @apply border-primary bg-secondary;
+      }
     }
-    &.max {
-      @apply border-l-0;
+    &__input {
+      @apply input w-full border-0 bg-inherit text-center text-lg font-bold text-primary;
+      appearance: textfield;
     }
-  }
-  &__input {
-    @apply input w-full border border-x-0 border-gray-900 text-center;
   }
 }
 </style>

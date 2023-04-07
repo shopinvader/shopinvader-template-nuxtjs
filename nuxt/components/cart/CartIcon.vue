@@ -1,9 +1,12 @@
 <template>
-  <nuxt-link :to="localePath({ path: '/cart' })" class="relative px-2">
-    <div>
-      <Icon icon="clarity:shopping-bag-line" class="text-3xl lg:text-5xl" />
+  <nuxt-link :to="localePath({ path: '/cart' })" class="cart-icon">
+    <div class="button">
+      <Icon icon="clarity:shopping-bag-line" class="button__icon" />
+      <span class="button__label">
+        {{ $t('cart.title') }}
+      </span>
     </div>
-    <div v-if="hasCart" class="badge-secondary badge absolute -right-2 -top-1">
+    <div v-if="hasCart" class="cart-badge">
       {{ linesCount }}
     </div>
   </nuxt-link>
@@ -31,3 +34,20 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.cart-icon {
+  @apply relative flex  px-2;
+  .button {
+    @apply btn-ghost btn flex flex-col flex-nowrap  max-md:px-1;
+    &__icon {
+      @apply text-2xl;
+    }
+    &__label {
+      @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 max-lg:hidden;
+    }
+  }
+  .cart-badge {
+    @apply badge-secondary badge absolute right-1 top-1 text-xs font-semibold text-white shadow-md;
+  }
+}
+</style>

@@ -44,9 +44,6 @@
         </li>
       </ul>
     </li>
-    <li class="nav-item">
-      <nuxt-link to="/info"> info </nuxt-link>
-    </li>
     <li class="nav-item-sm">
       <nuxt-link to="/account">
         <Icon icon="ph:user" class="text-sm text-blue-500" />

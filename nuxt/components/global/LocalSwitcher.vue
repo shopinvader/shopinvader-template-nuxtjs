@@ -1,7 +1,7 @@
 <template>
   <div class="localeposition dropdown">
     <label tabindex="0" class="m-1">
-      <span>Language</span>
+      <span class="font-semibold uppercase">{{ currentLocale }}</span>
       <svg
         class="fill-current"
         xmlns="http://www.w3.org/2000/svg"
