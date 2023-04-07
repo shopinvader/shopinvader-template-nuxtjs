@@ -6,9 +6,20 @@
     :query="query"
   >
     <template #header>
-      <h1 class="mb-4 text-3xl font-bold">
-        {{ category.name }}
-      </h1>
+      <div class="border-b">
+        <h1 class="mb-0">
+          {{ category.name }}
+        </h1>
+        <div class="breadcrumbs text-sm">
+          <ul>
+            <li v-for="item in breadcrumb" :key="item.id">
+              <nuxt-link :to="localePath({ path: '/' + item.urlKey })">
+                {{ item.name }}
+              </nuxt-link>
+            </li>
+          </ul>
+        </div>
+      </div>
     </template>
     <template #footer>
       {{ category.description }}
@@ -32,6 +43,18 @@ export default {
     category: {
       type: Object as PropType<Category>,
       required: true
+    }
+  },
+  computed: {
+    breadcrumb() {
+      const items = []
+      let current = this.category
+      while (current !== null) {
+        items.push(current)
+        current = current?.parent
+      }
+      items.reverse()
+      return items
     }
   },
   methods: {
