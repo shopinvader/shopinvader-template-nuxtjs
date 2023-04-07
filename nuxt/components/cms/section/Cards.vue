@@ -29,7 +29,7 @@ export default {
   @apply py-4 md:py-7;
   .cards {
     &__title {
-      @apply text-lg font-bold;
+      @apply heading text-lg font-bold;
     }
     &__list {
       @apply grid grid-cols-2 gap-4 pt-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;

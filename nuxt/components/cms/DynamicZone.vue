@@ -34,4 +34,8 @@ export default {
   }
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+.dynamic-zone {
+  @apply flex flex-col gap-4 border;
+}
+</style>

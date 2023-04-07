@@ -6,8 +6,7 @@
         <cms-cta v-if="component.cta" :cta="component.cta"></cms-cta>
       </div>
     </div>
-
-    <picture class="section-textandimage__img">
+    <picture v-if="component.defaultImage" class="section-textandimage__img">
       <cms-image
         v-if="component.defaultImage"
         :image="component.defaultImage"
