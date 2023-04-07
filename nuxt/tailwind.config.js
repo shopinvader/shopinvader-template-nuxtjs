@@ -1,41 +1,30 @@
 module.exports = {
-  plugins: [require('daisyui'), require('@tailwindcss/line-clamp')],
+  plugins: [
+    require('daisyui'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/line-clamp')
+  ],
   logs: false,
   // daisyUI config (optional)
   daisyui: {
     themes: [
-      'cupcake',
-      'light',
-      'dark',
-      'bumblebee',
-      'emerald',
-      'corporate',
-      'synthwave',
-      'retro',
-      'cyberpunk',
-      'valentine',
-      'halloween',
-      'garden',
-      'forest',
-      'aqua',
-      'lofi',
-      'pastel',
-      'fantasy',
-      'wireframe',
-      'black',
-      'luxury',
-      'dracula',
-      'cmyk',
-      'autumn',
-      'business',
-      'acid',
-      'lemonade',
-      'night',
-      'coffee',
-      'winter'
+      {
+        mytheme: {
+          fontFamily: 'Montserrat,comic sans ms,"sanssecondaryerif"',
+          primary: '#13263d',
+          secondary: '#dca11d',
+          accent: '#def2ff',
+          neutral: '#42536d',
+          'base-100': '#ffffff',
+          info: '#0284c7',
+          success: '#3EE581',
+          warning: '#fde047',
+          error: '#db2777',
+          '--rounded-box': '0'
+        }
+      }
     ],
     styled: true,
-    themes: true,
     base: true,
     utils: true,
     logs: false,
