@@ -75,10 +75,10 @@
             </div>
           </slot>
         </template>
-
         <template v-else>
           <slot name="no-results" :total="total" :response="response">
-            <div>{{ $t('search.noresults') }}</div>
+            <div class="results__noresults">{{ $t('search.noresults') }}</div>
+            <product-history></product-history>
           </slot>
         </template>
       </slot>
@@ -90,6 +90,7 @@
 import { provide, reactive, PropType } from 'vue'
 import Spinner from '~/components/global/Spinner.vue'
 import esb, { Query } from 'elastic-builder'
+import ProductHistory from '~/components/product/ProductHistory.vue'
 
 export interface Filter {
   name: string
@@ -106,7 +107,8 @@ export interface SortItem {
 }
 export default {
   components: {
-    spinner: Spinner
+    spinner: Spinner,
+    'product-history': ProductHistory
   },
   props: {
     query: {
@@ -297,11 +299,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  @apply flex min-h-screen flex-row flex-wrap;
   &__filters {
-    @apply w-full bg-neutral-content p-4 lg:w-1/4 xl:w-1/5;
+    @apply w-full p-1 py-4 lg:w-1/4 xl:w-1/5;
     .filters {
       @apply hidden lg:block;
       &--active {
@@ -314,6 +314,11 @@ export default {
   }
   &__results {
     @apply w-full px-4 lg:w-3/4 xl:w-4/5;
+    .results {
+      &__noresults {
+        @apply flex flex-col items-center justify-center py-32 text-xl;
+      }
+    }
   }
   &__pagination {
     @apply py-5 text-center;

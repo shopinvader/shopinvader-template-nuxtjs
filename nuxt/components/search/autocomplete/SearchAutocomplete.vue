@@ -168,7 +168,7 @@ export default {
   &__form {
     .form {
       &__input {
-        @apply relative m-2 flex cursor-pointer items-center rounded bg-white md:rounded-full md:border lg:m-1;
+        @apply relative m-2 flex cursor-pointer items-center rounded bg-gray-100 md:rounded-full lg:m-1;
         .input {
           @apply input-xs flex-1 bg-transparent p-2 text-sm md:input-md;
           &:focus {
@@ -184,7 +184,7 @@ export default {
         .header {
           @apply flex items-center justify-between border-0 p-0 sm:p-2;
           .title {
-            @apply w-full border-b py-2 text-lg font-bold;
+            @apply heading w-full border-b py-2;
           }
         }
         .dropdown__results {

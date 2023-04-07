@@ -31,7 +31,7 @@
       <search-selected-filters></search-selected-filters>
     </template>
     <template #items="{ items }">
-      <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-3">
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
         <ProductHit
           v-for="item in items"
           :key="item.id"

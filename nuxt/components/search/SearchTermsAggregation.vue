@@ -259,9 +259,9 @@ export default {
 </script>
 <style lang="scss">
 .searchfilter {
-  @apply py-2;
+  @apply mb-3 bg-gray-50 p-5;
   &__title {
-    @apply font-bold;
+    @apply heading;
   }
   &__items {
     @apply mt-2 text-xs;
