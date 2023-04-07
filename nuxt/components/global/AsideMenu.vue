@@ -1,5 +1,5 @@
 <template>
-  <div class="aside-menu drawer">
+  <div class="aside-menu drawer" :class="{ 'side-menu': sideMenu }">
     <input :id="name" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col">
       <div class="content" :class="classContent">
@@ -22,7 +22,7 @@
       <div class="bg-base-100">
         <div class="flex justify-between border-b py-2">
           <div class="flex px-3">
-            <logo :height="50" />
+            <slot name="header"></slot>
           </div>
           <div class="flex">
             <label :for="name" class="btn-ghost btn-square btn">
@@ -48,13 +48,8 @@
   </div>
 </template>
 <script lang="ts">
-import Logo from '~/components/global/Logo.vue'
-
 export default {
   name: 'AsideMenu',
-  components: {
-    logo: Logo
-  },
   props: {
     name: {
       type: String,
@@ -63,6 +58,10 @@ export default {
     classContent: {
       type: String,
       default: ''
+    },
+    sideMenu: {
+      type: Boolean,
+      default: true
     }
   },
   setup() {
@@ -72,7 +71,7 @@ export default {
 </script>
 <style lang="scss">
 .aside-menu.drawer {
-  @apply h-auto;
+  @apply h-auto  transition duration-1000 ease-in;
   overflow: visible;
   .drawer-content {
     overflow-y: visible;
@@ -100,6 +99,23 @@ export default {
     @apply border lg:hidden;
     height: 0;
     width: 0;
+  }
+  &.side-menu {
+    .drawer-content {
+      .content {
+        &__button {
+          @apply flex-none lg:flex;
+        }
+        &__menu {
+          @apply hidden;
+        }
+      }
+    }
+    .drawer-side {
+      @apply border lg:grid;
+      height: 0;
+      width: 0;
+    }
   }
 }
 </style>

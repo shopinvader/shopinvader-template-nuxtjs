@@ -30,8 +30,22 @@
           <nuxt-link :to="localePath({ path: '/' + child.urlKey })">
             {{ child.name }}
           </nuxt-link>
+          <ul class="subnav2">
+            <li
+              v-for="child2 in child.childs"
+              :key="child2.id"
+              class="subnav2-item"
+            >
+              <nuxt-link :to="localePath({ path: '/' + child2.urlKey })">
+                {{ child2.name }}
+              </nuxt-link>
+            </li>
+          </ul>
         </li>
       </ul>
+    </li>
+    <li class="nav-item">
+      <nuxt-link to="/info"> info </nuxt-link>
     </li>
     <li class="nav-item-sm">
       <nuxt-link to="/account">
@@ -72,19 +86,26 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .nav {
-  @apply menu p-0 lg:menu-horizontal;
+  @apply menu p-0 font-semibold lg:menu-horizontal;
 
   &-item {
+    position: inherit;
     .subnav {
-      @apply relative left-0 p-2 lg:absolute lg:bg-base-100 lg:shadow lg:rounded-box;
+      @apply relative left-0 z-20  w-screen grid-cols-5 items-start gap-4 p-2 lg:absolute lg:bg-base-100 lg:shadow lg:rounded-box;
 
       &-item {
-        @apply text-sm;
+        @apply border-r text-sm font-bold text-primary;
+        .subnav2 {
+          @apply text-base font-normal;
+        }
       }
     }
   }
   &-item-sm {
     @apply flex md:hidden;
+  }
+  & > :where(li:hover) > :where(ul) {
+    @apply grid;
   }
 }
 </style>
