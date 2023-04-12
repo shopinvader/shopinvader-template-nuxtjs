@@ -45,7 +45,7 @@ export class SaleService {
   }
 
   async getSale(id: number): Promise<Sale> {
-    const res = await this.provider?.get('sales/' + id)
+    const res = await this.provider?.get('sales/' + id + '/get')
     if (res) {
       return new Sale(res)
     }

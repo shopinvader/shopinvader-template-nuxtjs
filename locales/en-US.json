@@ -78,6 +78,12 @@
       "modify_btn": "Modify your profile info"
     },
     "sales": {
+      "sale": "Sales Order",
+      "sale_subtotal": "Subtotal",
+      "sale_tax": "Tax",
+      "sale_total": "Order total",
+      "sale_shipping": "Shipping",
+      "sale_state": "Order status",
       "title": "My sales orders",
       "table_labels": {
         "ordernum": "Order Number",
@@ -136,6 +142,7 @@
     "generic": "An error occured, please try again later"
   },
   "btn": {
-    "view_more": "View more"
+    "view_more": "View more",
+    "download": "Download"
   }
 }

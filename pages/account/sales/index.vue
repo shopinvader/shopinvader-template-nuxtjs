@@ -16,7 +16,7 @@
     <template v-if="sales" #content>
       <template v-if="working"> ... </template>
       <div class="overflow-x-auto">
-        <table v-if="sales" class="table-zebra table hidden w-full md:table">
+        <table v-if="sales" class="table table hidden w-full md:table">
           <thead>
             <tr>
               <th class="px-2 text-left">
@@ -45,7 +45,12 @@
               </tr>
             </template>
             <template v-else>
-              <tr v-for="sale in sales" :key="'' + sale.id" class="hover">
+              <tr
+                v-for="sale in sales"
+                :key="'' + sale.id"
+                @click="navigateToSale(sale.id)"
+                class="hover"
+              >
                 <td class="p-2 text-left text-sm">
                   {{ sale.name }}
                 </td>
@@ -60,18 +65,20 @@
                   }}</span>
                 </td>
                 <td class="p-2 text-left text-sm">
-                  <span class="badge badge-md px-3 text-xs">{{
+                  <span class="badge badge-md badge-primary px-3 text-xs">{{
                     sale.stateLabel
                   }}</span>
                 </td>
                 <td class="p-2 text-right text-sm">
-                  <div class="md:whitespace-nowrap">
-                    <button
-                      class="btn-small btn-link btn"
-                      @click="showDetails(sale)"
-                    >
-                      <label>{{ $t('btn.view_more') }}</label>
-                    </button>
+                  <div
+                    class="flex justify-end text-primary md:whitespace-nowrap"
+                  >
+                    <NuxtLink :to="`/account/sales/${sale.id}`">
+                      <icon
+                        icon="material-symbols:chevron-right"
+                        class="mr-2 text-2xl font-bold text-primary"
+                      ></icon>
+                    </NuxtLink>
                   </div>
                 </td>
               </tr>
@@ -120,7 +127,7 @@
                   <icon
                     icon="material-symbols:chevron-right"
                     class="mr-2 text-2xl font-bold text-primary"
-                    @click="showDetails(sale)"
+                    @click="navigateToSale(sale.id)"
                   />
                 </div>
               </div>
@@ -203,7 +210,6 @@ export default defineNuxtComponent({
     })
 
     async function loadSales() {
-      console.log('loading')
       const services = useShopinvaderServices()
       working.value = true
       try {
@@ -247,11 +253,9 @@ export default defineNuxtComponent({
       setRouteQueryParams()
     }
 
-    function showDetails(sale: Sale) {
-      console.log('show details', sale)
-      alert('not ready yet')
-      // const router = useRouter()
-      // router.push(localePath('/account/sales/' + sale.id))
+   
+    function navigateToSale(id) {
+      navigateTo({ path: `/account/sales/${id}` })
     }
 
     onMounted(() => {
@@ -270,7 +274,7 @@ export default defineNuxtComponent({
       setRouteQueryParams,
       onChangePage,
       onChangePerPage,
-      showDetails,
+      navigateToSale,
       route,
       router
     }
