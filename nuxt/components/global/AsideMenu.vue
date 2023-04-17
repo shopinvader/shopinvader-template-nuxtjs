@@ -96,7 +96,7 @@ export default {
     }
   }
   .drawer-side {
-    @apply border lg:hidden;
+    @apply border;
     height: 0;
     width: 0;
   }
@@ -112,7 +112,7 @@ export default {
       }
     }
     .drawer-side {
-      @apply border lg:grid;
+      @apply border;
       height: 0;
       width: 0;
     }
