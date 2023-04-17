@@ -1,9 +1,9 @@
 import { Sale } from '../models/Sale'
-
+import { ErpFetch } from '@shopinvader/fetch'
 // Service to fetch Sales
 export class SaleService {
-  provider: ElasticFetch = null
-  constructor(provider: ElasticFetch) {
+  provider: ErpFetch | null = null
+  constructor(provider: ErpFetch) {
     this.provider = provider
   }
 
@@ -34,7 +34,7 @@ export class SaleService {
     perPage: number
   ): Promise<{ count: number; sales: Sale[] }> {
     const params: { [k: string]: any } = { per_page: perPage, page }
-    const res = await this.provider?.get('sales', params)
+    const res = await this.provider?.get('sales', params, {})
     if (res.data) {
       return {
         count: res.size,
@@ -44,15 +44,17 @@ export class SaleService {
     return { count: 0, sales: [] }
   }
 
-  async getSale(id: number): Promise<Sale> {
-    const res = await this.provider?.get('sales/' + id + '/get')
+  async getSale(id: number): Promise<Sale | null> {
+    const res = await this.provider?.get('sales/' + id, {}, {})
     if (res) {
       return new Sale(res)
     }
     return null
   }
 
-  downloadSale(id: number): Promise<Blob> {
-    return this.provider?.get('sales/' + id + '/download', {}, {}, 'blob')
+  downloadSale(id: number): Promise<Blob | null> {
+    return (
+      this.provider?.get('sales/' + id + '/download', {}, {}, 'blob') || null
+    )
   }
 }

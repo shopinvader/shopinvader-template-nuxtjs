@@ -22,10 +22,7 @@
             {{ sale.date.toLocaleDateString($i18n.locale) }}
           </p>
         </div>
-        <a
-          class="btn-primary btn-sm btn mt-8 md:mt-0"
-          @click="download(sale.id)"
-        >
+        <a class="btn-primary btn-sm btn mt-8 md:mt-0" @click="download()">
           <icon icon="material-symbols:print" class="text-2xl"></icon>
           <span class="ml-2">{{ $t('btn.download') }}</span>
         </a>
@@ -76,7 +73,9 @@
           </div>
           <div class="footer__total">
             <div class="line">
-              <span class="total__text">{{ $t('account.sales.sale_total') }}</span>
+              <span class="total__text">{{
+                $t('account.sales.sale_total')
+              }}</span>
               <span class="total__amount">{{
                 $filter.currency(sale.amount.total)
               }}</span>
@@ -131,12 +130,11 @@ export default defineNuxtComponent({
   components: {
     'account-layout': AccountLayout
   },
-  setup(props) {
+  setup() {
     const router = useRouter()
     const route = useRoute()
-    const sale = ref(null as { Sale })
     const working = ref(false)
-
+    const sale = ref<Sale>()
     async function loadSale() {
       const id = route.params._id
       const services = useShopinvaderServices()
@@ -158,11 +156,12 @@ export default defineNuxtComponent({
       }
     }
 
-    async function download(sale:Sale) {
+    async function download() {
       const services = useShopinvaderServices()
       working.value = false
       try {
-        const blob = await services?.sales?.downloadSale(sale.id)
+        console.log(sale)
+        const blob = await services?.sales?.downloadSale(sale.value.id)
         const fatUrl = window.URL.createObjectURL(blob)
         // Create a temporary link.
         const a: any = document.createElement('a')
