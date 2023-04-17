@@ -19,7 +19,7 @@
       <div class="content__text">
         <div class="content__header">
           <slot name="header" :line="line"
-            >PRODUCT NAME {{ line.product.model }}</slot
+            > {{ line.name }}</slot
           >
         </div>
         <div class="content__title">
