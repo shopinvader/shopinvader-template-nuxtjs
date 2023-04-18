@@ -16,13 +16,35 @@
           <h3 class="text-gray-600">{{ $t('account.sales.sale') }} N°</h3>
           <p class="font-bold text-primary">{{ sale.name }}</p>
         </div>
-        <div class="mr-auto">
+        <div class="mr-20">
           <h3 class="text-gray-600">Date</h3>
           <p class="font-bold text-primary">
             {{ sale.date.toLocaleDateString($i18n.locale) }}
           </p>
         </div>
-        <a class="btn-primary btn-sm btn mt-8 md:mt-0" @click="download()">
+        <div class="mr-auto">
+          <h3 v-if="sale.invoices.length > 0" class="text-gray-600">
+            {{ $t('account.sales.sale_invoice_number') }}
+          </h3>
+          <div
+            v-for="invoice in sale.invoices"
+            :key="invoice.id"
+            class="font-bold text-primary"
+          >
+            <div
+              v-if="invoice"
+              class="cursor-pointer"
+              @click="download('invoice', invoice.id)"
+            >
+              {{ invoice.name }}
+              <icon
+                icon="material-symbols:download-for-offline-outline"
+                class="inline text-2xl"
+              ></icon>
+            </div>
+          </div>
+        </div>
+        <a class="btn-primary btn-sm btn mt-8 md:mt-0" @click="download('sale', sale.id)">
           <icon icon="material-symbols:print" class="text-2xl"></icon>
           <span class="ml-2">{{ $t('btn.download') }}</span>
         </a>
@@ -48,7 +70,7 @@
       <div class="content__footer">
         <div class="mb-10">
           <div class="footer__subtotal">
-            <div class="line">
+            <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_subtotal') }}</span>
               <span class="amount">{{
                 $filter.currency(sale.amount.untaxed)
@@ -56,7 +78,7 @@
             </div>
           </div>
           <div class="footer__shipping">
-            <div class="line">
+            <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_shipping') }}</span>
               <span class="amount">{{
                 $filter.currency(sale.shipping.amount.untaxed)
@@ -64,7 +86,7 @@
             </div>
           </div>
           <div class="footer__tax">
-            <div class="line">
+            <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_tax') }}</span>
               <span class="amount">{{
                 $filter.currency(sale.amount.tax)
@@ -72,7 +94,7 @@
             </div>
           </div>
           <div class="footer__total">
-            <div class="line">
+            <div class="line-amount">
               <span class="total__text">{{
                 $t('account.sales.sale_total')
               }}</span>
@@ -156,18 +178,26 @@ export default defineNuxtComponent({
       }
     }
 
-    async function download() {
+    async function download(action: string, id: number) {
       const services = useShopinvaderServices()
+      let downloadService
+      let docName
+      if (action == 'sale') {
+        downloadService = await services?.sales?.downloadSale(id)
+        docName = 'order_' + sale.value.name + '.pdf'
+      } else {
+        downloadService = await services?.sales?.downloadSaleInvoice(id)
+        docName = 'invoice_' + id + '.pdf'
+      }
       working.value = false
       try {
-        console.log(sale)
-        const blob = await services?.sales?.downloadSale(sale.value.id)
+        const blob = await downloadService
         const fatUrl = window.URL.createObjectURL(blob)
         // Create a temporary link.
         const a: any = document.createElement('a')
         a.href = fatUrl
         a.style = 'display: none'
-        a.download = 'order_' + sale.value.name + '.pdf'
+        a.download = docName
         document.body.appendChild(a)
         a.click()
         window.URL.revokeObjectURL(fatUrl)
@@ -209,7 +239,7 @@ export default defineNuxtComponent({
       &__shipping,
       &__tax,
       &__total {
-        .line {
+        .line-amount {
           @apply flex justify-between;
           .text {
             @apply font-medium;
@@ -228,7 +258,7 @@ export default defineNuxtComponent({
         @apply rounded-full py-3 px-10;
       }
       &__total {
-        .line {
+        .line-amount {
           .total__text {
             @apply text-base font-bold md:text-xl;
           }

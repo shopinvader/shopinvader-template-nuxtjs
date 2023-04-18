@@ -57,4 +57,10 @@ export class SaleService {
       this.provider?.get('sales/' + id + '/download', {}, {}, 'blob') || null
     )
   }
+
+  downloadSaleInvoice(id: number): Promise<Blob | null> {
+    return (
+      this.provider?.get('invoice/' + id + '/download', {}, {}, 'blob') || null
+    )
+  }
 }
