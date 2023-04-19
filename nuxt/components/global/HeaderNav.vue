@@ -89,7 +89,7 @@ export default defineNuxtComponent({
     &-item {
       position: inherit;
       .subnav {
-        @apply relative left-0 z-20  w-screen grid-cols-5 items-start gap-4 p-2 lg:absolute lg:bg-base-100 lg:shadow lg:rounded-box;
+        @apply relative left-0 z-20 -mt-2 w-screen grid-cols-5  items-start gap-4 p-2 lg:absolute lg:bg-base-100 lg:shadow lg:rounded-box;
 
         &-item {
           @apply border-r text-sm font-bold text-primary;

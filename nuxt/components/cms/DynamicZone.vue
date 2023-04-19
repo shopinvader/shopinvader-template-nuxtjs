@@ -36,6 +36,6 @@ export default {
 </script>
 <style lang="scss">
 .dynamic-zone {
-  @apply flex flex-col gap-4 border;
+  @apply flex flex-col px-2;
 }
 </style>
