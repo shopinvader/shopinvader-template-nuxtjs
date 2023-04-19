@@ -133,6 +133,7 @@ export class SaleUnitPrice {
 
 export class SaleItem {
   id: number
+  name: string
   qty: number
   qtyDelivered: number
   qtyUnavailable: number
@@ -143,6 +144,7 @@ export class SaleItem {
   unitPrice: SaleUnitPrice
   constructor(data: any) {
     this.id = data?.id
+    this.name = data?.name
     this.qty = data?.qty
     this.qtyDelivered = data?.qty_delivered
     this.qtyUnavailable = data?.qty_unavailable

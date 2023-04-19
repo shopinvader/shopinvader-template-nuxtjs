@@ -1,6 +1,6 @@
 <template>
   <ul class="nav">
-    <li
+     <li
       v-for="(category, index) in categories"
       :key="category.id"
       :tabindex="index"
