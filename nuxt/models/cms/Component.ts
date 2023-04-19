@@ -11,4 +11,7 @@ export class Component {
     this.component = data?.component || null
     this.data = data || null
   }
+  toJSON() {
+    return { ...this } // here I make a POJO's copy of the class instance
+  }
 }

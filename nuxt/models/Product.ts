@@ -3,6 +3,7 @@ import { ProductCategory } from './ProductCategory'
 import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
 import { ProductLinks } from './ProductLinks'
+
 export interface ProductResult {
   hits: Product[]
   total: number

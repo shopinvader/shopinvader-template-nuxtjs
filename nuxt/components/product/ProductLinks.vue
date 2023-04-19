@@ -20,6 +20,7 @@
 </template>
 
 <script lang="ts">
+import { Product, ProductResult } from '~~/models/Product'
 import { linkId } from '~~/models/ProductLinks'
 import ProductHitVue from './ProductHit.vue'
 
@@ -36,10 +37,14 @@ export default defineNuxtComponent({
   },
   async setup(props) {
     const service = useShopinvaderServices()?.products
+    const ids: number[] = props?.links?.map((item) => item.id) || []
+    let productLinks: Product[] = []
+    if (ids.length === 0) {
+      productLinks = (await service?.getByIds(ids))?.hits || []
+    }
+
     return {
-      productLinks:
-        (await service?.getByIds(props.links.map((item) => item.id)))?.hits ||
-        null
+      productLinks
     }
   }
 })

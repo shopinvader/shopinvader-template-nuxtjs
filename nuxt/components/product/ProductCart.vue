@@ -10,7 +10,7 @@
         <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
         <Icon icon="ic:outline-plus" class="add-icon__plus" />
       </div>
-      <span class="add-label">{{ $t('product.add_to_cart') }}</span>
+      <span class="add-label">{{ $t('product.cart.add') }}</span>
     </button>
     <cart-line-qty v-else :line="line"></cart-line-qty>
   </div>

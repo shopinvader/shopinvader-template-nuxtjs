@@ -19,50 +19,55 @@
       </slot>
     </div>
     <div class="product-detail__content">
-      <div class="content__header">
-        <slot name="header">
-          <h1 class="mb-0 text-3xl">
-            {{ variant.model.name }}
-          </h1>
-          <p class="text-xl uppercase">{{ variant.shortName }}</p>
-        </slot>
-      </div>
-      <div class="content__ref">
-        <slot name="ref">
-          {{ variant.sku }}
-        </slot>
-      </div>
-      <div class="content__shortDescription">
-        <slot name="shortDescription">
-          <div
-            v-if="variant.shortDescription"
-            v-html="variant.shortDescription"
-          ></div>
-        </slot>
-      </div>
-      <div class="content__variants">
-        <slot name="variants">
-          <product-variants
-            v-if="variants !== null"
-            :variants="variants"
-            @select-variant="changeVariant"
-          >
-          </product-variants>
-        </slot>
-      </div>
+      <div class="content">
+        <div class="content__header">
+          <slot name="header">
+            <h1 class="mb-0 text-3xl">
+              {{ variant.model.name }}
+            </h1>
+            <p class="text-xl uppercase">{{ variant.shortName }}</p>
+          </slot>
+        </div>
+        <div class="content__ref">
+          <slot name="ref">
+            {{ variant.sku }}
+          </slot>
+        </div>
+        <div class="content__shortDescription">
+          <slot name="shortDescription">
+            <div
+              v-if="variant.shortDescription"
+              v-html="variant.shortDescription"
+            ></div>
+          </slot>
+        </div>
+        <div class="content__variants">
+          <slot name="variants">
+            <product-variants
+              v-if="variants !== null"
+              :variants="variants"
+              @select-variant="changeVariant"
+            >
+            </product-variants>
+          </slot>
+        </div>
 
-      <product-price
-        v-if="variant.price !== null"
-        :price="variant.price"
-        class="py-4 text-right"
-      >
-        <template #price>
-          <slot name="price" :price="variant.price"></slot>
-        </template>
-      </product-price>
-      <client-only>
-        <product-cart v-if="variant !== null" :product="variant"></product-cart>
-      </client-only>
+        <product-price
+          v-if="variant.price !== null"
+          :price="variant.price"
+          class="py-4 text-right"
+        >
+          <template #price>
+            <slot name="price" :price="variant.price"></slot>
+          </template>
+        </product-price>
+        <client-only>
+          <product-cart
+            v-if="variant !== null"
+            :product="variant"
+          ></product-cart>
+        </client-only>
+      </div>
     </div>
     <div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
@@ -148,6 +153,7 @@ export default {
   &__content {
     @apply w-full pt-5 sm:w-1/2 md:px-2 lg:w-2/5;
     .content {
+      @apply sticky top-24;
       &__header {
         @apply mb-4 border-b;
       }

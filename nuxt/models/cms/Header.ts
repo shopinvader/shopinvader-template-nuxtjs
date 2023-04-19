@@ -5,7 +5,6 @@ export class Header {
   baseline: string | null = null
   preheader: InfoBanner[] | null = null
   constructor(data: any) {
-    console.log(data.attributes.preheader)
     const { attributes = null } = data
     if (!attributes) return
     this.logo = new Image(attributes?.logo?.data?.attributes)

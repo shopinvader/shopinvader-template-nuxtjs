@@ -80,13 +80,19 @@ export class ProductService {
   }
 
   getByIds(ids: number[]): Promise<ProductResult> {
-    const body: any = {
-      query: {
-        terms: { id: ids }
-      },
-      size: ids.length
+    if (ids.length > 0) {
+      const body: any = {
+        query: {
+          terms: { id: ids }
+        },
+        size: ids.length
+      }
+      return this.search(body)
+    } else {
+      return new Promise((resolve) => {
+        resolve({ hits: [], total: 0, aggregations: null, suggestions: [] })
+      })
     }
-    return this.search(body)
   }
 
   async getByURLKey(urlKey: string): Promise<Product | null> {

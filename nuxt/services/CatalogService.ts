@@ -23,22 +23,27 @@ export class CatalogService {
       ]
     }
     const result = await this.provider?.search(body)
-    const hits = result?.hits?.hits?.map((hit: any) => {
-      if (hit._index.includes('category')) {
-        return new Category(hit._source)
-      } else {
-        const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
-          (variant: any) => variant._source
-        )
-        return new Product({
-          ...hit._source,
-          ...{ variants }
-        })
+    const rawsHits = result?.hits?.hits?.map((hit: any) => {
+      const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
+        (variant: any) => variant._source
+      )
+      return {
+        ...hit._source,
+        ...{ variants, _index: hit._index }
       }
     })
+
+    const hits = rawsHits.map((hit: any) => {
+      if (hit._index.includes('category')) {
+        return new Category(hit)
+      } else {
+        return new Product(hit)
+      }
+    })
+
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
-    return { hits, total, aggregations }
+    return { hits, total, aggregations, rawsHits }
   }
   getByURLKey(urlKey: string): Promise<CatalogResult> {
     return this.find('url_key', [urlKey])
