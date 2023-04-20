@@ -1,0 +1,25 @@
+{
+  "collectionName": "components_informations_informational_banners",
+  "info": {
+    "displayName": "Informational Banner",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "startDate": {
+      "type": "datetime"
+    },
+    "endDate": {
+      "type": "datetime"
+    },
+    "message": {
+      "type": "customField",
+      "options": {
+        "preset": "toolbarBaloon",
+        "maxLengthCharacters": 200
+      },
+      "required": true,
+      "customField": "plugin::ckeditor5.CKEditor"
+    }
+  }
+}
