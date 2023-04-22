@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 300;
+  src: url('../font/Montserrat-Light.ttf') format('truetype'),
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 400;
+  src: url('../font/Montserrat-Regular.ttf') format('truetype'),
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 600;
+  src: url('../font/Montserrat-SemiBold.ttf') format('truetype'),
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-weight: 700;
+  src: url('../font/Montserrat-Bold.ttf') format('truetype'),
+}
 
 @font-face {
   font-family: 'Josefin Sans';
