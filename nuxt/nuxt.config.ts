@@ -10,7 +10,9 @@ export default defineNuxtConfig({
       })
     ]
   },
+
   css: ['@/assets/css/main.scss'],
+
   runtimeConfig: {
     public: {
       shopinvader: {
@@ -52,27 +54,31 @@ export default defineNuxtConfig({
       }
     }
   },
+
   modules: [
+    '@nuxt/devtools',
     '@nuxtjs/strapi',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt'
   ],
+
   plugins: [
     '~/plugins/iconify.ts',
     '~/plugins/auth.client.ts',
     '~/plugins/shopinvader.ts',
     '~/plugins/shopinvader-cart.client.ts'
   ],
+
   piniaPersistedstate: {
     cookieOptions: {
       sameSite: 'strict'
     },
     storage: 'localStorage'
   },
+
   pages: true,
-  imports: true,
   i18n: {
     locales: [
       {
@@ -96,6 +102,7 @@ export default defineNuxtConfig({
     langDir: 'locales',
     defaultLocale: 'en'
   },
+
   build: {
     transpile: ['@shopinvader/cart']
   }
