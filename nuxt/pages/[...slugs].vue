@@ -53,6 +53,25 @@ export default defineNuxtComponent({
     const product = result instanceof Product ? result : null
     const page = result instanceof Page ? result : null
     const category = result instanceof Category ? result : null
+    useHead({
+      title: product?.name || category?.name || page?.title || '',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            product?.metaDescription ||
+            category?.metaDescription ||
+            page?.seo?.metaDescription ||
+            ''
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: product?.metaKeywords || category?.metaKeywords || ''
+        }
+      ]
+    })
     return { product, category, page }
   },
   computed: {

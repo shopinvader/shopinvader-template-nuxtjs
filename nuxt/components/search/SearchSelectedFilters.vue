@@ -3,14 +3,12 @@
     <button
       v-for="filter in activeFilters"
       :key="filter.name"
-      class="btn-outline btn-primary btn-xs btn"
+      class="bg-base btn-ghost btn-sm btn gap-2 bg-gray-100 text-xs"
       @click="filter?.setValues([])"
     >
       <slot :filter="filter" :clear-filter="clearFilter">
-        <span class="text-xs">
-          {{ filter.title }}: {{ filter.getValuesLabels() }}
-        </span>
-        <span>X</span>
+        {{ filter.title }}: <b>{{ filter.getValuesLabels() }}</b>
+        <icon icon="ph:x" />
       </slot>
     </button>
   </div>

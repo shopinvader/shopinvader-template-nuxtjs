@@ -8,12 +8,13 @@
       { label: 'Name', value: 'name' }
     ]"
   >
-    <template #filters>
+    <template #filters="{ template }">
       <search-terms-aggregation
         name="categories"
         nested-path="categories"
         field="categories.name"
         title="Categories"
+        :template="template"
         :aggregation-query="categoryQuery"
         url-param="category"
       ></search-terms-aggregation>
@@ -21,6 +22,7 @@
         name="color"
         field="variant_attributes.color"
         title="Color"
+        :template="template"
         url-param="name"
       ></search-terms-aggregation>
     </template>

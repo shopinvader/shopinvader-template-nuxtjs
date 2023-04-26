@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <div class="search__filters">
+    <div v-if="isColumnTemplate" class="search__filters">
       <button
         type="button"
         class="btn-outline btn lg:hidden"
@@ -14,11 +14,33 @@
     </div>
     <div class="search__results">
       <slot name="header"></slot>
+      <div
+        v-if="!isColumnTemplate"
+        class="filters"
+        :class="{ 'filters--active': displayfilters }"
+      >
+        <slot name="filters" :template="template"></slot>
+      </div>
       <slot name="results" :items="items" :total="total" :response="response">
         <template v-if="loading">
           <slot name="loading">
             <div class="search__loading">
               <spinner></spinner>
+            </div>
+          </slot>
+        </template>
+        <template v-else-if="error">
+          <slot name="error" :error="error">
+            <div class="results__error">
+              <div>
+                <icon icon="ph:warning-circle" class="text-2xl" />
+                {{ error }}
+              </div>
+              <div class="flex-none">
+                <button class="btn-ghost btn-sm btn" @click="reset">
+                  {{ $t('search.reset') }}
+                </button>
+              </div>
             </div>
           </slot>
         </template>
@@ -144,6 +166,10 @@ export default {
       default: () => {
         return []
       }
+    },
+    template: {
+      type: String,
+      default: 'column'
     }
   },
 
@@ -153,11 +179,27 @@ export default {
     if (provider === null) {
       throw new Error('No provider found for products')
     }
+    const defaultValue = {
+      page: {
+        size: props.size,
+        from: 0,
+        total: 0
+      },
+      response: {
+        aggregations: null,
+        hits: null,
+        total: 0
+      },
+      sort: props?.sortOptions[0] || (null as SortItem | null),
+      filters: [] as Filter[],
+      loading: true,
+      displayfilters: false
+    }
     let error = ref(null)
-    let filters = reactive([] as Filter[])
-    let loading = ref(true)
-    let displayfilters = ref(false)
-    let sort = ref(props?.sortOptions[0] || (null as SortItem | null))
+    let filters = reactive(defaultValue.filters)
+    let loading = ref(defaultValue.loading)
+    let displayfilters = ref(defaultValue.displayfilters)
+    let sort = ref(defaultValue.sort)
 
     let page = reactive({
       size: props.size,
@@ -165,11 +207,16 @@ export default {
       total: 0
     })
 
-    let response = reactive({
-      aggregations: null,
-      hits: null,
-      total: 0
-    })
+    let response = reactive(defaultValue.response)
+
+    const reset = () => {
+      page = defaultValue.page
+      response = defaultValue.response
+      sort.value = defaultValue.sort
+      filters = defaultValue.filters
+      loading.value = defaultValue.loading
+      displayfilters.value = defaultValue.displayfilters
+    }
 
     /**
      * declareFilter declare a new filter on the searchBase component
@@ -211,33 +258,43 @@ export default {
      * Search : search function get items from provider
      */
     const search = async () => {
-      if (typeof props?.provider !== 'function') {
-        throw new Error('No provider function found')
-      }
-      loading.value = true
-      let postFilter = getFiltersQuery()
-      let aggs: any[] = getFiltersAggs() || null
+      try {
+        if (typeof props?.provider !== 'function') {
+          throw new Error('No provider function found')
+        }
+        loading.value = true
+        error.value = null
+        let postFilter = getFiltersQuery()
+        let aggs: any[] = getFiltersAggs() || null
 
-      const body = esb
-        .requestBodySearch()
-        .query(props.query())
-        .size(page.size)
-        .from(page.from)
+        const body = esb
+          .requestBodySearch()
+          .query(props.query())
+          .size(page.size)
+          .from(page.from)
 
-      if (aggs !== null) {
-        body.aggs(aggs)
+        if (aggs !== null) {
+          body.aggs(aggs)
+        }
+        if (postFilter !== null) {
+          body.postFilter(postFilter)
+        }
+        if (sort.value !== null) {
+          body.sort(esb.sort(sort.value.value, 'asc'))
+        }
+        const { aggregations, hits, total } = await props?.provider(
+          body.toJSON()
+        )
+        response.aggregations = aggregations || null
+        response.hits = hits || []
+        page.total = total || 0
+      } catch (e) {
+        error.value = e
+        response = defaultValue.response
+        response.total = 0
+      } finally {
+        loading.value = false
       }
-      if (postFilter !== null) {
-        body.postFilter(postFilter)
-      }
-      if (sort.value !== null) {
-        body.sort(esb.sort(sort.value.value, 'asc'))
-      }
-      const { aggregations, hits, total } = await props?.provider(body.toJSON())
-      response.aggregations = aggregations || null
-      response.hits = hits
-      page.total = total || 0
-      loading.value = false
     }
 
     /**
@@ -269,7 +326,8 @@ export default {
       sort,
       error,
       changePage,
-      search
+      search,
+      reset
     }
   },
   computed: {
@@ -281,6 +339,9 @@ export default {
     },
     total(): any {
       return this?.response?.total
+    },
+    isColumnTemplate(): boolean {
+      return this.template === 'column'
     }
   },
 
@@ -299,7 +360,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .search {
-  @apply flex min-h-screen flex-row flex-wrap;
+  @apply flex min-h-screen flex-row max-lg:flex-wrap;
   &__filters {
     @apply w-full p-1 py-4 lg:w-1/4 xl:w-1/5;
     .filters {
@@ -313,11 +374,17 @@ export default {
     @apply flex h-screen w-full items-center justify-center;
   }
   &__results {
-    @apply w-full px-4 lg:w-3/4 xl:w-4/5;
+    @apply w-full flex-grow px-4;
     .results {
       &__noresults {
         @apply flex flex-col items-center justify-center py-32 text-xl;
       }
+      &__error {
+        @apply alert alert-error;
+      }
+    }
+    .filters {
+      @apply flex gap-3;
     }
   }
   &__pagination {
