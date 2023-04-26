@@ -7,10 +7,12 @@
     <slot name="header"></slot>
     <slot name="images" :images="variant.images">
       <product-image
-        v-if="variant.images && variant.images.length > 0"
-        :image="variant.images[0]"
+        v-if="image"
+        :image="image"
         class="product-hit__image"
         @click="linkToProduct()"
+        @mouseover="imageHovered = true"
+        @mouseleave="imageHovered = false"
       >
       </product-image>
       <div v-else class="product-hit__noimage"></div>
@@ -89,12 +91,20 @@ export default {
   },
   data() {
     return {
-      variant: this.product as Product | null
+      variant: this.product as Product | null,
+      imageHovered: false
     }
   },
   computed: {
     variants() {
       return this.product.variants
+    },
+    image() {
+      let i = 0
+      if (this.imageHovered) {
+        i = 1
+      }
+      return this?.variant?.images?.[i] || this?.variant?.images?.[0] || null
     }
   },
   watch: {
