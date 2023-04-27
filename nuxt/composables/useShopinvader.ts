@@ -1,6 +1,6 @@
 import { useNuxtApp } from '#app'
-import { Cart } from '~~/models'
-import { Settings } from '~~/models/Settings'
+import { AuthService } from '~~/services'
+import { Settings, User, Cart } from '~~/models'
 import { Shopinvader, ShopinvaderServiceList } from '~~/plugins/shopinvader'
 
 export const useShopinvader = (): Shopinvader => {
@@ -15,6 +15,15 @@ export const useShopinvaderServices = (): ShopinvaderServiceList | null => {
 export const useCart = (): Cart | null => {
   const { services } = useShopinvader()
   return services?.cart?.store()?.cart || null
+}
+
+export const useAuth = (): AuthService | null => {
+  const { services } = useShopinvader()
+  return services?.auth || null
+}
+
+export const useCurrentUser = (): User => {
+  return useAuth()?.store()?.user || null
 }
 
 /**

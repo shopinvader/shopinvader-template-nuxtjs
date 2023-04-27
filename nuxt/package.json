@@ -50,7 +50,6 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "lodash": "^4.17.21",
-    "markdown-it": "^13.0.1",
-    "oidc-client-ts": "^2.2.0"
+    "markdown-it": "^13.0.1"
   }
 }

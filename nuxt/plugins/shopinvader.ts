@@ -8,6 +8,7 @@ import {
   AddressService,
   SettingService,
   SaleService,
+  AuthService,
   CustomerService
 } from '../services'
 
@@ -23,6 +24,7 @@ export interface ShopinvaderServiceList {
   addresses: AddressService | null
   settings: SettingService | null
   sales: SaleService | null
+  auth: AuthService | null
   customer: CustomerService | null
 }
 
@@ -112,6 +114,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       settings: null,
       addresses: null,
       sales: null,
+      auth: null,
       customer: new CustomerService(providers?.erp as ErpFetch)
     }
   }

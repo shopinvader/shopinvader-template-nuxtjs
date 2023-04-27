@@ -25,7 +25,6 @@ export class CustomerService {
       }
     )
     if (res) {
-      console.log('res', res.data)
       return new Address(res.data)
     }
     return null

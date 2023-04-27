@@ -66,7 +66,6 @@ export default defineNuxtConfig({
 
   plugins: [
     '~/plugins/iconify.ts',
-    '~/plugins/auth.client.ts',
     '~/plugins/shopinvader.ts',
     '~/plugins/shopinvader-cart.client.ts'
   ],

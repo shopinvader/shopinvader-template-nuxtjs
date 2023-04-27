@@ -1,10 +1,19 @@
 import { SaleService } from './../services/SaleService'
-import { AddressService, CartService, SettingService } from '../services'
+import {
+  AddressService,
+  AuthService,
+  CartService,
+  SettingService
+} from '../services'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const auth = nuxtApp?.$auth
   const shopinvader = nuxtApp?.$shopinvader
   const { providers, services } = shopinvader
+  let auth: AuthService | null = null
+  if (providers?.erp) {
+    auth = new AuthService(providers.erp)
+    auth.me()
+  }
 
   auth.onUserLoaded(() => {
     let settings,
@@ -38,7 +47,8 @@ export default defineNuxtPlugin((nuxtApp) => {
         settings,
         sales,
         cart,
-        addresses
+        addresses,
+        auth
       }
     }
   })

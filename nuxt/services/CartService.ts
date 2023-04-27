@@ -123,7 +123,7 @@ export class CartService {
       }
     })
     const observer = new CartObserver((cart: any) => {
-      this.store().setCart(cart)
+      this.store()?.setCart(cart)
     })
     this.cart = new Cart(
       this.erp,
