@@ -118,6 +118,7 @@ export default {
     }
   },
   setup(props) {
+    const localePath = useLocalePath()
     let variant = ref(props.product)
     useHistoryStore().addProduct(props.product)
     const changeVariant = (item: Product) => {
@@ -125,7 +126,8 @@ export default {
     }
     return {
       variant,
-      changeVariant
+      changeVariant,
+      localePath
     }
   },
   computed: {

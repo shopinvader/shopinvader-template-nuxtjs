@@ -78,6 +78,12 @@ export default defineNuxtComponent({
     return {
       categories
     }
+  },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
   }
 })
 </script>

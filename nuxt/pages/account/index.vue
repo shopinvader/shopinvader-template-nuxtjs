@@ -28,8 +28,12 @@ export default defineNuxtComponent({
     'account-layout': AccountLayout
   },
   setup() {
+    const localePath = useLocalePath()
     const router = useRouter()
     console.log('account', router.getRoutes())
+    return {
+      localePath
+    }
   },
   meta: {
     title: 'Account'

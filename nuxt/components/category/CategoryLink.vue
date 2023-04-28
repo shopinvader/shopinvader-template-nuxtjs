@@ -17,6 +17,12 @@ export default {
       type: Object as PropType<Category>,
       required: true
     }
+  },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
   }
 }
 </script>

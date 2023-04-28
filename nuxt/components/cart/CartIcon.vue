@@ -16,7 +16,10 @@ export default {
   name: 'CartIcon',
   components: {},
   async setup() {
+    const localePath = useLocalePath()
+    
     return {
+      localePath,
       hasCart: computed((): boolean => {
         let linesCount: number = useCart()?.linesCount || 0
         return linesCount > 0
