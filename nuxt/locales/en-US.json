@@ -77,6 +77,25 @@
       },
       "modify_btn": "Modify your profile info"
     },
+    "login": {
+      "description": "",
+      "welcome_back": "Welcome back",
+      "password": "Password",
+      "forgot_password": "Forgot password",
+      "not_yet_account": "You don't have an account ?",
+      "create_account": "Create it now !",
+      "sign_in": "Sign in"
+    },
+    "register": {
+      "title": "Create an account and get started",
+      "advantages": "Why should you join us?",
+      "advantage_1": "Great support",
+      "advantage_2": "Fast delivery",
+      "accept_terms": "By signing up I agree to the ",
+      "terms_conditions": "Terms and conditions",
+      "sign_up": "Sign up",
+      "already_have_account": "You already have an account ?"
+    },
     "sales": {
       "sale": "Sales Order",
       "sale_subtotal": "Subtotal",
