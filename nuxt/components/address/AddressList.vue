@@ -129,7 +129,8 @@ export default defineNuxtComponent({
   },
   computed: {
     user() {
-      return useCurrentUser()
+      const auth = useAuth()
+      return auth?.getUser()
     }
   },
   watch: {
@@ -234,7 +235,7 @@ export default defineNuxtComponent({
   }
 
   &__edit {
-    @apply fixed top-0 left-0 flex items-start justify-start;
+    @apply fixed left-0 top-0 flex items-start justify-start;
 
     .edit {
       &__form {

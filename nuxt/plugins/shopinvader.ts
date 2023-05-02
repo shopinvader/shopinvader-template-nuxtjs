@@ -114,7 +114,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       settings: null,
       addresses: null,
       sales: null,
-      auth: null,
+      auth: new AuthService(providers?.erp as ErpFetch),
       customer: new CustomerService(providers?.erp as ErpFetch)
     }
   }

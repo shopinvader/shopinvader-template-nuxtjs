@@ -61,7 +61,8 @@ export default defineNuxtComponent({
   },
   computed: {
     user() {
-      return useCurrentUser()
+      const auth = useAuth()
+      return auth?.getUser()
     },
     pages() {
       const route = useRoute()

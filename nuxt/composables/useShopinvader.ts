@@ -22,10 +22,6 @@ export const useAuth = (): AuthService | null => {
   return services?.auth || null
 }
 
-export const useCurrentUser = (): User => {
-  return useAuth()?.store()?.user || null
-}
-
 /**
  * Get the settings from the API
  * @returns Settings

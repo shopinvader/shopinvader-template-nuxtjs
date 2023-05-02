@@ -31,10 +31,8 @@ export class Address {
   email: string | null
   lang: string | null
   access: AddressAccess | null
-  data: any
 
   constructor(data: any) {
-    this.data = data
     this.id = data?.id || null
     this.title = data.title ? new Title(data.title) : null
     this.addressType = data?.address_type || null

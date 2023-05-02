@@ -1,3 +1,4 @@
+import { devtools } from 'nuxt/dist/app/compat/capi'
 import eslintPlugin from 'vite-plugin-eslint'
 export default defineNuxtConfig({
   vite: {
@@ -104,5 +105,8 @@ export default defineNuxtConfig({
 
   build: {
     transpile: ['@shopinvader/cart']
+  },
+  devtools: {
+    enabled: false
   }
 })

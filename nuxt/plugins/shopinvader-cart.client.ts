@@ -1,21 +1,19 @@
-import { SaleService } from './../services/SaleService'
 import {
   AddressService,
-  AuthService,
   CartService,
-  SettingService
+  SettingService,
+  SaleService
 } from '../services'
+import { Shopinvader } from './shopinvader'
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const shopinvader = nuxtApp?.$shopinvader
+  const shopinvader: Shopinvader = nuxtApp?.$shopinvader as Shopinvader
   const { providers, services } = shopinvader
-  let auth: AuthService | null = null
-  if (providers?.erp) {
-    auth = new AuthService(providers.erp)
-    auth.me()
+  if (!providers || !services || !services?.auth) {
+    return null
   }
-
-  auth.onUserLoaded(() => {
+  services?.auth.me()
+  services?.auth.onUserLoaded(() => {
     let settings,
       cart,
       sales,
@@ -47,8 +45,18 @@ export default defineNuxtPlugin((nuxtApp) => {
         settings,
         sales,
         cart,
-        addresses,
-        auth
+        addresses
+      }
+    }
+  })
+
+  services?.auth.onUserUnloaded(() => {
+    shopinvader.services = {
+      ...shopinvader.services,
+      ...{
+        sales: null,
+        cart: null,
+        addresses: null
       }
     }
   })

@@ -1,12 +1,12 @@
 <template>
   <div class="header-user">
     <div class="dropdown-end dropdown">
-      <div tabindex="0" class="button" @click="signin">
+      <button type="button" tabindex="0" class="button" @click="login">
         <Icon icon="clarity:user-line" class="button__icon" />
         <span class="button__label">
           {{ user?.name || $t('account.title') }}
         </span>
-      </div>
+      </button>
       <ul v-if="user" tabindex="0" class="dropdown-content">
         <li>
           <nuxt-link to="/account">
@@ -27,26 +27,15 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-export default defineNuxtComponent({
-  name: 'HeaderUser',
-  computed: {
-    user() {
-      return useCurrentUser() || null
-    }
-  },
-  methods: {
-    async signin() {
-      !this.user && (await useAuth()?.login())
-    },
-    async logout() {
-      await useAuth()?.logout()
-    },
-    async info() {
-      await useAuth()?.getUser()
-    }
-  }
-})
+<script lang="ts" setup>
+const auth = useAuth()
+const user = auth?.getUser()
+const login = async (user: string, password: string) => {
+  await auth?.login(user, password)
+}
+const logout = () => {
+  auth?.logout()
+}
 </script>
 <style lang="scss">
 .header-user {
@@ -60,7 +49,7 @@ export default defineNuxtComponent({
       @apply text-2xl;
     }
     &__label {
-      @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 max-lg:hidden;
+      @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 line-clamp-2 max-lg:hidden;
     }
   }
 }

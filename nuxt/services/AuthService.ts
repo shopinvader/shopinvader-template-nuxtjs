@@ -1,33 +1,29 @@
+import { storeToRefs } from 'pinia'
 import { ErpFetch } from '@shopinvader/fetch'
-import { defineStore } from 'pinia'
-import { User } from '../models'
+import { Service } from './Service'
+import { User } from '~/models'
 
-export class AuthService {
+export class AuthService extends Service {
   provider: ErpFetch | null = null
-  store: any
-  callbackUserLoaded: any
+  callbacksUserLoaded: any[] = []
+  callbacksUserUnLoaded: any[] = []
   constructor(provider: ErpFetch) {
+    super()
     this.provider = provider
-    this.store = defineStore('shopinvader', {
-      state: () => ({
-        user: null as User | null
-      }),
-
-      actions: {
-        async setUser(data: any | null) {
-          if (data) {
-            this.user = new User(data)
-          } else {
-            this.user = null
-          }
-        }
-      }
-    })
   }
+  async me(): Promise<Ref<User | null>> {
+    const data = await this.provider?.get('auth/me', [], null)
 
+    this.setUser(data)
+    return this.getUser()
+  }
+  logout() {
+    //this.provider?.post('auth/logout', {})
+    this.setUser(null)
+  }
   async login(login: string, password: string): Promise<boolean> {
-    const user: User | null = await this.me()
-    if (user) {
+    const user: Ref<User | null> = await this.me()
+    if (user?.value) {
       return true
     } else {
       let result = { success: false }
@@ -41,24 +37,37 @@ export class AuthService {
       return result?.success || false
     }
   }
-
-  async me() {
-    const data = await this.provider?.get('auth/me', [], null)
-
-    this.setUser(data)
-    return this.store().user
-  }
-  async getUser() {
-    return this.store().user
+  getUser(): Ref<User | null> {
+    const store = this.store()
+    const { user } = storeToRefs(store)
+    return user || null
   }
   setUser(data: any) {
-    this.store().setUser(data)
-    const user: User | null = this.store().user || null
-    if (user !== null && typeof this.callbackUserLoaded == 'function') {
-      this.callbackUserLoaded(user)
+    const store = this.store()
+    const user: User | null = data ? new User(data) : null
+    store.setUser(user)
+    if (user !== null) {
+      for (const callback of this.callbacksUserLoaded) {
+        if (typeof callback == 'function') {
+          callback(user)
+        }
+      }
+    } else {
+      for (const callback of this.callbacksUserUnLoaded) {
+        if (typeof callback == 'function') {
+          callback(user)
+        }
+      }
     }
   }
   onUserLoaded(callback: any) {
-    this.callbackUserLoaded = callback
+    if (typeof callback == 'function') {
+      this.callbacksUserLoaded.push(callback)
+    }
+  }
+  onUserUnloaded(callback: any) {
+    if (typeof callback == 'function') {
+      this.callbacksUserUnLoaded.push(callback)
+    }
   }
 }
