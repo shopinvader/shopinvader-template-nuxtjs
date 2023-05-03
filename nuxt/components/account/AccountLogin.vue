@@ -1,10 +1,10 @@
 <template>
   <div
-    class="flex items-center h-screen overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400"
+    class="flex h-screen items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400"
   >
     <div class="container mx-auto px-4">
       <div
-        class="mx-auto rounded-3xl bg-white pt-16 pb-24 md:max-w-3xl md:pb-52"
+        class="mx-auto rounded-3xl bg-white px-4 pb-24 pt-16 md:max-w-3xl md:px-0 md:pb-52"
       >
         <div class="flex justify-center pb-4">
           <Logo></Logo>
@@ -20,25 +20,32 @@
               {{ $t('account.login.description') }}
             </p>
           </div>
-          <form>
+          <form @submit.prevent="accountLogin">
             <div class="-m-3 flex flex-wrap">
               <div class="w-full p-3">
                 <label
                   class="mb-2 block text-sm font-bold text-gray-500"
-                  for="signInLightReverseInput3-1"
+                  for="email"
                   >{{ $t('account.address.email') }}</label
                 >
                 <input
-                  class="w-full appearance-none rounded-full border border-gray-200 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary"
-                  id="signInLightReverseInput3-1"
+                  id="email"
+                  v-model="login"
+                  class="w-full appearance-none rounded-full border border-gray-100 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary"
                   type="email"
+                  @keyup="checkValidity('login', $event)"
+                  required
                   placeholder="Enter email address"
                 />
               </div>
+              <div class="pl-4 text-sm italic text-red-500" v-if="error.login">
+                {{ error.login }}
+              </div>
+
               <div class="w-full p-3">
                 <label
                   class="mb-2 block text-sm font-bold text-gray-500"
-                  for="signInLightReverseInput3-2"
+                  for="password"
                   >{{ $t('account.login.password') }}</label
                 >
                 <div
@@ -47,8 +54,11 @@
                   <div class="flex flex-wrap">
                     <div class="flex-1">
                       <input
-                        class="w-full appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none"
-                        id="signInLightReverseInput3-2"
+                        id="password"
+                        v-model="password"
+                        @keyup="checkValidity('password', $event)"
+                        class="w-full appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:border-2 focus:outline-0"
+                        required
                         type="password"
                         placeholder="*************"
                       />
@@ -63,24 +73,29 @@
                   </div>
                 </div>
               </div>
+              <div class="pl-4 text-sm italic text-red-500" v-if="error.password">
+                {{ error.password }}
+              </div>
               <div class="w-full p-3">
                 <div class="-m-2 flex flex-wrap md:justify-end">
                   <div class="w-full p-2">
-                    <a
-                      class="block rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary"
-                      @click="login"
-                      >{{ $t('account.login.sign_in') }}</a
+                    <button
+                      type="submit"
+                      class="block w-full rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary"
                     >
+                      {{ $t('account.login.sign_in') }}
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="w-full p-3">
                 <p class="text-center font-bold text-gray-600">
-                  <span>{{ $t('account.login.not_yet_account') }}</span
+                  <span class="mr-2"> {{ $t('account.login.not_yet_account') }} </span
                   ><nuxt-link
                     class="cursor-pointer font-bold text-secondary hover:text-primary"
                     :to="localePath('/account/register')"
-                    >{{ $t('account.login.create_account') }}</nuxt-link
+                  >
+                    {{ $t('account.login.create_account') }}</nuxt-link
                   >
                 </p>
               </div>
@@ -97,10 +112,57 @@ export default defineNuxtComponent({
   components: {
     Logo: 'Logo'
   },
-  setup() {
+  data() {
+    return {
+      login: null,
+      password: null,
+      error: {
+        login: null,
+        password: null
+      }
+    }
+  },
+  async setup() {
     const localePath = useLocalePath()
+    const service = useShopinvaderServices()
+    // check if user is loggedin and redirect to account if connexion ok
+    if (service?.auth?.getUser) {
+      if (service?.auth?.onUserLoaded) {
+        service?.auth?.onUserLoaded(navigateTo({ path: `/account` }))
+      }
+    }
+
     return {
       localePath
+    }
+  },
+  methods: {
+    checkValidity(input: string, e: Event) {
+      this.error.login = null
+      this.error.password = null
+      if (e.target?.validity.valid == false) {
+        if (input == 'login') {
+          this.error.login = this.$t('error.login.email')
+        } else if (input == 'password') {
+          this.error.password = this.$t('error.login.password')
+        }
+      } else {
+        this.error.login = null
+        this.error.password = null
+      }
+    },
+    async accountLogin(e: Event) {
+      if (service?.auth.login) {
+        try {
+          const res = await service?.auth?.login(this.login, this.password)
+          if (res == true) {
+            navigateTo({ path: `/account` })
+          }
+        } catch (e) {
+          console.error(e)
+          notifications.addError(this.t$('error.login.unable_to_login'))
+        }
+      }
     }
   }
 })

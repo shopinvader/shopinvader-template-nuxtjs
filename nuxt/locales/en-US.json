@@ -159,7 +159,12 @@
     "close": "close"
   },
   "error": {
-    "generic": "An error occured, please try again later"
+    "generic": "An error occured, please try again later",
+    "login": {
+      "email": "Email format is not valid.",
+      "password": "Password format not valid",
+      "unable_to_login": "Login error"
+    }
   },
   "btn": {
     "view_more": "View more",
