@@ -94,7 +94,11 @@
       "accept_terms": "By signing up I agree to the ",
       "terms_conditions": "Terms and conditions",
       "sign_up": "Sign up",
-      "already_have_account": "You already have an account ?"
+      "already_have_account": "You already have an account ?",
+      "notification_registration_thankyou": "Thank you for your registration!",
+      "notification_email_sent": "In order for your account to be activated, please check your inbox and validate the registration email we've just sent you!",
+      "notification_token_error": "ERROR : Invalid token",
+      "notification_token_error_info": "Your token is either not valid either not existant"
     },
     "sales": {
       "sale": "Sales Order",
@@ -168,6 +172,7 @@
   },
   "btn": {
     "view_more": "View more",
-    "download": "Download"
+    "download": "Download",
+    "back_to_homepage": "Back to homepage"
   }
 }

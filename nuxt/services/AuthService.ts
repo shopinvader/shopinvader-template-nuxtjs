@@ -37,6 +37,27 @@ export class AuthService extends Service {
       return result?.success || false
     }
   }
+  async registerUser(user: User): Promise<boolean> {
+    let request = { success: false }
+    if (user) {
+      //request = await this.provider?.post('auth/me', { user }, null)
+    }
+    //TODO REMOVE THIS LINE
+    request = { success: true }
+    return request?.success || false
+  }
+  /**
+   * checkRegisterToken : Check the token for the customer registration
+   *
+   */
+  async checkRegisterToken(token: string): Promise<boolean> {
+    let response = { success: false }
+    //response = await this.provider?.post('auth/token', {token})
+    //TODO REMOVE THIS LINE
+    response = { success: true }
+
+    return response?.success
+  }
   getUser(): Ref<User | null> {
     const store = this.store()
     const { user } = storeToRefs(store)

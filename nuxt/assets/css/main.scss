@@ -32,13 +32,6 @@
   src: url('../font/JosefinSans-Bold.ttf') format('truetype'),
 }
 
-@layer base {
-  .heading {
-    font-family: 'Josefin Sans';
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-}
 
 h2,
 .h2 {
@@ -51,11 +44,15 @@ h1,
   @apply heading leading-tight text-4xl mt-0 mb-5 text-primary;
 }
 
-.heading {
-  font-family: 'Josefin Sans';
-  font-weight: 700;
-  text-transform: uppercase;
+@layer components {
+  .heading {
+    font-family: 'Josefin Sans';
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
 }
+
 
 .backdrop {
   @apply backdrop-blur-sm fixed top-0 left-0 z-20 h-screen w-screen bg-gray-900/20;

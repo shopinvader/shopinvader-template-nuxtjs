@@ -1,10 +1,20 @@
 <template>
   <div
-    class="flex h-screen items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400"
+    class="flex h-screen flex-col items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400"
   >
+  
+    <div class="container mx-auto p-4 pt-16 md:max-w-3xl md:px-0">
+      <nuxt-link
+        :to="localePath('/')"
+        class="btn-primary btn-sm btn rounded-full text-white"
+      >
+        <icon icon="material-symbols:arrow-back-ios" class="inline"> </icon>
+        {{ $t('btn.back_to_homepage') }}
+      </nuxt-link>
+    </div>
     <div class="container mx-auto px-4">
       <div
-        class="mx-auto rounded-3xl bg-white px-4 pb-24 pt-16 md:max-w-3xl md:px-0 md:pb-52"
+        class="mx-auto rounded-3xl bg-white px-4 pt-16 md:max-w-3xl md:px-0 md:pb-52"
       >
         <div class="flex justify-center pb-4">
           <Logo></Logo>
@@ -73,7 +83,10 @@
                   </div>
                 </div>
               </div>
-              <div class="pl-4 text-sm italic text-red-500" v-if="error.password">
+              <div
+                class="pl-4 text-sm italic text-red-500"
+                v-if="error.password"
+              >
                 {{ error.password }}
               </div>
               <div class="w-full p-3">
@@ -90,7 +103,8 @@
               </div>
               <div class="w-full p-3">
                 <p class="text-center font-bold text-gray-600">
-                  <span class="mr-2"> {{ $t('account.login.not_yet_account') }} </span
+                  <span class="mr-2">
+                    {{ $t('account.login.not_yet_account') }} </span
                   ><nuxt-link
                     class="cursor-pointer font-bold text-secondary hover:text-primary"
                     :to="localePath('/account/register')"
@@ -107,10 +121,12 @@
   </div>
 </template>
 <script lang="ts">
+import LogoVue from '../global/Logo.vue'
+
 export default defineNuxtComponent({
   name: 'AccountLogin',
   components: {
-    Logo: 'Logo'
+    logo: LogoVue
   },
   data() {
     return {
@@ -122,16 +138,8 @@ export default defineNuxtComponent({
       }
     }
   },
-  async setup() {
+  setup() {
     const localePath = useLocalePath()
-    const service = useShopinvaderServices()
-    // check if user is loggedin and redirect to account if connexion ok
-    if (service?.auth?.getUser) {
-      if (service?.auth?.onUserLoaded) {
-        service?.auth?.onUserLoaded(navigateTo({ path: `/account` }))
-      }
-    }
-
     return {
       localePath
     }
@@ -152,9 +160,10 @@ export default defineNuxtComponent({
       }
     },
     async accountLogin(e: Event) {
-      if (service?.auth.login) {
+      const auth = useAuth()
+      if (auth?.login) {
         try {
-          const res = await service?.auth?.login(this.login, this.password)
+          const res = await auth?.login(this.login, this.password)
           if (res == true) {
             navigateTo({ path: `/account` })
           }

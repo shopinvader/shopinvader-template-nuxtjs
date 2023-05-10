@@ -9,10 +9,7 @@
           <NuxtLink :to="localePath('account')" class="title">
             {{ $t('account.title') }}
           </NuxtLink>
-          <div class="intro">
-            {{ user.profile.name }} -
-            {{ user.profile.email }}
-          </div>
+          <div v-if="user" class="intro">{{ user?.displayName }}</div>
         </div>
         <div class="intro__btn">
           <button class="btn-link text-white" @click="display = !display">
@@ -55,15 +52,13 @@ export default defineNuxtComponent({
     }
   },
   data() {
+    const auth = useAuth()
     return {
-      display: false
+      display: false,
+      user: auth?.getUser()
     }
   },
   computed: {
-    user() {
-      const auth = useAuth()
-      return auth?.getUser()
-    },
     pages() {
       const route = useRoute()
       const localePath = useLocalePath()

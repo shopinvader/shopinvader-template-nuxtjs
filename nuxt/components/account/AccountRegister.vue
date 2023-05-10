@@ -1,14 +1,45 @@
 <template>
   <section
-    class="flex h-screen items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400 py-10"
+    class="flex h-screen flex-col items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400 py-10"
   >
     <div class="container mx-auto px-4">
       <div class="rounded-3xl bg-white p-10">
-        <div class="-m-8 flex flex-wrap md:items-center">
+        <div class="py-4 text-left">
+          <nuxt-link :to="localePath('/')"  class="btn-primary btn-sm btn rounded-full text-white">
+            <icon icon="material-symbols:arrow-back-ios" class="inline"> </icon>
+            {{ $t('btn.back_to_homepage') }}
+          </nuxt-link>
+        </div>
+        <div
+          v-if="accountIsCreated"
+          class="my-8 flex flex-wrap md:items-center"
+        >
+          <div
+            class="w-full rounded-3xl bg-gray-100 px-8 py-20 text-center lg:px-20"
+          >
+            <div class="pb-6 text-center">
+              <icon
+                icon="ic:outline-email"
+                class="inline rounded-full bg-success p-1 text-4xl text-white"
+              >
+              </icon>
+            </div>
+            <div class="text-lg font-bold">
+              {{ $t('account.register.notification_registration_thankyou') }}
+            </div>
+            <div>
+              {{ $t('account.register.notification_email_sent') }}
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="!accountIsCreated"
+          class="-m-8 flex flex-wrap md:items-center"
+        >
           <div class="w-full p-8 md:w-1/2">
-            <div class="rounded-3xl bg-gray-100 py-20 px-8 lg:px-20">
+            <div class="rounded-3xl bg-gray-100 px-8 py-20 lg:px-20">
               <div class="flex justify-start pb-4">
-                <Logo></Logo>
+                <logo></logo>
               </div>
               <h2
                 class="font-heading mb-20 text-4xl font-black text-gray-900 md:mb-40 md:text-5xl"
@@ -142,11 +173,12 @@
   </section>
 </template>
 <script lang="ts">
-import { Address, User } from '~~/models'
-export default defineNuxtComponent({
+import LogoVue from '../global/Logo.vue'
+import { User } from '~/models'
+export default {
   name: 'AccountRegister',
   components: {
-    Logo: 'Logo'
+    logo: LogoVue
   },
   setup() {
     const localePath = useLocalePath()
@@ -156,35 +188,29 @@ export default defineNuxtComponent({
   },
   data() {
     return {
-      customer: {
-        title: 'title_mr' as string,
-        name: '' as string,
-        password: '' as string,
-        zip: '' as string,
-        phone: '' as string,
-        street: '' as string,
-        city: '' as string,
-        street2: '' as string,
-        country: '' as string,
-        email: '' as string,
-        optOut: false as boolean
-      } as Address | null
+      customer: new User({}) as User,
+      accountIsCreated: false as boolean
     }
   },
   methods: {
     async createAccount() {
-      const services = useShopinvaderServices()
+      const auth = useAuth()
       const notifications = useNotification()
       try {
-        const userIsLoggedIn = (await services?.auth.registerUser(
+        const userAccountCreated = (await auth.registerUser(
           this.customer
-        )) as User
-        console.log(userIsLoggedIn)
+        )) as boolean
+        console.log(this.customer)
+        // Display success message
+        if (userAccountCreated) {
+          this.accountIsCreated = true
+        }
+        console.log(userAccountCreated)
       } catch (e) {
         console.error(e)
-        notifications.addError('error login')
+        notifications.addError(this.$t('error.unable_to_login'))
       }
     }
   }
-})
+}
 </script>

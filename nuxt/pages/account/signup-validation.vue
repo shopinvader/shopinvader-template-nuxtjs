@@ -1,5 +1,7 @@
 <template>
-  <AccountLogin> </AccountLogin>
+  <AccountTokenValidation>
+
+  </AccountTokenValidation>
 </template>
 <script setup lang="ts">
 const auth = useAuth()
@@ -15,6 +17,6 @@ try {
 }
 
 definePageMeta({
-  layout: 'Empty'
-})
+  layout: "Empty",
+});
 </script>
