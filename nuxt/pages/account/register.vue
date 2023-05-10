@@ -6,9 +6,7 @@
 const auth = useAuth()
 try {
   const user = await auth?.me()
-  console.log(user)
-  if(user) {
-    console.log(user)
+  if(user?.value) {
     navigateTo({ path: `/account` })
   }
 } catch(e)  {

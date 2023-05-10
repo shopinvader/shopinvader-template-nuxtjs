@@ -5,9 +5,9 @@
 const auth = useAuth()
 // check if a user is currently logged in and redirect to account page
 try {
-  const user = auth.me()
-
-  if (user.value !== undefined ) {
+  const user = await auth.me()
+  console.log(user)
+  if (user?.value) {
     navigateTo({ path: '/account/profile' })
   }
 } catch (e) {
