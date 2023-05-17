@@ -1,7 +1,16 @@
 <template>
   <div id="header-target"></div>
-  <header-vue></header-vue>
+  <slot name="header">
+    <header-vue></header-vue>
+  </slot>
   <main>
+    <div class="alert shadow-lg">
+      <div>
+        <h3 class="font-bold">{{ cart?.name }}</h3>
+        <div class="text-xs">{{ cart?.uuid }}</div>
+      </div>
+    </div>
+    <slot name="body"> </slot>
     <slot></slot>
   </main>
   <footer-vue></footer-vue>
@@ -11,14 +20,21 @@
 import Header from '../components/global/Header.vue'
 import Footer from '../components/global/Footer.vue'
 import Notifications from '../components/global/Notifications.vue'
-export default {
+
+export default defineNuxtComponent({
   name: 'Default',
   components: {
     'header-vue': Header,
     'footer-vue': Footer,
     'notifications-vue': Notifications
+  },
+  setup() {
+    const services = useShopinvaderServices()
+    return {
+      cart: services?.cart?.getCart()
+    }
   }
-}
+})
 </script>
 <style lang="scss">
 main {

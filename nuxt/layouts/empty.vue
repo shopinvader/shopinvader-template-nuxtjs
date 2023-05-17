@@ -1,5 +1,6 @@
 <template>
   <main>
+    EMPTY
     <slot></slot>
   </main>
 </template>
