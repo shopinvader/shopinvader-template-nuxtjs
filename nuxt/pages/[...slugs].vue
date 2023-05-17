@@ -12,6 +12,7 @@ import CmsPage from '~~/components/cms/Page.vue'
 
 const getCmsPage = async (fullpath: string | null): Promise<Page | null> => {
   const { findPage } = useCMS()
+  fullpath = '/' + fullpath
   const cmsPage: Page | null =
     (await findPage({ filters: { fullpath } })) || null
   return cmsPage
@@ -25,7 +26,7 @@ const getEntity = async (
   const services = useShopinvaderServices()
   const result = await services?.catalog?.getByURLKey(fullpath)
   entity = result?.hits?.[0] || null
-  if (!entity) {
+  if (!entity)     console.log('looking for cms page')
     entity = await getCmsPage(fullpath)
   }
   return entity || null
@@ -42,7 +43,8 @@ export default defineNuxtComponent({
     return {
       product: null as Product | null,
       category: null as Category | null,
-      page: null as Page | null
+      page: null as Page | null,
+      path: null as string | null
     }
   },
   async asyncData() {
@@ -53,7 +55,30 @@ export default defineNuxtComponent({
     const product = result instanceof Product ? result : null
     const page = result instanceof Page ? result : null
     const category = result instanceof Category ? result : null
-    return { product, category, page }
+
+    if (!product && !page && !category) {
+      throw new Error('Not found')
+    }
+    useHead({
+      title: product?.name || category?.name || page?.title || '',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content:
+            product?.metaDescription ||
+            category?.metaDescription ||
+            page?.seo?.metaDescription ||
+            ''
+        },
+        {
+          hid: 'keywords',
+          name: 'keywords',
+          content: product?.metaKeywords || category?.metaKeywords || ''
+        }
+      ]
+    })
+    return { product, category, page, path }
   },
   computed: {
     component(): string {
