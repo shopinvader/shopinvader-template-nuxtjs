@@ -1,14 +1,14 @@
 import { CartAmount } from './CartAmount'
-import { Carrier } from './Carrier'
+import { DeliveryCarrier } from './DeliveryCarrier'
 import { Address } from './Address'
 
 export class CartDelivery {
   fees: CartAmount
-  method: Carrier
+  method: DeliveryCarrier
   address: Address
   constructor(data: any) {
     this.fees = new CartAmount(data?.fees || {})
-    this.method = new Carrier(data?.method || {})
+    this.method = new DeliveryCarrier(data?.method || {})
     this.address = new Address(data?.address || {})
   }
 }

@@ -1,6 +1,7 @@
+import { ErpFetch } from '@shopinvader/fetch'
 import {
   AddressService,
-  CartService,
+  DeliveryCarrierService,
   SettingService,
   SaleService
 } from '../services'
@@ -12,41 +13,25 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (!providers || !services || !services?.auth) {
     return null
   }
-  services?.auth.me()
+
   services?.auth.onUserLoaded(() => {
-    let settings,
-      cart,
-      sales,
-      addresses = null
-    if (shopinvader?.services?.settings === null) {
-      if (providers?.erp != undefined) {
-        settings = new SettingService(providers.erp)
-        settings.init()
-      }
-    }
-    if (shopinvader?.services?.sales === null) {
-      if (providers?.erp != undefined) {
-        sales = new SaleService(providers.erp)
-      }
-    }
-    if (shopinvader?.services?.cart === null) {
-      if (providers?.erp != undefined || services?.products !== undefined) {
-        cart = new CartService(providers?.erp, services?.products)
-      }
-    }
-    if (shopinvader?.services?.addresses === null) {
-      if (providers?.erp != undefined) {
-        addresses = new AddressService(providers?.erp, settings?.options)
-      }
-    }
-    shopinvader.services = {
-      ...shopinvader.services,
-      ...{
-        settings,
-        sales,
-        cart,
-        addresses
-      }
+    const services = shopinvader?.services
+    const erp = providers?.erp as ErpFetch
+    if (erp) {
+      /** Settings */
+      const settings = services.settings || new SettingService(erp)
+      settings.init()
+      services.settings = settings
+
+      /** Sales */
+      services.sales = services.sales || new SaleService(erp)
+
+      /** Address */
+      services.addresses = services.addresses || new AddressService(erp)
+
+      /** Delivery Carrier */
+      services.deliveryCarriers =
+        services.deliveryCarriers || new DeliveryCarrierService(erp)
     }
   })
 
@@ -56,7 +41,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...{
         sales: null,
         cart: null,
-        addresses: null
+        addresses: null,
+        deliveryCarriers: null
       }
     }
   })

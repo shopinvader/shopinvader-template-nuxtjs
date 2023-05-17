@@ -1,6 +1,7 @@
 import { ErpFetch, ElasticFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import {
+  DeliveryCarrierService,
   CategoryService,
   ProductService,
   CatalogService,
@@ -17,15 +18,16 @@ export interface ShopinvaderProvidersList {
 }
 
 export interface ShopinvaderServiceList {
+  auth: AuthService
   products: ProductService
   categories: CategoryService
   catalog: CatalogService
-  cart: CartService | null
+  cart: CartService
   addresses: AddressService | null
   settings: SettingService | null
   sales: SaleService | null
-  auth: AuthService | null
   customer: CustomerService | null
+  deliveryCarriers: DeliveryCarrierService | null
 }
 
 let providers: ShopinvaderProvidersList | null = null
@@ -33,10 +35,10 @@ let services: ShopinvaderServiceList | null = null
 export const fetchAPI = async (url: string, options: any) => {
   const auth = useAuth()
   if (auth !== null && auth?.getUser !== null) {
-    const user = await auth.getUser()
+    //const user = await auth.getUser()
     options.headers = {
-      ...options.headers,
-      ...{ Authorization: `Bearer ${user?.access_token}` }
+      ...options.headers
+      //...{ Authorization: `Bearer ${user?.access_token}` }
     }
   }
   return await fetch(url, options)
@@ -106,14 +108,19 @@ export default defineNuxtPlugin((nuxtApp) => {
   }
 
   if (services === null) {
+    const products = new ProductService(providers?.products as ElasticFetch)
+    const categories = new CategoryService(
+      providers?.categories as ElasticFetch
+    )
     services = {
-      products: new ProductService(providers?.products as ElasticFetch),
-      categories: new CategoryService(providers?.categories as ElasticFetch),
+      products,
+      categories,
       catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
-      cart: null,
+      cart: new CartService(providers?.erp as ErpFetch, products),
       settings: null,
       addresses: null,
       sales: null,
+      deliveryCarriers: null,
       auth: new AuthService(providers?.erp as ErpFetch),
       customer: new CustomerService(providers?.erp as ErpFetch)
     }

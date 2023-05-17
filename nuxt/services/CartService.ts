@@ -1,7 +1,8 @@
 import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
 import { Cart as CartModel, Product, CartLine as CartLineModel } from '~/models'
 import { ProductService } from './ProductService'
-import { defineStore } from 'pinia'
+import { storeToRefs } from 'pinia'
+import { Service } from './Service'
 
 interface CartStore {
   cart: CartModel
@@ -48,18 +49,19 @@ class CartObserver {
   }
 }
 
-export class CartService {
+export class CartService extends Service {
   erp: any // ErpFetch
   cart: any | null
   id: number | null = null // Cart ID
-  store: any
   products: Product[] = []
   productService: ProductService | null = null
   constructor(erp: any, productService: ProductService) {
+    super()
     this.erp = erp
     this.productService = productService
+    this.setCart = this.setCart.bind(this)
 
-    let productStore: Product[] = []
+    /*
     this.store = defineStore('shopinvader', {
       state: () =>
         ({
@@ -122,16 +124,68 @@ export class CartService {
         }
       }
     })
-    const observer = new CartObserver((cart: any) => {
-      this.store()?.setCart(cart)
-    })
-    this.cart = new Cart(
-      this.erp,
-      new WebStorageCartStorage(window.localStorage)
-    )
-    this.cart.registerObserver(observer)
-    this.cart.syncWithRetry()
+    */
+
+    if (process.client) {
+      console.log('CartService')
+      const observer = new CartObserver(this.setCart)
+      this.cart = new Cart(
+        this.erp,
+        new WebStorageCartStorage(window.localStorage)
+      )
+      this.cart.registerObserver(observer)
+      this.cart.syncWithRetry()
+    }
   }
+  getCart(): Ref<CartModel | null> {
+    const store = this.store()
+    const { cart } = storeToRefs(store)
+    return cart || null
+  }
+
+  async setCart(cart: CartModel | null) {
+    console.log('setCart', cart?.lines)
+    const store = this.store()
+    if (cart == null) {
+      console.log('reset cart')
+      store.setCart(null)
+      return
+    }
+    /** Fetch cart product to product index */
+    if (this.productService !== null) {
+      const ids: number[] =
+        cart.lines
+          .map((l: CartLineModel) => l.productId || 0)
+          .filter(
+            (i: number | null) =>
+              i !== null && !this.products.some((p) => i === p?.id)
+          ) || []
+
+      if (ids.length > 0) {
+        const products = (await this.productService.getByIds(ids)) || []
+        if (Array.isArray(products?.hits)) {
+          this.products = [...this.products, ...products.hits]
+        }
+      }
+
+      for (const line of cart?.lines || []) {
+        const product =
+          this.products.find((p: Product) => p.id === line.productId) || null
+
+        if (product !== null) {
+          line.product = product
+        }
+      }
+    }
+    cart.hasPendingTransactions =
+      cart?.lines?.some((i: CartLineModel) => {
+        return i.hasPendingTransactions === true
+      }) || false
+    cart.loaded = true
+
+    store.setCart(cart)
+  }
+
   addTransaction(id: number, qty: number) {
     if (id != null && qty != null && !isNaN(qty)) {
       this.cart.addTransaction(new CartTransaction(id, qty))
@@ -171,9 +225,9 @@ export class CartService {
    * @param {*} id cart line ID
    */
   deleteItem(id: number) {
-    const cart = this.store().cart
-    const line: CartLineModel =
-      cart.lines.find((line: CartLineModel) => line.id === id) || null
+    const cart = this.getCart()?.value || null
+    const line: CartLineModel | null =
+      cart?.lines?.find((line: CartLineModel) => line.id === id) || null
 
     if (line !== null) {
       const qty = line.qty * -1

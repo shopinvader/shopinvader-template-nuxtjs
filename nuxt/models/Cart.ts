@@ -39,7 +39,7 @@ export class Cart {
     this.lines = lines
     this.linesCount = Cart.calcLinesCount(lines)
     this.linesAmount = new CartLinesAmount(data?.amount_without_delivery || {})
-    this.loaded = true
+    this.loaded = false
     this.amount = new CartAmount(data?.amount || {})
     this.discount = new CartDiscount(data?.discount || {})
     this.delivery = new CartDelivery(data?.delivery || {})
