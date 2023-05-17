@@ -1,26 +1,15 @@
 <template>
   <div class="cart-lines">
-    <div v-if="lines == null">
-      <spinner></spinner>
-    </div>
-    <cart-line
-      v-for="line in lines"
-      v-else-if="lines.length > 0"
-      :key="line.id"
-      :line="line"
-    >
-    </cart-line>
+    <cart-line v-for="line in lines" :key="line.id" :line="line"> </cart-line>
   </div>
 </template>
 <script lang="ts">
 import CartLineVue from '~/components/cart/CartLine.vue'
 import { CartLine } from '~~/models'
-import SpinnerVue from '../global/Spinner.vue'
 export default {
   name: 'CartLines',
   components: {
-    'cart-line': CartLineVue,
-    spinner: SpinnerVue
+    'cart-line': CartLineVue
   },
   props: {
     lines: {
@@ -31,3 +20,11 @@ export default {
   computed: {}
 }
 </script>
+<style lang="scss">
+.cart-lines {
+  @apply flex h-full w-full flex-col items-center justify-stretch;
+  .cartline {
+    @apply w-full;
+  }
+}
+</style>

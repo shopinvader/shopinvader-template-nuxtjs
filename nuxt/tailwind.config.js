@@ -10,7 +10,7 @@ module.exports = {
     themes: [
       {
         mytheme: {
-          fontFamily: 'Montserrat,comic sans ms,"sanssecondaryerif"',
+          fontFamily: 'Montserrat,"sanssecondaryerif"',
           primary: '#13263d',
           secondary: '#dca11d',
           accent: '#def2ff',

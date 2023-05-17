@@ -34,18 +34,20 @@
         </nuxt-link>
       </template>
       <template #content>
-        <div class="content__search">
-          <search-autocomplete></search-autocomplete>
-        </div>
-        <div class="content__icons">
-          <cart-icon></cart-icon>
-          <header-user></header-user>
-        </div>
+        <slot name="content">
+          <div class="content__search">
+            <search-autocomplete></search-autocomplete>
+          </div>
+          <div class="content__icons">
+            <cart-icon></cart-icon>
+            <header-user></header-user>
+          </div>
+        </slot>
       </template>
       <template #menu>
-        <div>
+        <slot name="menu">
           <header-nav></header-nav>
-        </div>
+        </slot>
       </template>
     </aside-menu>
   </header>

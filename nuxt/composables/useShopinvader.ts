@@ -12,9 +12,9 @@ export const useShopinvaderServices = (): ShopinvaderServiceList | null => {
   return services || null
 }
 
-export const useCart = (): Cart | null => {
+export const useCart = (): Ref<Cart | null> => {
   const { services } = useShopinvader()
-  return services?.cart?.store()?.cart || null
+  return services?.cart?.getCart() || ref(null)
 }
 
 export const useAuth = (): AuthService | null => {

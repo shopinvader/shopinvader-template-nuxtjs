@@ -1,43 +1,50 @@
 <template>
   <div class="address-card">
     <div class="address-card__header">
-      <icon
-        v-if="address.addressType !== 'profile'"
-        icon="ic:sharp-location-on"
-        class="text-xl text-primary"
-      ></icon>
-      <icon
-        v-else
-        icon="ic:outline-account-circle"
-        class="text-xl text-primary"
-      ></icon>
+      <div class="header__title">
+        <slot name="header" :address="address">
+          <div class="flex items-center gap-2">
+            <icon
+              v-if="address?.addressType !== 'profile'"
+              icon="ic:sharp-location-on"
+              class="text-xl text-primary"
+            ></icon>
+            <icon
+              v-else
+              icon="ic:outline-account-circle"
+              class="text-xl text-primary"
+            ></icon>
 
-      <span class="mx-1">{{ address.name }}</span>
+            <span class="mx-1">{{ address?.name }}</span>
+          </div>
+        </slot>
+      </div>
+      <div class="header__actions">
+        <slot name="actions" :address="address"></slot>
+      </div>
     </div>
     <div class="address-card__content">
-      <template v-if="!edit">
-        <p>{{ address.email }}</p>
-        <span v-if="address.addressType !== 'profile'">
-          <p>{{ address.street }}</p>
-          <p>
-            {{ address.zip }} {{ address.city }} - {{ address.country?.name }}
-          </p>
-          <p v-if="address.phone !== null">
-            {{ address.phone }}
-          </p>
-          <p v-if="address.mobile !== null">
-            {{ address.mobile }}
-          </p>
-        </span>
-      </template>
-      <address-form v-else :address="address"></address-form>
+      <slot name="body" :address="address">
+        <template v-if="!edit">
+          <p>{{ address?.email }}</p>
+          <span v-if="address && address?.addressType !== 'profile'">
+            <p>{{ address?.street }}</p>
+            <p>
+              {{ address.zip }} {{ address.city }} - {{ address.country?.name }}
+            </p>
+            <p v-if="address.phone !== null">
+              {{ address.phone }}
+            </p>
+            <p v-if="address.mobile !== null">
+              {{ address.mobile }}
+            </p>
+          </span>
+        </template>
+        <address-form v-else-if="address" :address="address"></address-form>
+      </slot>
     </div>
     <div class="address-card__footer">
-      <slot name="footer" :address="address">
-        <div class="footer__actions">
-          <slot name="actions" :address="address"></slot>
-        </div>
-      </slot>
+      <slot name="footer" :address="address"> </slot>
     </div>
   </div>
 </template>
@@ -54,7 +61,7 @@ export default defineNuxtComponent({
   },
   props: {
     address: {
-      type: Object as PropType<Address>,
+      type: Object as PropType<Address | null>,
       required: true
     }
   },
@@ -73,19 +80,17 @@ export default defineNuxtComponent({
   @apply rounded bg-base-100 p-6 shadow-xl;
 
   &__header {
-    @apply flex items-center text-2xl font-bold;
+    @apply flex items-center justify-between gap-4 text-2xl font-bold;
+    .header__actions {
+      @apply flex justify-end gap-2;
+    }
+    .header__title {
+      @apply text-base;
+    }
   }
 
   &__content {
     @apply py-3 pl-4;
-  }
-
-  &__footer {
-    @apply flex justify-end;
-
-    .footer__actions {
-      @apply flex justify-end gap-4;
-    }
   }
 }
 </style>

@@ -18,16 +18,7 @@
       <div class="content__header">
         <slot name="header" :line="line"></slot>
       </div>
-      <div class="content__delete">
-        <button
-          type="button"
-          class="btn-ghost btn-circle btn"
-          :title="$t('cart.line.delete')"
-          @click="deleteLine"
-        >
-          <Icon icon="ph:trash" class="text-xl" />
-        </button>
-      </div>
+
       <div class="content__title">
         <slot name="title" :line="line">
           <template v-if="product">
@@ -35,11 +26,17 @@
               class="title"
               :to="localePath({ path: '/' + product.urlKey })"
             >
-              {{ product.name }}
+              {{ product.model.name }}
             </nuxt-link>
+            <div class="shortTitle">
+              <div v-for="[key, value] in attributes" :key="key">
+                {{ key }} {{ value }}
+              </div>
+            </div>
           </template>
         </slot>
       </div>
+
       <div class="content__qty">
         <slot name="qty" :line="line">
           <div class="label">
@@ -50,6 +47,19 @@
           </div>
         </slot>
       </div>
+      <div class="content_body"></div>
+      <div class="content__delete">
+        <button
+          type="button"
+          class="btn-link btn-xs btn p-0 text-xs"
+          :title="$t('cart.line.delete')"
+          @click="deleteLine"
+        >
+          <Icon icon="ph:trash" class="text-xl" />
+          {{ $t('cart.line.delete') }}
+        </button>
+      </div>
+
       <div class="content__price">
         <slot name="price" :line="line">
           <div class="label">
@@ -98,6 +108,10 @@ export default {
     },
     hasPendingTransactions() {
       return this.line?.hasPendingTransactions || false
+    },
+    attributes() {
+      if (!this.product) return []
+      return Object.entries(this.product?.variantAttributes) || []
     }
   },
   methods: {
@@ -121,7 +135,7 @@ export default {
 
 <style lang="scss">
 .cartline {
-  @apply mb-2 flex flex-wrap border p-3;
+  @apply mb-2 flex border p-3 max-md:flex-wrap;
   &--pending {
     .cartline__content {
       .content__price .value {
@@ -133,26 +147,48 @@ export default {
     @apply w-32;
   }
   &__content {
-    @apply flex flex-grow flex-col px-4;
+    @apply grid w-full auto-rows-min grid-cols-4 gap-2 px-4;
     .content {
       &__header {
+        @apply col-span-4;
       }
       &__delete {
-        @apply flex flex-row justify-end;
+        @apply col-span-3  cursor-pointer text-sm;
       }
       &__title {
+        @apply col-span-4 leading-none md:col-span-3;
         .title {
-          @apply text-xl font-bold;
+          @apply flex-row text-sm font-bold uppercase md:line-clamp-1;
+        }
+        .shortTitle {
+          @apply text-sm text-gray-500;
         }
       }
+      &__body {
+        @apply col-span-3;
+      }
       &__qty {
-        @apply flex flex-row justify-between py-2;
+        @apply flex flex-col text-sm md:row-span-2;
+        .cart-line-qty {
+          @apply h-10 w-32 p-0;
+          .input-group {
+            @apply h-full items-center;
+            .cartline-qty {
+              &__btn {
+                @apply h-full w-8 text-base;
+              }
+              &__input {
+                @apply h-full  text-center text-base font-normal;
+              }
+            }
+          }
+        }
       }
       &__price {
-        @apply flex flex-row justify-between py-2;
+        @apply flex  flex-row justify-between gap-2 text-sm;
         .price {
           &__value {
-            @apply pb-0 text-lg text-xl leading-3;
+            @apply pb-0 text-lg font-bold leading-4 text-secondary;
           }
           &__tax {
             @apply text-xs font-normal text-gray-500;

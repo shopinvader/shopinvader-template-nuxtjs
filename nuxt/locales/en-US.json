@@ -47,6 +47,10 @@
   },
   "cart": {
     "title": "Shopping Cart",
+    "continue": "Continue shopping",
+    "payment": {
+      "title": "Payment"
+    },
     "line": {
       "quantity": "Quantity",
       "total": "Total",
@@ -54,9 +58,34 @@
       "add": "Add to cart"
     },
     "empty": "Your cart is empty",
+
     "total": {
       "title": "Total",
       "subtotal": "Subtotal"
+    },
+    "delivery": {
+      "method": {
+        "title":"Delivery method",
+        "intro": "Select a delivery method",
+        "select": "pick this method",
+        "continue": "Continue",
+        "no-method": "No delivery method selected"
+      }
+    },
+    "summary": {
+      "checkout": "Checkout"
+    },
+    "address": {
+      "title":"My addresses",
+      "no-address": "No address selected",
+      "select": "Select an address",
+      "continue": "Continue",
+      "delivery": {
+        "title": "Delivery address"
+      },
+      "invoicing": {
+        "title": "Invoice address"
+      }
     }
   },
   "account": {
@@ -164,6 +193,7 @@
   },
   "error": {
     "generic": "An error occured, please try again later",
+    "retry": "Retry",
     "login": {
       "email": "Email format is not valid.",
       "password": "Password format not valid",

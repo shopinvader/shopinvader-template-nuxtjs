@@ -58,6 +58,15 @@
     "total": {
       "title": "Total",
       "subtotal": "Subtotal"
+    },
+    "address": {
+      "continue": "Continuer",
+      "delivery": {
+        "title":"Adresse de livraison"
+      },
+      "invoice": {
+        "title": "Adresse de facturation"
+      }
     }
   },
   "account": {

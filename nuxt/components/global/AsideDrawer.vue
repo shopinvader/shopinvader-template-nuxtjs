@@ -19,6 +19,11 @@
               <slot name="content" :open="open"></slot>
             </template>
           </div>
+          <div class="side__footer">
+            <template v-if="open">
+              <slot name="footer" :open="open"></slot>
+            </template>
+          </div>
         </div>
       </div>
     </Transition>
@@ -50,22 +55,26 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .aside-drawer {
-  @apply fixed top-0 left-0 z-50 flex items-start justify-start;
+  @apply fixed left-0 top-0 z-50 flex items-start justify-start;
 
   &__overlay {
     @apply h-screen w-screen bg-black opacity-25;
   }
 
   &__side {
-    @apply absolute left-0 h-screen w-11/12 max-w-screen-sm overflow-y-auto bg-white p-2 shadow-xl;
+    @apply absolute left-0 h-screen w-11/12 max-w-screen-sm overflow-y-auto bg-white shadow-xl;
 
     .side {
       &__header {
-        @apply flex items-center justify-between p-4;
+        @apply flex items-center justify-between p-6;
       }
 
       &__content {
-        @apply flex flex-col items-start justify-start p-4;
+        @apply flex flex-col items-start justify-start p-6;
+      }
+
+      &__footer {
+        @apply sticky bottom-0 left-0 flex w-full flex-col items-end justify-center bg-white p-4 shadow-2xl;
       }
     }
   }

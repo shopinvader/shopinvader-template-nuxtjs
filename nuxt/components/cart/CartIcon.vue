@@ -6,33 +6,29 @@
         {{ $t('cart.title') }}
       </span>
     </div>
-    <div v-if="hasCart" class="cart-badge">
-      {{ linesCount }}
+    <div v-if="linesCount > 0" class="cart-badge">
+      <template v-if="linesCount < 99">
+        {{ linesCount }}
+      </template>
+      <template v-else> +99 </template>
     </div>
   </nuxt-link>
 </template>
 <script lang="ts">
-export default {
+export default defineNuxtComponent({
   name: 'CartIcon',
   components: {},
   async setup() {
     return {
-      hasCart: computed((): boolean => {
-        let linesCount: number = useCart()?.linesCount || 0
-        return linesCount > 0
-      }),
-      linesCount: computed((): string => {
-        let linesCount: boolean | string | number =
-          useCart()?.linesCount || false
-        if (linesCount > 100) {
-          return '99+'
-        } else {
-          return linesCount + ''
-        }
+      linesCount: computed((): number => {
+        const services = useShopinvaderServices()
+        if (!services?.cart) return 0
+        const cart = services?.cart?.getCart()
+        return cart.value?.lines?.length || 0
       })
     }
   }
-}
+})
 </script>
 <style lang="scss">
 .cart-icon {
