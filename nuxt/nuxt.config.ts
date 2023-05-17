@@ -11,7 +11,11 @@ export default defineNuxtConfig({
       })
     ]
   },
-
+  app: {
+    head: {
+      link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
+    }
+  },
   css: ['@/assets/css/main.scss'],
 
   runtimeConfig: {
