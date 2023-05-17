@@ -70,7 +70,7 @@ export default {
   &__list {
     @apply flex flex-wrap py-3;
     .product-history__item {
-      @apply w-1/3 md:w-1/4;
+      @apply w-1/2 sm:w-1/3 md:w-1/4;
       .product-hit {
         @apply pr-2;
       }
