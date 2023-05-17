@@ -70,6 +70,7 @@
       </div>
     </div>
     <div>
+      <div v-html="variant.description"></div>
       <product-links v-if="variant" :links="variant.links?.crossLink || []">
         <template #head>
           <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
