@@ -1,15 +1,21 @@
 <template>
   <div class="addresses">
     <div class="addresses__header">
-      <div>
-        <template v-if="total > 0">
-          {{ $t('account.address.count', { count: total }) }}
-        </template>
-      </div>
-      <button type="button" class="btn-sm btn" @click="createAddress">
-        <icon icon="mdi:plus" class="text-lg"></icon>
-        {{ $t('actions.create') }}
-      </button>
+      <slot name="header" :total="total">
+        <div>
+          <template v-if="total > 0">
+            {{ $t('account.address.count', { count: total }) }}
+          </template>
+        </div>
+        <button
+          type="button"
+          class="btn-primary btn-sm btn"
+          @click="createAddress"
+        >
+          <icon icon="mdi:plus" class="text-lg"></icon>
+          {{ $t('actions.create') }}
+        </button>
+      </slot>
     </div>
     <div class="addresses__list">
       <div
@@ -34,13 +40,16 @@
         {{ $t('account.address.noresult') }}
       </template>
       <div v-else class="list__content">
-        <div class="grid gap-4 pb-4 md:grid-cols-2">
+        <div class="content__items">
           <address-card
             v-for="address in addresses"
             :key="address.id"
             :address="address"
             class="h-full w-full"
           >
+            <template #header>
+              <slot name="address-header" :address="address"></slot>
+            </template>
             <template #actions>
               <button
                 v-if="address.access?.delete"
@@ -225,11 +234,14 @@ export default defineNuxtComponent({
   }
 
   &__list {
-    @apply flex flex-grow items-center justify-center py-2;
+    @apply flex flex-grow items-center justify-center  py-2;
 
     .list {
       &__content {
-        @apply w-full flex-grow py-4;
+        @apply w-full flex-grow  py-4;
+        .content__items {
+          @apply grid gap-4 pb-4 md:grid-cols-2;
+        }
       }
     }
   }
