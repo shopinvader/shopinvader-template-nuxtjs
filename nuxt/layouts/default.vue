@@ -14,19 +14,22 @@
     <slot></slot>
   </main>
   <footer-vue></footer-vue>
+  <navbar-bottom class="md:hidden"></navbar-bottom>
   <notifications-vue></notifications-vue>
 </template>
 <script lang="ts">
 import Header from '../components/global/Header.vue'
 import Footer from '../components/global/Footer.vue'
 import Notifications from '../components/global/Notifications.vue'
+import NavbarBottomVue from '../components/global/NavbarBottom.vue'
 
 export default defineNuxtComponent({
   name: 'Default',
   components: {
     'header-vue': Header,
     'footer-vue': Footer,
-    'notifications-vue': Notifications
+    'notifications-vue': Notifications,
+    'navbar-bottom': NavbarBottomVue
   },
   setup() {
     const services = useShopinvaderServices()

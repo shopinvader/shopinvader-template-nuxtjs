@@ -5,6 +5,9 @@
       <span class="button__label">
         {{ $t('cart.title') }}
       </span>
+      <span class="button_mobile__label">
+        {{ $t('navbar.cart') }}
+      </span>
     </div>
     <div v-if="linesCount > 0" class="cart-badge">
       <template v-if="linesCount < 99">
@@ -40,6 +43,9 @@ export default defineNuxtComponent({
     }
     &__label {
       @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 max-lg:hidden;
+    }
+    &_mobile__label {
+      @apply md:hidden normal-case text-xs w-full text-center block transition-all duration-100 ease-in-out font-normal;
     }
   }
   .cart-badge {
