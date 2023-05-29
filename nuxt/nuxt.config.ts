@@ -47,13 +47,6 @@ export default defineNuxtConfig({
       strapi: {
         url: process.env.STRAPI_URL || ''
       },
-      auth: {
-        authority: process.env.AUTH_AUTHORITY || '',
-        client_id: process.env.AUTH_CLIENT_ID || '',
-        response_type: 'code',
-        scope: 'openid email',
-        automaticSilentRenew: true
-      },
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
       }
@@ -61,7 +54,6 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxt/devtools',
     '@nuxtjs/strapi',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
@@ -106,7 +98,6 @@ export default defineNuxtConfig({
     langDir: 'locales',
     defaultLocale: 'en'
   },
-
   build: {
     transpile: ['@shopinvader/cart']
   },

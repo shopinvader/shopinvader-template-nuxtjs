@@ -56,7 +56,7 @@ export const initProviders = (isoLocale: string | null = null) => {
   const providers: ShopinvaderProvidersList = {}
   const runtimeConfig = useRuntimeConfig()
   const options =
-    runtimeConfig?.shopinvader || runtimeConfig?.public?.shopinvader || null
+    runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
   const { elasticsearch, erp } = options
 
   if (options == null) {
