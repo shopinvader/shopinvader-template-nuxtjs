@@ -61,73 +61,7 @@ export class CartService extends Service {
     this.productService = productService
     this.setCart = this.setCart.bind(this)
 
-    /*
-    this.store = defineStore('shopinvader', {
-      state: () =>
-        ({
-          lastSale: {},
-          cart: new CartModel({})
-        } as CartStore),
-
-      actions: {
-        setSyncError(data: boolean) {
-          this.cart.hasSyncError = data
-        },
-        setSyncing(data: boolean) {
-          this.cart.syncing = data
-        },
-        setHasPendingTransactions(status: boolean) {
-          this.cart.hasPendingTransactions = status
-        },
-        async setCart(data: any) {
-          if (productService !== null) {
-            const ids =
-              data.lines
-                .map((l: CartLineModel) => l.productId)
-                .filter(
-                  (i: number) => !productStore.some((p) => i === p?.id)
-                ) || []
-            if (ids.length > 0) {
-              const products = (await productService.getByIds(ids)) || []
-              if (Array.isArray(products?.hits)) {
-                productStore = [...productStore, ...products.hits]
-              }
-            }
-
-            for (const line of data?.lines || []) {
-              const product =
-                productStore.find((p: Product) => p.id === line.productId) ||
-                null
-
-              if (product !== null) {
-                line.product = product
-              }
-            }
-          }
-
-          this.cart = data
-          let unSyncLine = false
-          if (Array.isArray(data?.lines)) {
-            unSyncLine =
-              data.lines.some((i: CartLineModel) => {
-                return i.hasPendingTransactions === true
-              }) || false
-          }
-          this.cart.hasPendingTransactions = unSyncLine
-          this.cart.loaded = true
-        },
-        setLastSale(data: any) {
-          this.lastSale = data
-        },
-        resetCart() {
-          this.cart = new CartModel({})
-        }
-      }
-    })
-    */
-
     if (process.client) {
-      console.log('CartService')
       const observer = new CartObserver(this.setCart)
       this.cart = new Cart(
         this.erp,
@@ -144,10 +78,8 @@ export class CartService extends Service {
   }
 
   async setCart(cart: CartModel | null) {
-    console.log('setCart', cart?.lines)
     const store = this.store()
     if (cart == null) {
-      console.log('reset cart')
       store.setCart(null)
       return
     }
@@ -236,5 +168,14 @@ export class CartService extends Service {
         this.addTransaction(productId, qty)
       }
     }
+  }
+
+  async setDeliveryCarrier(carrierId: number) {
+    const cart = this.getCart()?.value || null
+    if (!cart?.uuid) return Promise.reject('No cart uuid')
+    return await this.erp.post('/cart/set_delivery_carrier', {
+      method_id: carrierId,
+      uuid: cart.uuid
+    })
   }
 }

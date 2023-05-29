@@ -46,4 +46,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
     }
   })
+  /** Auto Loggin - Init the user */
+  services?.auth.me()
 })

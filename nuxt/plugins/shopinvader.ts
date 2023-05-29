@@ -35,10 +35,10 @@ let services: ShopinvaderServiceList | null = null
 export const fetchAPI = async (url: string, options: any) => {
   const auth = useAuth()
   if (auth !== null && auth?.getUser !== null) {
-    //const user = await auth.getUser()
-    options.headers = {
-      ...options.headers
-      //...{ Authorization: `Bearer ${user?.access_token}` }
+    options = {
+      credentials: 'include',
+      cache: 'default',
+      ...options
     }
   }
   return await fetch(url, options)
@@ -47,7 +47,6 @@ export const fetchAPI = async (url: string, options: any) => {
 export const fetchElastic = async (url: string, options: any) => {
   const response = await fetch(url, options)
   if (response.status !== 200) {
-    console.log('Error', response.status, response.statusText)
     throw new Error(response.statusText)
   }
   return response
@@ -55,7 +54,9 @@ export const fetchElastic = async (url: string, options: any) => {
 
 export const initProviders = (isoLocale: string | null = null) => {
   const providers: ShopinvaderProvidersList = {}
-  const options = useRuntimeConfig()?.shopinvader || null
+  const runtimeConfig = useRuntimeConfig()
+  const options =
+    runtimeConfig?.shopinvader || runtimeConfig?.public?.shopinvader || null
   const { elasticsearch, erp } = options
 
   if (options == null) {

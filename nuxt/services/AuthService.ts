@@ -2,39 +2,41 @@ import { storeToRefs } from 'pinia'
 import { ErpFetch } from '@shopinvader/fetch'
 import { Service } from './Service'
 import { User } from '~/models'
+import nuxtStorage from 'nuxt-storage'
 
 export class AuthService extends Service {
   provider: ErpFetch | null = null
   callbacksUserLoaded: any[] = []
   callbacksUserUnLoaded: any[] = []
+
   constructor(provider: ErpFetch) {
     super()
     this.provider = provider
   }
   async me(): Promise<Ref<User | null>> {
-    const data = await this.provider?.get('auth/me', [], null)
-
-    this.setUser(data)
+    const loggedUser = nuxtStorage.localStorage.getData('auth_user') || null
+    if (loggedUser) {
+      const data = await this.provider?.get('profile', [], null)
+      this.setUser(data)
+    }
     return this.getUser()
   }
   logout() {
-    //this.provider?.post('auth/logout', {})
+    this.provider?.post('auth/logout', {})
     this.setUser(null)
   }
-  async login(login: string, password: string): Promise<boolean> {
-    const user: Ref<User | null> = await this.me()
-    if (user?.value) {
-      return true
-    } else {
-      let result = { success: false }
-      if (login && password) {
-        result = await this.provider?.post('auth/login', {
-          login,
-          password
-        })
+  async login(login: string, password: string): Promise<any> {
+    const user: Ref<User | null> = this.getUser()
+
+    if (!user?.value) {
+      const data = await this.provider?.post('auth/login', {
+        login,
+        password
+      })
+      if (data?.login) {
+        this.setSession(user !== null)
+        await this.me()
       }
-      await this.me()
-      return result?.success || false
     }
   }
   async registerUser(user: User): Promise<boolean> {
@@ -67,6 +69,7 @@ export class AuthService extends Service {
     const store = this.store()
     const user: User | null = data ? new User(data) : null
     store.setUser(user)
+    this.setSession(user !== null)
     if (user !== null) {
       for (const callback of this.callbacksUserLoaded) {
         if (typeof callback == 'function') {
@@ -80,6 +83,9 @@ export class AuthService extends Service {
         }
       }
     }
+  }
+  setSession(value: boolean) {
+    nuxtStorage.localStorage.setData('auth_user', value, 10, 'd')
   }
   onUserLoaded(callback: any) {
     if (typeof callback == 'function') {
