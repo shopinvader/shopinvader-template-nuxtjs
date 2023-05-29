@@ -1,19 +1,24 @@
 <template>
-  <AccountRegister v-if="!user"> </AccountRegister>
+  <nuxt-layout name="login">
+    <template #body>
+      <div class="rounded-3xl bg-white p-10">
+        <AccountRegister v-if="!user"> </AccountRegister>
+      </div>
+    </template>
+  </nuxt-layout>
 </template>
 <script setup lang="ts">
 // check if a user is currently loggued in and redirect to account page
 const auth = useAuth()
+definePageMeta({
+  layout: 'Empty'
+})
 try {
   const user = await auth?.me()
-  if(user?.value) {
+  if (user?.value) {
     navigateTo({ path: `/account` })
   }
-} catch(e)  {
+} catch (e) {
   console.error(e)
-  
 }
-definePageMeta({
-  layout: "Empty",
-});
 </script>
