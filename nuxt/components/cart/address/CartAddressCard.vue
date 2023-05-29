@@ -22,8 +22,8 @@
   </div>
 </template>
 <script lang="ts">
-import CartAddressSelector from './CartAddressSelector.vue'
-import AddressCard from '../address/AddressCard.vue'
+import CartAddressSelector from '~/components/cart/address/CartAddressSelector.vue'
+import AddressCard from '~/components/address/AddressCard.vue'
 import { Icon } from '@iconify/vue'
 
 import { Address, Cart } from '~/models'

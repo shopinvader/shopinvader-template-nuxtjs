@@ -4,12 +4,6 @@
     <header-vue></header-vue>
   </slot>
   <main>
-    <div class="alert shadow-lg">
-      <div>
-        <h3 class="font-bold">{{ cart?.name }}</h3>
-        <div class="text-xs">{{ cart?.uuid }}</div>
-      </div>
-    </div>
     <slot name="body"> </slot>
     <slot></slot>
   </main>
@@ -27,12 +21,6 @@ export default defineNuxtComponent({
     'header-vue': Header,
     'footer-vue': Footer,
     'notifications-vue': Notifications
-  },
-  setup() {
-    const services = useShopinvaderServices()
-    return {
-      cart: services?.cart?.getCart()
-    }
   }
 })
 </script>

@@ -34,6 +34,11 @@
               </div>
             </div>
           </template>
+          <template v-else>
+            <div class="title">
+              {{ line?.name }}
+            </div>
+          </template>
         </slot>
       </div>
 

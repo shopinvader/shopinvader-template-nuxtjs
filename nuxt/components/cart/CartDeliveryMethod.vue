@@ -90,7 +90,7 @@ onMounted(async () => {
     @apply flex h-64 items-center justify-center;
   }
   &__method {
-    @apply w-full bg-white p-4;
+    @apply w-full rounded border border-primary p-4 first-letter:bg-white;
     .method {
       &__title {
         @apply flex items-center justify-start font-bold;

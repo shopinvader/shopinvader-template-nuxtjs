@@ -1,12 +1,16 @@
 <template>
   <header class="header-lite">
     <div class="header-lite__content">
-      <cms-image
-        v-if="header?.logo"
-        :image="header.logo"
-        class="content__logo"
-      ></cms-image>
-      <slot></slot>
+      <slot name="logo" :header="header">
+        <nuxt-link :to="{ path: '/' }">
+          <cms-image
+            v-if="header?.logo"
+            :image="header.logo"
+            class="content__logo"
+          ></cms-image>
+        </nuxt-link>
+      </slot>
+      <slot name="content" :header="header"></slot>
     </div>
   </header>
 </template>
