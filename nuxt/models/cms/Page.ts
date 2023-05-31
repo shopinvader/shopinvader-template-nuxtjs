@@ -1,7 +1,7 @@
 import { DynamicZone } from './DynamicZone'
 import { SEO } from './SEO'
-
-export class Page {
+import { CMSObject } from './CMSObject'
+export class Page extends CMSObject {
   fullpath: string | null = null
   handle: string | null = null
   locale: string | null = null
@@ -10,6 +10,7 @@ export class Page {
   content: DynamicZone | null = null
   seo: SEO | null = null
   constructor(data: any) {
+    super(data)
     const { attributes = null } = data
     if (attributes) {
       this.fullpath = attributes?.fullpath || null

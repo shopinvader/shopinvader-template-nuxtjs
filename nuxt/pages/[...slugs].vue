@@ -26,7 +26,7 @@ const getEntity = async (
   const services = useShopinvaderServices()
   const result = await services?.catalog?.getByURLKey(fullpath)
   entity = result?.hits?.[0] || null
-  if (!entity)     console.log('looking for cms page')
+  if (!entity) {
     entity = await getCmsPage(fullpath)
   }
   return entity || null

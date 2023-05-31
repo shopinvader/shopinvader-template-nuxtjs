@@ -1,11 +1,13 @@
+import { CMSObject } from './CMSObject'
 import { CTA } from './CTA'
 import { Image } from './Image'
 
-export class CardStyle {
+export class CardStyle extends CMSObject {
   shadow: boolean
   compact: boolean
   imageFull: boolean
   constructor(data: any) {
+    super(data)
     if (Array.isArray(data)) {
       this.shadow = data?.includes('shadow') ?? false
       this.compact = data?.includes('compact') ?? false
@@ -17,7 +19,7 @@ export class CardStyle {
     }
   }
 }
-export class Card {
+export class Card extends CMSObject {
   image: Image | null = null
   title: string | null = null
   content: string | null = null
@@ -25,6 +27,7 @@ export class Card {
   id: number | null = null
   cta: CTA | null = null
   constructor(data: any) {
+    super(data)
     this.id = data?.id || null
     this.content = data?.content || null
     this.title = data?.title || null

@@ -1,7 +1,7 @@
-import { Component } from './Component'
+import { CMSObject } from './CMSObject'
 import { Image } from './Image'
 import { Text } from './Text'
-export class Footer extends Component {
+export class Footer extends CMSObject {
   logo: Image | null = null
   baseline: string | null = null
   content: Text[] = []
