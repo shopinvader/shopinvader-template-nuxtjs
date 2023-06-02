@@ -22,10 +22,14 @@
       <div class="content">
         <div class="content__header">
           <slot name="header">
-            <h1 class="mb-0 text-3xl">
-              {{ variant.model.name }}
-            </h1>
-            <p class="text-xl uppercase">{{ variant.shortName }}</p>
+            <div class="header">
+              <h1 class="header__title">
+                {{ variant?.model?.name || variant?.name }}
+              </h1>
+              <p class="header__subtitle">
+                {{ variant.shortName }}
+              </p>
+            </div>
           </slot>
         </div>
         <div class="content__ref">
@@ -43,8 +47,13 @@
         </div>
         <div class="content__variants">
           <slot name="variants">
+            <product-variants-selector
+              v-if="variant.variantSelector?.length > 1"
+              :product="variant"
+              @select-variant="changeVariant"
+            />
             <product-variants
-              v-if="variants !== null"
+              v-else-if="variants !== null"
               :variants="variants"
               @select-variant="changeVariant"
             >
@@ -95,6 +104,8 @@ import { PropType } from 'vue'
 import { Product } from '~~/models/Product'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
+import ProductVariantsSelector from '~~/components/product/ProductVariantsSelector.vue'
+
 import ProductCartVue from '~~/components/product/ProductCart.vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
 import ProductLinksVue from './ProductLinks.vue'
@@ -108,6 +119,7 @@ export default {
     'product-price': ProductPriceVue,
     'json-viewer': JsonViewer,
     'product-variants': ProductVariants,
+    'product-variants-selector': ProductVariantsSelector,
     'product-cart': ProductCartVue,
     'product-links': ProductLinksVue,
     'product-history': ProductHistory
@@ -122,6 +134,10 @@ export default {
     let variant = ref(props.product)
     useHistoryStore().addProduct(props.product)
     const changeVariant = (item: Product) => {
+      item = {
+        ...item,
+        variants: props.product.variants
+      }
       variant.value = item
     }
     return {
@@ -157,6 +173,15 @@ export default {
       @apply sticky top-24;
       &__header {
         @apply mb-4 border-b;
+        .header {
+          @apply mb-2 w-full;
+          &__title {
+            @apply mb-0 text-3xl;
+          }
+          &__subtitle {
+            @apply text-lg uppercase text-gray-400;
+          }
+        }
       }
       &__variants {
         .variants {
