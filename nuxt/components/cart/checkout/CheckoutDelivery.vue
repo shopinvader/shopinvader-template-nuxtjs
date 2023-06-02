@@ -18,33 +18,18 @@
       </div>
       <div class="checkout-delivery__items">
         <slot name="items" :carriers="carriers" :selectCarrier="selectCarrier">
-          <div
-            v-for="carrier in carriers"
+          <component
+            :is="component"
+            v-for="{ carrier, component } of carriers"
             :key="carrier.id"
-            class="method"
-            :class="{
-              'method--selected': selectedCarrier?.id == carrier?.id
-            }"
-            @click="selectCarrier(carrier)"
+            :delivery-carrier="carrier"
+            :selected="selectedCarrier?.id == carrier.id"
+            @select="selectCarrier"
           >
-            <div class="method__icon">
-              <icon icon="solar:box-line-duotone" />
-            </div>
-            <div class="method__body">
-              <div class="body__title">
-                {{ carrier.name }}
-              </div>
-              <div class="body__description">
-                {{ carrier.description }}
-              </div>
-            </div>
-            <div class="method__price">
-              {{ $filter.currency(carrier.price) }}
-            </div>
-          </div>
+          </component>
         </slot>
       </div>
-      <slot v-if="loading && carriers == null">
+      <slot v-if="loading && (carriers == null || carriers?.length == 0)">
         <div class="checkout-delivery__loading">
           <spinner></spinner>
         </div>
@@ -95,8 +80,22 @@
 </template>
 <script lang="ts">
 import { DeliveryCarrier } from '~/models/DeliveryCarrier'
+
+import DeliveryGeneric from '~/components/delivery/DeliveryGeneric.vue'
 import Spinner from '~/components/global/Spinner.vue'
 import CartTotal from '../CartTotal.vue'
+interface CarrierWithComponent extends DeliveryCarrier {
+  component: any
+  carrier: DeliveryCarrier
+}
+const importDeliveryComponent = (name: string) => {
+  return defineAsyncComponent(() =>
+    import(`../../delivery/Delivery${name}.vue`).catch(() => {
+      return DeliveryGeneric
+    })
+  )
+}
+
 export default defineNuxtComponent({
   name: 'CheckoutDelivery',
   emits: ['next', 'back'],
@@ -112,17 +111,10 @@ export default defineNuxtComponent({
   },
   setup() {
     const i18n = useI18n()
-
     const selectedCarrier = ref(null as DeliveryCarrier | null)
-    const carriers = ref(null as DeliveryCarrier[] | null)
+    const carriers = ref([] as CarrierWithComponent[])
     const error = ref(null as string | null)
     const loading = ref(false)
-
-    /** Set page title */
-    useHead({
-      title: i18n.t('cart.delivery.method.title')
-    })
-
     return {
       loading,
       i18n,
@@ -147,31 +139,49 @@ export default defineNuxtComponent({
       try {
         this.loading = true
         this.error = null
-        this.carriers = null
+        this.carriers = []
         if (services?.deliveryCarriers) {
-          const results = await services.deliveryCarriers.getAll()
-          this.carriers = results.carriers || []
+          const { carriers = [] } = await services.deliveryCarriers.getAll()
+
+          this.carriers =
+            carriers.map((carrier: DeliveryCarrier) => {
+              const name =
+                carrier.code?.charAt(0).toUpperCase() +
+                carrier.code?.slice(1).toLowerCase()
+              const component = importDeliveryComponent(name)
+              return {
+                component,
+                carrier
+              }
+            }) || []
         }
+
         const selectedCarrier = cart?.value?.delivery?.method || null
         if (selectedCarrier) {
           this.selectedCarrier =
-            this.carriers?.find(
-              (carrier) => carrier.id == selectedCarrier.id
-            ) || null
+            this.carriers?.find((carrier) => carrier.id == selectedCarrier.id)
+              ?.carrier || null
         }
       } catch (e) {
+        console.log('error', e)
         this.error = e?.message || e
       } finally {
         this.loading = false
+        if (this.carriers.length == 1) {
+          await this.selectCarrier(this.carriers[0]?.carrier)
+          this.$emit('next')
+        } else if (this.carriers.length > 1 && !this.selectedCarrier) {
+          await this.selectCarrier(this.carriers[0]?.carrier)
+        }
       }
     },
     async selectCarrier(carrier: DeliveryCarrier) {
       try {
+        this.error = null
         this.selectedCarrier = carrier
         this.loading = true
         const services = useShopinvaderServices()
         const res = await services?.cart.setDeliveryCarrier(carrier.id)
-        console.log(res)
       } catch (e) {
         this.selectedCarrier = null
         this.error = e?.message || e
@@ -187,29 +197,6 @@ export default defineNuxtComponent({
   @apply grid grid-cols-3 gap-6;
   &__items {
     @apply col-span-3 flex flex-col justify-start gap-4 md:col-span-2;
-    .method {
-      @apply flex w-full cursor-pointer gap-2 rounded border p-4 transition-all duration-300 ease-in-out hover:border-primary hover:shadow-md;
-      &--selected {
-        @apply border-2 border-primary shadow-lg;
-      }
-      &__icon {
-        @apply text-5xl text-primary;
-      }
-      &__body {
-        @apply w-full flex-grow;
-        .body {
-          &__title {
-            @apply flex items-center justify-start font-bold;
-          }
-          &__description {
-            @apply text-gray-500;
-          }
-        }
-      }
-      &__price {
-        @apply flex  justify-end font-bold text-primary;
-      }
-    }
   }
   &__total {
     @apply col-span-3 flex flex-col justify-start gap-4 md:col-span-1;

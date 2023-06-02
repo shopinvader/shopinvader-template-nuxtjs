@@ -14,14 +14,14 @@
         {{ $filter.currency(cart?.linesAmount?.untaxed) }}
       </div>
     </div>
-    <div v-if="cart.delivery" class="cart-total__shipping">
+    <div v-if="cart.delivery?.method?.name" class="cart-total__shipping">
       <div class="label">
         {{ $t('cart.total.shipping') }}
       </div>
       <div class="value">
         {{ $filter.currency(cart.delivery.fees?.total) }}
       </div>
-      <div class="mention">
+      <div v-if="cart.delivery.method?.name" class="mention">
         {{ $t('cart.delivery.method.title') }} {{ cart.delivery.method?.name }}
       </div>
     </div>

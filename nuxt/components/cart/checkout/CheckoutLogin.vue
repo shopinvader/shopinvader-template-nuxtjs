@@ -15,7 +15,6 @@ export default defineNuxtComponent({
     const auth = useAuth()
     const user = auth?.getUser()
     if (user?.value) {
-      console.log('user --', user)
       emit('next')
     }
     return {
@@ -24,7 +23,6 @@ export default defineNuxtComponent({
   },
   methods: {
     next() {
-      alert('next')
       this.$emit('next')
     }
   }

@@ -173,9 +173,12 @@ export class CartService extends Service {
   async setDeliveryCarrier(carrierId: number) {
     const cart = this.getCart()?.value || null
     if (!cart?.uuid) return Promise.reject('No cart uuid')
-    return await this.erp.post('/cart/set_delivery_carrier', {
+    const data: any = await this.erp.post('/v2/cart/set_delivery_method', {
       method_id: carrierId,
       uuid: cart.uuid
     })
+    if (data?.id) {
+      this.setCart(new CartModel(cart))
+    }
   }
 }

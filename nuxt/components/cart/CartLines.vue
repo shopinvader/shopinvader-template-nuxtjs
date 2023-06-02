@@ -1,6 +1,12 @@
 <template>
   <div class="cart-lines">
-    <cart-line v-for="line in lines" :key="line.id" :line="line"> </cart-line>
+    <cart-line
+      v-for="line in lines"
+      :key="line.id"
+      :line="line"
+      :readonly="readonly"
+    >
+    </cart-line>
   </div>
 </template>
 <script lang="ts">
@@ -15,6 +21,10 @@ export default {
     lines: {
       type: Array<CartLine>,
       default: null
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {}

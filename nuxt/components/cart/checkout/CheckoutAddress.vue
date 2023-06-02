@@ -114,11 +114,6 @@ export default defineNuxtComponent({
     const deliveryAddress = ref<Address | null>(null)
     const selectedAddressType = ref<'delivery' | 'invoicing' | null>(null)
 
-    /** Set page title */
-    useHead({
-      title: i18n.t('cart.address.title')
-    })
-
     /** Check if the customer is logged */
     const user = auth?.getUser()
 
