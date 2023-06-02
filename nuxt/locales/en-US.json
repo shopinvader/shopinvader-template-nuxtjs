@@ -64,7 +64,10 @@
       "quantity": "Quantity",
       "total": "Total",
       "delete": "Remove Item",
-      "add": "Add to cart"
+      "add": "Add to cart",
+      "count":"{count} product(s) in your cart",
+      "view": "View cart",
+      "hide": "Hide cart"
     },
     "empty": "Your cart is empty",
 
@@ -100,6 +103,32 @@
     },
     "login": {
       "title": "Login"
+    }
+  },
+  "payment": {
+    "manual": {
+      "title": "Wire transfer",
+      "intro": "Please wire the amount to the following bank account",
+      "cta": "Validate my order"
+    },
+    "sips": {
+      "title": "Credit card",
+      "intro": "Please enter your credit card information",
+      "owner": "Card holder",
+      "number": {
+        "title": "Card number",
+        "placeholder": "000 000 000 000"
+      },
+      "expiration": {
+        "title": "Expiration date",
+        "placeholder": "MM/YY"
+      },
+      "cvv": {
+        "title": "CVV",
+        "placeholder": "000"
+      },
+      "cta": "Pay"
+
     }
   },
   "account": {

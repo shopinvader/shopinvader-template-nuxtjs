@@ -72,7 +72,7 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .cart {
-  @apply grid h-full gap-4 py-5 lg:grid-cols-3;
+  @apply grid h-full grid-cols-3 gap-4 py-5;
   &__message {
     @apply col-span-3 py-3;
     .message {
@@ -80,16 +80,16 @@ export default defineNuxtComponent({
     }
   }
   &__lines {
-    @apply w-full lg:col-span-2;
+    @apply col-span-3 lg:col-span-2;
     .cart-lines {
       @apply w-full;
     }
   }
   &__total {
-    @apply w-full lg:col-span-1;
+    @apply col-span-3 lg:col-span-1;
   }
   &__empty {
-    @apply flex w-full items-center  justify-center p-10;
+    @apply col-span-3 flex items-center justify-center p-10;
   }
 }
 </style>

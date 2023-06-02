@@ -12,11 +12,14 @@ import {
   AuthService,
   CustomerService
 } from '../services'
+import { PaymentService } from '~/services/PaymentService'
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
 }
-
+export interface PaymentList {
+  [key: string]: PaymentService
+}
 export interface ShopinvaderServiceList {
   auth: AuthService
   products: ProductService
@@ -28,6 +31,7 @@ export interface ShopinvaderServiceList {
   sales: SaleService | null
   customer: CustomerService | null
   deliveryCarriers: DeliveryCarrierService | null
+  payment: PaymentList | null
 }
 
 let providers: ShopinvaderProvidersList | null = null

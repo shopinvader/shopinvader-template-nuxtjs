@@ -40,12 +40,47 @@
             </ul>
           </slot>
         </div>
+        <div class="checkout__cart">
+          <slot name="cart">
+            <div class="cart__icon">
+              <Icon icon="solar:cart-3-bold-duotone" />
+            </div>
+            <div class="cart__body">
+              <nuxt-link class="body__title" :to="{ path: '/cart' }">
+                {{ $t('cart.title') }}
+              </nuxt-link>
+              <span class="body__count">
+                {{ $t('cart.line.count', { count: lineCount }) }}
+              </span>
+            </div>
+            <div class="cart__end">
+              <button
+                type="button"
+                class="btn-ghost btn-circle btn"
+                @click="displayCart = !displayCart"
+                :title="
+                  displayCart ? $t('cart.line.hide') : $t('cart.line.view')
+                "
+              >
+                <icon
+                  icon="line-md:chevron-small-down"
+                  class="text-lg"
+                  :rotate="displayCart && '180deg'"
+                />
+              </button>
+            </div>
+            <div v-if="displayCart" class="cart__lines">
+              <cart-lines :lines="cart?.lines" :readonly="true"></cart-lines>
+            </div>
+          </slot>
+        </div>
         <div class="checkout__body">
           <slot name="body" :steps="checkoutSteps">
             <div class="checkout-steps">
               <div
                 v-for="(step, index) in checkoutSteps"
                 :key="step.name"
+                :id="'step-' + index"
                 :class="[
                   'checkout-step',
                   {
@@ -138,7 +173,7 @@ export default defineNuxtComponent({
     const service = useShopinvaderServices()
     const cart = service?.cart?.getCart() || ref(null)
     const i18n = useI18n()
-
+    const displayCart = ref(false)
     let defaultSteps: checkoutStep[] = [
       {
         name: 'login',
@@ -172,13 +207,14 @@ export default defineNuxtComponent({
         step.position = index
         return step
       })
-    const currentStepIndex = ref(3 as number)
-    const maxStepIndex = ref(3 as number)
+    const currentStepIndex = ref(0 as number)
+    const maxStepIndex = ref(0 as number)
     return {
       maxStepIndex,
       currentStepIndex,
       checkoutSteps,
-      cart
+      cart,
+      displayCart
     }
   },
   computed: {
@@ -190,6 +226,18 @@ export default defineNuxtComponent({
       return this.cart?.lines?.length || 0
     }
   },
+  watch: {
+    currentStepIndex(currentStepIndex) {
+      const step = this.checkoutSteps[currentStepIndex] || null
+      const title = this.$t('cart.title')
+      if (step) {
+        this.scrollToStep(currentStepIndex)
+      }
+      useHead({
+        title: `${step.title} - ${title}`
+      })
+    }
+  },
   methods: {
     /**
      * Go to the previous step
@@ -199,6 +247,10 @@ export default defineNuxtComponent({
         ? (this.currentStepIndex = 0)
         : this.currentStepIndex--
       this.$emit('back', { currentStepIndex: this.currentStepIndex })
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
     },
     /**
      * Go to the next step
@@ -221,6 +273,14 @@ export default defineNuxtComponent({
       this.currentStepIndex = step
       this.$emit('next', { currentStepIndex: this.currentStepIndex })
     },
+    scrollToStep(step: number) {
+      const top = document
+        .querySelector(`#step-${step}`)
+        ?.getBoundingClientRect().top
+      setTimeout(() => {
+        window.scrollTo({ top, behavior: 'smooth' })
+      }, 100)
+    },
     change() {
       this.$emit('change')
     }
@@ -231,9 +291,9 @@ export default defineNuxtComponent({
 <style lang="scss">
 .checkout {
   &__header {
-    @apply hidden w-full border-b py-6 md:block;
+    @apply hidden w-full pt-6 md:block;
     .checkout-stepper {
-      @apply flex w-full flex-row justify-center  md:gap-8;
+      @apply flex w-full flex-row justify-center md:gap-8;
 
       .step {
         @apply flex gap-2 text-center font-light uppercase text-gray-400;
@@ -248,7 +308,28 @@ export default defineNuxtComponent({
       }
     }
   }
-
+  &__cart {
+    @apply mt-3 flex flex-row  flex-wrap items-center justify-start gap-2 bg-gray-100 p-3;
+    .cart {
+      &__icon {
+        @apply text-4xl text-primary;
+      }
+      &__body {
+        @apply flex flex-grow flex-col justify-start text-sm;
+        .body {
+          &__title {
+            @apply font-bold text-primary;
+          }
+        }
+      }
+      &__lines {
+        @apply w-full flex-grow;
+        .cartline {
+          @apply border-0 bg-white text-sm;
+        }
+      }
+    }
+  }
   &__body {
     @apply py-5;
     .checkout-login {
@@ -321,9 +402,9 @@ export default defineNuxtComponent({
     @apply flex h-96 flex-col items-center justify-center;
   }
   &__pending {
-    @apply flex h-96  flex-col items-center justify-center py-10;
+    @apply flex h-96 flex-col items-center justify-center py-10;
     p {
-      @apply max-w-2xl  animate-pulse pb-10 text-center text-lg;
+      @apply max-w-2xl animate-pulse pb-10 text-center text-lg;
     }
   }
 }
