@@ -20,9 +20,10 @@
             <template #footer>
               <button
                 type="button"
-                :disabled="cart?.hasPendingTransactions"
+                :disabled="cart?.hasPendingTransactions || loading"
                 class="btn-secondary btn mt-6 w-full"
                 @click="$emit('next')"
+                :class="{ loading: loading }"
               >
                 {{ $t('cart.summary.checkout') }}
                 <icon
@@ -64,9 +65,13 @@ export default defineNuxtComponent({
   },
   setup() {
     const i18n = useI18n()
+    const loading = ref(false)
     useHead({
       title: i18n.t('cart.title')
     })
+    return {
+      loading
+    }
   }
 })
 </script>
