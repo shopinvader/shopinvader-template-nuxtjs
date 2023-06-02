@@ -10,13 +10,13 @@ import {
   SettingService,
   SaleService,
   AuthService,
-  CustomerService
+  CustomerService,
+  PaymentModeService
 } from '../services'
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
 }
-
 export interface ShopinvaderServiceList {
   auth: AuthService
   products: ProductService
@@ -28,6 +28,7 @@ export interface ShopinvaderServiceList {
   sales: SaleService | null
   customer: CustomerService | null
   deliveryCarriers: DeliveryCarrierService | null
+  paymentModes: PaymentModeService | null
 }
 
 let providers: ShopinvaderProvidersList | null = null
@@ -122,6 +123,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       addresses: null,
       sales: null,
       deliveryCarriers: null,
+      paymentModes: null,
       auth: new AuthService(providers?.erp as ErpFetch),
       customer: new CustomerService(providers?.erp as ErpFetch)
     }

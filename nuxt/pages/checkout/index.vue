@@ -4,7 +4,7 @@
       <header-lite> </header-lite>
     </template>
     <main>
-      <checkout></checkout>
+      <checkout @next="next"></checkout>
     </main>
   </NuxtLayout>
 </template>
@@ -24,6 +24,11 @@ export default defineNuxtComponent({
     definePageMeta({
       layout: false
     })
+  },
+  methods: {
+    next() {
+      this.$router.push('/checkout/validated')
+    }
   }
 })
 </script>

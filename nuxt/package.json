@@ -50,6 +50,7 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "lodash": "^4.17.21",
     "markdown-it": "^13.0.1",
-    "nuxt-storage": "^1.2.2"
+    "nuxt-storage": "^1.2.2",
+    "tsparticles": "^2.9.3"
   }
 }
