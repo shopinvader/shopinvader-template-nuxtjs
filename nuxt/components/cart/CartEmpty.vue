@@ -1,5 +1,6 @@
 <template>
   <div class="cart-empty">
+    <!-- @slot Message display when the cart is empty   -->
     <slot v-if="cart?.loaded" name="empty">
       <icon icon="ph:bag" class="text-6xl text-gray-300"></icon>
       <div class="cart-empty__title">
@@ -15,6 +16,10 @@
 <script lang="ts">
 import Spinner from '~/components/global/Spinner.vue'
 import { Cart } from '~/models'
+/**
+ * Message display when the cart is empty.
+ * This component retrieve the cart from the store.
+ */
 export default defineNuxtComponent({
   components: {
     spinner: Spinner

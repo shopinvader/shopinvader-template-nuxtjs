@@ -92,14 +92,28 @@ interface AddressType {
   address: Address | null
   icon: string
 }
+
+/**
+ * Checkout Address step.
+ * This component is used in the Checkout funnel.
+ * Use to select cart delivery and invoice addresses.
+ */
 export default defineNuxtComponent({
   name: 'cart-address',
-  emits: ['next', 'back'],
+  emits: {
+    /** Emit to go to the next step */
+    next: () => true,
+    /** Emit to go back to the previous step */
+    back: () => true
+  },
   components: {
     'address-card': AddressCard,
     'cart-address-selector': CartAddressSelector
   },
   props: {
+    /**
+     * Is the current step of the checkout process
+     */
     active: {
       type: Boolean,
       required: true

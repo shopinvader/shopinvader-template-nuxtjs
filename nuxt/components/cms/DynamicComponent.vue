@@ -25,12 +25,8 @@ export default {
   async setup(props) {
     const component = props?.component || null
     if (!component) return { componentSection: null }
-    const componentSection = defineAsyncComponent(
-      () =>
-        import(
-          `~/components/cms/${component.componentGroup}/${component.componentName}.vue`
-        )
-    )
+    const path = `./${component.componentGroup}/${component.componentName}.vue`
+    const componentSection = defineAsyncComponent(() => import(path)) || null
     return {
       componentSection
     }

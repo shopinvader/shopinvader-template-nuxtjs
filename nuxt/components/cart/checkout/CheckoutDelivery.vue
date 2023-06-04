@@ -1,6 +1,10 @@
 <template>
   <div class="checkout-delivery">
     <div v-if="error" class="checkout-delivery__error">
+      <!--
+        @slot Checkout Delivery error content
+        @binding {Error} error
+      -->
       <slot name="error" :error="error">
         <div v-if="error" class="alert alert-error">
           {{ $t('error.generic') }}
@@ -10,6 +14,7 @@
 
     <template v-if="active">
       <div class="checkout-delivery__header">
+        <!-- @slot Header content -->
         <slot name="header">
           <p>
             {{ $t('cart.delivery.method.intro') }}
@@ -17,7 +22,11 @@
         </slot>
       </div>
       <div class="checkout-delivery__items">
-        <slot name="items" :carriers="carriers" :selectCarrier="selectCarrier">
+        <!--
+          @slot Delivery carriers list
+          @binding {Error} error
+        -->
+        <slot name="items" :carriers="carriers" :select-carrier="selectCarrier">
           <component
             :is="component"
             v-for="{ carrier, component } of carriers"
@@ -29,12 +38,14 @@
           </component>
         </slot>
       </div>
+      <!-- @slot Fetch Loading content -->
       <slot v-if="loading && (carriers == null || carriers?.length == 0)">
         <div class="checkout-delivery__loading">
           <spinner></spinner>
         </div>
       </slot>
       <div class="checkout-delivery__total">
+        <!-- @slot Cart Total content -->
         <slot name="total" :error="error">
           <cart-total></cart-total>
           <div
@@ -96,14 +107,27 @@ const importDeliveryComponent = (name: string) => {
   )
 }
 
+/**
+ * Checkout delivery step.
+ * This component is used in the Checkout funnel.
+ * Use to select the shipping mode.
+ */
 export default defineNuxtComponent({
   name: 'CheckoutDelivery',
-  emits: ['next', 'back'],
+  emits: {
+    /** Emit to go to the next step */
+    next: () => true,
+    /** Emit to go back to the previous step */
+    back: () => true
+  },
   components: {
     'cart-total': CartTotal,
     spinner: Spinner
   },
   props: {
+    /**
+     * Is the current step of the checkout process
+     */
     active: {
       type: Boolean,
       required: true
@@ -133,6 +157,9 @@ export default defineNuxtComponent({
     back() {
       this.$emit('back')
     },
+    /**
+     * Get the list of shipping mode available for the current cart.
+     */
     async fetchCarriers() {
       const services = useShopinvaderServices()
       const cart = useCart()
@@ -152,7 +179,7 @@ export default defineNuxtComponent({
               return {
                 component,
                 carrier
-              }
+              } as CarrierWithComponent
             }) || []
         }
 
@@ -162,8 +189,7 @@ export default defineNuxtComponent({
             this.carriers?.find((carrier) => carrier.id == selectedCarrier.id)
               ?.carrier || null
         }
-      } catch (e) {
-        console.log('error', e)
+      } catch (e: any) {
         this.error = e?.message || e
       } finally {
         this.loading = false
@@ -175,14 +201,18 @@ export default defineNuxtComponent({
         }
       }
     },
+    /**
+     * Change the delivery carrier of the current cart
+     * @param carrier
+     */
     async selectCarrier(carrier: DeliveryCarrier) {
       try {
         this.error = null
         this.selectedCarrier = carrier
         this.loading = true
         const services = useShopinvaderServices()
-        const res = await services?.cart.setDeliveryCarrier(carrier.id)
-      } catch (e) {
+        await services?.cart.setDeliveryCarrier(carrier.id)
+      } catch (e: any) {
         this.selectedCarrier = null
         this.error = e?.message || e
       } finally {

@@ -1,17 +1,17 @@
 <template>
   <client-only>
     <template #fallback>
+      <!-- @slot Content before component loading  -->
       <slot name="loading">
         <div class="checkout__loading">
           <spinner></spinner>
         </div>
       </slot>
     </template>
-
     <div v-if="checkoutSteps.length > 0" class="checkout">
-      <div class="checkout__pending" v-if="cart?.hasPendingTransactions">
+      <div v-if="cart?.hasPendingTransactions" class="checkout__pending">
+        <!-- @slot Pending state and warning message content  -->
         <slot name="pending">
-          {{ currentStepIndex }}
           <h1>{{ $t('cart.pending.title') }}</h1>
           <p>{{ $t('cart.pending.checkout') }}</p>
           <nuxt-link :to="{ path: '/cart' }" class="btn-primary btn">
@@ -21,7 +21,8 @@
       </div>
       <template v-else-if="lineCount > 0">
         <div v-if="currentStepIndex != null" class="checkout__header">
-          <slot name="header" :displayedSteps="displayedSteps">
+          <!-- @slot Header content  -->
+          <slot name="header" :displayed-steps="displayedSteps">
             <ul class="checkout-stepper">
               <li
                 v-for="(step, index) in displayedSteps"
@@ -30,18 +31,18 @@
                 :class="{ 'step--active': step.position == currentStepIndex }"
                 @click="goToStep(index)"
               >
-                <span class="step__index">
-                  {{ step.position }}
-                </span>
-                <span class="step__title">
-                  {{ step.title }}
-                </span>
+                <span class="step__index"> {{ step.position }} </span>
+                <span class="step__title"> {{ step.title }} </span>
               </li>
             </ul>
           </slot>
         </div>
         <div class="checkout__cart">
-          <slot name="cart">
+          <!--
+            @slot Cart summary content
+            @binding {Cart} cart - cart
+          -->
+          <slot name="cart" :cart="cart">
             <div class="cart__icon">
               <Icon icon="solar:cart-3-bold-duotone" />
             </div>
@@ -57,10 +58,10 @@
               <button
                 type="button"
                 class="btn-ghost btn-circle btn"
-                @click="displayCart = !displayCart"
                 :title="
                   displayCart ? $t('cart.line.hide') : $t('cart.line.view')
                 "
+                @click="displayCart = !displayCart"
               >
                 <icon
                   icon="line-md:chevron-small-down"
@@ -75,7 +76,16 @@
           </slot>
         </div>
         <div class="checkout__body">
-          <slot name="body" :steps="checkoutSteps">
+          <!--
+            @slot Checkout steps content
+            @binding {CheckoutStep[]} steps - checkout steps
+            @binding {number} currentStepIndex - current step index
+          -->
+          <slot
+            name="body"
+            :steps="checkoutSteps"
+            :currentStepIndex="currentStepIndex"
+          >
             <div class="checkout-steps">
               <div
                 v-for="(step, index) in checkoutSteps"
@@ -132,11 +142,13 @@
         </div>
       </template>
       <div v-else class="checkout__empty">
+        <!-- @slot Empty cart content  -->
         <slot name="empty">
           <cart-empty></cart-empty>
         </slot>
       </div>
       <div class="checkout__footer">
+        <!-- @slot Footer content  -->
         <slot name="footer"></slot>
       </div>
     </div>
@@ -155,6 +167,14 @@ import CheckoutDelivery from '~/components/cart/checkout/CheckoutDelivery.vue'
 import CheckoutPayment from '~/components/cart/checkout/CheckoutPayment.vue'
 import CartEmpty from '../CartEmpty.vue'
 import SpinnerVue from '~/components/global/Spinner.vue'
+
+/**
+ * Checkout component.
+ * This component is used to display the checkout process.
+ * It is composed of several steps.
+ * Each step is a component.
+ * a checkoutStep need to have a name, a title, a component and a position.
+ */
 export default defineNuxtComponent({
   name: 'Checkout',
   emits: ['change', 'next', 'back'],
@@ -164,6 +184,11 @@ export default defineNuxtComponent({
     spinner: SpinnerVue
   },
   props: {
+    /**
+     * Checkout steps.
+     * Used to override or merge component in the default steps list.
+     * Step position is used to sort the steps and add new component between default steps.
+     */
     steps: {
       type: Array as PropType<checkoutStep[]>,
       default: () => []
@@ -174,6 +199,7 @@ export default defineNuxtComponent({
     const cart = service?.cart?.getCart() || ref(null)
     const i18n = useI18n()
     const displayCart = ref(false)
+    /** Default steps of the checkout funnel */
     let defaultSteps: checkoutStep[] = [
       {
         name: 'login',
