@@ -263,6 +263,7 @@ export default defineNuxtComponent({
     })
 
     return {
+      localePath,
       page,
       perPage,
       perPages,

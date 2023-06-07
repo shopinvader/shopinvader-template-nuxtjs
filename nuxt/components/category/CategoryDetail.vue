@@ -45,6 +45,12 @@ export default {
       required: true
     }
   },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
+  },
   computed: {
     breadcrumb() {
       const items = []
