@@ -13,9 +13,9 @@
   </div>
 </template>
 <script lang="ts">
-import Header from '../components/global/Header.vue'
-import Footer from '../components/global/Footer.vue'
-import Notifications from '../components/global/Notifications.vue'
+import Header from '~/components/global/Header.vue'
+import Footer from '~/components/global/Footer.vue'
+import Notifications from '~/components/global/Notifications.vue'
 
 export default defineNuxtComponent({
   name: 'Default',
