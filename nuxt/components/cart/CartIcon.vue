@@ -19,12 +19,24 @@ export default defineNuxtComponent({
   name: 'CartIcon',
   components: {},
   async setup() {
+    const localePath = useLocalePath()
+    
     return {
-      linesCount: computed((): number => {
+      localePath,
+      hasCart: computed((): boolean => {
+        let linesCount: number = useCart()?.linesCount || 0
+        return linesCount > 0
+      }),
+      linesCount: computed((): string => {
         const services = useShopinvaderServices()
         if (!services?.cart) return 0
-        const cart = services?.cart?.getCart()
-        return cart.value?.lines?.length || 0
+        const cart = services?.cart?.getCart()?.value
+        let linesCount: boolean | string | number = cart.lines?.length || 0
+        if (linesCount > 100) {
+          return '99+'
+        } else {
+          return linesCount + ''
+        }
       })
     }
   }

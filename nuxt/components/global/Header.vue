@@ -86,7 +86,9 @@ export default defineNuxtComponent({
     }
   },
   async setup() {
+    const localePath = useLocalePath()
     return {
+      localePath,
       cart: computed(() => useCart())
     }
   },

@@ -101,6 +101,12 @@ export default {
       required: true
     }
   },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
+  },
   emits: ['deleteLine'],
   computed: {
     product() {
