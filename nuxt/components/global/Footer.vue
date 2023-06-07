@@ -30,7 +30,7 @@ export default defineNuxtComponent({
   async asyncData() {
     const { getFooter } = useCMS()
     return {
-      footer: await getFooter()
+      footer: (await getFooter()) || null
     }
   }
 })
