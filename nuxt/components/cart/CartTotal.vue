@@ -1,56 +1,70 @@
 <template>
   <div v-if="cart" class="cart-total">
     <div class="cart-total__title">
-      {{ $t('cart.total.title') }}
+      <!-- @slot Title display in the cart total -->
+      <slot name="header">
+        {{ $t('cart.total.title') }}
+      </slot>
     </div>
     <div class="cart-total__header">
+      <!-- @slot Header display after the title -->
       <slot name="header"></slot>
     </div>
-    <div class="cart-total__subtotal">
-      <div class="label">
-        {{ $t('cart.total.subtotal') }}
+    <!-- @slot Body display after the cart total block -->
+    <slot name="body">
+      <div class="cart-total__subtotal">
+        <div class="label">
+          {{ $t('cart.total.subtotal') }}
+        </div>
+        <div class="value">
+          {{ $filter.currency(cart?.linesAmount?.untaxed) }}
+        </div>
       </div>
-      <div class="value">
-        {{ $filter.currency(cart?.linesAmount?.untaxed) }}
+      <div v-if="cart.delivery?.method?.name" class="cart-total__shipping">
+        <div class="label">
+          {{ $t('cart.total.shipping') }}
+        </div>
+        <div class="value">
+          {{ $filter.currency(cart.delivery.fees?.total) }}
+        </div>
+        <div v-if="cart.delivery.method?.name" class="mention">
+          {{ $t('cart.delivery.method.title') }}
+          {{ cart.delivery.method?.name }}
+        </div>
       </div>
-    </div>
-    <div v-if="cart.delivery?.method?.name" class="cart-total__shipping">
-      <div class="label">
-        {{ $t('cart.total.shipping') }}
+      <div class="cart-total__total">
+        <div class="label">
+          {{ $t('cart.total.title') }}
+        </div>
+        <div class="value">
+          {{ $filter.currency(cart?.amount?.total) }}
+        </div>
+        <div class="mention">
+          {{ $t('cart.total.tax') }} {{ $filter.currency(cart.amount.tax) }}
+        </div>
       </div>
-      <div class="value">
-        {{ $filter.currency(cart.delivery.fees?.total) }}
-      </div>
-      <div v-if="cart.delivery.method?.name" class="mention">
-        {{ $t('cart.delivery.method.title') }} {{ cart.delivery.method?.name }}
-      </div>
-    </div>
-    <div class="cart-total__total">
-      <div class="label">
-        {{ $t('cart.total.title') }}
-      </div>
-      <div class="value">
-        {{ $filter.currency(cart?.amount?.total) }}
-      </div>
-      <div class="mention">
-        {{ $t('cart.total.tax') }} {{ $filter.currency(cart.amount.tax) }}
-      </div>
-    </div>
-
+    </slot>
     <div class="cart-total__footer">
+      <!-- @slot Footer display in the cart total -->
       <slot name="footer"></slot>
     </div>
   </div>
 </template>
 <script lang="ts">
-export default {
+/**
+ * Display the cart's total
+ * This component is used in the component Cart and in sereral checkout steps.
+ * This component retrieve the cart from the store.
+ */
+
+export default defineNuxtComponent({
   name: 'CartTotal',
   computed: {
     cart() {
       return useCart().value
     }
   }
-}
+})
 </script>
 <style lang="scss">
 .cart-total {

@@ -3,6 +3,7 @@
     <client-only>
       <template v-if="cart && lineCount > 0 && !loading">
         <div class="cart__message">
+          <!-- @slot Pending state and warning message content  -->
           <slot name="message" :cart="cart">
             <div v-if="cart?.hasPendingTransactions" class="message">
               {{ $t('cart.pending.checkout') }}
@@ -10,12 +11,15 @@
           </slot>
         </div>
         <div class="cart__lines">
+          <!-- @slot Cart's lines content  -->
           <slot name="lines" :lines="cart?.lines">
             <cart-lines :lines="cart?.lines"></cart-lines>
           </slot>
+          <!-- @slot After lines content  -->
           <slot name="lines-footer"></slot>
         </div>
         <div class="cart__total">
+          <!-- @slot Cart total block content  -->
           <slot name="total" :cart="cart">
             <cart-total class="">
               <template #footer>
@@ -37,6 +41,7 @@
         </div>
       </template>
       <div v-else-if="cart && lineCount == 0 && !loading" class="cart__empty">
+        <!-- @slot empty cart content -->
         <slot name="empty">
           <cart-empty></cart-empty>
         </slot>
@@ -67,7 +72,10 @@ import { Cart } from '~~/models'
 
 export default defineNuxtComponent({
   name: 'Cart',
-  emits: ['next'],
+  emits: {
+    /**  Emit when the user click on the next button */
+    next: () => true
+  },
   components: {
     'cart-lines': CartLines,
     'cart-total': CartTotal,

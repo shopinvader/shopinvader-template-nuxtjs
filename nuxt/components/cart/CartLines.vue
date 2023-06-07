@@ -12,23 +12,31 @@
 <script lang="ts">
 import CartLineVue from '~/components/cart/CartLine.vue'
 import { CartLine } from '~~/models'
-export default {
+/**
+ * Display the cart's lines
+ * This component is used in the component Cart
+ * This component loop on the cart's lines and display the component CartLine
+ */
+export default defineNuxtComponent({
   name: 'CartLines',
   components: {
     'cart-line': CartLineVue
   },
   props: {
+    /**  Cart's lines */
     lines: {
       type: Array<CartLine>,
+      required: true,
       default: null
     },
+    /**  If the cart is readonly. Readonly mode prevent to update the line's quantity*/
     readonly: {
       type: Boolean,
       default: false
     }
   },
   computed: {}
-}
+})
 </script>
 <style lang="scss">
 .cart-lines {

@@ -1,6 +1,7 @@
 <template>
   <div class="checkout-payment">
     <div class="checkout-payment__header">
+      <!-- @slot Header content -->
       <slot name="header">
         <p>{{ $t('cart.payment.intro') }}</p>
       </slot>
@@ -8,6 +9,7 @@
     </div>
     <div class="checkout-payment__items">
       <template v-if="!loading">
+        <!-- @slot Payment modes list -->
         <slot name="items" :cart="cart">
           <component
             :is="component"
@@ -35,6 +37,7 @@
       </template>
     </div>
     <div class="checkout-payment__total">
+      <!-- @slot Total content-->
       <slot name="total">
         <cart-total></cart-total>
       </slot>
@@ -65,8 +68,19 @@ const importPaymentComponent = (name: string) => {
   )
 }
 
+/**
+ * Checkout Paiement Step.
+ * This component is used in the Checkout funnel.
+ * Use allow user to pick the payment method of the cart.
+ */
 export default defineNuxtComponent({
   name: 'CheckoutPayment',
+  emits: {
+    /** Emit to go to the next step */
+    next: () => true,
+    /** Emit to go back to the previous step */
+    back: () => true
+  },
   data() {
     return {
       loading: false,
@@ -87,12 +101,6 @@ export default defineNuxtComponent({
     back() {
       this.$emit('back')
     },
-    selectPayment() {
-      this.loading = true
-    },
-    errorPayment() {
-      this.loading = false
-    },
     async fetchPaymentModes() {
       const services = useShopinvaderServices()
       try {
@@ -101,7 +109,6 @@ export default defineNuxtComponent({
         this.modes = []
         if (services?.paymentModes) {
           const { modes = [] } = await services.paymentModes.getAll()
-          console.log('modes', modes)
           this.modes =
             modes.map((mode: PaymentMode) => {
               const name =
@@ -111,11 +118,10 @@ export default defineNuxtComponent({
               return {
                 component,
                 mode
-              }
+              } as PaymentWithComponent
             }) || []
         }
-      } catch (e) {
-        console.log('error', e)
+      } catch (e: any) {
         this.error = e?.message || e
       } finally {
         this.loading = false

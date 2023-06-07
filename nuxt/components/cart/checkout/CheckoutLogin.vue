@@ -1,13 +1,26 @@
 <template>
   <div v-if="!user" class="checkout-login">
-    <account-login class="cart-login__form" @success="next"> </account-login>
+    <!-- @slot Main content -->
+    <slot name="body">
+      <account-login class="cart-login__form" @success="next"> </account-login>
+    </slot>
   </div>
 </template>
 <script lang="ts">
 import AccountLogin from '~/components/account/AccountLogin.vue'
+/**
+ * Checkout Login step.
+ * This component is used in the Checkout funnel.
+ * Use allow user to loggin.
+ */
 export default defineNuxtComponent({
   name: 'CheckoutLogin',
-  emits: ['next', 'back'],
+  emits: {
+    /** Emit to go to the next step */
+    next: () => true,
+    /** Emit to go back to the previous step */
+    back: () => true
+  },
   components: {
     'account-login': AccountLogin
   },

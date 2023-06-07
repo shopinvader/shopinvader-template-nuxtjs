@@ -4,6 +4,10 @@
     :class="{ 'cartline--pending': hasPendingTransactions }"
   >
     <div class="cartline__image">
+      <!--
+        @slot Cart line's image content
+        @binding {ProductImage} images - images of the product cart line
+      -->
       <slot v-if="product" name="image" :images="product?.images || null">
         <product-image
           v-if="product && product?.images && product.images.length > 0"
@@ -16,17 +20,25 @@
     </div>
     <div class="cartline__content">
       <div class="content__header">
+        <!--
+          @slot Content before the title
+          @binding {CartLine} line - cart line
+        -->
         <slot name="header" :line="line"></slot>
       </div>
 
       <div class="content__title">
+        <!--
+          @slot Title content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="title" :line="line">
           <template v-if="product">
             <nuxt-link
               class="title"
               :to="localePath({ path: '/' + product.urlKey })"
             >
-              {{ product.model.name }}
+              {{ product?.model?.name || product?.name }}
             </nuxt-link>
             <ul class="shortTitle">
               <li v-for="[key, value] in attributes" :key="key">
@@ -43,6 +55,10 @@
       </div>
 
       <div class="content__qty">
+        <!--
+          @slot Quantity selector content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="qty" :line="line">
           <div class="label">
             {{ $t('cart.line.quantity') }}
@@ -53,7 +69,13 @@
           </div>
         </slot>
       </div>
-      <div class="content__body"></div>
+      <div class="content__body">
+        <!--
+          @slot Body content
+          @binding {CartLine} line - cart line
+        -->
+        <slot name="body" :line="line"></slot>
+      </div>
       <div class="content__delete">
         <button
           v-if="!readonly"
@@ -68,6 +90,10 @@
       </div>
 
       <div class="content__price">
+        <!--
+          @slot price content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="price" :line="line">
           <div class="label">
             {{ $t('cart.line.total') }}
@@ -86,6 +112,10 @@
         </slot>
       </div>
       <div class="content__footer">
+        <!--
+          @slot footer content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="footer" :line="line"></slot>
       </div>
     </div>
@@ -96,6 +126,13 @@ import { PropType } from 'vue'
 import { CartLine } from '~/models'
 import CartLineQtyVue from './CartLineQty.vue'
 import ProductImageVue from '../product/ProductImage.vue'
+
+/**
+ * Display a line of the cart
+ * @displayName Cart Line
+ * @component CartLine
+ * @example default
+ */
 export default defineNuxtComponent({
   name: 'CartLine',
   components: {
@@ -103,16 +140,32 @@ export default defineNuxtComponent({
     'cart-line-qty': CartLineQtyVue
   },
   props: {
+    /**
+     * The cart line to display
+     */
     line: {
       type: Object as PropType<CartLine>,
-      required: true
+      required: true,
+      default: null
     },
+    /**
+     * If the line is readonly (can't be modified)
+     */
     readonly: {
       type: Boolean,
+      required: false,
       default: false
     }
   },
-  emits: ['deleteLine'],
+  emits: {
+    /**
+     * Called after the line is deleted
+     * @param line The current line
+     */
+    deleteLine: (line: any) => {
+      return line instanceof CartLine
+    }
+  },
   computed: {
     product() {
       return this.line?.product || false
@@ -126,6 +179,9 @@ export default defineNuxtComponent({
     }
   },
   methods: {
+    /**
+     * Redirect to the product page
+     */
     linkToProduct() {
       if (this.product) {
         this.$router.push({

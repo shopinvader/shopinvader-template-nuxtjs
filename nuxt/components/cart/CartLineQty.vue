@@ -1,32 +1,47 @@
 <template>
   <div class="cart-line-qty">
-    <div class="input-group">
-      <div class="cartline-qty__btn min" @click="decrQuantity()">-</div>
-      <input
-        ref="input"
-        v-model.number="qty"
-        type="number"
-        class="cartline-qty__input"
-        @change="inputValue"
-        @click="selectContent"
-        @keydown="keydown"
-        @keypress="isNumber($event)"
-      />
-      <div class="cartline-qty__btn max" @click="incrQuantity()">+</div>
-    </div>
+    <!--
+  	@slot Selector
+		@binding {number} qty quantity of the cart line
+		@binding {string} onChange callback function to fire quantity change save
+	  -->
+    <slot name="selector" v-bind="{ qty }" :onChange="inputValue">
+      <div class="input-group">
+        <div class="cartline-qty__btn min" @click="decrQuantity()">-</div>
+        <input
+          ref="input"
+          v-model.number="qty"
+          type="number"
+          class="cartline-qty__input"
+          @change="inputValue"
+          @click="selectContent"
+          @keydown="keydown"
+          @keypress="isNumber($event)"
+        />
+        <div class="cartline-qty__btn max" @click="incrQuantity()">+</div>
+      </div>
+    </slot>
   </div>
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
 import { CartLine } from '~/models'
-
+/**
+ * Display a selector to update the quantity of a cart's line.
+ * This component is used in the component CartLine.
+ */
 export default {
   name: 'CartLineQty',
   props: {
+    /**  Cart's line */
     line: {
       required: true,
       type: Object as PropType<CartLine>
     }
+  },
+  emits: {
+    /**  Emit when the quantity is updated */
+    update: (qty: number) => true
   },
   data() {
     const timer: any = null
@@ -85,7 +100,6 @@ export default {
     },
     changeQuantity(): void {
       if (!isNaN(this.qty)) {
-        //  && !this.disabledArrow
         if (this.qty < 0) {
           this.qty = 1
         }
@@ -97,12 +111,14 @@ export default {
       if (cartService && this.line?.productId) {
         await cartService.applyDeltaOnItem(this.line.productId, delta)
       }
+      this.$emit('update', this.qty + delta)
     },
     async updateItem(value: number): Promise<void> {
       const cartService = useShopinvaderServices()?.cart
       if (cartService && this.line?.productId) {
         await cartService.updateItem(this.line.productId, value, this.line)
       }
+      this.$emit('update', value)
     },
     inputValue(): void {
       this.changeQuantity()
