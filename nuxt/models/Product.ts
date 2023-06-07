@@ -14,6 +14,32 @@ export interface ProductResult {
 export interface VariantAttributes {
   [key: string]: string | number
 }
+export class ProductVariantSelectorItem {
+  name: string
+  sku: string
+  available = false
+  selected = false
+  constructor(data: any) {
+    this.name = data?.name || ''
+    this.sku = data?.sku || ''
+    this.available = data?.available
+    this.selected = data?.selected
+  }
+}
+export class ProductVariantSelector {
+  name: string | null = null
+  values: ProductVariantSelectorItem[] = []
+  constructor(data: any) {
+    this.name = data?.name || null
+    this.values =
+      data?.values?.map((item: any) => {
+        if (item.name.includes(this.name)) {
+          item.name = item.name.replace(this.name, '')
+        }
+        return new ProductVariantSelectorItem(item)
+      }) || null
+  }
+}
 export class Product {
   id: number | null = null
   model: ProductModel | null = null
@@ -31,6 +57,7 @@ export class Product {
   categories: ProductCategory[] | null
   sku: string | null
   variantAttributes: VariantAttributes = {}
+  variantSelector: ProductVariantSelector[] = []
   price: ProductPrice | null = null
   images: ProductImageSet[] | null
   variants: Product[] | null = null
@@ -73,6 +100,13 @@ export class Product {
       this.variants = data?.variants.map((variant: any) => {
         return new Product(variant)
       })
+    }
+    if (Array.isArray(data?.variant_selector)) {
+      this.variantSelector = data?.variant_selector.map(
+        (variantSelector: any) => {
+          return new ProductVariantSelector(variantSelector)
+        }
+      )
     }
   }
 }

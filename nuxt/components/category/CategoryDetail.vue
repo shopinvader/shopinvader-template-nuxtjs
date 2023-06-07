@@ -22,7 +22,7 @@
       </div>
     </template>
     <template #footer>
-      {{ category.description }}
+      <div v-html="category.description"></div>
     </template>
   </search-product>
 </template>

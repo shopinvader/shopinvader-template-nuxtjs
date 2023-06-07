@@ -56,3 +56,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   /** Auto Loggin - Init the user */
   services?.auth.me()
 })
+
+declare module '#app' {
+  interface PaiementList {
+    manual: PaymentManualService
+    sips: PaymentSipsService
+  }
+}

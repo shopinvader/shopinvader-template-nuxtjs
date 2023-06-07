@@ -13,6 +13,7 @@ import {
   CustomerService,
   PaymentModeService
 } from '../services'
+import { PaymentService } from '~/services/PaymentService'
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
