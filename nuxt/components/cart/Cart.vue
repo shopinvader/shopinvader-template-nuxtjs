@@ -1,50 +1,68 @@
 <template>
   <div class="cart">
-    <template v-if="cart && lineCount > 0">
-      <div class="cart__message">
-        <slot name="message" :cart="cart">
-          <div v-if="cart?.hasPendingTransactions" class="message">
-            {{ $t('cart.pending.checkout') }}
-          </div>
+    <client-only>
+      <template v-if="cart && lineCount > 0 && !loading">
+        <div class="cart__message">
+          <slot name="message" :cart="cart">
+            <div v-if="cart?.hasPendingTransactions" class="message">
+              {{ $t('cart.pending.checkout') }}
+            </div>
+          </slot>
+        </div>
+        <div class="cart__lines">
+          <slot name="lines" :lines="cart?.lines">
+            <cart-lines :lines="cart?.lines"></cart-lines>
+          </slot>
+          <slot name="lines-footer"></slot>
+        </div>
+        <div class="cart__total">
+          <slot name="total" :cart="cart">
+            <cart-total class="">
+              <template #footer>
+                <button
+                  type="button"
+                  :disabled="cart?.hasPendingTransactions"
+                  class="btn-secondary btn mt-6 w-full"
+                  @click="$emit('next')"
+                >
+                  {{ $t('cart.summary.checkout') }}
+                  <icon
+                    icon="material-symbols:chevron-right"
+                    class="text-lg"
+                  ></icon>
+                </button>
+              </template>
+            </cart-total>
+          </slot>
+        </div>
+      </template>
+      <div v-else-if="cart && lineCount == 0 && !loading" class="cart__empty">
+        <slot name="empty">
+          <cart-empty></cart-empty>
         </slot>
       </div>
-      <div class="cart__lines">
-        <slot name="lines" :lines="cart?.lines">
-          <cart-lines :lines="cart?.lines"></cart-lines>
-        </slot>
-        <slot name="lines-footer"></slot>
-      </div>
-      <div class="cart__total">
-        <slot name="total" :cart="cart">
-          <cart-total class="">
-            <template #footer>
-              <button
-                type="button"
-                :disabled="cart?.hasPendingTransactions || loading"
-                class="btn-secondary btn mt-6 w-full"
-                @click="$emit('next')"
-                :class="{ loading: loading }"
-              >
-                {{ $t('cart.summary.checkout') }}
-                <icon
-                  icon="material-symbols:chevron-right"
-                  class="text-lg"
-                ></icon>
-              </button>
-            </template>
-          </cart-total>
+      <div v-else class="cart__loading">
+        <!-- @slot loading content -->
+        <slot name="loading">
+          <spinner></spinner>
         </slot>
       </div>
-    </template>
-    <div v-else class="cart__empty">
-      <cart-empty></cart-empty>
-    </div>
+      <template #fallback>
+        <div class="cart__loading">
+          <!-- @slot loading content -->
+          <slot name="loading">
+            <spinner></spinner>
+          </slot>
+        </div>
+      </template>
+    </client-only>
   </div>
 </template>
 <script lang="ts">
 import CartLines from '~/components/cart/CartLines.vue'
 import CartTotal from '~/components/cart/CartTotal.vue'
 import CartEmpty from '~/components/cart/CartEmpty.vue'
+import Spinner from '~/components/global/Spinner.vue'
 import { Cart } from '~~/models'
 
 export default defineNuxtComponent({
@@ -53,7 +71,8 @@ export default defineNuxtComponent({
   components: {
     'cart-lines': CartLines,
     'cart-total': CartTotal,
-    'cart-empty': CartEmpty
+    'cart-empty': CartEmpty,
+    spinner: Spinner
   },
   computed: {
     cart(): Cart | null {
@@ -78,6 +97,9 @@ export default defineNuxtComponent({
 <style lang="scss">
 .cart {
   @apply grid h-full grid-cols-3 gap-4 py-5;
+  &__loading {
+    @apply col-span-3 flex h-64 items-center justify-center;
+  }
   &__message {
     @apply col-span-3 py-3;
     .message {
