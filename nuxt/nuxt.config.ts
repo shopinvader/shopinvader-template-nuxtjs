@@ -1,5 +1,7 @@
-import { devtools } from 'nuxt/dist/app/compat/capi'
 import eslintPlugin from 'vite-plugin-eslint'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+const dir = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   vite: {
     plugins: [
@@ -16,8 +18,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
-  css: ['@/assets/css/main.scss'],
-
+  css: [join(dir, './assets/css/main.scss')],
   runtimeConfig: {
     public: {
       shopinvader: {
@@ -62,9 +63,9 @@ export default defineNuxtConfig({
   ],
 
   plugins: [
-    '~/plugins/iconify.ts',
-    '~/plugins/shopinvader.ts',
-    '~/plugins/shopinvader-cart.client.ts'
+    join(dir, './plugins/iconify.ts'),
+    join(dir, './plugins/shopinvader.ts'),
+    join(dir, './plugins/shopinvader-cart.client.ts')
   ],
 
   piniaPersistedstate: {
@@ -79,12 +80,12 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en',
-        iso: 'en_us',
+        iso: 'fr_fr',
         file: 'en-US.json'
       },
       {
         code: 'es',
-        iso: 'fr_be',
+        iso: 'fr_fr',
         file: 'es-ES.json'
       },
       {
@@ -95,7 +96,7 @@ export default defineNuxtConfig({
     ],
     debug: false,
     lazy: true,
-    langDir: 'locales',
+    langDir: join(dir, './locales'),
     defaultLocale: 'en'
   },
   build: {

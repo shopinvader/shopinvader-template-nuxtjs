@@ -14,10 +14,10 @@
   </div>
 </template>
 <script lang="ts">
-import Header from '../components/global/Header.vue'
-import Footer from '../components/global/Footer.vue'
-import Notifications from '../components/global/Notifications.vue'
-import NavbarBottomVue from '../components/global/NavbarBottom.vue'
+import Header from '~/components/global/Header.vue'
+import Footer from '~/components/global/Footer.vue'
+import Notifications from '~/components/global/Notifications.vue'
+import NavbarBottomVue from '~/components/global/NavbarBottom.vue'
 
 export default defineNuxtComponent({
   name: 'Default',
