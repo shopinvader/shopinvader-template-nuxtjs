@@ -83,9 +83,6 @@ export default defineNuxtComponent({
     spinner: Spinner
   },
   computed: {
-    cart(): Cart | null {
-      return useCart().value
-    },
     lineCount(): number {
       return this.cart?.lines.length || 0
     }
@@ -93,10 +90,13 @@ export default defineNuxtComponent({
   setup() {
     const i18n = useI18n()
     const loading = ref(false)
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     useHead({
       title: i18n.t('cart.title')
     })
     return {
+      cart,
       loading
     }
   }

@@ -40,14 +40,15 @@ export default defineNuxtComponent({
       required: true
     }
   },
+  setup() {
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
+    return { cart }
+  },
   computed: {
-    cart(): Ref<Cart | null> {
-      return useCart()
-    },
     address(): Address | null {
-      if (this.type === 'delivery')
-        return this.cart?.value?.delivery?.address || null
-      else return this.cart?.value?.invoicing?.address || null
+      if (this.type === 'delivery') return this.cart?.delivery?.address || null
+      else return this.cart?.invoicing?.address || null
     }
   }
 })

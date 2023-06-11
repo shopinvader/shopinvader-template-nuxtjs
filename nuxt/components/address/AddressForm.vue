@@ -136,8 +136,9 @@ export default defineNuxtComponent({
     }
   },
   data() {
-    const countries = useSettings()?.countries || []
-    const titles = useSettings()?.titles || []
+    const settings = useShopinvaderService('settings')?.options
+    const countries = settings?.countries || []
+    const titles = settings?.titles || []
     return {
       value: new Address({}),
       submitted: false,

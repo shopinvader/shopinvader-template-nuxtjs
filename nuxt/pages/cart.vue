@@ -18,17 +18,17 @@ export default defineNuxtComponent({
     'product-history': ProductHistory
   },
   computed: {
-    cart(): Cart | null {
-      return useCart().value
-    },
     lineCount(): number {
       return this.cart?.lines.length || 0
     }
   },
   setup() {
     const i18n = useI18n()
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     useHead({
-      title: i18n.t('cart.title')
+      title: i18n.t('cart.title'),
+      cart
     })
   },
   methods: {

@@ -63,8 +63,8 @@ export default {
       return result?.hits?.hits?.map((data: any) => new Product(data._source))
     },
     async providerFunction(body: any) {
-      const services = useShopinvaderServices()
-      return (await services?.products?.search(body)) || null
+      const productService = useShopinvaderService('products')
+      return (await productService?.search(body)) || null
     },
     categoryQuery(query: BoolQuery) {
       if (query !== null) {

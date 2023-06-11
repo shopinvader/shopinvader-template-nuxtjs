@@ -23,8 +23,8 @@ const getEntity = async (
 ): Promise<Product | Category | Page | null> => {
   let entity: Product | Category | Page | null = null
   if (fullpath === null) return null
-  const services = useShopinvaderServices()
-  const result = await services?.catalog?.getByURLKey(fullpath)
+  const catalogService = useShopinvaderService('catalog')
+  const result = await catalogService?.getByURLKey(fullpath)
   entity = result?.hits?.[0] || null
   if (!entity) {
     entity = await getCmsPage(fullpath)

@@ -33,9 +33,10 @@ export default {
   },
   computed: {
     line(): CartLine | null {
-      const cart = useCart()
+      const cartService = useShopinvaderService('cart')
+      const cart = cartService.getCart()
       return (
-        cart?.lines?.find(
+        cart?.value?.lines?.find(
           (line: CartLine) => line.productId === this.product.id
         ) || null
       )
@@ -43,7 +44,7 @@ export default {
   },
   methods: {
     addToCart() {
-      const cartService = useShopinvaderServices()?.cart
+      const cartService = useShopinvaderService('cart')
       if (cartService && this.product?.id !== null) {
         cartService.addItem(this.product.id, 1)
       }
@@ -55,7 +56,7 @@ export default {
 .product-cart {
   @apply flex flex-row items-center justify-center;
   &__add {
-    @apply btn-primary btn  text-white hover:shadow-2xl hover:btn-secondary;
+    @apply btn-primary btn  text-white hover:btn-secondary hover:shadow-2xl;
     .add-label {
       @apply ml-2;
     }

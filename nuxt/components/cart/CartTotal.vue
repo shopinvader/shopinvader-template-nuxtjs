@@ -59,10 +59,10 @@
 
 export default defineNuxtComponent({
   name: 'CartTotal',
-  computed: {
-    cart() {
-      return useCart().value
-    }
+  setup() {
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
+    return { cart }
   }
 })
 </script>

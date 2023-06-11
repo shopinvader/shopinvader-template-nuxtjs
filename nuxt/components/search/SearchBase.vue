@@ -148,8 +148,7 @@ export default {
   },
 
   async setup(props) {
-    const shopinvader = useShopinvader()
-    const provider = shopinvader.providers?.['products']
+    const provider = useShopinvaderProviders('products')
     if (provider === null) {
       throw new Error('No provider found for products')
     }

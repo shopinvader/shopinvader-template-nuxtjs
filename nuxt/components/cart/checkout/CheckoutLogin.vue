@@ -25,7 +25,7 @@ export default defineNuxtComponent({
     'account-login': AccountLogin
   },
   setup(props, { emit }) {
-    const auth = useAuth()
+    const auth = useShopinvaderService('auth')
     const user = auth?.getUser()
     if (user?.value) {
       emit('next')
