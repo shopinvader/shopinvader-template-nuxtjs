@@ -28,7 +28,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-const auth = useAuth()
+const auth = useShopinvaderService('auth')
 const user = auth?.getUser()
 const router = useRouter()
 const next = () => {
@@ -54,7 +54,7 @@ const logout = () => {
       @apply text-2xl;
     }
     &__label {
-      @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 line-clamp-2 max-lg:hidden;
+      @apply absolute -bottom-5 line-clamp-2 text-xs font-normal capitalize leading-3 max-lg:hidden;
     }
   }
 }

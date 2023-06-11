@@ -52,7 +52,7 @@ export default defineNuxtComponent({
     }
   },
   data() {
-    const auth = useAuth()
+    const auth = useShopinvaderService('auth')
     return {
       display: false,
       user: auth?.getUser()

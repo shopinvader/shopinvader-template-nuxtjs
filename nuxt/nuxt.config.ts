@@ -64,8 +64,7 @@ export default defineNuxtConfig({
 
   plugins: [
     join(dir, './plugins/iconify.ts'),
-    join(dir, './plugins/shopinvader.ts'),
-    join(dir, './plugins/shopinvader-cart.client.ts')
+    join(dir, './plugins/shopinvader-services/index.ts')
   ],
 
   piniaPersistedstate: {

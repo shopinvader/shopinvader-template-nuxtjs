@@ -44,7 +44,10 @@
             </div>
           </div>
         </div>
-        <a class="btn-primary btn-sm btn mt-8 md:mt-0" @click="download('sale', sale.id)">
+        <a
+          class="btn-primary btn-sm btn mt-8 md:mt-0"
+          @click="download('sale', sale.id)"
+        >
           <icon icon="material-symbols:print" class="text-2xl"></icon>
           <span class="ml-2">{{ $t('btn.download') }}</span>
         </a>
@@ -134,7 +137,7 @@
           </div>
         </div>
       </div>
-      <template v-if="working"> ... </template>
+      <template v-if="loading"> ... </template>
       <div class="overflow-x-auto">
         <div class="sales-table-sm__content"></div>
       </div>
@@ -155,14 +158,14 @@ export default defineNuxtComponent({
   setup() {
     const router = useRouter()
     const route = useRoute()
-    const working = ref(false)
-    const sale = ref<Sale>()
+    const loading = ref(false)
+    const sale = ref<Sale | null>()
     async function loadSale() {
-      const id = route.params._id
-      const services = useShopinvaderServices()
-      working.value = true
+      const id = parseInt(route.params._id)
+      const salesService = useShopinvaderService('sales')
+      loading.value = true
       try {
-        const res = await services?.sales?.getSale(id)
+        const res = (await salesService?.getSale(id)) || null
         sale.value = res
       } catch (error: any) {
         if (
@@ -174,22 +177,22 @@ export default defineNuxtComponent({
           console.log('generic error message')
         }
       } finally {
-        working.value = false
+        loading.value = false
       }
     }
 
     async function download(action: string, id: number) {
-      const services = useShopinvaderServices()
-      let downloadService
+      const saleService = useShopinvaderService('sales')
       let docName
+      let downloadService
       if (action == 'sale') {
-        downloadService = await services?.sales?.downloadSale(id)
+        downloadService = await saleService?.downloadSale(id)
         docName = 'order_' + sale.value.name + '.pdf'
       } else {
-        downloadService = await services?.sales?.downloadSaleInvoice(id)
+        downloadService = await saleService?.downloadSaleInvoice(id)
         docName = 'invoice_' + id + '.pdf'
       }
-      working.value = false
+      loading.value = false
       try {
         const blob = await downloadService
         const fatUrl = window.URL.createObjectURL(blob)
@@ -205,7 +208,7 @@ export default defineNuxtComponent({
       } catch (error: any) {
         console.log(error)
       } finally {
-        working.value = false
+        loading.value = false
       }
     }
 
@@ -215,7 +218,7 @@ export default defineNuxtComponent({
 
     return {
       sale,
-      working,
+      loading,
       loadSale,
       route,
       router,
@@ -251,11 +254,11 @@ export default defineNuxtComponent({
       }
       &__subtotal,
       &__tax {
-        @apply rounded-full bg-gray-100 py-3 px-10;
+        @apply rounded-full bg-gray-100 px-10 py-3;
       }
       &__shipping,
       &__total {
-        @apply rounded-full py-3 px-10;
+        @apply rounded-full px-10 py-3;
       }
       &__total {
         .line-amount {
@@ -268,7 +271,7 @@ export default defineNuxtComponent({
         }
       }
       &__addresses {
-        @apply mb-10 bg-gray-100 py-10 px-4;
+        @apply mb-10 bg-gray-100 px-4 py-10;
         .addresses__container {
           @apply -mx-4 flex flex-wrap justify-around;
           .shipping,

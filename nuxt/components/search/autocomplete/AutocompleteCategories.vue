@@ -38,11 +38,11 @@ export default {
 
     const onSearch = async (query: string) => {
       try {
-        const categoryService = useShopinvaderServices()?.categories || null
+        const categoryService = useShopinvaderService('categories')
 
         if (categoryService) {
           const { hits, total } =
-            (await categoryService.autocompleteSearch(query, 6)) || null
+            (await categoryService.autocompleteSearch(query)) || null
 
           searchResults.hits = hits
           searchResults.total = total

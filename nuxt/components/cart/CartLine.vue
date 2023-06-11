@@ -190,7 +190,7 @@ export default defineNuxtComponent({
       }
     },
     deleteLine() {
-      const cartService = useShopinvaderServices()?.cart || null
+      const cartService = useShopinvaderService('cart')
       if (cartService !== null) {
         cartService.deleteItem(this.line.id)
       }

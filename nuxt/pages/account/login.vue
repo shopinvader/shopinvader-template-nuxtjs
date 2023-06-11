@@ -15,7 +15,7 @@
   </nuxt-layout>
 </template>
 <script setup lang="ts">
-const auth = useAuth()
+const auth = useShopinvaderService('auth')
 // check if a user is currently logged in and redirect to account page
 const goToAccount = () => {
   navigateTo({ path: `/account` })

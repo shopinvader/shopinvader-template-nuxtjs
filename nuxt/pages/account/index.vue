@@ -27,10 +27,6 @@ export default defineNuxtComponent({
   components: {
     'account-layout': AccountLayout
   },
-  setup() {
-    const router = useRouter()
-    console.log('account', router.getRoutes())
-  },
   meta: {
     title: 'Account'
   }

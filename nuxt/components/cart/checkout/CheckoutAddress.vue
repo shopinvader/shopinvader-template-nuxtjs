@@ -121,8 +121,9 @@ export default defineNuxtComponent({
   },
   async setup(props, { emit }) {
     const i18n = useI18n()
-    const auth = useAuth()
-    const cart = useCart()
+    const auth = useShopinvaderService('auth')
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     const loading = ref(false)
     const error = ref(null as string | null)
     const deliveryAddress = ref<Address | null>(null)

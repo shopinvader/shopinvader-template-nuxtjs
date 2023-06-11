@@ -144,7 +144,7 @@ export default defineNuxtComponent({
     },
     async submit(e: Event) {
       console.log('submit', e)
-      const auth = useAuth()
+      const auth = useShopinvaderService('auth')
       if (this?.login && this?.password) {
         try {
           await auth?.login(this.login, this.password)

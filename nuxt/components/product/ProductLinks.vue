@@ -36,11 +36,11 @@ export default defineNuxtComponent({
     }
   },
   async setup(props) {
-    const service = useShopinvaderServices()?.products
+    const productService = useShopinvaderService('products')
     const ids: number[] = props?.links?.map((item) => item.id) || []
     let productLinks: Product[] = []
     if (ids.length === 0) {
-      productLinks = (await service?.getByIds(ids))?.hits || []
+      productLinks = (await productService?.getByIds(ids))?.hits || []
     }
 
     return {

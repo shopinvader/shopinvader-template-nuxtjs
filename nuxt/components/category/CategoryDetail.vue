@@ -59,8 +59,8 @@ export default {
   },
   methods: {
     providerFunction(body: any) {
-      const services = useShopinvaderServices()
-      return services?.products?.search(body)
+      const productService = useShopinvaderService('products')
+      return productService?.search(body)
     },
     query() {
       let query = esb.matchAllQuery()

@@ -161,14 +161,15 @@ export default defineNuxtComponent({
      * Get the list of shipping mode available for the current cart.
      */
     async fetchCarriers() {
-      const services = useShopinvaderServices()
-      const cart = useCart()
+      const carrierService = useShopinvaderService('deliveryCarriers')
+      const cartService = useShopinvaderService('cart')
+      const cart = cartService.getCart()
       try {
         this.loading = true
         this.error = null
         this.carriers = []
-        if (services?.deliveryCarriers) {
-          const { carriers = [] } = await services.deliveryCarriers.getAll()
+        if (carrierService) {
+          const { carriers = [] } = await carrierService.getAll()
 
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
@@ -210,8 +211,8 @@ export default defineNuxtComponent({
         this.error = null
         this.selectedCarrier = carrier
         this.loading = true
-        const services = useShopinvaderServices()
-        await services?.cart.setDeliveryCarrier(carrier.id)
+        const cartService = useShopinvaderService('cart')
+        await cartService.setDeliveryCarrier(carrier.id)
       } catch (e: any) {
         this.selectedCarrier = null
         this.error = e?.message || e

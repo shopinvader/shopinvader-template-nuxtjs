@@ -95,7 +95,7 @@ export default {
 
     const onSearch = async (query: string) => {
       try {
-        const productService = useShopinvaderServices()?.products || null
+        const productService = useShopinvaderService('products') || null
         loading.value = true
 
         if (productService) {

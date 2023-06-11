@@ -172,7 +172,7 @@ export default {
   },
   methods: {
     async createAccount() {
-      const auth = useAuth()
+      const auth = useShopinvaderService('auth')
       const notifications = useNotification()
       try {
         const userAccountCreated = (await auth.registerUser(

@@ -86,8 +86,10 @@ export default defineNuxtComponent({
     }
   },
   async setup() {
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     return {
-      cart: computed(() => useCart())
+      cart
     }
   },
   mounted() {

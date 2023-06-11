@@ -1,10 +1,8 @@
 <template>
-  <AccountTokenValidation>
-
-  </AccountTokenValidation>
+  <AccountTokenValidation> </AccountTokenValidation>
 </template>
 <script setup lang="ts">
-const auth = useAuth()
+const auth = useShopinvaderService('auth')
 // check if a user is currently logged in and redirect to account page
 try {
   const user = await auth.me()
@@ -17,6 +15,6 @@ try {
 }
 
 definePageMeta({
-  layout: "Empty",
-});
+  layout: 'Empty'
+})
 </script>

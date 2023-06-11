@@ -44,7 +44,7 @@ import { ref } from 'vue'
 export default defineComponent({
   name: 'AccountTokenValidation',
   async setup() {
-    const auth = useAuth()
+    const auth = useShopinvaderService('auth')
     let urlHasToken = ref<boolean>(false)
     const route = useRoute()
 

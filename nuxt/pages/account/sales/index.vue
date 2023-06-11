@@ -14,7 +14,7 @@
       </div>
     </template>
     <template v-if="sales" #content>
-      <template v-if="working"> ... </template>
+      <template v-if="loading"> ... </template>
       <div class="overflow-x-auto">
         <table v-if="sales" class="table table hidden w-full md:table">
           <thead>
@@ -65,7 +65,7 @@
                   }}</span>
                 </td>
                 <td class="p-2 text-left text-sm">
-                  <span class="badge badge-md badge-primary px-3 text-xs">{{
+                  <span class="badge-primary badge badge-md px-3 text-xs">{{
                     sale.stateLabel
                   }}</span>
                 </td>
@@ -198,8 +198,8 @@ export default defineNuxtComponent({
       route.query.page ? parseInt(route.query.page as string) : 1
     )
     const count = ref(0)
-    const sales = ref(null as Sale[])
-    const working = ref(false)
+    const sales = ref(null)
+    const loading = ref(false)
 
     const urlQueries = computed(() => {
       return (route.query.page +
@@ -210,13 +210,10 @@ export default defineNuxtComponent({
     })
 
     async function loadSales() {
-      const services = useShopinvaderServices()
-      working.value = true
+      const saleService = useShopinvaderService('sales')
+      loading.value = true
       try {
-        const res = await services?.sales?.getSalesList(
-          page.value,
-          perPage.value
-        )
+        const res = await saleService?.getSalesList(page.value, perPage.value)
         count.value = res.count
         sales.value = res.sales
       } catch (error: any) {
@@ -229,7 +226,7 @@ export default defineNuxtComponent({
           console.log('generic error message')
         }
       } finally {
-        working.value = false
+        loading.value = false
       }
     }
 
@@ -253,7 +250,6 @@ export default defineNuxtComponent({
       setRouteQueryParams()
     }
 
-   
     function navigateToSale(id) {
       navigateTo({ path: `/account/sales/${id}` })
     }
@@ -268,7 +264,7 @@ export default defineNuxtComponent({
       perPages,
       count,
       sales,
-      working,
+      loading,
       urlQueries,
       loadSales,
       setRouteQueryParams,
