@@ -33,7 +33,7 @@ export default defineNuxtComponent({
   },
   setup() {
     return {
-      logoUrl: useRuntimeConfig()?.theme.logo
+      logoUrl: useRuntimeConfig()?.public?.theme.logo
     }
   }
 })
