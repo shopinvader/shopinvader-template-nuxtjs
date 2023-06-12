@@ -1,34 +1,45 @@
 <template>
-  <div class="searchfilter">
+  <div
+    @blur="collapsed = !collapsed"
+    class="searchfilter"
+    :class="`searchfilter--${template}`"
+  >
+    <div
+      class="searchfilter__collapsed"
+      v-if="collapsed && template == 'row'"
+      @click="collapsed = !collapsed"
+    ></div>
     <slot name="title" :title="title">
-      <div class="searchfilter__title">
+      <div class="searchfilter__title" @click="collapsed = !collapsed">
         {{ title }}
+        <icon :icon="collapsed ? 'ph:caret-up' : 'ph:caret-down'" />
       </div>
     </slot>
-    <slot name="items" :items="data.items" :change="onSelectItem">
-      <div
-        v-for="item in data.items"
-        :key="item.key"
-        class="searchfilter__items"
-      >
-        <slot name="items" :item="item" :change="onSelectItem">
-          <label
-            class="item"
-            :class="{ 'item--active': data.selected.includes(item.key) }"
-          >
-            <input
-              v-model="data.selected"
-              type="checkbox"
-              class="item__checkbox"
-              :value="item.key"
-              @change="onSelectItem()"
-            />
-            <span class="item__label">{{ item.key }}</span>
-            <span class="item__count">{{ item.doc_count }}</span>
-          </label>
-        </slot>
-      </div>
-    </slot>
+    <div
+      class="searchfilter__items"
+      :class="{ 'searchfilter__items--collapsed': collapsed }"
+    >
+      <slot name="items" :items="data.items" :change="onSelectItem">
+        <div v-for="item in data.items" :key="item.key" class="items__content">
+          <slot name="items" :item="item" :change="onSelectItem">
+            <label
+              class="item"
+              :class="{ 'item--active': data.selected.includes(item.key) }"
+            >
+              <input
+                v-model="data.selected"
+                type="checkbox"
+                class="item__checkbox"
+                :value="item.key"
+                @change="onSelectItem()"
+              />
+              <span class="item__label">{{ item.key }}</span>
+              <span class="item__count">{{ item.doc_count }}</span>
+            </label>
+          </slot>
+        </div>
+      </slot>
+    </div>
     <slot name="footer" :items="data.items" :size="size"> </slot>
   </div>
 </template>
@@ -53,6 +64,10 @@ interface FacetItem {
 import { Filter } from './SearchBase.vue'
 export default {
   props: {
+    template: {
+      type: String,
+      default: 'column'
+    },
     name: {
       type: String,
       required: true
@@ -102,6 +117,7 @@ export default {
     }
   },
   async setup(props) {
+    const collapsed = ref(false)
     const data = reactive({
       selected: [] as string[],
       items: [] as FacetItem[],
@@ -195,7 +211,8 @@ export default {
     return {
       response,
       data,
-      onSelectItem
+      onSelectItem,
+      collapsed
     }
   },
   watch: {
@@ -259,22 +276,50 @@ export default {
 </script>
 <style lang="scss">
 .searchfilter {
-  @apply mb-3 bg-gray-50 p-5;
-  &__title {
-    @apply heading;
+  @apply mb-3;
+  .searchfilter {
+    &__items {
+      @apply text-xs;
+      .item {
+        @apply mt-2 flex cursor-pointer items-center;
+        &__checkbox {
+          @apply mr-2;
+        }
+        &__label {
+          @apply flex-1;
+        }
+        &__count {
+          @apply text-gray-500;
+        }
+      }
+    }
   }
-  &__items {
-    @apply mt-2 text-xs;
-    .item {
-      @apply flex cursor-pointer items-center;
-      &__checkbox {
-        @apply mr-2;
+  &--column {
+    @apply bg-gray-50 p-5 pb-5;
+    .searchfilter {
+      &__title {
+        @apply heading flex cursor-pointer justify-between;
       }
-      &__label {
-        @apply flex-1;
+      &__items {
+        &--collapsed {
+          @apply hidden;
+        }
       }
-      &__count {
-        @apply text-gray-500;
+    }
+  }
+  &--row {
+    .searchfilter {
+      &__collapsed {
+        @apply fixed left-0 top-0 z-10 h-screen w-screen;
+      }
+      &__title {
+        @apply btn-outline btn-sm btn gap-2 rounded-full font-normal capitalize;
+      }
+      &__items {
+        @apply absolute hidden w-64 rounded bg-white p-4 shadow-xl;
+        &--collapsed {
+          @apply z-40 block;
+        }
       }
     }
   }

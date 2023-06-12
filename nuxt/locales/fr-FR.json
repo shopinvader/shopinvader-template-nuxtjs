@@ -7,6 +7,7 @@
   "search": {
     "noresults": "Aucun résultat",
     "filter": "Filtrer",
+    "reset": "Réinitialiser",
     "results":{
       "count": "{count} résultat(s)"
     },
