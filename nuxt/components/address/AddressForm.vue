@@ -149,7 +149,6 @@ export default defineNuxtComponent({
   watch: {
     address: {
       handler: function (value) {
-        console.log('address', value)
         if (value) {
           if (value?.country?.id == null) {
             value.country = this.countries?.[0] || null
