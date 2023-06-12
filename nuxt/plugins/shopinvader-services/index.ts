@@ -54,9 +54,13 @@ export default defineNuxtPlugin((nuxtApp) => {
     auth: new AuthService(erp),
     customer: new CustomerService(erp)
   }
-  services.settings.init()
-  /** Auto Loggin - Init the user */
-  services?.auth.me()
+  if (process.client) {
+    /** Auto Loggin - Init the user */
+    services?.auth.me()
+    services?.auth.onUserLoaded(() => {
+      services.settings.init()
+    })
+  }
   return {
     provide: {
       shopinvader: {
