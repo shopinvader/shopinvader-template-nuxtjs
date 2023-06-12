@@ -1,6 +1,6 @@
 <template class="logo-container">
-  <template v-if="logo_url">
-    <img :src="logo_url" alt="Logo" :width="width" :height="height" />
+  <template v-if="logoUrl">
+    <img :src="logoUrl" alt="Logo" :width="width" :height="height" />
   </template>
   <template v-else>
     <svg
@@ -19,7 +19,7 @@
   </template>
 </template>
 <script lang="ts">
-export default {
+export default defineNuxtComponent({
   name: 'Logo',
   props: {
     width: {
@@ -33,12 +33,11 @@ export default {
   },
   setup() {
     return {
-      logo_url: useRuntimeConfig()?.theme.logo
+      logoUrl: useRuntimeConfig()?.theme.logo
     }
   }
-}
+})
 </script>
-
 <style lang="scss">
 .logo-container {
   img {
