@@ -1,7 +1,8 @@
 <template>
   <div v-if="variant !== null" class="product-detail">
     <div class="product-detail__header">
-      <slot name="header">
+      <!-- @slot Breadcrumbs content -->
+      <slot name="breadcrumbs">
         <div class="breadcrumbs text-sm">
           <ul>
             <li v-for="category in variant.categories" :key="category.id">
@@ -14,6 +15,7 @@
       </slot>
     </div>
     <div class="product-detail__image">
+      <!-- @slot Image content -->
       <slot name="image">
         <image-list :images="variant.images || []" :slider="false" />
       </slot>
@@ -21,6 +23,7 @@
     <div class="product-detail__content">
       <div class="content">
         <div class="content__header">
+          <!-- @slot Header content -->
           <slot name="header">
             <div class="header">
               <h1 class="header__title">
@@ -33,12 +36,14 @@
           </slot>
         </div>
         <div class="content__ref">
+          <!-- @slot Ref content -->
           <slot name="ref">
             {{ variant.sku }}
           </slot>
         </div>
         <div class="content__shortDescription">
-          <slot name="shortDescription">
+          <!-- @slot Intro content -->
+          <slot name="intro">
             <div
               v-if="variant.shortDescription"
               v-html="variant.shortDescription"
@@ -46,6 +51,7 @@
           </slot>
         </div>
         <div class="content__variants">
+          <!-- @slot Variants content -->
           <slot name="variants">
             <product-variants-selector
               v-if="variant.variantSelector?.length > 1"
@@ -60,41 +66,56 @@
             </product-variants>
           </slot>
         </div>
-
-        <product-price
-          v-if="variant.price !== null"
-          :price="variant.price"
-          class="py-4 text-right"
-        >
-          <template #price>
-            <slot name="price" :price="variant.price"></slot>
-          </template>
-        </product-price>
-        <client-only>
-          <product-cart
-            v-if="variant !== null"
-            :product="variant"
-          ></product-cart>
-        </client-only>
+        <div class="content__price">
+          <!-- @slot Price content -->
+          <slot name="price">
+            <product-price
+              v-if="variant.price !== null"
+              :price="variant.price"
+              class="py-4 text-right"
+            >
+              <template #price>
+                <slot name="price" :price="variant.price"></slot>
+              </template>
+            </product-price>
+            <client-only>
+              <product-cart
+                v-if="variant !== null"
+                :product="variant"
+              ></product-cart>
+            </client-only>
+          </slot>
+        </div>
       </div>
     </div>
-    <div>
-      <div v-html="variant.description"></div>
-      <product-links v-if="variant" :links="variant.links?.crossLink || []">
-        <template #head>
-          <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
-        </template>
-      </product-links>
-      <product-links v-if="variant" :links="variant?.links?.upLink || []">
-        <template #head>
-          <h2 class="text-xl">{{ $t('product.up_selling.title') }}</h2>
-        </template>
-      </product-links>
+    <div class="product-detail__description">
+      <!-- @slot Description content -->
+      <slot name="description">
+        <div v-html="variant.description" class="prose prose-sm"></div>
+      </slot>
+    </div>
+    <div class="product-detail__links">
+      <!-- @slot Links content -->
+      <slot name="links">
+        <product-links v-if="variant" :links="variant.links?.crossLink || []">
+          <template #head>
+            <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
+          </template>
+        </product-links>
+        <product-links v-if="variant" :links="variant?.links?.upLink || []">
+          <template #head>
+            <h2 class="text-xl">{{ $t('product.up_selling.title') }}</h2>
+          </template>
+        </product-links>
+      </slot>
     </div>
     <div class="product-detail__history">
-      <client-only>
-        <product-history :excluded-id="ids"></product-history>
-      </client-only>
+      <!-- @slot History content -->
+      <slot name="history">
+        <client-only>
+          <product-history :excluded-id="ids"></product-history>
+        </client-only>
+      </slot>
     </div>
   </div>
   <json-viewer :data="variant"></json-viewer>
@@ -167,10 +188,10 @@ export default {
     @apply w-full flex-grow;
   }
   &__image {
-    @apply w-full px-3 sm:w-1/2 lg:w-3/5;
+    @apply sm:w-1/2 lg:w-3/5 w-full px-3;
   }
   &__content {
-    @apply w-full pt-5 sm:w-1/2 md:px-2 lg:w-2/5;
+    @apply sm:w-1/2 lg:w-2/5 w-full pt-5 md:px-2;
     .content {
       @apply sticky top-24;
       &__header {
@@ -200,6 +221,9 @@ export default {
         @apply w-1/2;
       }
     }
+  }
+  &__description {
+    @apply w-full py-4;
   }
   &__history {
     @apply py-4;
