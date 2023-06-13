@@ -30,6 +30,7 @@ export default {
   },
 
   setup(props) {
+    const localePath = useLocalePath()
     let error = ref('')
     let searchResults = reactive({
       hits: [] as Category[],
@@ -62,6 +63,7 @@ export default {
       await onSearch(query)
     })
     return {
+      localePath,
       searchResults,
       onSearch
     }

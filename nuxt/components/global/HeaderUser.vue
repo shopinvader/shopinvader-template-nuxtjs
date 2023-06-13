@@ -6,6 +6,9 @@
         <span class="button__label">
           {{ user?.name || $t('account.title') }}
         </span>
+        <span class="button_mobile__label">
+        {{ $t('navbar.account') }}
+      </span>
       </button>
       <ul v-if="user" tabindex="0" class="dropdown-content">
         <li>
@@ -55,6 +58,9 @@ const logout = () => {
     }
     &__label {
       @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 line-clamp-2 max-lg:hidden;
+    }
+    &_mobile__label {
+      @apply md:hidden normal-case text-xs w-full text-center block transition-all duration-100 ease-in-out font-normal;
     }
   }
 }

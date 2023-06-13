@@ -79,6 +79,12 @@ export default {
       required: false
     }
   },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
+  },
   data() {
     return {
       variant: this.product as Product | null

@@ -50,6 +50,12 @@ export default defineNuxtComponent({
       default: true
     }
   },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
+  },
   data() {
     return {
       items: [

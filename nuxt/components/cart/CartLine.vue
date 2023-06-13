@@ -166,6 +166,12 @@ export default defineNuxtComponent({
       return line instanceof CartLine
     }
   },
+  setup() {
+    const localePath = useLocalePath()
+    return {
+      localePath
+    }
+  },
   computed: {
     product() {
       return this.line?.product || false
