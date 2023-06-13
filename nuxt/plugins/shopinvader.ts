@@ -10,13 +10,14 @@ import {
   SettingService,
   SaleService,
   AuthService,
-  CustomerService
+  CustomerService,
+  PaymentModeService
 } from '../services'
+import { PaymentService } from '~/services/PaymentService'
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
 }
-
 export interface ShopinvaderServiceList {
   auth: AuthService
   products: ProductService
@@ -28,6 +29,7 @@ export interface ShopinvaderServiceList {
   sales: SaleService | null
   customer: CustomerService | null
   deliveryCarriers: DeliveryCarrierService | null
+  paymentModes: PaymentModeService | null
 }
 
 let providers: ShopinvaderProvidersList | null = null
@@ -56,7 +58,7 @@ export const initProviders = (isoLocale: string | null = null) => {
   const providers: ShopinvaderProvidersList = {}
   const runtimeConfig = useRuntimeConfig()
   const options =
-    runtimeConfig?.shopinvader || runtimeConfig?.public?.shopinvader || null
+    runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
   const { elasticsearch, erp } = options
 
   if (options == null) {
@@ -122,6 +124,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       addresses: null,
       sales: null,
       deliveryCarriers: null,
+      paymentModes: null,
       auth: new AuthService(providers?.erp as ErpFetch),
       customer: new CustomerService(providers?.erp as ErpFetch)
     }

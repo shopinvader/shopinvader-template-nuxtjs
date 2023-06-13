@@ -1,7 +1,7 @@
 <template>
   <div class="header-user">
     <div class="dropdown-end dropdown">
-      <button type="button" tabindex="0" class="button" @click="login">
+      <button type="button" tabindex="0" class="button" @click="next">
         <Icon icon="clarity:user-line" class="button__icon" />
         <span class="button__label">
           {{ user?.name || $t('account.title') }}
@@ -33,8 +33,13 @@
 <script lang="ts" setup>
 const auth = useAuth()
 const user = auth?.getUser()
-const login = async (user: string, password: string) => {
-  await auth?.login(user, password)
+const router = useRouter()
+const next = () => {
+  if (user?.value) {
+    router.push('/account')
+  } else {
+    router.push('/account/login')
+  }
 }
 const logout = () => {
   auth?.logout()

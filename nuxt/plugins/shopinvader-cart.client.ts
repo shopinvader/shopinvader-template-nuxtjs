@@ -3,8 +3,12 @@ import {
   AddressService,
   DeliveryCarrierService,
   SettingService,
-  SaleService
+  SaleService,
+  PaymentManualService,
+  PaymentSipsService,
+  PaymentModeService
 } from '../services'
+
 import { Shopinvader } from './shopinvader'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -32,6 +36,8 @@ export default defineNuxtPlugin((nuxtApp) => {
       /** Delivery Carrier */
       services.deliveryCarriers =
         services.deliveryCarriers || new DeliveryCarrierService(erp)
+
+      services.paymentModes = new PaymentModeService(erp) || null
     }
   })
 
@@ -42,10 +48,18 @@ export default defineNuxtPlugin((nuxtApp) => {
         sales: null,
         cart: null,
         addresses: null,
-        deliveryCarriers: null
+        deliveryCarriers: null,
+        paymentModes: null
       }
     }
   })
   /** Auto Loggin - Init the user */
   services?.auth.me()
 })
+
+declare module '#app' {
+  interface PaiementList {
+    manual: PaymentManualService
+    sips: PaymentSipsService
+  }
+}

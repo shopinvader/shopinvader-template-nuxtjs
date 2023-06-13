@@ -44,8 +44,8 @@ class CartObserver {
         cartLines.push(cartLine)
       }
       CartModel.setLines(cart, cartLines)
+      this.callback(cart, syncError)
     }
-    this.callback(cart, syncError)
   }
 }
 
@@ -68,16 +68,22 @@ export class CartService extends Service {
         new WebStorageCartStorage(window.localStorage)
       )
       this.cart.registerObserver(observer)
+      /** Get last stored cart before fetching API with syncWithRetry */
+      if (window?.localStorage?.getItem('cart')) {
+        this.setCart(JSON.parse(window.localStorage.getItem('cart') || '{}'))
+      }
       this.cart.syncWithRetry()
     }
   }
   getCart(): Ref<CartModel | null> {
     const store = this.store()
     const { cart } = storeToRefs(store)
-    return cart || null
+    return cart || ref(null)
   }
 
   async setCart(cart: CartModel | null) {
+    /** Store the cart on the localstorage */
+    window.localStorage.setItem('cart', JSON.stringify(cart))
     const store = this.store()
     if (cart == null) {
       store.setCart(null)
@@ -170,12 +176,20 @@ export class CartService extends Service {
     }
   }
 
+  /**
+   * Set shipping mode on the current cart
+   * Get carrier list via DeliveryCarrier service
+   * @param carrierId selected carrier ID
+   */
   async setDeliveryCarrier(carrierId: number) {
     const cart = this.getCart()?.value || null
     if (!cart?.uuid) return Promise.reject('No cart uuid')
-    return await this.erp.post('/cart/set_delivery_carrier', {
+    const data: any = await this.erp.post('/v2/cart/set_delivery_method', {
       method_id: carrierId,
       uuid: cart.uuid
     })
+    if (data?.id) {
+      this.setCart(new CartModel(cart))
+    }
   }
 }

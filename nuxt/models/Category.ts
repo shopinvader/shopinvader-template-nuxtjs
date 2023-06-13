@@ -87,4 +87,7 @@ export class Category {
       this.mainParent = this.mainParent.parent
     }
   }
+  toJSON() {
+    return { ...this }
+  }
 }

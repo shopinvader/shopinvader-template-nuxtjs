@@ -20,13 +20,13 @@
         <div class="body__title">
           <slot name="title" :product="variant">
             <nuxt-link :to="localePath({ path: '/' + variant.urlKey })">
-              {{ variant.name }}
+              {{ variant?.model?.name }}
             </nuxt-link>
           </slot>
         </div>
         <div class="body__variants">
           <product-variants
-            v-if="variants && variants.length > 1"
+            v-if="variants && variants?.length > 1 && variants?.length < 8"
             :variants="variants"
             @select-variant="changeVariant"
           />
@@ -42,13 +42,7 @@
           </product-price>
         </div>
         <div v-if="!readonly" class="body__actions">
-          <slot name="actions" :product="variant">
-            <product-cart :product="variant">
-              <template #cart>
-                <slot name="cart" :product="variant"></slot>
-              </template>
-            </product-cart>
-          </slot>
+          <slot name="actions" :product="variant"> </slot>
         </div>
       </slot>
     </div>
@@ -62,7 +56,6 @@ import { PropType } from 'vue'
 import { Product } from '~~/models/Product'
 import ProductPrice from '~/components/product/ProductPrice.vue'
 import ProductImage from '~/components/product/ProductImage.vue'
-import ProductCart from '~/components/product/ProductCart.vue'
 import ProductVariants from '~/components/product/ProductVariants.vue'
 
 export default {
@@ -70,7 +63,6 @@ export default {
   components: {
     'product-price': ProductPrice,
     'product-image': ProductImage,
-    'product-cart': ProductCart,
     'product-variants': ProductVariants
   },
   props: {
@@ -127,7 +119,7 @@ export default {
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card flex h-full flex-col border-b p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl md:p-5;
+  @apply card flex h-full flex-col border-b p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
@@ -142,10 +134,10 @@ export default {
     width: 100%;
   }
   &__body {
-    @apply card-body grow  px-0  py-2 text-sm md:p-3 md:text-base;
+    @apply card-body grow px-0 py-2 text-sm;
 
     .body__title {
-      @apply font-bold line-clamp-2;
+      @apply line-clamp-2 font-bold;
       flex-grow: 1;
       cursor: pointer;
     }

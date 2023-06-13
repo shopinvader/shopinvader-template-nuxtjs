@@ -4,6 +4,10 @@
     :class="{ 'cartline--pending': hasPendingTransactions }"
   >
     <div class="cartline__image">
+      <!--
+        @slot Cart line's image content
+        @binding {ProductImage} images - images of the product cart line
+      -->
       <slot v-if="product" name="image" :images="product?.images || null">
         <product-image
           v-if="product && product?.images && product.images.length > 0"
@@ -16,40 +20,65 @@
     </div>
     <div class="cartline__content">
       <div class="content__header">
+        <!--
+          @slot Content before the title
+          @binding {CartLine} line - cart line
+        -->
         <slot name="header" :line="line"></slot>
       </div>
 
       <div class="content__title">
+        <!--
+          @slot Title content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="title" :line="line">
           <template v-if="product">
             <nuxt-link
               class="title"
               :to="localePath({ path: '/' + product.urlKey })"
             >
-              {{ product.model.name }}
+              {{ product?.model?.name || product?.name }}
             </nuxt-link>
-            <div class="shortTitle">
-              <div v-for="[key, value] in attributes" :key="key">
-                {{ key }} {{ value }}
-              </div>
+            <ul class="shortTitle">
+              <li v-for="[key, value] in attributes" :key="key">
+                {{ value }}
+              </li>
+            </ul>
+          </template>
+          <template v-else>
+            <div class="title">
+              {{ line?.name }}
             </div>
           </template>
         </slot>
       </div>
 
       <div class="content__qty">
+        <!--
+          @slot Quantity selector content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="qty" :line="line">
           <div class="label">
             {{ $t('cart.line.quantity') }}
+            <span v-if="readonly">{{ line?.qty }}</span>
           </div>
           <div class="value">
-            <cart-line-qty :line="line"></cart-line-qty>
+            <cart-line-qty v-if="!readonly" :line="line"></cart-line-qty>
           </div>
         </slot>
       </div>
-      <div class="content_body"></div>
+      <div class="content__body">
+        <!--
+          @slot Body content
+          @binding {CartLine} line - cart line
+        -->
+        <slot name="body" :line="line"></slot>
+      </div>
       <div class="content__delete">
         <button
+          v-if="!readonly"
           type="button"
           class="btn-link btn-xs btn p-0 text-xs"
           :title="$t('cart.line.delete')"
@@ -61,6 +90,10 @@
       </div>
 
       <div class="content__price">
+        <!--
+          @slot price content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="price" :line="line">
           <div class="label">
             {{ $t('cart.line.total') }}
@@ -79,6 +112,10 @@
         </slot>
       </div>
       <div class="content__footer">
+        <!--
+          @slot footer content
+          @binding {CartLine} line - cart line
+        -->
         <slot name="footer" :line="line"></slot>
       </div>
     </div>
@@ -89,16 +126,44 @@ import { PropType } from 'vue'
 import { CartLine } from '~/models'
 import CartLineQtyVue from './CartLineQty.vue'
 import ProductImageVue from '../product/ProductImage.vue'
-export default {
+
+/**
+ * Display a line of the cart
+ * @displayName Cart Line
+ * @component CartLine
+ * @example default
+ */
+export default defineNuxtComponent({
   name: 'CartLine',
   components: {
     'product-image': ProductImageVue,
     'cart-line-qty': CartLineQtyVue
   },
   props: {
+    /**
+     * The cart line to display
+     */
     line: {
       type: Object as PropType<CartLine>,
-      required: true
+      required: true,
+      default: null
+    },
+    /**
+     * If the line is readonly (can't be modified)
+     */
+    readonly: {
+      type: Boolean,
+      required: false,
+      default: false
+    }
+  },
+  emits: {
+    /**
+     * Called after the line is deleted
+     * @param line The current line
+     */
+    deleteLine: (line: any) => {
+      return line instanceof CartLine
     }
   },
   setup() {
@@ -107,7 +172,6 @@ export default {
       localePath
     }
   },
-  emits: ['deleteLine'],
   computed: {
     product() {
       return this.line?.product || false
@@ -121,6 +185,9 @@ export default {
     }
   },
   methods: {
+    /**
+     * Redirect to the product page
+     */
     linkToProduct() {
       if (this.product) {
         this.$router.push({
@@ -136,12 +203,12 @@ export default {
       this.$emit('deleteLine', this.line)
     }
   }
-}
+})
 </script>
 
 <style lang="scss">
 .cartline {
-  @apply mb-2 flex border p-3 max-md:flex-wrap;
+  @apply mb-2 flex flex-wrap justify-center border p-3 sm:flex-nowrap;
   &--pending {
     .cartline__content {
       .content__price .value {
@@ -159,7 +226,7 @@ export default {
         @apply col-span-4;
       }
       &__delete {
-        @apply col-span-3  cursor-pointer text-sm;
+        @apply col-span-4 cursor-pointer text-sm max-sm:order-last md:col-span-3;
       }
       &__title {
         @apply col-span-4 leading-none md:col-span-3;
@@ -167,14 +234,17 @@ export default {
           @apply flex-row text-sm font-bold uppercase md:line-clamp-1;
         }
         .shortTitle {
-          @apply text-sm text-gray-500;
+          @apply flex  divide-x divide-solid text-xs text-gray-500;
+          li {
+            @apply px-2 first:pl-0 last:pr-0;
+          }
         }
       }
       &__body {
-        @apply col-span-3;
+        @apply col-span-4 max-sm:order-first md:col-span-3;
       }
       &__qty {
-        @apply flex flex-col text-sm md:row-span-2;
+        @apply col-span-3 flex flex-col text-sm sm:col-span-2  md:col-span-1 md:row-span-2;
         .cart-line-qty {
           @apply h-10 w-32 p-0;
           .input-group {
@@ -191,10 +261,10 @@ export default {
         }
       }
       &__price {
-        @apply flex  flex-row justify-between gap-2 text-sm;
+        @apply flex flex-col items-center justify-between gap-2 text-sm md:flex-row;
         .price {
           &__value {
-            @apply pb-0 text-lg font-bold leading-4 text-secondary;
+            @apply pb-0 text-lg font-bold text-secondary;
           }
           &__tax {
             @apply text-xs font-normal text-gray-500;

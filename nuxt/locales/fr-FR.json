@@ -67,6 +67,9 @@
       "invoice": {
         "title": "Adresse de facturation"
       }
+    },
+    "login": {
+      "title": "Connexion"
     }
   },
   "account": {

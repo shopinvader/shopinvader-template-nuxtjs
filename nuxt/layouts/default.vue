@@ -1,21 +1,17 @@
 <template>
-  <div id="header-target"></div>
-  <slot name="header">
-    <header-vue></header-vue>
-  </slot>
-  <main>
-    <div class="alert shadow-lg">
-      <div>
-        <h3 class="font-bold">{{ cart?.name }}</h3>
-        <div class="text-xs">{{ cart?.uuid }}</div>
-      </div>
-    </div>
-    <slot name="body"> </slot>
-    <slot></slot>
-  </main>
-  <footer-vue></footer-vue>
-  <navbar-bottom class="md:hidden"></navbar-bottom>
-  <notifications-vue></notifications-vue>
+  <div id="app">
+    <div id="header-target"></div>
+    <slot name="header">
+      <header-vue></header-vue>
+    </slot>
+    <main>
+      <slot name="body"> </slot>
+      <slot></slot>
+    </main>
+    <footer-vue></footer-vue>
+    <navbar-bottom class="md:hidden"></navbar-bottom>
+    <notifications-vue></notifications-vue>
+  </div>
 </template>
 <script lang="ts">
 import Header from '../components/global/Header.vue'
@@ -30,17 +26,14 @@ export default defineNuxtComponent({
     'footer-vue': Footer,
     'notifications-vue': Notifications,
     'navbar-bottom': NavbarBottomVue
-  },
-  setup() {
-    const services = useShopinvaderServices()
-    return {
-      cart: services?.cart?.getCart()
-    }
   }
 })
 </script>
 <style lang="scss">
 main {
-  @apply container mx-auto;
+  @apply container mx-auto flex-grow;
+}
+#app {
+  @apply flex min-h-screen flex-col;
 }
 </style>

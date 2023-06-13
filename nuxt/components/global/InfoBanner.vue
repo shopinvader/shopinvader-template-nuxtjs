@@ -30,8 +30,9 @@ export default {
   computed: {
     infosbanners(): InfoBanner[] {
       return (
-        this.infos.filter(
-          (a) => a.startDate <= new Date() && a.endDate >= new Date()
+        this.infos?.filter(
+          (a: InfoBanner) =>
+            a.startDate <= new Date() && a.endDate >= new Date()
         ) || []
       )
     }
