@@ -24,11 +24,11 @@ export default defineNuxtComponent({
   props: {
     width: {
       type: Number,
-      default: 250
+      default: 100
     },
     height: {
       type: Number,
-      default: 100
+      default: 50
     }
   },
   setup() {
