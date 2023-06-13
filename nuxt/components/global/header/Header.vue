@@ -75,9 +75,11 @@ export default defineNuxtComponent({
     }
   },
   async setup() {
+    const localePath = useLocalePath()
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
     return {
+      localePath,
       cart
     }
   },
@@ -143,7 +145,7 @@ header {
       }
 
       &__icons {
-        @apply col-start-3 col-end-5 row-start-1 flex items-center justify-end gap-2 px-2 lg:col-start-5;
+        @apply col-start-3 col-end-5 row-start-1 hidden items-center justify-end gap-2 px-2 md:flex lg:col-start-5;
         .button {
           &__icon {
             @apply rounded-full bg-primary p-1.5 text-4xl text-white;

@@ -12,11 +12,11 @@
           </div>
         </nuxt-link>
         <nuxt-link :to="localePath('/search')" class="icon iconlink">
-        <div class="navlink">
-          <icon class="search-icon" icon="ph:magnifying-glass" />
-          <span class="navlink__label">
-            {{ $t('navbar.search') }}
-          </span>
+          <div class="navlink">
+            <icon class="search-icon" icon="ph:magnifying-glass" />
+            <span class="navlink__label">
+              {{ $t('navbar.search') }}
+            </span>
           </div>
         </nuxt-link>
         <div class="icon">
@@ -31,8 +31,8 @@
   </div>
 </template>
 <script lang="ts">
-import CartIconVue from '../cart/CartIcon.vue'
-import HeaderUser from './HeaderUser.vue'
+import CartIconVue from '~/components/cart/CartIcon.vue'
+import HeaderUser from '~/components/global/header/HeaderUser.vue'
 
 export default {
   name: 'NavbarBottom',
@@ -47,7 +47,7 @@ export default {
   @apply fixed bottom-0 left-0 right-0 border border-t-gray-200 bg-white pb-2 pt-2;
   &__icons {
     @apply flex items-center justify-between font-normal;
-    .router-link-active  {
+    .router-link-active {
       @apply font-bold;
     }
     .icon {
@@ -56,12 +56,12 @@ export default {
         @apply mx-auto;
       }
       .search-icon {
-        @apply text-2xl mx-auto;
+        @apply mx-auto text-2xl;
       }
       .navlink {
-        @apply rounded-md bg-white text-gray-600 border-0 hover:bg-gray-300 p-1; 
+        @apply rounded-md border-0 bg-white p-1 text-gray-600 hover:bg-gray-300;
         &__label {
-          @apply block normal-case w-full text-center text-xs transition-all duration-100 ease-in-out;
+          @apply block w-full text-center text-xs normal-case transition-all duration-100 ease-in-out;
         }
       }
       .cart-icon {
