@@ -76,14 +76,17 @@ export class CartService extends Service {
     }
   }
   getCart(): Ref<CartModel | null> {
-    const store = this.store()
-    const { cart } = storeToRefs(store)
-    return cart || ref(null)
+    if (process?.client) {
+      const store = this.store()
+      const { cart } = storeToRefs(store)
+      return cart || ref(null)
+    }
+    return ref(null)
   }
 
   async setCart(cart: CartModel | null) {
     /** Store the cart on the localstorage */
-    window.localStorage.setItem('cart', JSON.stringify(cart))
+    window.localStorage.setItem('cart', JSON.stringify(cart?.toJSON()))
     const store = this.store()
     if (cart == null) {
       store.setCart(null)
@@ -92,7 +95,7 @@ export class CartService extends Service {
     /** Fetch cart product to product index */
     if (this.productService !== null) {
       const ids: number[] =
-        cart.lines
+        cart?.lines
           .map((l: CartLineModel) => l.productId || 0)
           .filter(
             (i: number | null) =>
