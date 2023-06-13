@@ -65,7 +65,7 @@
     },
     "delivery": {
       "method": {
-        "title":"Delivery method",
+        "title": "Delivery method",
         "intro": "Select a delivery method",
         "select": "pick this method",
         "continue": "Continue",
@@ -76,7 +76,7 @@
       "checkout": "Checkout"
     },
     "address": {
-      "title":"My addresses",
+      "title": "My addresses",
       "no-address": "No address selected",
       "select": "Select an address",
       "continue": "Continue",
@@ -204,5 +204,11 @@
     "view_more": "View more",
     "download": "Download",
     "back_to_homepage": "Back to homepage"
+  },
+  "navbar": {
+    "home": "Home",
+    "search": "Search",
+    "cart": "Cart",
+    "account": "Account"
   }
 }
