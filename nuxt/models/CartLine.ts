@@ -2,8 +2,9 @@ import { Product } from './Product'
 import { CartLineAmount } from './CartLineAmount'
 import { CartLineDiscount } from './CartLineDiscount'
 import { CartLineUnitPrice } from './CartLineUnitPrice'
+import { Model } from './Model'
 
-export class CartLine {
+export class CartLine extends Model {
   // Standard fields
   id: number
   name: string | null
@@ -16,9 +17,9 @@ export class CartLine {
   hasPendingTransactions: boolean | null
   product: Product | null
   unitPrice: CartLineUnitPrice
-  data: any
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
+    super(data)
     this.id = data?.id
     this.name = data?.name
     this.amount = new CartLineAmount(data?.amount || {})
@@ -31,6 +32,5 @@ export class CartLine {
     this.qtyUnavailableDiff = data?.qty_unavailable_diff || 0
     this.hasPendingTransactions = data?.hasPendingTransactions || false
     this.product = null
-    this.data = data
   }
 }

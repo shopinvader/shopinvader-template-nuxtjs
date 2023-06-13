@@ -1,16 +1,19 @@
+import { Model } from './Model'
+
 export interface CategoryResult {
   hits: Category[]
   total: number
   aggregations?: any
 }
 
-export class CategoryChild {
+export class CategoryChild extends Model {
   name: string
   urlKey: string
   id: number
   childs: any[] | null
   sequence: number
   constructor(data: any) {
+    super(data)
     this.id = data?.id || data?.object_id
     this.name = data?.name || ''
     this.urlKey = data?.url_key
@@ -22,12 +25,13 @@ export class CategoryChild {
   }
 }
 
-export class CategoryParent {
+export class CategoryParent extends Model {
   name: string
   urlKey: string
   id: number
   parent: any | null
   constructor(data: any) {
+    super(data)
     this.id = data?.id || data?.object_id
     this.name = data?.name || ''
     this.urlKey = data?.url_key
@@ -38,7 +42,7 @@ export class CategoryParent {
   }
 }
 
-export class Category {
+export class Category extends Model {
   // Standard fields
   id: number
   name: string
@@ -59,7 +63,7 @@ export class Category {
 
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
-    this.data = data
+    super(data)
     // Standard fields
     this.id = data?.id
     this.metaDescription = data?.meta_description || ''
@@ -86,8 +90,5 @@ export class Category {
     while (this.mainParent != null && this.mainParent?.parent !== null) {
       this.mainParent = this.mainParent.parent
     }
-  }
-  toJSON() {
-    return { ...this }
   }
 }
