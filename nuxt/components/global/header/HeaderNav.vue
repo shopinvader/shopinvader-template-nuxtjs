@@ -57,6 +57,11 @@ import { Category } from '~~/models/Category'
 
 export default defineNuxtComponent({
   fetchKey: 'category',
+  data() {
+    return {
+      categories: [] as Category[]
+    }
+  },
   async asyncData() {
     let categories: Category[] = []
     try {
