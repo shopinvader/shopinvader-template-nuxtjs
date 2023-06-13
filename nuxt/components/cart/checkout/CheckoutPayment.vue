@@ -102,13 +102,13 @@ export default defineNuxtComponent({
       this.$emit('back')
     },
     async fetchPaymentModes() {
-      const services = useShopinvaderServices()
+      const paymentModes = useShopinvaderService('paymentModes')
       try {
         this.loading = true
         this.error = null
         this.modes = []
-        if (services?.paymentModes) {
-          const { modes = [] } = await services.paymentModes.getAll()
+        if (paymentModes) {
+          const { modes = [] } = await paymentModes.getAll()
           this.modes =
             modes.map((mode: PaymentMode) => {
               const name =
@@ -132,7 +132,8 @@ export default defineNuxtComponent({
     await this.fetchPaymentModes()
   },
   setup() {
-    const cart = useCart()
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     return {
       cart
     }

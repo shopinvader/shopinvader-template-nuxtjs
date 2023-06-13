@@ -1,23 +1,14 @@
-import { devtools } from 'nuxt/dist/app/compat/capi'
 import eslintPlugin from 'vite-plugin-eslint'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+const dir = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
-  vite: {
-    plugins: [
-      eslintPlugin({
-        failOnError: false,
-        cache: false,
-        emitWarning: false,
-        emitError: true
-      })
-    ]
-  },
   app: {
     head: {
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
-  css: ['@/assets/css/main.scss'],
-
+  css: [join(dir, './assets/css/main.scss')],
   runtimeConfig: {
     public: {
       shopinvader: {
@@ -54,7 +45,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxtjs/strapi',
+    //'@nuxtjs/strapi',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
@@ -63,8 +54,8 @@ export default defineNuxtConfig({
 
   plugins: [
     '~/plugins/iconify.ts',
-    '~/plugins/shopinvader.ts',
-    '~/plugins/shopinvader-cart.client.ts'
+    '~/plugins/shopinvader-services/custom-type.ts',
+    '~/plugins/shopinvader-services/index.ts'
   ],
 
   piniaPersistedstate: {
@@ -75,16 +66,17 @@ export default defineNuxtConfig({
   },
 
   pages: true,
+
   i18n: {
     locales: [
       {
         code: 'en',
-        iso: 'en_us',
+        iso: 'fr_fr',
         file: 'en-US.json'
       },
       {
         code: 'es',
-        iso: 'fr_be',
+        iso: 'fr_fr',
         file: 'es-ES.json'
       },
       {
@@ -95,9 +87,11 @@ export default defineNuxtConfig({
     ],
     debug: false,
     lazy: true,
+    //langDir: join(dir, './locales'),
     langDir: 'locales',
     defaultLocale: 'en'
   },
+
   build: {
     transpile: ['@shopinvader/cart']
   },

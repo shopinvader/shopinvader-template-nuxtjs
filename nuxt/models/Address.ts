@@ -1,3 +1,4 @@
+import { Model } from './Model'
 import { Country } from './Country'
 import { Title } from './Title'
 import { State } from './State'
@@ -8,7 +9,7 @@ export interface AddressAccess {
   delete: boolean
 }
 
-export class Address {
+export class Address extends Model {
   id: number
   addressType: string | null
   title: Title | null
@@ -33,6 +34,7 @@ export class Address {
   access: AddressAccess | null
 
   constructor(data: any) {
+    super(data)
     this.id = data?.id || null
     this.title = data.title ? new Title(data.title) : null
     this.addressType = data?.address_type || null

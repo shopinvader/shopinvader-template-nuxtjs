@@ -1,9 +1,11 @@
-export class SipsPayment {
-  data: string
+import { Model } from './Model'
+
+export class SipsPayment extends Model {
   seal: string
   interfaceVersion: string
   actionUrl: string
   constructor(data: any) {
+    super(data)
     this.data = data?.sips_data || ''
     this.seal = data?.sips_seal || ''
     this.interfaceVersion = data?.sips_interface_version || ''

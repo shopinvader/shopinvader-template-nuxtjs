@@ -1,4 +1,6 @@
-export class CartAmount {
+import { Model } from './Model'
+
+export class CartAmount extends Model {
   discount_total: number
   tax: number
   total: number
@@ -7,6 +9,7 @@ export class CartAmount {
   carrier: null
 
   constructor(data: any) {
+    super(data)
     this.tax = data?.tax || 0
     this.total = data?.total || 0
     this.untaxed = data?.untaxed || 0

@@ -3,6 +3,7 @@ import { ProductCategory } from './ProductCategory'
 import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
 import { ProductLinks } from './ProductLinks'
+import { Model } from './Model'
 
 export interface ProductResult {
   hits: Product[]
@@ -14,22 +15,24 @@ export interface ProductResult {
 export interface VariantAttributes {
   [key: string]: string | number
 }
-export class ProductVariantSelectorItem {
+export class ProductVariantSelectorItem extends Model {
   name: string
   sku: string
   available = false
   selected = false
   constructor(data: any) {
+    super(data)
     this.name = data?.name || ''
     this.sku = data?.sku || ''
     this.available = data?.available
     this.selected = data?.selected
   }
 }
-export class ProductVariantSelector {
+export class ProductVariantSelector extends Model {
   name: string | null = null
   values: ProductVariantSelectorItem[] = []
   constructor(data: any) {
+    super(data)
     this.name = data?.name || null
     this.values =
       data?.values?.map((item: any) => {
@@ -40,7 +43,7 @@ export class ProductVariantSelector {
       }) || null
   }
 }
-export class Product {
+export class Product extends Model {
   id: number | null = null
   model: ProductModel | null = null
   urlKey: string | null = null
@@ -63,6 +66,7 @@ export class Product {
   variants: Product[] | null = null
   links: ProductLinks | null = null
   constructor(data: any) {
+    super(data)
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
     this.urlKey = data?.url_key || null

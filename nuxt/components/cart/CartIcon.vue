@@ -22,19 +22,14 @@ export default defineNuxtComponent({
   name: 'CartIcon',
   components: {},
   async setup() {
-    const localePath = useLocalePath()
-    
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService?.getCart()
     return {
-      localePath,
-      hasCart: computed((): boolean => {
-        let linesCount: number = useCart()?.linesCount || 0
-        return linesCount > 0
-      }),
       linesCount: computed((): string => {
-        const services = useShopinvaderServices()
-        if (!services?.cart) return 0
-        const cart = services?.cart?.getCart()?.value
-        let linesCount: boolean | string | number = cart.lines?.length || 0
+        if (!cartService) return 0
+
+        let linesCount: boolean | string | number =
+          cart.value?.lines?.length || 0
         if (linesCount > 100) {
           return '99+'
         } else {
@@ -57,7 +52,7 @@ export default defineNuxtComponent({
       @apply absolute -bottom-5 text-xs font-normal capitalize leading-3 max-lg:hidden;
     }
     &-mobile__label {
-      @apply md:hidden normal-case text-xs w-full text-center block transition-all duration-100 ease-in-out font-normal;
+      @apply block w-full text-center text-xs font-normal normal-case transition-all duration-100 ease-in-out md:hidden;
     }
   }
   .cart-badge {

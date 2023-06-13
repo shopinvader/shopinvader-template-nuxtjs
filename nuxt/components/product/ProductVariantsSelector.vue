@@ -14,7 +14,7 @@
             <div v-for="value of variantAxis?.values" :key="value.sku">
               <button
                 type="button"
-                class="btn-primary btn-sm btn"
+                class="btn-primary btn-xs btn"
                 :class="{
                   'btn-outline': !value.selected
                 }"
@@ -68,13 +68,13 @@ export default defineNuxtComponent({
 <style lang="scss">
 .product-variant-selector {
   &__axis {
-    @apply flex flex-col gap-3;
+    @apply flex flex-col gap-3 py-4;
     .variant-axis {
       &__name {
         @apply font-bold;
       }
       &__values {
-        @apply flex flex-wrap gap-2;
+        @apply flex flex-wrap gap-1;
         button {
           @apply m-1;
         }

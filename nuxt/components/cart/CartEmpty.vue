@@ -24,10 +24,14 @@ export default defineNuxtComponent({
   components: {
     spinner: Spinner
   },
+  setup() {
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
+    return {
+      cart
+    }
+  },
   computed: {
-    cart(): Cart | null {
-      return useCart().value
-    },
     lineCount(): number {
       return this.cart?.lines.length || 0
     }

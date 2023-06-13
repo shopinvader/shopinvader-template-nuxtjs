@@ -29,8 +29,6 @@ export default defineNuxtComponent({
   },
   setup() {
     const localePath = useLocalePath()
-    const router = useRouter()
-    console.log('account', router.getRoutes())
     return {
       localePath
     }

@@ -107,14 +107,14 @@ export default {
       }
     },
     async applyDeltaOnItem(delta: number): Promise<void> {
-      const cartService = useShopinvaderServices()?.cart
+      const cartService = useShopinvaderService('cart')
       if (cartService && this.line?.productId) {
         await cartService.applyDeltaOnItem(this.line.productId, delta)
       }
       this.$emit('update', this.qty + delta)
     },
     async updateItem(value: number): Promise<void> {
-      const cartService = useShopinvaderServices()?.cart
+      const cartService = useShopinvaderService('cart')
       if (cartService && this.line?.productId) {
         await cartService.updateItem(this.line.productId, value, this.line)
       }

@@ -136,8 +136,9 @@ export default defineNuxtComponent({
     }
   },
   data() {
-    const countries = useSettings()?.countries || []
-    const titles = useSettings()?.titles || []
+    const settings = useShopinvaderService('settings')?.options
+    const countries = settings?.countries || []
+    const titles = settings?.titles || []
     return {
       value: new Address({}),
       submitted: false,
@@ -148,7 +149,6 @@ export default defineNuxtComponent({
   watch: {
     address: {
       handler: function (value) {
-        console.log('address', value)
         if (value) {
           if (value?.country?.id == null) {
             value.country = this.countries?.[0] || null

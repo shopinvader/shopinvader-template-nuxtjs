@@ -11,10 +11,10 @@
 </template>
 <script lang="ts">
 import { defineAsyncComponent } from 'vue'
-import { Component } from '~~/models/cms/Component'
+import { Component } from '~/models/cms/Component'
 import { PropType } from 'vue'
 
-export default {
+export default defineNuxtComponent({
   name: 'DynamicComponent',
   props: {
     component: {
@@ -25,17 +25,19 @@ export default {
   async setup(props) {
     const component = props?.component || null
     if (!component) return { componentSection: null }
-    const componentSection = defineAsyncComponent(
-      () =>
-        import(
-          `~/components/cms/${component.componentGroup}/${component.componentName}.vue`
-        )
+    let componentSection = defineAsyncComponent(() =>
+      import(
+        `./components/cms/${component.componentGroup}/${component.componentName}.vue`
+      ).catch((err: any) => {
+        console.log(err)
+        return null
+      })
     )
     return {
       componentSection
     }
   }
-}
+})
 </script>
 <style lang="scss">
 .dynamic-component {

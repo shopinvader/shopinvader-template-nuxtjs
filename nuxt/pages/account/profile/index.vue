@@ -10,7 +10,7 @@
             >
               <div class="form-control w-full flex-row px-0">
                 <label class="label cursor-pointer">
-                  <span class="label-text mr-2 mb-2 text-base">
+                  <span class="label-text mb-2 mr-2 text-base">
                     {{ $t('account.profile.newsletter.title') }}
                   </span>
                   <input
@@ -30,7 +30,7 @@
               </button>
               <button
                 v-if="customer.access?.update"
-                class="btn-primary btn-sm btn md:my-2 md:btn-circle"
+                class="btn-primary btn-sm btn md:btn-circle md:my-2"
                 :title="$t('actions.update')"
                 @click="editedAddress = customer"
               >
@@ -98,10 +98,10 @@ export default defineNuxtComponent({
   },
   methods: {
     async getCustomer() {
-      const services = useShopinvaderServices()
+      const customerService = useShopinvaderService('customer')
       this.working = true
       try {
-        this.customer = await services?.customer?.get()
+        this.customer = await customerService?.get()
       } catch (error: any) {
       } finally {
         this.working = false
@@ -109,15 +109,14 @@ export default defineNuxtComponent({
     },
     async saveAddress(address: Address) {
       this.editedAddress = null
-      const services = useShopinvaderServices()
+      const addressesService = useShopinvaderService('addresses')
       const notifications = useNotification()
-      if (services?.addresses && address) {
-        const addressService = services?.addresses
+      if (addressesService && address) {
         try {
           if (address.id) {
-            await addressService.update(address)
+            await addressesService.update(address)
           } else {
-            await addressService.create(address)
+            await addressesService.create(address)
           }
           await this.getCustomer()
           notifications.addMessage(
@@ -133,11 +132,11 @@ export default defineNuxtComponent({
       alert('Not working Yet')
     },
     async toggleNewsletter() {
-      const services = useShopinvaderServices()
+      const customerService = useShopinvaderService('customer')
       const notifications = useNotification()
 
       try {
-        await services?.customer?.toggleOptOutCustomer(this.customer, {
+        await customerService?.toggleOptOutCustomer(this.customer, {
           opt_in: this.customer?.optIn
         })
 

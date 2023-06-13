@@ -23,14 +23,11 @@
         </svg>
       </template>
       <template #header>
-        <cms-image v-if="header?.logo" :image="header.logo"></cms-image>
+        <brand-logo></brand-logo>
       </template>
       <template #title>
         <nuxt-link :to="localePath({ name: 'index' })" class="logo">
-          <cms-image v-if="header?.logo" :image="header.logo"></cms-image>
-          <div v-if="header?.baseline" class="logo__baseline">
-            {{ header.baseline }}
-          </div>
+          <brand-logo></brand-logo>
         </nuxt-link>
       </template>
       <template #content>
@@ -53,43 +50,37 @@
   </header>
 </template>
 <script lang="ts">
-import Image from '~/components/cms/shared/Image.vue'
+import Logo from '~/components/global/Logo.vue'
+import HeaderNavVue from '~/components/global/header/HeaderNav.vue'
+import HeaderUser from '~/components/global/header/HeaderUser.vue'
 import LocalSwitcher from '~/components/global/LocalSwitcher.vue'
-import HeaderNavVue from './HeaderNav.vue'
-import CartIconVue from '../cart/CartIcon.vue'
-import AsideMenu from './AsideMenu.vue'
-import HeaderUser from './HeaderUser.vue'
+import CartIconVue from '~/components/cart/CartIcon.vue'
+import AsideMenu from '~/components/global/AsideMenu.vue'
 import SearchAutocomplete from '~/components/search/autocomplete/SearchAutocomplete.vue'
-import { Header } from '~/models/cms/Header'
 export default defineNuxtComponent({
-  name: 'global-header',
+  name: 'GlobalHeader',
   fetchKey: 'header',
   components: {
-    'cms-image': Image,
     'local-switcher': LocalSwitcher,
     'header-nav': HeaderNavVue,
     'aside-menu': AsideMenu,
     'cart-icon': CartIconVue,
     'header-user': HeaderUser,
-    'search-autocomplete': SearchAutocomplete
+    'search-autocomplete': SearchAutocomplete,
+    'brand-logo': Logo
   },
   data() {
     return {
-      header: {} as Header,
       scrolled: false
-    }
-  },
-  async asyncData() {
-    const { getHeader } = useCMS()
-    return {
-      header: await getHeader()
     }
   },
   async setup() {
     const localePath = useLocalePath()
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     return {
       localePath,
-      cart: computed(() => useCart())
+      cart
     }
   },
   mounted() {
@@ -154,7 +145,7 @@ header {
       }
 
       &__icons {
-        @apply col-start-3 col-end-5 row-start-1 hidden md:flex items-center justify-end gap-2 px-2 lg:col-start-5;
+        @apply col-start-3 col-end-5 row-start-1 hidden items-center justify-end gap-2 px-2 md:flex lg:col-start-5;
         .button {
           &__icon {
             @apply rounded-full bg-primary p-1.5 text-4xl text-white;

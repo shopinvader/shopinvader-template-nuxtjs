@@ -1,6 +1,6 @@
 <template>
   <ul class="nav">
-     <li
+    <li
       v-for="(category, index) in categories"
       :key="category.id"
       :tabindex="index"
@@ -57,11 +57,16 @@ import { Category } from '~~/models/Category'
 
 export default defineNuxtComponent({
   fetchKey: 'category',
+  data() {
+    return {
+      categories: [] as Category[]
+    }
+  },
   async asyncData() {
     let categories: Category[] = []
     try {
-      const services = useShopinvaderServices()
-      const result = await services?.categories?.search({
+      const categoryService = useShopinvaderService('categories')
+      const result = await categoryService?.search({
         size: 10,
         query: {
           term: {
@@ -95,7 +100,7 @@ export default defineNuxtComponent({
     &-item {
       position: inherit;
       .subnav {
-        @apply relative left-0 z-20 -mt-2 w-screen grid-cols-5  items-start gap-4 p-2 lg:absolute lg:bg-base-100 lg:shadow lg:rounded-box;
+        @apply relative left-0 z-20 -mt-2 w-screen grid-cols-5  items-start gap-4 p-2 lg:rounded-box lg:absolute lg:bg-base-100 lg:shadow;
 
         &-item {
           @apply border-r text-sm font-bold text-primary;

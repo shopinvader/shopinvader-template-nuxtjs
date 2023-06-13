@@ -4,8 +4,9 @@ import { CartLinesAmount } from './CartLinesAmount'
 import { CartDiscount } from './CartDiscount'
 import { CartInvoicing } from './CartInvoicing'
 import { CartDelivery } from './CartDelivery'
+import { Model } from './Model'
 
-export class Cart {
+export class Cart extends Model {
   // Standard fields
   name: string
   id: number
@@ -20,14 +21,13 @@ export class Cart {
   invoicing: CartInvoicing
   delivery: CartDelivery
   note: string
-  data: any
   hasPendingTransactions = false
   hasSyncError = false
   syncing = false
   syncError = false
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
-    this.data = data
+    super(data)
     this.id = data?.id
     this.uuid = data?.uuid
     this.name = data?.name
@@ -60,10 +60,5 @@ export class Cart {
   static setLines(cart: Cart, lines: CartLine[]) {
     cart.lines = lines
     cart.linesCount = Cart.calcLinesCount(lines)
-  }
-
-  // Prevent non-POJOs error
-  toJSON() {
-    return { ...this }
   }
 }

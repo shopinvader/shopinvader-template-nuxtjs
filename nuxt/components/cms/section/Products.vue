@@ -28,9 +28,8 @@ export default {
   },
   async setup(props) {
     const component = props?.component || null
-    const services = useShopinvaderServices()
-    console.log(component.productsSKU)
-    const result = await services?.products?.find(
+    const productService = useShopinvaderService('products')
+    const result = await productService?.find(
       'sku',
       component.productsSKU.map((i) => i.SKU)
     )

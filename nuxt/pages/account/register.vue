@@ -9,7 +9,7 @@
 </template>
 <script setup lang="ts">
 // check if a user is currently loggued in and redirect to account page
-const auth = useAuth()
+const auth = useShopinvaderService('auth')
 definePageMeta({
   layout: 'Empty'
 })

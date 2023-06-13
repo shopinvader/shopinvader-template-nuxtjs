@@ -2,7 +2,7 @@
   <div id="app">
     <div id="header-target"></div>
     <slot name="header">
-      <header-vue></header-vue>
+      <global-header></global-header>
     </slot>
     <main>
       <slot name="body"> </slot>
@@ -14,15 +14,15 @@
   </div>
 </template>
 <script lang="ts">
-import Header from '../components/global/Header.vue'
-import Footer from '../components/global/Footer.vue'
-import Notifications from '../components/global/Notifications.vue'
-import NavbarBottomVue from '../components/global/NavbarBottom.vue'
+import GlobalHeader from '~/components/global/header/Header.vue'
+import Footer from '~/components/global/Footer.vue'
+import Notifications from '~/components/global/Notifications.vue'
+import NavbarBottomVue from '~/components/global/NavbarBottom.vue'
 
 export default defineNuxtComponent({
   name: 'Default',
   components: {
-    'header-vue': Header,
+    'global-header': GlobalHeader,
     'footer-vue': Footer,
     'notifications-vue': Notifications,
     'navbar-bottom': NavbarBottomVue

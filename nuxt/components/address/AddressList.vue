@@ -138,7 +138,7 @@ export default defineNuxtComponent({
   },
   computed: {
     user() {
-      const auth = useAuth()
+      const auth = useShopinvaderService('auth')
       return auth?.getUser()
     }
   },
@@ -153,15 +153,13 @@ export default defineNuxtComponent({
   methods: {
     async fetchAddresses(page = 1) {
       this.page = page
-      const services = useShopinvaderServices()
-      if (services?.addresses === null) return
+      const addressService = useShopinvaderService('addresses')
+      if (addressService === null) return
       const notifications = useNotification()
       try {
-        const addressResult = (await services?.addresses.getAll(
-          this.perPage,
-          page,
-          { type: this.type }
-        )) as AddressResult
+        const addressResult = (await addressService.getAll(this.perPage, page, {
+          type: this.type
+        })) as AddressResult
 
         if (addressResult !== null) {
           this.addresses = addressResult?.data || ([] as Address[])
@@ -180,11 +178,11 @@ export default defineNuxtComponent({
         )
       ) {
         const notifications = useNotification()
-        const services = useShopinvaderServices()
-        if (services?.addresses === null) return
+        const addressService = useShopinvaderService('addresses')
+        if (addressService === null) return
 
         try {
-          await services?.addresses.delete(address)
+          await addressService.delete(address)
           await this.fetchAddresses(this.page)
           notifications.addMessage(
             this.$t('account.address.delete.success', { name: address.name })
@@ -197,10 +195,9 @@ export default defineNuxtComponent({
     },
     async saveAddress(address: Address) {
       this.editedAddress = null
-      const services = useShopinvaderServices()
+      const addressService = useShopinvaderService('addresses')
       const notifications = useNotification()
-      if (services?.addresses && address) {
-        const addressService = services?.addresses
+      if (addressService && address) {
         try {
           if (address.id) {
             await addressService.update(address)

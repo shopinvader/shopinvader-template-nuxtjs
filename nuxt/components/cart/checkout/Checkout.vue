@@ -195,8 +195,8 @@ export default defineNuxtComponent({
     }
   },
   setup(props) {
-    const service = useShopinvaderServices()
-    const cart = service?.cart?.getCart() || ref(null)
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService?.getCart() || ref(null)
     const i18n = useI18n()
     const displayCart = ref(false)
     /** Default steps of the checkout funnel */
