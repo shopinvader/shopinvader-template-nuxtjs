@@ -3,16 +3,6 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 const dir = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
-  vite: {
-    plugins: [
-      eslintPlugin({
-        failOnError: false,
-        cache: false,
-        emitWarning: false,
-        emitError: true
-      })
-    ]
-  },
   app: {
     head: {
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
@@ -55,7 +45,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxtjs/strapi',
+    //'@nuxtjs/strapi',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
@@ -63,8 +53,9 @@ export default defineNuxtConfig({
   ],
 
   plugins: [
-    join(dir, './plugins/iconify.ts'),
-    join(dir, './plugins/shopinvader-services/index.ts')
+    '~/plugins/iconify.ts',
+    '~/plugins/shopinvader-services/custom-type.ts',
+    '~/plugins/shopinvader-services/index.ts'
   ],
 
   piniaPersistedstate: {
@@ -75,6 +66,7 @@ export default defineNuxtConfig({
   },
 
   pages: true,
+
   i18n: {
     locales: [
       {
@@ -95,9 +87,11 @@ export default defineNuxtConfig({
     ],
     debug: false,
     lazy: true,
-    langDir: join(dir, './locales'),
+    //langDir: join(dir, './locales'),
+    langDir: 'locales',
     defaultLocale: 'en'
   },
+
   build: {
     transpile: ['@shopinvader/cart']
   },
