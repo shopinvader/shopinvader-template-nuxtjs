@@ -1,10 +1,13 @@
-export class DeliveryCarrier {
+import { Model } from './Model'
+
+export class DeliveryCarrier extends Model {
   id: number
   code: string
   name: string
   description: string
   price: number
   constructor(data: any) {
+    super(data)
     this.id = data?.id
     this.code = data?.code
     this.name = data?.name

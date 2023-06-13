@@ -2,12 +2,15 @@ import { Country } from './Country'
 import { Title } from './Title'
 import { State } from './State'
 import { Currency } from './Currency'
-export class Settings {
+import { Model } from './Model'
+
+export class Settings extends Model {
   countries: Country[] | []
   titles: Title[] | []
   states: State[] | []
   currencies: Currency[] | []
   constructor(data: any) {
+    super(data)
     this.countries = data?.countries?.map(
       (country: any) => new Country(country)
     )
