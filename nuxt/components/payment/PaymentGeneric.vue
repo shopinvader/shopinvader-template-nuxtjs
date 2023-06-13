@@ -53,7 +53,7 @@ export default defineNuxtComponent({
     }
   },
   setup() {
-    const { erp = null } = useShopinvaderProviders()
+    const erp = useShopinvaderProviders('erp') || null
     if (!erp) throw new Error('No erp provider found')
     let service = new PaymentManualService(erp as ErpFetch)
     return { service }
