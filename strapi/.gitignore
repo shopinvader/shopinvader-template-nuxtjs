@@ -1,6 +1,0 @@
-.cache
-node_modules
-.env
-dist
-.strapi-updater.json
-public/uploads

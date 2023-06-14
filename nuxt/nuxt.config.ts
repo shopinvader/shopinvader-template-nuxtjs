@@ -53,9 +53,9 @@ export default defineNuxtConfig({
   ],
 
   plugins: [
-    '~/plugins/iconify.ts',
-    '~/plugins/shopinvader-services/custom-type.ts',
-    '~/plugins/shopinvader-services/index.ts'
+    join(dir, 'plugins/iconify.ts'),
+    join(dir, 'plugins/shopinvader-services/custom-type.ts'),
+    join(dir, 'plugins/shopinvader-services/index.ts')
   ],
 
   piniaPersistedstate: {
