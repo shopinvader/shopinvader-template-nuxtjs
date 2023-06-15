@@ -1,6 +1,6 @@
 <template>
   <figure v-if="imageSized != null">
-    <img :src="imageSized.src" :alt="imageSized.alt" />
+    <img :src="imageSized.src" :alt="imageSized.alt" class="p-8 mx-auto object-contain h-full" />
   </figure>
 </template>
 <script lang="ts">

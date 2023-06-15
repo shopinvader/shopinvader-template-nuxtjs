@@ -56,7 +56,7 @@ export default {
 .product-cart {
   @apply flex flex-row items-center justify-center;
   &__add {
-    @apply btn-primary btn  text-white hover:btn-secondary hover:shadow-2xl;
+    @apply btn-secondary btn px-14  text-white hover:btn-secondary hover:shadow-2xl;
     .add-label {
       @apply ml-2;
     }
