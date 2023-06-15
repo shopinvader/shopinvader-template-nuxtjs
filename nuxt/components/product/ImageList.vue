@@ -82,13 +82,13 @@ export default {
     }
 
     const callback = (entries: HTMLElement[] | null) => {
-      entries?.forEach((entry) => {
-        const { target } = entry
+      entries?.forEach((item) => {
+        const { target } = item
         const selectedIndicator: HTMLElement = indicators?.find(
-          (item) => item.dataset.item == target.id
+          (indicatorItem) => indicatorItem.dataset.item == target.id
         )
 
-        if (entry.intersectionRatio >= 0.75) {
+        if (item.intersectionRatio >= 0.75) {
           selectedIndicator.classList.add('text-secondary')
         } else {
           selectedIndicator.classList.remove('text-secondary')
@@ -97,9 +97,8 @@ export default {
     }
     const observer = new IntersectionObserver(callback, options)
 
-    items?.forEach((item, index) => {
+    items?.forEach((item) => {
       observer.observe(item)
-      console.log('foreach')
     })
   }
 }
