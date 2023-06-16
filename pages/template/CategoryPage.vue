@@ -9,4 +9,7 @@
  * in the shopinvader plugin
  * */
 const category = useNuxtApp().payload?.data?.entity || null
+if (!category) {
+  throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
+}
 </script>
