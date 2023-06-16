@@ -1,35 +1,25 @@
 <template>
-  <div v-if="page && page?.content">
-    <cms-dynamic-zone :dynamicZone="page?.content" />
+  <div class="grid grid-cols-4 gap-4 py-3">
+    <ProductHit
+      v-for="product in products"
+      :key="product.id"
+      :product="product"
+    ></ProductHit>
+  </div>
+  <div v-if="error" class="alert alert-error">
+    {{ error }}
   </div>
 </template>
 <script lang="ts" setup>
-import { Page } from '~~/models/cms/Page'
-const route = useRoute()
-const slugs: string[] = (route.params.slugs as string[]) || []
-const path: string | null = (slugs.join('/') as string) || null
-const { data: page, error } = await useAsyncData(
-  'page',
-  async () => {
-    const { findPage } = useCMS()
-    const page: Page | null =
-      (await findPage({ filters: { handle: 'home' } })) || null
-    return page
-  },
-  { watch: [path] }
-)
-
-if (page?.value) {
-  const { seo } = page.value
-  useHead({
-    title: seo?.metaTitle || 'Home',
-    meta: [
-      {
-        hid: 'description',
-        name: 'description',
-        content: seo?.metaDescription || ''
-      }
-    ]
-  })
+import { Product } from '~/models'
+let error: any = null
+let products: Product[] = []
+try {
+  const productService = useShopinvaderService('products')
+  const results = await productService.getAll()
+  products = results.hits || []
+} catch (e: any) {
+  console.error(e)
+  error = e
 }
 </script>

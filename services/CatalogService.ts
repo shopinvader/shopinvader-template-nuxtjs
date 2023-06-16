@@ -48,6 +48,10 @@ export class CatalogService {
   getByURLKey(urlKey: string): Promise<CatalogResult> {
     return this.find('url_key', [urlKey])
   }
+  async getEntityByURLKey(urlKey: string): Promise<Product | Category | null> {
+    const result = await this.getByURLKey(urlKey)
+    return result?.hits?.[0] || null
+  }
   find(field: string, value: string[] | number[]): Promise<CatalogResult> {
     const terms: any = {}
     terms[field] = value
