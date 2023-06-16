@@ -1,5 +1,4 @@
 <template>
-  <info-banner :infos="header?.preheader" />
   <header :class="{ scrolled: scrolled }">
     <aside-menu
       name="header"
@@ -23,11 +22,11 @@
         </svg>
       </template>
       <template #header>
-        <brand-logo></brand-logo>
+        <logo></logo>
       </template>
       <template #title>
         <nuxt-link :to="localePath({ name: 'index' })" class="logo">
-          <brand-logo></brand-logo>
+          <logo></logo>
         </nuxt-link>
       </template>
       <template #content>
@@ -59,7 +58,6 @@ import AsideMenu from '~/components/global/AsideMenu.vue'
 import SearchAutocomplete from '~/components/search/autocomplete/SearchAutocomplete.vue'
 export default defineNuxtComponent({
   name: 'GlobalHeader',
-  fetchKey: 'header',
   components: {
     'local-switcher': LocalSwitcher,
     'header-nav': HeaderNavVue,
@@ -67,7 +65,7 @@ export default defineNuxtComponent({
     'cart-icon': CartIconVue,
     'header-user': HeaderUser,
     'search-autocomplete': SearchAutocomplete,
-    'brand-logo': Logo
+    logo: Logo
   },
   data() {
     return {

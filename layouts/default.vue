@@ -2,28 +2,28 @@
   <div id="app">
     <div id="header-target"></div>
     <slot name="header">
-      <global-header></global-header>
+      <header-main></header-main>
     </slot>
     <main>
       <slot name="body"> </slot>
       <slot></slot>
     </main>
-    <footer-vue></footer-vue>
+    <footer-main></footer-main>
     <navbar-bottom class="md:hidden"></navbar-bottom>
     <notifications-vue></notifications-vue>
   </div>
 </template>
 <script lang="ts">
-import GlobalHeader from '~/components/global/header/Header.vue'
-import Footer from '~/components/global/Footer.vue'
+import HeaderMain from '~/components/global/header/HeaderMain.vue'
+import FooterMain from '~/components/global/FooterMain.vue'
 import Notifications from '~/components/global/Notifications.vue'
 import NavbarBottomVue from '~/components/global/NavbarBottom.vue'
 
 export default defineNuxtComponent({
   name: 'Default',
   components: {
-    'global-header': GlobalHeader,
-    'footer-vue': Footer,
+    'header-main': HeaderMain,
+    'footer-main': FooterMain,
     'notifications-vue': Notifications,
     'navbar-bottom': NavbarBottomVue
   }
@@ -33,6 +33,7 @@ export default defineNuxtComponent({
 main {
   @apply container mx-auto flex-grow;
 }
+
 #app {
   @apply flex min-h-screen flex-col;
 }
