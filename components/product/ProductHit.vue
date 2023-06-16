@@ -5,16 +5,17 @@
     :class="{ 'product-hit--inline': inline }"
   >
     <slot name="header"></slot>
-    <slot name="images" :images="variant.images">
-      <product-image
-        v-if="variant.images && variant.images.length > 0"
-        :image="variant.images[0]"
-        class="product-hit__image"
-        @click="linkToProduct()"
-      >
-      </product-image>
-      <div v-else class="product-hit__noimage"></div>
-    </slot>
+    <div class="product-hit__image">
+      <slot name="images" :images="variant.images">
+        <product-image
+          v-if="variant.images && variant.images.length > 0"
+          :image="variant.images[0]"
+          @click="linkToProduct()"
+        >
+        </product-image>
+        <div v-else class="noimage" @click="linkToProduct()"></div>
+      </slot>
+    </div>
     <div class="product-hit__body">
       <slot name="body" :product="variant">
         <div class="body__title">
@@ -125,14 +126,15 @@ export default {
   align-items: stretch;
   position: inherit;
   &__image {
-    @apply aspect-square max-h-full  cursor-pointer bg-gray-100;
+    @apply aspect-square max-h-full cursor-pointer overflow-hidden;
+    .product-image {
+      @apply h-full w-full rounded-md py-2;
+    }
+    .noimage {
+      @apply h-full w-full rounded-md bg-slate-50;
+    }
   }
-  &__noimage {
-    @apply rounded bg-slate-50;
-    content: '';
-    padding-bottom: 70%;
-    width: 100%;
-  }
+
   &__body {
     @apply card-body grow px-0 py-2 text-sm;
 

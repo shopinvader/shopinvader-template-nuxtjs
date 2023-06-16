@@ -1,6 +1,10 @@
 <template>
-  <figure v-if="imageSized != null">
-    <img :src="imageSized.src" :alt="imageSized.alt" class="p-8 mx-auto object-contain h-full" />
+  <figure
+    v-if="imageSized != null"
+    @click="$emit('click')"
+    class="product-image"
+  >
+    <img :src="imageSized.src" :alt="imageSized.alt" />
   </figure>
 </template>
 <script lang="ts">
@@ -21,6 +25,10 @@ export default {
       default: 'large'
     }
   },
+  emits: {
+    /** on click event */
+    click: null
+  },
   computed: {
     imageSized(): ProductImage | null {
       return this.image?.[this?.size] || null
@@ -28,3 +36,10 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.product-image {
+  img {
+    @apply h-full w-full object-contain;
+  }
+}
+</style>
