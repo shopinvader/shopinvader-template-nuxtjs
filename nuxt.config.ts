@@ -1,9 +1,9 @@
-import eslintPlugin from 'vite-plugin-eslint'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 const dir = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   app: {
+    pageTransition: { name: 'page', mode: 'out-in' },
     head: {
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
@@ -35,9 +35,6 @@ export default defineNuxtConfig({
           ]
         }
       },
-      strapi: {
-        url: process.env.STRAPI_URL || ''
-      },
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
       }
@@ -45,7 +42,6 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    //'@nuxtjs/strapi',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
