@@ -1,45 +1,42 @@
 <template>
   <template v-if="slider">
-    <div class="carousel w-full items-center rounded bg-gray-100 max-md:h-full">
+    <div class="image-slider">
       <div
         v-for="(image, index) in images"
         :id="'item' + index"
         ref="item"
-        class="carousel-item h-full w-full items-center justify-center bg-gray-100 max-md:max-h-96"
+        class="image-slider__item"
         :key="'img-' + index"
       >
-        <img
-          :src="image.large?.src"
-          class="mx-auto max-h-96 min-h-max p-6 max-md:object-contain max-sm:w-full lg:max-h-full"
-        />
+        <img :src="image.large?.src" class="item-image" />
       </div>
     </div>
-    <div class="hidden w-full justify-start gap-2 py-2 lg:flex">
+    <div class="slider-indicators">
       <a
         v-for="(image, index) in images"
         :key="'img-indicator' + index"
         :href="'#item' + index"
-        class="h-36 w-1/6 rounded bg-gray-50"
+        class="slider-indicators__items"
         :class="'w-1/' + images.length"
       >
-        <img :src="image.medium?.src" class="mx-auto h-36 object-fill p-2" />
+        <img :src="image.medium?.src" class="items-image" />
       </a>
     </div>
-    <div class="flex w-full justify-center gap-1 py-6 lg:hidden">
+    <div class="slider-indicators-mobile">
       <a
         v-for="(image, index) in images"
         :key="'img-indicator' + index"
         :href="'#item' + index"
         :data-item="'item' + index"
         ref="indicators"
-        class="h-full transition duration-75 ease-in"
+        class="slider-indicators-mobile__items"
       >
-        <icon icon="radix-icons:dot-filled" class="text-lg "></icon>
+        <icon icon="radix-icons:dot-filled" class="items-icons"></icon>
       </a>
     </div>
   </template>
   <template v-else>
-    <div class=" w-full rounded">
+    <div class="w-full rounded">
       <div
         v-for="(image, index) in images"
         :id="'item' + index"
@@ -103,3 +100,32 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.image-slider {
+  @apply carousel w-full items-center rounded bg-gray-100 max-md:h-full;
+  &__item {
+    @apply carousel-item h-full w-full items-center justify-center bg-gray-100 max-md:max-h-96;
+  }
+  .item-image {
+    @apply mx-auto max-h-96 min-h-max p-6 max-md:object-contain max-sm:w-full lg:max-h-full;
+  }
+}
+.slider-indicators {
+  @apply hidden w-full justify-start gap-2 py-2 lg:flex;
+  &__items {
+    @apply h-36 w-1/6 rounded bg-gray-50;
+    .items-image {
+      @apply mx-auto h-36 object-fill p-2;
+    }
+  }
+}
+.slider-indicators-mobile {
+  @apply flex w-full justify-center gap-1 py-6 lg:hidden;
+  &__items {
+    @apply h-full transition duration-75 ease-in;
+    .items-icons {
+      @apply text-lg;
+    }
+  }
+}
+</style>
