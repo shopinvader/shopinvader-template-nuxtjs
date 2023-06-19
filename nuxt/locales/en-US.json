@@ -159,6 +159,12 @@
       "notification_token_error": "ERROR : Invalid token",
       "notification_token_error_info": "Your token is either not valid either not existant"
     },
+    "reset": {
+      "reset_pswd": "Reset your password",
+      "description": "Enter the email address linked to your account",
+      "reset_btn": "Password reset",
+      "reset_success": "Thank you, if an account linked to the email address exists, please follow the instructions sent by email."
+    },
     "sales": {
       "sale": "Sales Order",
       "sale_subtotal": "Subtotal",

@@ -84,6 +84,11 @@ export class AuthService extends Service {
       }
     }
   }
+  async resetPassword(login: string): Promise<any> {
+    let request = { success: false }
+    request = await this.provider?.post('auth/password_reset', { login })
+    return request?.success || false
+  }
   setSession(value: boolean) {
     nuxtStorage.localStorage.setData('auth_user', value, 10, 'd')
   }

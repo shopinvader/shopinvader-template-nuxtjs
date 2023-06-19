@@ -1,83 +1,70 @@
 <template>
   <div>
     <slot name="head">
-      <div class="mb-10 text-center">
-        <h2
-          class="font-heading mb-4 text-4xl font-black tracking-tight text-black md:text-5xl"
-        >
+      <div class="login-heading">
+        <h2 class="login-heading__title">
           {{ $t('account.login.welcome_back') }}
         </h2>
-        <p class="font-bold text-gray-500">
+        <p class="login-heading__description">
           {{ $t('account.login.description') }}
         </p>
       </div>
     </slot>
     <form @submit.prevent="submit">
-      <div class="-m-3 flex flex-wrap">
-        <div class="w-full p-3">
-          <label
-            class="mb-2 block text-sm font-bold text-gray-500"
-            for="email"
-            >{{ $t('account.address.email') }}</label
-          >
+      <div class="subscription-form">
+        <div class="subscription-form__row">
+          <label class="" for="email">{{ $t('account.address.email') }}</label>
           <input
             id="email"
             v-model="login"
-            class="w-full appearance-none rounded-full border border-gray-100 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary"
+            class=""
             type="email"
             @keyup="checkValidity('login', $event)"
             required
             placeholder="Enter email address"
           />
         </div>
-        <div class="pl-4 text-sm italic text-red-500" v-if="error.login">
+        <div class="subscription-form__error" v-if="error.login">
           {{ error.login }}
         </div>
 
-        <div class="w-full p-3">
-          <label
-            class="mb-2 block text-sm font-bold text-gray-500"
-            for="password"
-            >{{ $t('account.login.password') }}</label
-          >
-          <div
-            class="overflow-hidden rounded-full border border-gray-200 focus-within:ring-4 focus-within:ring-secondary"
-          >
-            <div class="flex flex-wrap">
-              <div class="flex-1">
+        <div class="subscription-form__row">
+          <label class="" for="password">{{
+            $t('account.login.password')
+          }}</label>
+          <div class="pswd-container">
+            <div class="pswd-container__wrapper">
+              <div class="pswd-input">
                 <input
                   id="password"
                   v-model="password"
                   @keyup="checkValidity('password', $event)"
-                  class="w-full appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:border-2 focus:outline-0"
+                  class=""
                   required
                   type="password"
                   placeholder="*************"
                 />
               </div>
-              <div class="w-auto">
-                <a
-                  class="flex h-full items-center bg-gray-100 pr-4 font-bold text-secondary hover:text-primary"
-                  href="#"
-                  >{{ $t('account.login.forgot_password') }}</a
-                >
+              <div class="pswd-forgot">
+                <NuxtLink
+                  class="pswd-forgot__link"
+                  :to="localePath('/account/password-reset')"
+                  >{{ $t('account.login.forgot_password') }}
+                </NuxtLink>
               </div>
             </div>
           </div>
         </div>
-        <div class="pl-4 text-sm italic text-red-500" v-if="error.password">
+        <div class="subscription-form__error" v-if="error.password">
           {{ error.password }}
         </div>
         <div class="w-full p-3">
-          <div class="pl-4 text-sm italic text-red-500" v-if="error.auth">
+          <div class="subscription-form__error" v-if="error.auth">
             {{ error.auth }}
           </div>
-          <div class="-m-2 flex flex-wrap md:justify-end">
-            <div class="w-full p-2">
-              <button
-                type="submit"
-                class="block w-full rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary"
-              >
+          <div class="subscription-btn">
+            <div class="subscription-btn__wrapper">
+              <button type="submit" class="">
                 {{ $t('account.login.sign_in') }}
               </button>
             </div>
@@ -85,12 +72,12 @@
         </div>
         <div class="w-full p-3">
           <slot name="footer">
-            <p class="text-center font-bold text-gray-600">
-              <span class="mr-2">
+            <p class="footer-content">
+              <span class="footer-content__text">
                 {{ $t('account.login.not_yet_account') }}
               </span>
               <nuxt-link
-                class="cursor-pointer font-bold text-secondary hover:text-primary"
+                class="footer-content__link"
                 :to="localePath('/account/register')"
               >
                 {{ $t('account.login.create_account') }}
@@ -158,3 +145,66 @@ export default defineNuxtComponent({
   }
 })
 </script>
+<style lang="scss">
+.login-heading {
+  @apply mb-10 text-center;
+  &__title {
+    @apply mb-4 text-4xl font-black tracking-tight text-black md:text-5xl;
+  }
+  &__description {
+    @apply font-bold text-gray-500;
+  }
+}
+.subscription-form {
+  @apply -m-3 flex flex-wrap;
+  &__row {
+    @apply w-full p-3;
+    label {
+      @apply mb-2 block text-sm font-bold text-gray-500;
+    }
+    input {
+      @apply w-full appearance-none rounded-full border border-gray-100 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary;
+    }
+    .pswd-container {
+      @apply overflow-hidden rounded-full border border-gray-200 focus-within:ring-4 focus-within:ring-secondary;
+      &__wrapper {
+        @apply flex flex-wrap;
+        .pswd-input {
+          @apply flex-1 bg-gray-100;
+          input {
+            @apply w-full appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:border-2 focus:outline-0 focus:ring-transparent;
+          }
+        }
+        .pswd-forgot {
+          @apply w-auto;
+          &__link {
+            @apply flex h-full items-center bg-gray-100 pr-4 font-bold text-secondary hover:text-primary;
+          }
+        }
+      }
+    }
+  }
+  &__error {
+    @apply pl-4 text-sm italic text-red-500;
+  }
+
+  .subscription-btn {
+    @apply -m-2 flex flex-wrap md:justify-end;
+    &__wrapper {
+      @apply w-full p-2;
+      button {
+        @apply block w-full rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary;
+      }
+    }
+  }
+  .footer-content {
+    @apply text-center font-bold text-gray-600;
+    &__text {
+      @apply mr-2;
+    }
+    &__link {
+      @apply cursor-pointer font-bold text-secondary hover:text-primary;
+    }
+  }
+}
+</style>
