@@ -125,7 +125,7 @@ export default {
   align-items: stretch;
   position: inherit;
   &__image {
-    @apply aspect-square max-h-full  cursor-pointer;
+    @apply aspect-square max-h-full  cursor-pointer bg-gray-100;
   }
   &__noimage {
     @apply rounded bg-slate-50;

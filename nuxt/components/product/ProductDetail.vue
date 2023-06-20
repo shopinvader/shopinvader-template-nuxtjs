@@ -17,7 +17,7 @@
     <div class="product-detail__image">
       <!-- @slot Image content -->
       <slot name="image">
-        <image-list :images="variant.images || []" :slider="false" />
+        <image-list :images="variant.images || []" :slider="true" />
       </slot>
     </div>
     <div class="product-detail__content">
@@ -91,7 +91,7 @@
     <div class="product-detail__description">
       <!-- @slot Description content -->
       <slot name="description">
-        <div v-html="variant.description" class="prose prose-sm"></div>
+        <div v-html="variant.description" class="prose prose-sm max-w-none"></div>
       </slot>
     </div>
     <div class="product-detail__links">
@@ -183,7 +183,7 @@ export default {
 </script>
 <style lang="scss">
 .product-detail {
-  @apply flex flex-wrap p-3 md:p-5;
+  @apply flex flex-wrap p-3 md:p-5 max-md:flex-col;
   &__header {
     @apply w-full flex-grow;
   }
