@@ -14,10 +14,9 @@ export const fetchElastic = async (url: string, options: any) => {
  * @returns ShopinvaderElasticConfig List of providers for elasticsearch connection
  */
 export const initElasticProvider = (
-  config: ShopinvaderElasticConfig
+  config: ShopinvaderElasticConfig,
+  isoLocale: string
 ): ShopinvaderProvidersList => {
-  const app = useNuxtApp()
-  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || ''
   const allIndex: string[] = []
   const providers: ShopinvaderProvidersList = {}
   const indices = config?.indices || []

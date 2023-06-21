@@ -16,7 +16,6 @@ export default defineNuxtConfig({
           api_url: process.env.ERP_HOST || '',
           default_role: 'default'
         },
-
         endpoint: 'shopinvader',
         elasticsearch: {
           url: process.env.ELASTIC_URL || '',
@@ -44,7 +43,8 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt'
+    '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-simple-sitemap'
   ],
 
   plugins: [
@@ -61,7 +61,9 @@ export default defineNuxtConfig({
   },
 
   pages: true,
-
+  sitemap: {
+    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**']
+  },
   i18n: {
     locales: [
       {

@@ -41,7 +41,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   if (!config) {
     throw new Error('No shopinvader config found')
   }
-  const providers = initProviders(config as ShopinvaderConfig)
+  const app = useNuxtApp()
+  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || ''
+  const providers = initProviders(config as ShopinvaderConfig, isoLocale)
   const erp = providers?.erp as ErpFetch
   const products = new ProductService(providers?.products as ElasticFetch)
   const categories = new CategoryService(providers?.categories as ElasticFetch)

@@ -8,7 +8,8 @@ import { initErpProvider } from './ErpProvider'
  * @returns ShopinvaderProvidersList
  */
 export const initProviders = (
-  config: ShopinvaderConfig
+  config: ShopinvaderConfig,
+  isoLocale: string
 ): ShopinvaderProvidersList => {
   if (config == null) {
     throw new Error('No shopinvader config found')
@@ -20,7 +21,7 @@ export const initProviders = (
     erpProviders = initErpProvider(erp)
   }
   if (elasticsearch) {
-    elasticProviders = initElasticProvider(elasticsearch)
+    elasticProviders = initElasticProvider(elasticsearch, isoLocale)
   }
   return {
     ...erpProviders,
