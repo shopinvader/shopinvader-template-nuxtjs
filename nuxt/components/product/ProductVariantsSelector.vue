@@ -57,7 +57,6 @@ export default defineNuxtComponent({
     select(sku: string) {
       const variant: Product | null =
         this.product.variants?.find((variant) => variant.sku === sku) || null
-      console.log(sku, variant)
       if (variant) {
         this.$emit('selectVariant', variant)
       }

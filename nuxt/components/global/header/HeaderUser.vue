@@ -7,8 +7,8 @@
           {{ user?.name || $t('account.title') }}
         </span>
         <span class="button_mobile__label">
-        {{ $t('navbar.account') }}
-      </span>
+          {{ $t('navbar.account') }}
+        </span>
       </button>
       <ul v-if="user" tabindex="0" class="dropdown-content">
         <li>
@@ -43,6 +43,7 @@ const next = () => {
 }
 const logout = () => {
   auth?.logout()
+  navigateTo('/')
 }
 </script>
 <style lang="scss">
@@ -60,7 +61,7 @@ const logout = () => {
       @apply absolute -bottom-5 line-clamp-2 text-xs font-normal capitalize leading-3 max-lg:hidden;
     }
     &_mobile__label {
-      @apply md:hidden normal-case text-xs w-full text-center block transition-all duration-100 ease-in-out font-normal;
+      @apply block w-full text-center text-xs font-normal normal-case transition-all duration-100 ease-in-out md:hidden;
     }
   }
 }

@@ -130,7 +130,6 @@ export default defineNuxtComponent({
       }
     },
     async submit(e: Event) {
-      console.log('submit', e)
       const auth = useShopinvaderService('auth')
       if (this?.login && this?.password) {
         try {

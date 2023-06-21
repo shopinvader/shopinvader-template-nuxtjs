@@ -47,7 +47,7 @@
       </slot>
       <slot name="register-form">
         <div class="register__form-wrapper">
-          <form class="">
+          <form class="" @submit.prevent="createAccount">
             <div class="input-container">
               <div class="input-container__wrapper">
                 <label class="" for="firstname">{{
@@ -56,9 +56,10 @@
                 <input
                   class=""
                   id="firstname"
-                  v-model="customer.name"
+                  v-model="name"
                   name="firstname"
                   type="text"
+                  required
                   :placeholder="$t('account.address.name')"
                 />
               </div>
@@ -67,10 +68,11 @@
                   $t('account.address.email')
                 }}</label>
                 <input
-                  v-model="customer.email"
+                  v-model="email"
                   class=""
                   id="email"
                   type="email"
+                  required
                   :placeholder="$t('account.address.email')"
                 />
               </div>
@@ -79,11 +81,12 @@
                   $t('account.login.password')
                 }}</label>
                 <input
-                  v-model="customer.password"
+                  v-model="password"
                   class=""
                   id="password"
                   name="password"
                   type="password"
+                  required
                   placeholder="***************"
                 />
               </div>
@@ -107,13 +110,14 @@
               <div class="w-full p-3">
                 <div class="-m-2 flex flex-wrap md:justify-end">
                   <div class="w-full p-2">
-                    <a
-                      class="focus:gray-200 block rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-4"
-                      @click="createAccount"
-                      >{{ $t('account.register.sign_up') }}</a
-                    >
+                    <button type="submit" class="btn-primary btn w-full">
+                      {{ $t('account.register.sign_up') }}
+                    </button>
                   </div>
                 </div>
+              </div>
+              <div v-if="error" class="text-error">
+                {{ error }}
               </div>
             </div>
           </form>
@@ -151,7 +155,10 @@ export default {
   },
   data() {
     return {
-      customer: new User({}) as User,
+      error: '' as string,
+      password: '' as string,
+      email: '' as string,
+      name: '' as string,
       accountIsCreated: false as boolean
     }
   },
@@ -160,18 +167,13 @@ export default {
       const auth = useShopinvaderService('auth')
       const notifications = useNotification()
       try {
-        const userAccountCreated = (await auth.registerUser(
-          this.customer
-        )) as boolean
-        console.log(this.customer)
+        await auth.registerUser(this.name, this.password, this.email)
         // Display success message
-        if (userAccountCreated) {
-          this.accountIsCreated = true
-        }
-        console.log(userAccountCreated)
+        this.accountIsCreated = true
       } catch (e) {
         console.error(e)
-        notifications.addError(this.$t('error.unable_to_login'))
+        this.error = this.$t('error.login.unable_to_login')
+        notifications.addError(this.$t('error.login.unable_to_login'))
       }
     }
   }

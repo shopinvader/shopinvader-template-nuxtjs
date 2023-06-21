@@ -39,14 +39,20 @@ export class AuthService extends Service {
       }
     }
   }
-  async registerUser(user: User): Promise<boolean> {
+  async registerUser(
+    name: string,
+    password: string,
+    login: string
+  ): Promise<boolean> {
     let request = { success: false }
-    if (user) {
-      //request = await this.provider?.post('auth/me', { user }, null)
+    if (login && password && name) {
+      request = await this.provider?.post('auth/register', {
+        name,
+        login,
+        password
+      })
     }
-    //TODO REMOVE THIS LINE
-    request = { success: true }
-    return request?.success || false
+    return request || false
   }
   /**
    * checkRegisterToken : Check the token for the customer registration
