@@ -6,7 +6,7 @@
           <div
             v-for="a of addressTypes"
             :key="a"
-            class="tab tab-bordered"
+            class="tab-bordered tab"
             :class="{ 'tab-active': selectedType === a }"
             @click="selectedType = a"
           >
@@ -55,6 +55,9 @@ export default defineNuxtComponent({
     }
   },
   async setup() {
+    definePageMeta({
+      auth: true
+    })
     const addressTypes = ['delivery', 'invoice']
     return {
       addressTypes

@@ -63,7 +63,6 @@ export default defineNuxtComponent({
       const route = useRoute()
       const localePath = useLocalePath()
       return this.items.map((item) => {
-        console.log(route.path, localePath(item.slug))
         return {
           ...item,
           active: route.path === localePath(item.slug)

@@ -156,6 +156,9 @@ export default defineNuxtComponent({
     'account-layout': AccountLayout
   },
   setup() {
+    definePageMeta({
+      auth: true
+    })
     const router = useRouter()
     const route = useRoute()
     const loading = ref(false)

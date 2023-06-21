@@ -60,7 +60,6 @@ interface PaymentWithComponent extends PaymentMode {
 }
 
 const importPaymentComponent = (name: string) => {
-  console.log('name', `../../payment/Payment${name}.vue`)
   return defineAsyncComponent(() =>
     import(`../../payment/Payment${name}.vue`).catch(() => {
       return PaymentGeneric

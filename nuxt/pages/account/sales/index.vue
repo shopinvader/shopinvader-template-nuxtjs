@@ -186,6 +186,9 @@ export default defineNuxtComponent({
     'pagination-status': PaginationStatus
   },
   setup(props) {
+    definePageMeta({
+      auth: true
+    })
     const router = useRouter()
     const route = useRoute()
     const perPages = ref([10, 20, 50])
