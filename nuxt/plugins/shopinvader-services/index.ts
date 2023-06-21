@@ -61,6 +61,17 @@ export default defineNuxtPlugin((nuxtApp) => {
       services.settings.init()
     })
   }
+  /**
+   * Add a middleware to check if the user is logged in
+   */
+  addRouteMiddleware(async (to) => {
+    if (to?.meta?.auth) {
+      const user = services.auth.getUser()?.value || null
+      if (!user) {
+        return '/'
+      }
+    }
+  })
   return {
     provide: {
       shopinvader: {

@@ -99,8 +99,8 @@ export default defineNuxtComponent({
   },
   data() {
     return {
-      login: 'thibault.rey@akretion.com' as string | null,
-      password: 'Password#19-90' as string | null,
+      login: '' as string | null,
+      password: '' as string | null,
       error: {
         auth: null as string | null,
         login: null as string | null,

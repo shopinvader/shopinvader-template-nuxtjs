@@ -81,6 +81,11 @@ export default defineNuxtComponent({
     AsideDrawer,
     AddressForm
   },
+  setup() {
+    definePageMeta({
+      auth: true
+    })
+  },
   data() {
     return {
       customer: null as Address | null, // Contains an address of type 'contact'

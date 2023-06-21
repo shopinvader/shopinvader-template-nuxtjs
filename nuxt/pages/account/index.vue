@@ -29,6 +29,9 @@ export default defineNuxtComponent({
   },
   setup() {
     const localePath = useLocalePath()
+    definePageMeta({
+      auth: true
+    })
     return {
       localePath
     }
