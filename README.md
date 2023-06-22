@@ -1,5 +1,8 @@
 # Nuxt ShopInvader Demonstration template
 
+[![License][license-src]][license-href]
+[![Nuxt][nuxt-src]][nuxt-href]
+
 shopinvader-template-nuxtjs is a Nuxt 3 VueJS open-source template for ShopInvader the
 e-commerce solution for Odoo.
 
@@ -50,10 +53,6 @@ yarn preview
 ```
 
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
-
-## License
-
-This project is open source under the terms of the [MIT License](./LICENSE)
 
 ## Shopinvader Services
 
@@ -117,3 +116,13 @@ export default defineNuxtPlugin((nuxtApp) => {
   const up = () => service.up()
 </script>
 ```
+## License
+
+This project is open source under the terms of the [MIT License](./LICENSE)
+
+<!-- Badges -->
+
+[nuxt-src]: https://img.shields.io/badge/Nuxt-18181B?&logo=nuxt.js
+[nuxt-href]: https://nuxt.com
+[license-src]: https://img.shields.io/github/license/nuxt-themes/docus.svg?style=flat&colorA=002438&colorB=28CF8D
+[license-href]: https://github.com/nuxt-themes/docus/blob/main/LICENSE
