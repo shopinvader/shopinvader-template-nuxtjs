@@ -1,0 +1,28 @@
+<template>
+  <div class="login">
+    <div class=""></div>
+    <div class="login__container">
+      <nuxt-link :to="localePath('/')" class="container__link">
+        <icon icon="material-symbols:arrow-back-ios" class="inline"> </icon>
+        {{ $t('btn.back_to_homepage') }}
+      </nuxt-link>
+      <slot name="body"> </slot>
+    </div>
+  </div>
+</template>
+<script>
+definePageMeta({
+  layout: false
+})
+</script>
+<style lang="scss">
+.login {
+  @apply flex min-h-screen flex-col items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400;
+  &__container {
+    @apply container mx-auto px-4 py-8;
+    .container__link {
+      @apply btn-primary btn-sm btn mb-4 rounded-full text-white;
+    }
+  }
+}
+</style>
