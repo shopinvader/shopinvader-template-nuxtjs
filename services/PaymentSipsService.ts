@@ -1,6 +1,6 @@
 import { ErpFetch } from '@shopinvader/fetch'
 import { PaymentService } from './PaymentService'
-import { SipsPayment } from '~/models'
+import { SipsPayment } from '../models'
 export class PaymentSipsService extends PaymentService {
   provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {

@@ -1,4 +1,10 @@
 {
+  "name": "shopinvader-nuxt",
+  "description": "Shopinvader Nuxt",
+  "author": "Akretion",
+  "license": "MIT",
+  "type": "module",
+
   "private": true,
   "scripts": {
     "build": "nuxt build",
@@ -11,13 +17,11 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "^0.4.1",
-    "@nuxtjs/tailwindcss": "^6.6.6",
-    "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
-    "@tailwindcss/typography": "^0.5.9",
+
     "@typescript-eslint/eslint-plugin": "^5.48.0",
     "@typescript-eslint/parser": "^5.48.0",
     "@vue/eslint-config-typescript": "^11.0.2",
-    "daisyui": "^2.43.0",
+
     "eslint": "^8.31.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-config-standard-with-typescript": "^26.0.0",
@@ -28,7 +32,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^9.8.0",
     "nuxt": "^3.5.3",
-    "nuxt-simple-sitemap": "^2.7.0",
+
     "prettier": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.1",
     "sass": "^1.55.0",
@@ -39,6 +43,11 @@
     "vue-eslint-parser": "^9.1.0"
   },
   "dependencies": {
+    "nuxt-simple-sitemap": "^2.7.0",
+    "@nuxtjs/tailwindcss": "^6.6.6",
+    "@pinia-plugin-persistedstate/nuxt": "^1.0.0",
+    "@tailwindcss/typography": "^0.5.9",
+    "daisyui": "^2.43.0",
     "@iconify/vue": "^4.0.2",
     "@nuxt/types": "^2.15.8",
     "@nuxtjs/i18n": "^8.0.0-beta.12",

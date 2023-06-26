@@ -2,7 +2,7 @@ import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import { Product } from '~/models/Product'
 import { Category } from '~/models/Category'
-import { ShopinvaderConfig, ShopinvaderProvidersList } from './type'
+import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from './type'
 import { ProductService, CategoryService, CatalogService } from '../../services'
 import { initProviders } from './providers/index'
 import ProductPage from '~/pages/template/ProductPage.vue'
@@ -16,22 +16,10 @@ import {
   PaymentModeService,
   SaleService,
   SettingService
-} from '~/services'
+} from '../../services'
 
 declare global {
-  interface ShopinvaderServiceList {
-    auth: AuthService
-    products: ProductService
-    categories: CategoryService
-    catalog: CatalogService
-    cart: CartService
-    addresses: AddressService | null
-    settings: SettingService | null
-    sales: SaleService | null
-    customer: CustomerService | null
-    deliveryCarriers: DeliveryCarrierService | null
-    paymentModes: PaymentModeService | null
-  }
+  interface ShopinvaderServiceList extends ServiceList {}
 }
 
 export default defineNuxtPlugin((nuxtApp) => {

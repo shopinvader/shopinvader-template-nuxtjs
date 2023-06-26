@@ -1,7 +1,7 @@
 import { storeToRefs } from 'pinia'
 import { ErpFetch } from '@shopinvader/fetch'
 import { Service } from './Service'
-import { User } from '~/models'
+import { User } from '../models'
 import nuxtStorage from 'nuxt-storage'
 
 export class AuthService extends Service {

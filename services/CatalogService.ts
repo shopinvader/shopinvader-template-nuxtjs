@@ -1,7 +1,7 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { Category } from '~~/models/Category'
-import { Product } from '~~/models/Product'
-import { CatalogResult } from '~~/models/Catalog'
+import { Category } from '../models/Category'
+import { Product } from '../models/Product'
+import { CatalogResult } from '../models/Catalog'
 
 export class CatalogService {
   provider: ElasticFetch | null = null

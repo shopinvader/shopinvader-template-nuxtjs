@@ -1,5 +1,5 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { DeliveryCarrier } from '~/models/DeliveryCarrier'
+import { DeliveryCarrier } from '../models/DeliveryCarrier'
 import { Service } from './Service'
 
 export class DeliveryCarrierService extends Service {

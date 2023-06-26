@@ -1,5 +1,5 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { Address } from '~~/models/Address'
+import { Address } from '../models/Address'
 
 export class CustomerService {
   provider: ErpFetch | null = null
