@@ -5,8 +5,7 @@ import { Category } from '~/models/Category'
 import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from './type'
 import { ProductService, CategoryService, CatalogService } from '../../services'
 import { initProviders } from './providers/index'
-import ProductPage from '~/pages/template/ProductPage.vue'
-import CategoryPage from '~/pages/template/CategoryPage.vue'
+import {TemplateProductPage, TemplateCategoryPage} from '#components'
 import {
   AddressService,
   AuthService,
@@ -56,7 +55,6 @@ export default defineNuxtPlugin((nuxtApp) => {
     })
   }
 
-
   /**
    * Add route middleware to add dynamic routes for products and categories
    * Add a middleware to check if the user is logged in
@@ -80,10 +78,11 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (entity) {
           let component = null
           if (entity instanceof Product) {
-            component = ProductPage
+            component = TemplateProductPage
           } else if (entity instanceof Category) {
-            component = CategoryPage
+            component = TemplateCategoryPage
           }
+
           router.addRoute(to.path, {
             component,
             children: [],
