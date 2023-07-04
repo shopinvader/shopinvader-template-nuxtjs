@@ -2,11 +2,11 @@
   <div class="product-stock">
     <!-- case stock found -->
     <div v-if="stockQty > 0" class="product-stock__positive">
-      <p>{{ $t('product.stock.in_stock') }}: <span class="positive__qty">{{ stockQty }}</span></p>
+      <icon icon="iconamoon:delivery-free-bold" /><p>{{ $t('product.stock.in_stock') }}: <span class="positive__qty">{{ stockQty }}</span></p>
     </div>
     <!-- case stock not found  -->
     <div v-else class="product-stock__negative">
-      <p>{{ $t('product.stock.out_of_stock') }}</p>
+      <icon icon="jam:alert-f" /><p>{{ $t('product.stock.out_of_stock') }}</p>
     </div>
   </div>
 </template>
