@@ -2,7 +2,7 @@
   <div class="product-stock">
     <!-- case stock found -->
     <div v-if="stockQty > 0" class="product-stock__positive">
-      <icon icon="iconamoon:delivery-free-bold" /><p>{{ $t('product.stock.in_stock') }}: <span class="positive__qty">{{ stockQty }}</span></p>
+      <icon class="icon" icon="iconamoon:delivery-free-bold" /><p>{{ $t('product.stock.in_stock') }}: <span class="positive__qty">{{ stockQty }}</span></p>
     </div>
     <!-- case stock not found  -->
     <div v-else class="product-stock__negative">
@@ -30,9 +30,17 @@ export default {
 .product-stock {
   @apply pb-3;
   &__positive {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 0.5rem;
+    & .icon {
+      font-size: 1.5rem;  
+      @apply text-success;        
+      }
   .positive {
     &__qty {
-      @apply text-success font-bold;
+      @apply text-success font-bold;    
     }
   }
  }
