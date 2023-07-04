@@ -37,6 +37,7 @@
           <div class="content__icons">
             <cart-icon></cart-icon>
             <header-user></header-user>
+            <local-switcher></local-switcher>
           </div>
         </slot>
       </template>

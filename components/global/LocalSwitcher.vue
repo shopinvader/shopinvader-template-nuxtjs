@@ -17,28 +17,25 @@
       class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2"
     >
       <li v-for="item in availableLocales" :key="item.code">
-        <nuxt-link
-          :key="item.code"
-          :to="switchLocalePath(item.code)"
-          :class="item.code == currentLocale ? 'bg-gray-300' : ''"
-        >
-          {{ $t('localeswitcher.' + item.code) }}
-        </nuxt-link>
+        <a :key="item.code" :href="switchLocalePath(item.code)">
+          {{ item.name }}
+        </a>
       </li>
     </ul>
   </div>
 </template>
+
 <script setup>
 const { locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
-
-const availableLocales = computed(() => {
-  return locales.value
-})
 const currentLocale = computed(() => {
   return locale.value
 })
+const availableLocales = computed(() => {
+  return locales.value.filter((i) => i.code !== locale.value)
+})
 </script>
+
 <style lang="scss">
 .localeposition {
   display: block ruby;
