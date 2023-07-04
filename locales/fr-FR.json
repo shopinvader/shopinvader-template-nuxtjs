@@ -7,7 +7,7 @@
   "search": {
     "noresults": "Aucun résultat",
     "filter": "Filtrer",
-    "results":{
+    "results": {
       "count": "{count} résultat(s)"
     },
     "sort": {
@@ -34,6 +34,10 @@
     "cart": {
       "add": "Ajouter au panier"
     },
+    "stock": {
+      "in_stock": "En stock",
+      "out_of_stock": "Epuise"
+    },
     "cross_selling": {
       "title": "Produits liés à cet article"
     },
@@ -43,9 +47,7 @@
     "history": {
       "title": "Produits déjà consultés",
       "clear": "Effacer"
-
     }
-
   },
   "cart": {
     "title": "Panier",
@@ -62,7 +64,7 @@
     "address": {
       "continue": "Continuer",
       "delivery": {
-        "title":"Adresse de livraison"
+        "title": "Adresse de livraison"
       },
       "invoice": {
         "title": "Adresse de facturation"
@@ -88,7 +90,7 @@
     "phone": "Téléphone",
     "country": "Pays",
     "noresult": "Aucune adresse",
-    "type" : {
+    "type": {
       "delivery": "Adresse de livraison",
       "invoice": "Adresse de facturation",
       "contact": "Adresse de contact"
@@ -105,10 +107,10 @@
   "actions": {
     "modify": "Modifier",
     "update": "Actualiser",
-    "create": "Créer " ,
+    "create": "Créer ",
     "validate": "Valider"
   },
   "error": {
-    "generic": "Une erreur est survenue, veuillez essayer à nouveau ultérieurement.",
+    "generic": "Une erreur est survenue, veuillez essayer à nouveau ultérieurement."
   }
 }

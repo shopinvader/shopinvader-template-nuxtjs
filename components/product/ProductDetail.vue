@@ -33,7 +33,7 @@
                 {{ variant.shortName }}
               </p>
             </div>
-          </slot>
+          </slot>        
         </div>
         <div class="content__ref">
           <!-- @slot Ref content -->
@@ -72,12 +72,19 @@
             <product-price
               v-if="variant.price !== null"
               :price="variant.price"
-              class="py-4 text-right"
+              class="pt-4 text-right"
             >
               <template #price>
                 <slot name="price" :price="variant.price"></slot>
               </template>
             </product-price>
+          </slot>
+          <div class="content__stock">
+            <slot name="stock">
+              <ProductStock :stock="variant.stock" :product="variant" />
+            </slot>
+          </div>
+          <slot name="cart-btn">
             <client-only>
               <product-cart
                 v-if="variant !== null"
@@ -86,6 +93,8 @@
             </client-only>
           </slot>
         </div>
+       
+        
       </div>
     </div>
     <div class="product-detail__description">
@@ -133,6 +142,7 @@ import ProductLinksVue from './ProductLinks.vue'
 import ImageListVue from './ImageList.vue'
 import { useHistoryStore } from '~/stores/history'
 import ProductHistory from './ProductHistory.vue'
+import ProductStock from './ProductStock.vue'
 
 export default {
   components: {
@@ -143,7 +153,8 @@ export default {
     'product-variants-selector': ProductVariantsSelector,
     'product-cart': ProductCartVue,
     'product-links': ProductLinksVue,
-    'product-history': ProductHistory
+    'product-history': ProductHistory,
+    'product-stock': ProductStock
   },
   props: {
     product: {
@@ -180,6 +191,7 @@ export default {
     }
   }
 }
+
 </script>
 <style lang="scss">
 .product-detail {
@@ -210,6 +222,9 @@ export default {
         .variants {
           @apply flex flex-wrap;
         }
+      }
+      &__price {
+        @apply text-right;
       }
     }
     .variants {

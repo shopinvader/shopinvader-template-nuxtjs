@@ -9,17 +9,10 @@
     ]"
   >
     <template #filters>
+    
       <search-terms-aggregation
-        name="categories"
-        nested-path="categories"
-        field="categories.name"
-        title="Categories"
-        :aggregation-query="categoryQuery"
-        url-param="category"
-      ></search-terms-aggregation>
-      <search-terms-aggregation
-        name="color"
-        field="variant_attributes.color"
+        name="brand.name"
+        field="MARQUE.keyword"
         title="Color"
         url-param="name"
       ></search-terms-aggregation>
