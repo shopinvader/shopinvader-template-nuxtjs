@@ -1,24 +1,15 @@
 <template>
-  <div class="localeposition dropdown">
+  <div v-if="availableLocales.length > 1" class="localeposition dropdown">
     <label tabindex="0" class="m-1">
-      <span class="font-semibold uppercase">{{ currentLocale }}</span>
-      <svg
-        class="fill-current"
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-      >
-        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-      </svg>
+      <span class="font-semibold uppercase">
+        <icon :icon="currentLocalIcon" class="text-4xl" />
+      </span>
+      <icon icon="ph:caret-down-light" />
     </label>
-    <ul
-      v-if="availableLocales.length"
-      class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2"
-    >
+    <ul class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2">
       <li v-for="item in availableLocales" :key="item.code">
-        <a :key="item.code" :href="switchLocalePath(item.code)">
-          {{ item.name }}
+        <a :key="item.code" :href="localePath('index', item.code)">
+          <icon :icon="item.icon" class="text-2xl" />{{ item.name }}
         </a>
       </li>
     </ul>
@@ -27,10 +18,11 @@
 
 <script setup>
 const { locale, locales } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
-const currentLocale = computed(() => {
-  return locale.value
+const localePath = useLocalePath()
+const currentLocalIcon = computed(() => {
+  return locales.value.find((i) => i.code === locale.value).icon
 })
+
 const availableLocales = computed(() => {
   return locales.value.filter((i) => i.code !== locale.value)
 })

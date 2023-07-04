@@ -70,19 +70,22 @@ export default defineNuxtConfig({
         code: 'en',
         iso: 'en_us',
         file: 'en-US.json',
-        name: 'English'
+        name: 'English',
+        icon: 'circle-flags:uk'
       },
       {
         code: 'es',
         iso: 'es_es',
         file: 'es-ES.json',
-        name: 'Español'
+        name: 'Español',
+        icon: 'circle-flags:es'
       },
       {
         code: 'fr',
         iso: 'fr_fr',
         file: 'fr-FR.json',
-        name: 'Français'
+        name: 'Français',
+        icon: 'circle-flags:fr'
       }
     ],
     debug: false,
@@ -90,7 +93,6 @@ export default defineNuxtConfig({
     langDir: 'locales',
     defaultLocale: 'en'
   },
-
   build: {
     transpile: ['@shopinvader/cart']
   },
