@@ -4,6 +4,7 @@ import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
 import { ProductLinks } from './ProductLinks'
 import { Model } from './Model'
+import  {ProductStock}  from './ProductStock'
 
 export interface ProductResult {
   hits: Product[]
@@ -59,6 +60,7 @@ export class Product extends Model {
   variantCount = 0
   categories: ProductCategory[] | null
   sku: string | null
+  stock: ProductStock | null
   variantAttributes: VariantAttributes = {}
   variantSelector: ProductVariantSelector[] = []
   price: ProductPrice | null = null
@@ -89,6 +91,7 @@ export class Product extends Model {
         .sort((a: any, b: any) => a?.level - b?.level)
     }
     this.sku = data?.sku || null
+    this.stock = data?.stock || null
     this.variantAttributes = data?.variant_attributes || {}
     const priceLists = Object.keys(data?.price || {})
     this.price = new ProductPrice(data?.price[priceLists[0]]) || null
