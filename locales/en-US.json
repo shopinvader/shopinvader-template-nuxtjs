@@ -43,6 +43,11 @@
     "history": {
       "title": "You have recently viewed",
       "clear": "Clear"
+    },
+    "stock": {
+      "available": "In stock",
+      "ending_soon": "Item(s) left in stock",
+      "not_available": "Item out of stock"
     }
   },
   "cart": {

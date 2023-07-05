@@ -65,6 +65,7 @@ export class Product extends Model {
   images: ProductImageSet[] | null
   variants: Product[] | null = null
   links: ProductLinks | null = null
+  stock = 4
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
@@ -80,6 +81,7 @@ export class Product extends Model {
     this.metaKeywords = data?.meta_keywords || null
     this.metaDescription = data?.meta_description || null
     this.variantCount = data?.variant_count || 0
+    this.stock = 4
     this.categories = []
     if (Array.isArray(data?.categories)) {
       this.categories = data?.categories
