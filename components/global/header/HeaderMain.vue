@@ -7,19 +7,12 @@
       :sideMenu="scrolled"
     >
       <template #button>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block h-6 w-6 stroke-current"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          ></path>
-        </svg>
+        <div class="text-primary">
+          <icon
+            icon="solar:hamburger-menu-outline"
+            class="text-3xl text-primary"
+          />
+        </div>
       </template>
       <template #header>
         <logo></logo>
@@ -37,6 +30,7 @@
           <div class="content__icons">
             <cart-icon></cart-icon>
             <header-user></header-user>
+            <local-switcher></local-switcher>
           </div>
         </slot>
       </template>

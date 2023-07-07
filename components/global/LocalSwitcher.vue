@@ -1,61 +1,39 @@
 <template>
-  <div class="localeposition dropdown">
-    <label tabindex="0" class="m-1">
-      <span class="font-semibold uppercase">{{ currentLocale }}</span>
-      <svg
-        class="fill-current"
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-      >
-        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-      </svg>
+  <div v-if="availableLocales.length > 1" class="locale-switcher dropdown">
+    <label tabindex="0" class="locale-switcher__btn">
+      <span class="font-semibold uppercase">
+        <icon :icon="currentLocalIcon" class="text-4xl" />
+      </span>
+      <icon icon="ph:caret-down-light" class="text-lg" />
     </label>
     <ul
-      v-if="availableLocales.length"
-      class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2"
+      class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2 shadow"
     >
       <li v-for="item in availableLocales" :key="item.code">
-        <nuxt-link
-          :key="item.code"
-          :to="switchLocalePath(item.code)"
-          :class="item.code == currentLocale ? 'bg-gray-300' : ''"
-        >
-          {{ $t('localeswitcher.' + item.code) }}
-        </nuxt-link>
+        <a :key="item.code" :href="localePath('index', item.code)">
+          <icon :icon="item.icon" class="text-2xl" />{{ item.name }}
+        </a>
       </li>
     </ul>
   </div>
 </template>
+
 <script setup>
 const { locale, locales } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
+const localePath = useLocalePath()
+const currentLocalIcon = computed(() => {
+  return locales.value.find((i) => i.code === locale.value).icon
+})
 
 const availableLocales = computed(() => {
-  return locales.value
-})
-const currentLocale = computed(() => {
-  return locale.value
+  return locales.value.filter((i) => i.code !== locale.value)
 })
 </script>
+
 <style lang="scss">
-.localeposition {
-  display: block ruby;
-}
-.localeswitcher {
-  display: flex;
-
-  .localeswitcher-item {
-    @apply border-r px-2;
-
-    &:last-child {
-      @apply border-r-0;
-    }
-
-    &--active {
-      @apply font-bold;
-    }
+.locale-switcher {
+  &__btn {
+    @apply m-1 flex items-center;
   }
 }
 </style>
