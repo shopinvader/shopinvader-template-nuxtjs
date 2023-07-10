@@ -35,6 +35,11 @@
             </div>
           </slot>
         </div>
+        <div class="content__brand">
+          <slot name="brand">
+            <product-brand :product="variant" />
+          </slot>
+        </div>
         <div class="content__ref">
           <!-- @slot Ref content -->
           <slot name="ref">
@@ -91,7 +96,10 @@
     <div class="product-detail__description">
       <!-- @slot Description content -->
       <slot name="description">
-        <div v-html="variant.description" class="prose prose-sm max-w-none"></div>
+        <div
+          v-html="variant.description"
+          class="prose prose-sm max-w-none"
+        ></div>
       </slot>
     </div>
     <div class="product-detail__links">
@@ -133,6 +141,7 @@ import ProductLinksVue from './ProductLinks.vue'
 import ImageListVue from './ImageList.vue'
 import { useHistoryStore } from '~/stores/history'
 import ProductHistory from './ProductHistory.vue'
+import ProductBrand from './ProductBrand.vue'
 
 export default {
   components: {
@@ -143,7 +152,8 @@ export default {
     'product-variants-selector': ProductVariantsSelector,
     'product-cart': ProductCartVue,
     'product-links': ProductLinksVue,
-    'product-history': ProductHistory
+    'product-history': ProductHistory,
+    'product-brand': ProductBrand
   },
   props: {
     product: {
@@ -183,15 +193,15 @@ export default {
 </script>
 <style lang="scss">
 .product-detail {
-  @apply flex flex-wrap p-3 md:p-5 max-md:flex-col;
+  @apply flex flex-wrap p-3 max-md:flex-col md:p-5;
   &__header {
     @apply w-full flex-grow;
   }
   &__image {
-    @apply sm:w-1/2 lg:w-3/5 w-full px-3;
+    @apply w-full px-3 sm:w-1/2 lg:w-3/5;
   }
   &__content {
-    @apply sm:w-1/2 lg:w-2/5 w-full pt-5 md:px-2;
+    @apply w-full pt-5 sm:w-1/2 md:px-2 lg:w-2/5;
     .content {
       @apply sticky top-24;
       &__header {

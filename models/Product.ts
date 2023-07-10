@@ -4,6 +4,7 @@ import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
 import { ProductLinks } from './ProductLinks'
 import { Model } from './Model'
+import { ProductBrand } from './ProductBrand'
 
 export interface ProductResult {
   hits: Product[]
@@ -65,6 +66,7 @@ export class Product extends Model {
   images: ProductImageSet[] | null
   variants: Product[] | null = null
   links: ProductLinks | null = null
+  brand: ProductBrand | null = null
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
@@ -99,6 +101,7 @@ export class Product extends Model {
       })
     }
     this.links = new ProductLinks(data?.links)
+    this.brand = new ProductBrand(data?.brand)
     this.variants = []
     if (Array.isArray(data?.variants)) {
       this.variants = data?.variants.map((variant: any) => {
