@@ -1,6 +1,6 @@
 <template>
   <template v-if="slider">
-    <div class="image-slider">
+    <div class="image-slider" ref="slider">
       <div
         v-for="(image, index) in images"
         :id="'item' + index"
@@ -15,9 +15,10 @@
       <a
         v-for="(image, index) in images"
         :key="'img-indicator' + index"
-        :href="'#item' + index"
         class="slider-indicators__items"
         :class="'w-1/' + images.length"
+        @mouseover="slideCarousel(index + 1)"
+        @click="slideCarousel(index + 1)"
       >
         <img :src="image.medium?.src" class="items-image" />
       </a>
@@ -97,6 +98,18 @@ export default {
     items?.forEach((item) => {
       observer.observe(item)
     })
+  },
+  methods: {
+    slideCarousel(goToImageNumber: number) {
+      let carouselContainer: HTMLElement | null = this.$refs.slider 
+      let carouselWidth = carouselContainer?.clientWidth
+
+      let targetImage = goToImageNumber - 1;
+
+      let targetXPixel = carouselWidth * targetImage + 1
+
+      carouselContainer?.scrollTo(targetXPixel, 0)
+    }
   }
 }
 </script>
@@ -113,7 +126,7 @@ export default {
 .slider-indicators {
   @apply hidden w-full justify-start gap-2 py-2 lg:flex;
   &__items {
-    @apply h-36 w-1/6 rounded bg-gray-50;
+    @apply h-36 w-1/6 rounded bg-gray-50 cursor-pointer hover:bg-gray-200;
     .items-image {
       @apply mx-auto h-36 object-fill p-2;
     }
