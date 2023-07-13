@@ -8,7 +8,7 @@
       { label: 'Name', value: 'name' }
     ]"
   >
-    <!-- <template #filters>
+    <template #filters>
       <search-terms-aggregation
         name="categories"
         nested-path="categories"
@@ -23,7 +23,7 @@
         title="Color"
         url-param="name"
       ></search-terms-aggregation>
-    </template> -->
+    </template>
     <template #header>
       <div class="pt-4">
         <slot name="header"></slot>

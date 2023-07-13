@@ -35,11 +35,6 @@
             </div>
           </slot>
         </div>
-        <div class="content__brand">
-          <slot name="brand">
-            <product-brand :product="variant" />
-          </slot>
-        </div>
         <div class="content__ref">
           <!-- @slot Ref content -->
           <slot name="ref">
@@ -77,12 +72,19 @@
             <product-price
               v-if="variant.price !== null"
               :price="variant.price"
-              class="py-4 text-right"
+              class="pt-4 text-right"
             >
               <template #price>
                 <slot name="price" :price="variant.price"></slot>
               </template>
             </product-price>
+          </slot>
+          <div class="content__stock">
+            <slot name="stock">
+              <ProductStock :stock="variant.stock" :product="variant" />
+            </slot>
+          </div>
+          <slot name="cart-btn">
             <client-only>
               <product-cart
                 v-if="variant !== null"
@@ -141,7 +143,7 @@ import ProductLinksVue from './ProductLinks.vue'
 import ImageListVue from './ImageList.vue'
 import { useHistoryStore } from '~/stores/history'
 import ProductHistory from './ProductHistory.vue'
-import ProductBrand from './ProductBrand.vue'
+import ProductStock from './ProductStock.vue'
 
 export default {
   components: {
@@ -153,7 +155,7 @@ export default {
     'product-cart': ProductCartVue,
     'product-links': ProductLinksVue,
     'product-history': ProductHistory,
-    'product-brand': ProductBrand
+    'product-stock': ProductStock
   },
   props: {
     product: {
@@ -220,6 +222,9 @@ export default {
         .variants {
           @apply flex flex-wrap;
         }
+      }
+      &__price {
+        @apply text-right;
       }
     }
     .variants {

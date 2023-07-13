@@ -2,10 +2,10 @@
   <div class="product-brand">
     <div class="product-brand__name">
       <slot name="brand">
-        <NuxtLink v-if="brandLink" :to="brandLink">
-          <span>{{ productBrandName }}</span>
+        <NuxtLink v-if="brandSlug" :to="brandSlug">
+          <span>{{ brandName }}</span>
         </NuxtLink>
-        <span v-else>{{ productBrandName }}</span>
+        <span v-else>{{ brandName }}</span>
       </slot>
     </div>
   </div>
@@ -21,16 +21,10 @@ export default defineNuxtComponent({
       required: true
     }
   },
-  computed: {
-    productBrandName(): string {
-      const brand = this.product?.brand
-      const brandName = brand?.brand.name || ''
-      return brandName
-    },
-    brandLink(): string {
-      const brand = this.product?.brand
-      const brandSlug = brand?.brand.description || ''
-      return brandSlug
+  setup(props) {
+    return {
+      brandName: props.product.brand?.brand?.name,
+      brandSlug: props.product.brand?.brand?.description
     }
   }
 })
