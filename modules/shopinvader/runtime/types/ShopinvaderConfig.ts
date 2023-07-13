@@ -1,3 +1,6 @@
+import { AuthAPIConfig } from '~/services/auth/AuthAPI'
+import { AuthOIDCConfig } from '~/services/auth/AuthOIDC'
+
 export interface ShopinvaderProxyConfig {
   url: string
   auth?: string
@@ -19,7 +22,13 @@ export interface ShopinvaderElasticConfig {
   }
 }
 
+export interface ShopinvaderAuthConfig {
+  type: 'oidc' | 'api'
+  profile: AuthOIDCConfig | AuthAPIConfig
+}
+
 export interface ShopinvaderConfig {
+  auth?: ShopinvaderAuthConfig
   erp: ShopinvaderErpConfig
   elasticsearch: ShopinvaderElasticConfig
   endpoint: string

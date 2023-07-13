@@ -3,8 +3,49 @@ import { ErpFetch } from '@shopinvader/fetch'
 import { Service } from './Service'
 import { User } from '../models'
 import nuxtStorage from 'nuxt-storage'
+import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
 
-export class AuthService extends Service {
+export abstract class AuthService extends Service {
+  provider: ErpFetch | null = null
+  callbacksUserLoaded: any[] = []
+  callbacksUserUnLoaded: any[] = []
+  abstract signinRedirect(): Promise<any>
+  abstract signoutRedirect(): Promise<any>
+  constructor(provider: ErpFetch) {
+    super()
+    this.provider = provider
+  }
+  getUser(): Ref<User | null> {
+    const store = this.store()
+    const { user } = storeToRefs(store)
+    return user || null
+  }
+  setUser(data: any) {
+    const store = this.store()
+    const user: User | null = data ? new User(data) : null
+    store.setUser(user)
+    this.setSession(user !== null)
+    if (user !== null) {
+      for (const callback of this.callbacksUserLoaded) {
+        if (typeof callback == 'function') {
+          callback(user)
+        }
+      }
+    } else {
+      for (const callback of this.callbacksUserUnLoaded) {
+        if (typeof callback == 'function') {
+          callback(user)
+        }
+      }
+    }
+  }
+  setSession(value: boolean) {
+    localStorage.setData('auth_user', value, 10, 'd')
+  }
+}
+
+
+export class AuthService2 extends Service {
   provider: ErpFetch | null = null
   callbacksUserLoaded: any[] = []
   callbacksUserUnLoaded: any[] = []

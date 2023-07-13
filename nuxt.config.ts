@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+
 const dir = dirname(fileURLToPath(import.meta.url))
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -18,6 +20,17 @@ export default defineNuxtConfig({
           key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || "",
           url: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_URL || "",
           default_role: "default",
+        },
+        auth: {
+          type: 'oidc',
+          profile: {
+            authority: 'https://keycloak.demo14.shopinvader.com/auth/realms/master/',
+            clientId: 'demo14.shopinvader.com',
+            responseType: 'code',
+            scope: 'openid email',
+            redirectUri: '/account',
+            postLogoutRedirectUri: '/'
+          }
         },
         endpoint: "shopinvader",
         elasticsearch: {
