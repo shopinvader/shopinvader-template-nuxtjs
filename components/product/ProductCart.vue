@@ -1,34 +1,83 @@
 <template>
   <div v-if="product !== null" class="product-cart">
-    <button
-      v-if="line == null"
-      type="button"
-      class="product-cart__add"
-      @click="addToCart"
-    >
-      <div class="add-icon">
-        <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
-        <Icon icon="ic:outline-plus" class="add-icon__plus" />
+    <slot name="input" :product="product" :qty="qty">
+      <input-qty class="product-cart__input" @change="updateQty"></input-qty>
+    </slot>
+    <slot name="add" :product="product" :qty="qty">
+      <button type="button" class="product-cart__add" @click="addToCart">
+        <div class="add-icon">
+          <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
+          <Icon icon="ic:outline-plus" class="add-icon__plus" />
+        </div>
+        <span class="add-label">{{ $t('product.cart.add') }} </span>
+      </button>
+    </slot>
+    <slot name="count" :count="line?.qty">
+      <div v-if="line" class="product-cart__count">
+        {{ $t('cart.line.count', {count:line?.qty || 0}) }}
+        <nuxt-link
+          class="text-secondary underline"
+          :to="localePath('cart')"
+        >
+          {{ $t('cart.link') }}
+        </nuxt-link>
       </div>
-      <span class="add-label">{{ $t('product.cart.add') }} </span>
-    </button>
-
-    <cart-line-qty v-else :line="line"></cart-line-qty>
+    </slot>
   </div>
-  <aside-drawer :open="cartDrowerOpened" @close="closeDrawer">
+  <aside-drawer :open="cartDrowerOpened" direction="right" @close="closeDrawer">
     <template #header>
       <div class="w-full text-2xl">
         {{ $t('cart.title') }}
       </div>
     </template>
     <template #content>
-      <transition name="cart-confirm">
-        <div v-if="cartModified" class="cart-confirmation">
-          <icon icon="mdi:check" class="mr-2" />
-          {{ $t('cart.confirmation') }}
-        </div>
-      </transition>
-      <cart @update-cart="test"> </cart>
+      <div class="cart-confirmation">
+        <slot name="addedtocart-content" :line="line">
+          <div class="cart-confirmation__title">
+            <icon icon="mdi:check" class="icon" />
+            {{ $t('cart.confirmation') }}
+            <div class="flex-1 text-right">
+              <nuxt-link
+                class="btn btn-secondary btn-sm"
+                :to="localePath('cart')"
+              >
+                <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
+                {{ $t('cart.checkout') }}
+              </nuxt-link>
+            </div>
+          </div>
+          <cart-line
+            v-if="line" class="cart-confirmation__line"
+            :line="line"
+            :readonly="true"
+          >
+          </cart-line>
+          <product-links
+            v-if="product"
+            class="cart-confirmation__links"
+            :links="product.links?.crossLink || []"
+          >
+            <template #head>
+              <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
+            </template>
+          </product-links>
+        </slot>
+      </div>
+    </template>
+    <template #footer>
+      <slot name="addedtocart-footer" :line="line">
+        <button
+          :to="localePath('cart')"
+          type="button"
+          class="btn btn-outline" @click="closeDrawer"
+        >
+          {{ $t('cart.continue') }}
+        </button>
+        <nuxt-link :to="localePath('cart')" class="btn btn-secondary">
+          <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
+          {{ $t('cart.checkout') }}
+        </nuxt-link>
+      </slot>
     </template>
   </aside-drawer>
 </template>
@@ -36,26 +85,22 @@
 import { PropType } from 'vue'
 import { CartLine } from '~~/models'
 import { Product } from '~~/models/Product'
-import CartLineQtyVue from '../cart/CartLineQty.vue'
-import AsideDrawer from '~/components/global/AsideDrawer.vue'
-import Cart from '~/components/cart/Cart.vue'
 export default {
   name: 'ProductCart',
-  components: {
-    'cart-line-qty': CartLineQtyVue,
-    'aside-drawer': AsideDrawer,
-    cart: Cart
-  },
   props: {
     product: {
       type: Object as PropType<Product>,
       required: true
     }
   },
+  emits: {
+    /**  Emit when the quantity is updated */
+    update: (qty: number) => true
+  },
   data() {
     return {
       cartDrowerOpened: false as boolean,
-      cartModified: false as boolean
+      qty: 1 as number
     }
   },
   computed: {
@@ -74,34 +119,29 @@ export default {
       return cart?.value?.lines as CartLine[]
     }
   },
-  watch: {
-    lines(): void {
-      this.cartModified = true
-      setTimeout(() => {
-        this.cartModified = false
-      }, 1000)
-    }
-  },
   methods: {
     addToCart() {
       const cartService = useShopinvaderService('cart')
       if (cartService && this.product?.id !== null) {
-        cartService.addItem(this.product.id, 1)
-        this.cartDrowerOpened = true
+        cartService.addItem(this.product.id, this.qty)
+        if(!this.line) {
+          this.cartDrowerOpened = true
+        }
       }
     },
     closeDrawer(): void {
       this.cartDrowerOpened = false
     },
-    test() {
-      console.log('updatedcart')
+    updateQty(qty: number) {
+      this.qty = qty
+      this.$emit('update', qty)
     }
   }
 }
 </script>
 <style lang="scss">
 .product-cart {
-  @apply flex flex-row items-center justify-center;
+  @apply flex flex-row flex-wrap items-center justify-end gap-2;
   &__add {
     @apply btn-secondary btn px-14  text-white hover:btn-secondary hover:shadow-2xl;
     .add-label {
@@ -116,52 +156,31 @@ export default {
       }
     }
   }
+  &__count {
+    @apply text-sm text-right flex-grow w-full flex justify-end gap-2;
+  }
 }
-
 .aside-drawer {
-  @apply fixed left-auto right-0 top-0 z-50 flex items-start justify-start;
-  &-enter-to,
-  &-leave-from {
-    opacity: 1;
-
-    .aside-drawer__side {
-      right: 0;
+  .cart-confirmation {
+    &__title {
+      @apply flex w-full items-center p-2 align-middle text-2xl gap-3;
+      .icon {
+        @apply text-success;
+      }
     }
-  }
-
-  &-enter-from,
-  &-leave-to {
-    opacity: 0;
-
-    .aside-drawer__side {
-      right: -100%;
+    &__line {
+      @apply border-l-0 border-r-0;
     }
-  }
-  .side__header {
-    @apply w-full 
-  }
-  .side__content {
-    @apply h-full;
-    .cart-confirmation {
-      @apply flex w-full  items-center bg-gray-200 p-2 align-middle text-success;
+    &__links {
+      .product-links__items {
+        @apply grid grid-cols-2 md:grid-cols-3 gap-1;
+        .items__product {
+          .product-hit {
+            @apply card bg-base-100 border;
+          }
+        }
+      }
     }
-    .cart-confirm-enter-active,
-    .cart-confirm-leave-active {
-      @apply transition-all duration-200 ease-in-out;
-    }
-    .cart-confirm-enter-from,
-    .cart-confirm-leave-to {
-      @apply bg-gray-100;
-    }
-  }
-  &__side {
-    @apply absolute left-auto right-0 h-screen w-10/12 max-w-screen-sm overflow-y-auto bg-white shadow-xl ;
-  }
-  .side__footer {
-    @apply hidden;
-  }
-  .cart {
-    @apply flex flex-col place-content-between justify-between w-full;
   }
 }
 </style>
