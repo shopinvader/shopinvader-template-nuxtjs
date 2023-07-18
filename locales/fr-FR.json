@@ -43,7 +43,11 @@
     "history": {
       "title": "Produits déjà consultés",
       "clear": "Effacer"
-
+    },
+    "stock": {
+      "available": "En stock",
+      "ending_soon": "Bientôt épuisé",
+      "not_available": "Indisponible"
     }
 
   },

@@ -35,6 +35,12 @@
         <div class="body__desc">
           <slot name="desc" :product="variant"></slot>
         </div>
+        <div class="body__stock">
+          <slot name="product-stock">
+            <product-stock v-if="variant.stock !== null" :stock="variant?.stock">
+            </product-stock>
+          </slot>
+        </div>
         <div class="body__price">
           <product-price v-if="variant.price !== null" :price="variant.price">
             <template #price>
@@ -42,12 +48,7 @@
             </template>
           </product-price>
         </div>
-        <div class="body__stock">
-          <slot name="product-stock">
-            <product-stock v-if="variant.stock !== null" :stock="variant.stock">
-            </product-stock>
-          </slot>
-        </div>       
+
         <div v-if="!readonly" class="body__actions">
           <slot name="actions" :product="variant"> </slot>
         </div>
@@ -114,9 +115,8 @@ export default {
 
   methods: {
     linkToProduct() {
-      console.log('test', this.product.urlKey)
       this.$router.push({
-        path: this.product.urlKey + ''
+        path: '/' + this.product.urlKey
       })
     },
     changeVariant(variant: Product) {
