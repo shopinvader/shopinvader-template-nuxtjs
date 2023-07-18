@@ -48,7 +48,9 @@
 
   },
   "cart": {
+    "link": "Voir mon panier",
     "title": "Panier",
+    "checkout": "Commander",
     "line": {
       "quantity": "Quantité",
       "total": "Total",

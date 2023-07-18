@@ -35,17 +35,25 @@ export default defineNuxtComponent({
       required: true
     }
   },
+  data() {
+    return {
+      productLinks: [] as Product[],
+      ids: [] as number[]
+    }
+  },
   async setup(props) {
-    const productService = useShopinvaderService('products')
     const ids: number[] = props?.links?.map((item) => item.id) || []
-    let productLinks: Product[] = []
-    if (ids.length === 0) {
-      productLinks = (await productService?.getByIds(ids))?.hits || []
+    return {
+      ids
+    }
+  },
+  async mounted() {
+    const productService = useShopinvaderService('products')
+    if (this.ids?.length > 0) {
+      this.productLinks = (await productService?.getByIds(this.ids))?.hits || []
     }
 
-    return {
-      productLinks
-    }
+
   }
 })
 </script>
@@ -57,14 +65,10 @@ export default defineNuxtComponent({
   }
 
   &__items {
-    display: flex;
-    flex-wrap: wrap;
-
+    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  xl:grid-cols-5 gap-4;
     .items__product {
-      @apply w-full p-4 md:w-1/3 lg:w-1/4;
-
       .product-hit {
-        @apply card bg-base-100 shadow-xl;
+        @apply card bg-base-100 border;
       }
     }
   }

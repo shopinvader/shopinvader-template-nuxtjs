@@ -1,34 +1,106 @@
 <template>
   <div v-if="product !== null" class="product-cart">
-    <button
-      v-if="line == null"
-      type="button"
-      class="product-cart__add"
-      @click="addToCart"
-    >
-      <div class="add-icon">
-        <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
-        <Icon icon="ic:outline-plus" class="add-icon__plus" />
+    <slot name="input" :product="product" :qty="qty">
+      <input-qty class="product-cart__input" @change="updateQty"></input-qty>
+    </slot>
+    <slot name="add" :product="product" :qty="qty">
+      <button type="button" class="product-cart__add" @click="addToCart">
+        <div class="add-icon">
+          <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
+          <Icon icon="ic:outline-plus" class="add-icon__plus" />
+        </div>
+        <span class="add-label">{{ $t('product.cart.add') }} </span>
+      </button>
+    </slot>
+    <slot name="count" :count="line?.qty">
+      <div v-if="line" class="product-cart__count">
+        {{ $t('cart.line.count', {count:line?.qty || 0}) }}
+        <nuxt-link
+          class="text-secondary underline"
+          :to="localePath('cart')"
+        >
+          {{ $t('cart.link') }}
+        </nuxt-link>
       </div>
-      <span class="add-label">{{ $t('product.cart.add') }}</span>
-    </button>
-    <cart-line-qty v-else :line="line"></cart-line-qty>
+    </slot>
   </div>
+  <aside-drawer :open="cartDrowerOpened" direction="right" @close="closeDrawer">
+    <template #header>
+      <div class="w-full text-2xl">
+        {{ $t('cart.title') }}
+      </div>
+    </template>
+    <template #content>
+      <div class="cart-confirmation">
+        <slot name="addedtocart-content" :line="line">
+          <div class="cart-confirmation__title">
+            <icon icon="mdi:check" class="icon" />
+            {{ $t('cart.confirmation') }}
+            <div class="flex-1 text-right">
+              <nuxt-link
+                class="btn btn-secondary btn-sm"
+                :to="localePath('cart')"
+              >
+                <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
+                {{ $t('cart.checkout') }}
+              </nuxt-link>
+            </div>
+          </div>
+          <cart-line
+            v-if="line" class="cart-confirmation__line"
+            :line="line"
+            :readonly="true"
+          >
+          </cart-line>
+          <product-links
+            v-if="product"
+            class="cart-confirmation__links"
+            :links="product.links?.crossLink || []"
+          >
+            <template #head>
+              <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
+            </template>
+          </product-links>
+        </slot>
+      </div>
+    </template>
+    <template #footer>
+      <slot name="addedtocart-footer" :line="line">
+        <button
+          :to="localePath('cart')"
+          type="button"
+          class="btn btn-outline" @click="closeDrawer"
+        >
+          {{ $t('cart.continue') }}
+        </button>
+        <nuxt-link :to="localePath('cart')" class="btn btn-secondary">
+          <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
+          {{ $t('cart.checkout') }}
+        </nuxt-link>
+      </slot>
+    </template>
+  </aside-drawer>
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
 import { CartLine } from '~~/models'
 import { Product } from '~~/models/Product'
-import CartLineQtyVue from '../cart/CartLineQty.vue'
 export default {
   name: 'ProductCart',
-  components: {
-    'cart-line-qty': CartLineQtyVue
-  },
   props: {
     product: {
       type: Object as PropType<Product>,
       required: true
+    }
+  },
+  emits: {
+    /**  Emit when the quantity is updated */
+    update: (qty: number) => true
+  },
+  data() {
+    return {
+      cartDrowerOpened: false as boolean,
+      qty: 1 as number
     }
   },
   computed: {
@@ -40,21 +112,36 @@ export default {
           (line: CartLine) => line.productId === this.product.id
         ) || null
       )
+    },
+    lines(): CartLine[] {
+      const cartService = useShopinvaderService('cart')
+      const cart = cartService.getCart()
+      return cart?.value?.lines as CartLine[]
     }
   },
   methods: {
     addToCart() {
       const cartService = useShopinvaderService('cart')
       if (cartService && this.product?.id !== null) {
-        cartService.addItem(this.product.id, 1)
+        cartService.addItem(this.product.id, this.qty)
+        if(!this.line) {
+          this.cartDrowerOpened = true
+        }
       }
+    },
+    closeDrawer(): void {
+      this.cartDrowerOpened = false
+    },
+    updateQty(qty: number) {
+      this.qty = qty
+      this.$emit('update', qty)
     }
   }
 }
 </script>
 <style lang="scss">
 .product-cart {
-  @apply flex flex-row items-center justify-center;
+  @apply flex flex-row flex-wrap items-center justify-end gap-2;
   &__add {
     @apply btn-secondary btn px-14  text-white hover:btn-secondary hover:shadow-2xl;
     .add-label {
@@ -66,6 +153,32 @@ export default {
       &__plus {
         @apply absolute -bottom-1 right-1;
         background-color: inherit;
+      }
+    }
+  }
+  &__count {
+    @apply text-sm text-right flex-grow w-full flex justify-end gap-2;
+  }
+}
+.aside-drawer {
+  .cart-confirmation {
+    &__title {
+      @apply flex w-full items-center p-2 align-middle text-2xl gap-3;
+      .icon {
+        @apply text-success;
+      }
+    }
+    &__line {
+      @apply border-l-0 border-r-0;
+    }
+    &__links {
+      .product-links__items {
+        @apply grid grid-cols-2 md:grid-cols-3 gap-1;
+        .items__product {
+          .product-hit {
+            @apply card bg-base-100 border;
+          }
+        }
       }
     }
   }

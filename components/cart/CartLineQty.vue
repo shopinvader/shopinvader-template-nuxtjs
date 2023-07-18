@@ -5,21 +5,8 @@
 		@binding {number} qty quantity of the cart line
 		@binding {string} onChange callback function to fire quantity change save
 	  -->
-    <slot name="selector" v-bind="{ qty }" :onChange="inputValue">
-      <div class="input-group">
-        <div class="cartline-qty__btn min" @click="decrQuantity()">-</div>
-        <input
-          ref="input"
-          v-model.number="qty"
-          type="number"
-          class="cartline-qty__input"
-          @change="inputValue"
-          @click="selectContent"
-          @keydown="keydown"
-          @keypress="isNumber($event)"
-        />
-        <div class="cartline-qty__btn max" @click="incrQuantity()">+</div>
-      </div>
+    <slot name="selector" v-bind="{ qty }" :on-change="updateQty">
+      <input-qty :qty="qty" @change="updateQty"></input-qty>
     </slot>
   </div>
 </template>
@@ -35,8 +22,9 @@ export default {
   props: {
     /**  Cart's line */
     line: {
-      required: true,
-      type: Object as PropType<CartLine>
+      required: false,
+      type: Object as PropType<CartLine>,
+      default: () => null
     }
   },
   emits: {
@@ -45,7 +33,7 @@ export default {
   },
   data() {
     const timer: any = null
-    const qty = 0
+    const qty = 1
 
     return {
       disabledArrow: false as boolean,
@@ -90,63 +78,17 @@ export default {
         }
       }
     },
-    incrQuantity(): void {
-      this.applyDeltaOnItem(1)
-    },
-    decrQuantity(): void {
-      if (this.qty > 0) {
-        this.applyDeltaOnItem(-1)
-      }
-    },
-    changeQuantity(): void {
-      if (!isNaN(this.qty)) {
-        if (this.qty < 0) {
-          this.qty = 1
-        }
-        this.updateItem(this.qty)
-      }
-    },
-    async applyDeltaOnItem(delta: number): Promise<void> {
+
+    async updateQty(qty: number): Promise<void> {
+      const delta = qty - this.qty || 0
       const cartService = useShopinvaderService('cart')
       if (cartService && this.line?.productId) {
         await cartService.applyDeltaOnItem(this.line.productId, delta)
       }
       this.$emit('update', this.qty + delta)
-    },
-    async updateItem(value: number): Promise<void> {
-      const cartService = useShopinvaderService('cart')
-      if (cartService && this.line?.productId) {
-        await cartService.updateItem(this.line.productId, value, this.line)
-      }
-      this.$emit('update', value)
-    },
-    inputValue(): void {
-      this.changeQuantity()
     }
   }
 }
 </script>
 <style lang="scss">
-.cart-line-qty {
-  @apply w-52 rounded-full border-2 border-primary;
-  .cartline-qty {
-    @apply form-control mx-3 w-10 max-w-fit;
-    &__btn {
-      @apply btn-circle btn border-4 border-transparent bg-inherit text-3xl text-primary;
-      &.max {
-        @apply text-4xl;
-      }
-      &.min {
-        @apply text-xl;
-      }
-      &:hover {
-        @apply border-primary bg-secondary;
-      }
-    }
-    &__input {
-      @apply input w-full border-0 bg-inherit text-center text-lg font-bold text-primary;
-      appearance: textfield;
-    }
-  }
-}
 </style>

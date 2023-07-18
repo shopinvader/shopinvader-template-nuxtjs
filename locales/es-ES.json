@@ -46,6 +46,8 @@
     }
   },
   "cart": {
+    "link": "Carrito",
+    "checkout": "Finalizar compra",
     "title": "Carrito de la compra",
     "line": {
       "quantity": "Cantidad",

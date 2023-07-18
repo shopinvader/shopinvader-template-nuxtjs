@@ -46,11 +46,14 @@
     }
   },
   "cart": {
+    "link": "View cart",
     "pending": {
       "title": "Pending cart actions",
       "checkout": "Your cart is offline, some transactions are pending which prevent further actions at the moment. Thank you for your patience.",
       "back": "Back"
     },
+    "confirmation": "Your cart has been updated",
+    "checkout": "Checkout",
     "back": "Back",
     "edit": "Edit",
     "title": "Shopping Cart",
@@ -66,7 +69,7 @@
       "total": "Total",
       "delete": "Remove Item",
       "add": "Add to cart",
-      "count":"{count} product(s) in your cart",
+      "count": "{count} product(s) in your cart",
       "view": "View cart",
       "hide": "Hide cart"
     },
