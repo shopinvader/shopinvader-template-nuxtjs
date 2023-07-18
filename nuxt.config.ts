@@ -40,7 +40,6 @@ export default defineNuxtConfig({
   },
 
   modules: [
-    '@nuxt/image',
     '@nuxtjs/tailwindcss',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
