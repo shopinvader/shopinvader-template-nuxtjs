@@ -62,14 +62,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
   addRouteMiddleware(
     async (to) => {
-      if (to?.meta?.auth) {
-        const user = services.auth.getUser()?.value || null
-        if (!user) {
-          return '/'
-        }
-      }
-      else if (!router.hasRoute(to.path)) {
-        const path: string = to.path.substr(1)
+      if (!router.hasRoute(to.path)) {
+        const path: string = to.params?.slug?.[0] || to.path.substr(1)
         const { data } = await useAsyncData('entity', async () => {
           const entity = await services.catalog.getEntityByURLKey(path)
           return entity
