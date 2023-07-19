@@ -2,7 +2,7 @@
   <div v-if="product !== null" class="product-cart">
     <slot name="input" :product="product" :qty="qty">
       <input-qty
-        v-if="!disabled"
+        v-if="!disabledAddToCart"
         class="product-cart__input"
         @change="updateQty"
       ></input-qty>
@@ -11,10 +11,10 @@
       <button
         type="button"
         class="product-cart__add"
-        :disabled="disabled"
+        :disabled="disabledAddToCart"
         @click="addToCart"
       >
-        <div class="add-icon">
+        <div v-if="!disabledAddToCart" class="add-icon">
           <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
           <Icon icon="ic:outline-plus" class="add-icon__plus" />
         </div>
@@ -22,7 +22,7 @@
       </button>
     </slot>
     <slot name="count" :count="line?.qty">
-      <div v-if="line && !disabled" class="product-cart__count">
+      <div v-if="line && !disabledAddToCart" class="product-cart__count">
         {{ $t('cart.line.count', { count: line?.qty || 0 }) }}
         <nuxt-link class="text-secondary underline" :to="localePath('cart')">
           {{ $t('cart.link') }}
@@ -102,6 +102,10 @@ export default {
     },
     disableWhenNoStock: {
       type: Boolean,
+      default: true
+    },
+    disabled: {
+      type: Boolean,
       default: false
     }
   },
@@ -125,6 +129,9 @@ export default {
         ) || null
       )
     },
+    stockQty():number {
+      return this.product?.stock?.global?.qty || 0
+    },
     lines(): CartLine[] {
       const cartService = useShopinvaderService('cart')
       const cart = cartService.getCart()
@@ -133,16 +140,19 @@ export default {
     /**
      * Check if the product has stock
      */
-    disabled(): boolean {
+    disabledAddToCart(): boolean {
       if (!this.disableWhenNoStock) {
+        return false
+      }
+      if (this.disabled) {
         return true
       }
-      return this.product.stock <= 0
+      return this.stockQty <= 0
     }
   },
   methods: {
     addToCart() {
-      if (this.disabled) {
+      if (this.disabledAddToCart) {
         return false
       }
       const cartService = useShopinvaderService('cart')
@@ -157,7 +167,7 @@ export default {
       this.cartDrowerOpened = false
     },
     updateQty(qty: number) {
-      if (this.disabled) {
+      if (this.disabledAddToCart) {
         return false
       }
       this.qty = qty
@@ -170,7 +180,7 @@ export default {
 .product-cart {
   @apply flex flex-row flex-wrap items-center justify-end gap-2;
   &__add {
-    @apply btn-secondary btn px-14  text-white hover:btn-secondary hover:shadow-2xl;
+    @apply btn-primary btn px-14  text-white hover:btn-primary hover:shadow-2xl;
     .add-label {
       @apply ml-2;
     }

@@ -45,11 +45,14 @@
       "clear": "Effacer"
     },
     "stock": {
+      "resupplying": "Réapprovisionnement en cours",
       "available": "En stock",
       "ending_soon": "Bientôt épuisé",
       "not_available": "Indisponible"
+    },
+    "discount": {
+      "tag": "SOLDES - { discount }%"
     }
-
   },
   "cart": {
     "link": "Voir mon panier",
@@ -58,6 +61,7 @@
     "line": {
       "quantity": "Quantité",
       "total": "Total",
+      "count":"{count} article(s) dans mon panier",
       "delete": "Supprimer"
     },
     "empty": "Votre panier est vide",

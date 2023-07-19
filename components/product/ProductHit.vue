@@ -5,6 +5,11 @@
     :class="{ 'product-hit--inline': inline }"
   >
     <slot name="header"></slot>
+    <div class="product-hit__tag">
+      <slot name="tags">
+        <product-tags v-if="variant" :product="variant" />
+      </slot>
+    </div>
     <div class="product-hit__image">
       <slot name="images" :images="variant.images">
         <product-image
@@ -127,13 +132,15 @@ export default {
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card flex h-full flex-col border-b p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3;
+  @apply card flex h-full flex-col border-b p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3 relative;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
-  position: inherit;
+  &__tag {
+    @apply absolute top-2 left-1 z-10;
+  }
   &__image {
-    @apply aspect-square max-h-full cursor-pointer overflow-hidden;
+    @apply aspect-square relative max-h-full cursor-pointer overflow-hidden;
     .product-image {
       @apply h-full w-full rounded-md py-2;
     }

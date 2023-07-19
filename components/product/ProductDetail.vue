@@ -14,6 +14,11 @@
         </div>
       </slot>
     </div>
+    <div class="product-detail__tag">
+      <slot name="tags">
+        <product-tags v-if="variant" :product="variant" />
+      </slot>
+    </div>
     <div class="product-detail__image">
       <!-- @slot Image content -->
       <slot name="image">
@@ -85,7 +90,9 @@
                 <slot name="price" :price="variant.price"></slot>
               </template>
             </product-price>
-
+          </slot>
+          <!-- @slot Price content -->
+          <slot name="add-to-cart">
             <client-only>
               <product-cart
                 v-if="variant !== null"
@@ -196,15 +203,18 @@ export default {
 </script>
 <style lang="scss">
 .product-detail {
-  @apply flex flex-wrap p-3 max-md:flex-col md:p-5;
+  @apply flex flex-wrap p-3 max-md:flex-col md:p-5 relative;
+  &__tag {
+    @apply absolute left-10 top-16;
+  }
   &__header {
     @apply w-full flex-grow;
   }
   &__image {
-    @apply w-full px-3 sm:w-1/2 lg:w-3/5;
+    @apply w-full px-3 md:w-1/2 lg:w-3/5;
   }
   &__content {
-    @apply w-full pt-5 sm:w-1/2 md:px-2 lg:w-2/5;
+    @apply w-full pt-5 md:w-1/2 md:px-2 lg:w-2/5;
     .content {
       @apply sticky top-24;
       &__header {

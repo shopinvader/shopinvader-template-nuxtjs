@@ -4,4 +4,5 @@ export interface ProductStock {
 
 export type StockQtyResult = {
   qty: number
+  state?: string | null
 }

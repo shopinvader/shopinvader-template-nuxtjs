@@ -45,9 +45,13 @@
       "clear": "Borrar"
     },
     "stock": {
+      "resupplying": "Reaprovisionamiento en curso",
       "available": "En stock",
       "ending_soon": "Últimas unidades",
       "not_available": "No disponible"
+    },
+    "discount": {
+      "tag": "{discount}% de descuento"
     }
   },
   "cart": {
@@ -56,7 +60,9 @@
     "title": "Carrito de la compra",
     "line": {
       "quantity": "Cantidad",
-      "total": "Total"
+      "total": "Total",
+      "count":"{count} producto(s) en tu carrito",
+      "delete": "Eliminar"
     },
     "empty": "Tu carrito está vacío",
     "total": {

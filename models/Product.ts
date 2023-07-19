@@ -67,7 +67,6 @@ export class Product extends Model {
   variants: Product[] | null = null
   links: ProductLinks | null = null
   stock: ProductStock | null
-
   constructor(data: any) {
     super(data)
     this.id = data?.id || null

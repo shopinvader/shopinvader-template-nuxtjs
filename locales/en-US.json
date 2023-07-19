@@ -46,8 +46,12 @@
     },
     "stock": {
       "available": "In stock",
-      "ending_soon": "Item(s) left in stock",
+      "resupplying": "Resupplying",
+      "ending_soon": "in limited stock",
       "not_available": "Item out of stock"
+    },
+    "discount": {
+      "tag": "{discount}% Off"
     }
   },
   "cart": {
