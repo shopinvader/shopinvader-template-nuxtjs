@@ -91,7 +91,8 @@ export default defineNuxtConfig({
     debug: false,
     lazy: true,
     langDir: 'locales',
-    defaultLocale: 'en'
+    defaultLocale: 'fr',
+    strategy: 'prefix_and_default'
   },
   build: {
     transpile: ['@shopinvader/cart']

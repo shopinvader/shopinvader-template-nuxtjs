@@ -1,5 +1,9 @@
 import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
-import { Cart as CartModel, Product, CartLine as CartLineModel } from '~/models'
+import {
+  Cart as CartModel,
+  Product,
+  CartLine as CartLineModel
+} from '../models'
 import { ProductService } from './ProductService'
 import { storeToRefs } from 'pinia'
 import { Service } from './Service'

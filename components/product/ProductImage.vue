@@ -1,10 +1,11 @@
 <template>
   <figure
     v-if="imageSized != null"
-    @click="$emit('click')"
     class="product-image"
+    :class="{ 'product-image--loaded': loaded }"
+    @click="$emit('click')"
   >
-    <img :src="imageSized.src" :alt="imageSized.alt" />
+    <img :src="imageSized.src" :alt="imageSized.alt" ref="image"/>
   </figure>
 </template>
 <script lang="ts">
@@ -29,9 +30,34 @@ export default {
     /** on click event */
     click: null
   },
+  data() {
+    return {
+      loaded: false,
+      observer: null as IntersectionObserver | null
+    }
+  },
   computed: {
     imageSized(): ProductImage | null {
       return this.image?.[this?.size] || null
+    }
+  },
+  mounted() {
+    const imgRef = this.$refs.image as HTMLImageElement
+    if (imgRef != null) {
+      const observer = new IntersectionObserver((entries) => {
+        const entry = entries[0]
+        if (entry.isIntersecting) {
+          this.loaded = true
+          observer.unobserve(entry.target)
+        }
+      })
+      observer.observe(imgRef)
+      this.observer = observer
+    }
+  },
+  beforeUnmount() {
+    if (this.observer) {
+      this.observer.disconnect()
     }
   }
 }
@@ -40,6 +66,12 @@ export default {
 .product-image {
   img {
     @apply h-full w-full object-contain;
+  }
+  &:not(.product-image--loaded) {
+    @apply bg-gray-100 rounded-full animate-pulse rounded-lg;
+    img {
+      @apply opacity-0;
+    }
   }
 }
 </style>

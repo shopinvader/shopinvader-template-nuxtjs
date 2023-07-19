@@ -25,7 +25,7 @@
       <slot name="body" :product="variant">
         <div class="body__title">
           <slot name="title" :product="variant">
-            <nuxt-link :to="localePath({ path: '/' + variant.urlKey })">
+            <nuxt-link :to="linkPath">
               {{ variant?.model?.name }}
             </nuxt-link>
           </slot>
@@ -85,11 +85,14 @@ export default {
     },
     inline: {
       type: Boolean,
-      required: true
+      required: false,
+      default: false
+
     },
     readonly: {
       type: Boolean,
-      required: false
+      required: false,
+      default: false
     }
   },
   setup() {
@@ -106,6 +109,13 @@ export default {
   computed: {
     variants() {
       return this.product.variants
+    },
+    linkPath() {
+      const localePath = useLocalePath()
+      return localePath({
+        path: this.product.urlKey,
+        query: { sku: this.variant?.sku }
+      })
     }
   },
   watch: {
@@ -121,7 +131,7 @@ export default {
   methods: {
     linkToProduct() {
       this.$router.push({
-        path: '/' + this.product.urlKey
+        path: this.linkPath
       })
     },
     changeVariant(variant: Product) {

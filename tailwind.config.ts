@@ -1,10 +1,11 @@
-module.exports = {
-  plugins: [
-    require('daisyui'),
-    require('@tailwindcss/typography')
-  ],
-  logs: false,
-  // daisyUI config (optional)
+import type { Config } from 'tailwindcss'
+import daisyui from 'daisyui'
+export default {
+  content: [],
+  plugins: [daisyui],
+  theme: {
+    extend: {}
+  },
   daisyui: {
     themes: [
       {
@@ -31,4 +32,4 @@ module.exports = {
     prefix: '',
     darkTheme: 'emerald'
   }
-}
+} satisfies Config
