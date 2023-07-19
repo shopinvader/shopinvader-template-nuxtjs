@@ -1,11 +1,20 @@
 <template>
   <div v-if="product !== null" class="product-cart">
     <slot name="input" :product="product" :qty="qty">
-      <input-qty class="product-cart__input" @change="updateQty"></input-qty>
+      <input-qty
+        v-if="!disabledAddToCart"
+        class="product-cart__input"
+        @change="updateQty"
+      ></input-qty>
     </slot>
     <slot name="add" :product="product" :qty="qty">
-      <button type="button" class="product-cart__add" @click="addToCart">
-        <div class="add-icon">
+      <button
+        type="button"
+        class="product-cart__add"
+        :disabled="disabledAddToCart"
+        @click="addToCart"
+      >
+        <div v-if="!disabledAddToCart" class="add-icon">
           <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
           <Icon icon="ic:outline-plus" class="add-icon__plus" />
         </div>
@@ -13,12 +22,9 @@
       </button>
     </slot>
     <slot name="count" :count="line?.qty">
-      <div v-if="line" class="product-cart__count">
-        {{ $t('cart.line.count', {count:line?.qty || 0}) }}
-        <nuxt-link
-          class="text-secondary underline"
-          :to="localePath('cart')"
-        >
+      <div v-if="line && !disabledAddToCart" class="product-cart__count">
+        {{ $t('cart.line.count', { count: line?.qty || 0 }) }}
+        <nuxt-link class="text-secondary underline" :to="localePath('cart')">
           {{ $t('cart.link') }}
         </nuxt-link>
       </div>
@@ -38,7 +44,7 @@
             {{ $t('cart.confirmation') }}
             <div class="flex-1 text-right">
               <nuxt-link
-                class="btn btn-secondary btn-sm"
+                class="btn-secondary btn-sm btn"
                 :to="localePath('cart')"
               >
                 <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
@@ -47,7 +53,8 @@
             </div>
           </div>
           <cart-line
-            v-if="line" class="cart-confirmation__line"
+            v-if="line"
+            class="cart-confirmation__line"
             :line="line"
             :readonly="true"
           >
@@ -69,11 +76,12 @@
         <button
           :to="localePath('cart')"
           type="button"
-          class="btn btn-outline" @click="closeDrawer"
+          class="btn-outline btn"
+          @click="closeDrawer"
         >
           {{ $t('cart.continue') }}
         </button>
-        <nuxt-link :to="localePath('cart')" class="btn btn-secondary">
+        <nuxt-link :to="localePath('cart')" class="btn-secondary btn">
           <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
           {{ $t('cart.checkout') }}
         </nuxt-link>
@@ -91,6 +99,14 @@ export default {
     product: {
       type: Object as PropType<Product>,
       required: true
+    },
+    disableWhenNoStock: {
+      type: Boolean,
+      default: true
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   emits: {
@@ -113,18 +129,36 @@ export default {
         ) || null
       )
     },
+    stockQty():number {
+      return this.product?.stock?.global?.qty || 0
+    },
     lines(): CartLine[] {
       const cartService = useShopinvaderService('cart')
       const cart = cartService.getCart()
       return cart?.value?.lines as CartLine[]
+    },
+    /**
+     * Check if the product has stock
+     */
+    disabledAddToCart(): boolean {
+      if (!this.disableWhenNoStock) {
+        return false
+      }
+      if (this.disabled) {
+        return true
+      }
+      return this.stockQty <= 0
     }
   },
   methods: {
     addToCart() {
+      if (this.disabledAddToCart) {
+        return false
+      }
       const cartService = useShopinvaderService('cart')
       if (cartService && this.product?.id !== null) {
         cartService.addItem(this.product.id, this.qty)
-        if(!this.line) {
+        if (!this.line) {
           this.cartDrowerOpened = true
         }
       }
@@ -133,6 +167,9 @@ export default {
       this.cartDrowerOpened = false
     },
     updateQty(qty: number) {
+      if (this.disabledAddToCart) {
+        return false
+      }
       this.qty = qty
       this.$emit('update', qty)
     }
@@ -143,7 +180,7 @@ export default {
 .product-cart {
   @apply flex flex-row flex-wrap items-center justify-end gap-2;
   &__add {
-    @apply btn-secondary btn px-14  text-white hover:btn-secondary hover:shadow-2xl;
+    @apply btn-primary btn px-14  text-white hover:btn-primary hover:shadow-2xl;
     .add-label {
       @apply ml-2;
     }
@@ -157,13 +194,13 @@ export default {
     }
   }
   &__count {
-    @apply text-sm text-right flex-grow w-full flex justify-end gap-2;
+    @apply flex w-full flex-grow justify-end gap-2 text-right text-sm;
   }
 }
 .aside-drawer {
   .cart-confirmation {
     &__title {
-      @apply flex w-full items-center p-2 align-middle text-2xl gap-3;
+      @apply flex w-full items-center gap-3 p-2 align-middle text-2xl;
       .icon {
         @apply text-success;
       }
@@ -173,10 +210,10 @@ export default {
     }
     &__links {
       .product-links__items {
-        @apply grid grid-cols-2 md:grid-cols-3 gap-1;
+        @apply grid grid-cols-2 gap-1 md:grid-cols-3;
         .items__product {
           .product-hit {
-            @apply card bg-base-100 border;
+            @apply card border bg-base-100;
           }
         }
       }

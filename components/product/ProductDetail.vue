@@ -14,6 +14,11 @@
         </div>
       </slot>
     </div>
+    <div class="product-detail__tag">
+      <slot name="tags">
+        <product-tags v-if="variant" :product="variant" />
+      </slot>
+    </div>
     <div class="product-detail__image">
       <!-- @slot Image content -->
       <slot name="image">
@@ -66,6 +71,13 @@
             </product-variants>
           </slot>
         </div>
+        <div class="content__stock">
+          <!-- @slot Sxtock content -->
+          <slot name="stock">
+            <product-stock v-if="variant.stock !== null" :stock="variant.stock">
+            </product-stock>
+          </slot>
+        </div>
         <div class="content__price">
           <!-- @slot Price content -->
           <slot name="price">
@@ -78,6 +90,9 @@
                 <slot name="price" :price="variant.price"></slot>
               </template>
             </product-price>
+          </slot>
+          <!-- @slot Price content -->
+          <slot name="add-to-cart">
             <client-only>
               <product-cart
                 v-if="variant !== null"
@@ -91,7 +106,10 @@
     <div class="product-detail__description">
       <!-- @slot Description content -->
       <slot name="description">
-        <div v-html="variant.description" class="prose prose-sm max-w-none"></div>
+        <div
+          v-html="variant.description"
+          class="prose prose-sm max-w-none"
+        ></div>
       </slot>
     </div>
     <div class="product-detail__links">
@@ -124,6 +142,7 @@
 import { PropType } from 'vue'
 import { Product } from '~~/models/Product'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
+import ProductStock from '~/components/product/ProductStock.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
 import ProductVariantsSelector from '~~/components/product/ProductVariantsSelector.vue'
 
@@ -143,7 +162,8 @@ export default {
     'product-variants-selector': ProductVariantsSelector,
     'product-cart': ProductCartVue,
     'product-links': ProductLinksVue,
-    'product-history': ProductHistory
+    'product-history': ProductHistory,
+    'product-stock': ProductStock
   },
   props: {
     product: {
@@ -183,15 +203,18 @@ export default {
 </script>
 <style lang="scss">
 .product-detail {
-  @apply flex flex-wrap p-3 md:p-5 max-md:flex-col;
+  @apply flex flex-wrap p-3 max-md:flex-col md:p-5 relative;
+  &__tag {
+    @apply absolute left-10 top-16;
+  }
   &__header {
     @apply w-full flex-grow;
   }
   &__image {
-    @apply sm:w-1/2 lg:w-3/5 w-full px-3;
+    @apply w-full px-3 md:w-1/2 lg:w-3/5;
   }
   &__content {
-    @apply sm:w-1/2 lg:w-2/5 w-full pt-5 md:px-2;
+    @apply w-full pt-5 md:w-1/2 md:px-2 lg:w-2/5;
     .content {
       @apply sticky top-24;
       &__header {

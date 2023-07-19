@@ -3,6 +3,7 @@ import { ProductCategory } from './ProductCategory'
 import { ProductImageSet } from './ProductImageSet'
 import { ProductPrice } from './ProductPrice'
 import { ProductLinks } from './ProductLinks'
+import { ProductStock } from './ProductStock'
 import { Model } from './Model'
 
 export interface ProductResult {
@@ -65,6 +66,7 @@ export class Product extends Model {
   images: ProductImageSet[] | null
   variants: Product[] | null = null
   links: ProductLinks | null = null
+  stock: ProductStock | null
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
@@ -80,6 +82,7 @@ export class Product extends Model {
     this.metaKeywords = data?.meta_keywords || null
     this.metaDescription = data?.meta_description || null
     this.variantCount = data?.variant_count || 0
+    this.stock = data?.stock || null
     this.categories = []
     if (Array.isArray(data?.categories)) {
       this.categories = data?.categories

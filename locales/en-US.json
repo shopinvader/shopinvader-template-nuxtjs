@@ -43,6 +43,15 @@
     "history": {
       "title": "You have recently viewed",
       "clear": "Clear"
+    },
+    "stock": {
+      "available": "In stock",
+      "resupplying": "Resupplying",
+      "ending_soon": "in limited stock",
+      "not_available": "Item out of stock"
+    },
+    "discount": {
+      "tag": "{discount}% Off"
     }
   },
   "cart": {

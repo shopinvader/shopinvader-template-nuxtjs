@@ -52,6 +52,9 @@
             </div>
           </template>
         </slot>
+        <slot name="stock" :stock="stock">
+          <product-stock v-if="product?.stock" :stock="product?.stock" />
+        </slot>
       </div>
 
       <div class="content__qty">

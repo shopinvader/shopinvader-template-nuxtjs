@@ -1,20 +1,18 @@
 <template>
   <div v-if="price !== null" class="product-price">
     <slot name="price" :price="price">
-      <div>
-        <div class="product-price__value">
-          {{ $filter.currency(price.value) }}
-        </div>
-        <sub v-if="price.tax_included" class="product-price__tax">
-          VAT Incl.
-        </sub>
+      <div v-if="hasDiscount" class="product-price__original">
+        {{ $filter.currency(price.original_value) }}
       </div>
       <div
-        v-if="price.original_value !== price.value"
-        class="product-price__original"
+        class="product-price__value"
+        :class="{ 'product-price__value--discount': hasDiscount }"
       >
         {{ $filter.currency(price.value) }}
       </div>
+      <sub v-if="price.tax_included" class="product-price__tax">
+        VAT Incl.
+      </sub>
     </slot>
   </div>
 </template>
@@ -28,21 +26,29 @@ export default {
       type: Object as PropType<ProductPrice>,
       required: true
     }
+  },
+  computed: {
+    hasDiscount(): boolean {
+      console.log(this.price.original_value, this.price.value)
+      return this.price.original_value !== this.price.value
+    }
   }
 }
 </script>
 <style lang="scss">
 .product-price {
-  display: flex;
-  flex-direction: column;
+  @apply flex flex-wrap w-full gap-x-2 items-center justify-end;
   &__value {
-    @apply pb-0 text-lg leading-3;
+    @apply pb-0 text-3xl font-semibold leading-6;
+    &--discount {
+      @apply text-error text-3xl;
+    }
   }
   &__tax {
-    @apply text-xs font-normal text-gray-500;
+    @apply w-full text-sm font-normal text-gray-500;
   }
   &__original {
-    @apply text-sm font-normal text-gray-500 line-through;
+    @apply text-lg font-normal text-gray-500 line-through;
   }
 }
 </style>
