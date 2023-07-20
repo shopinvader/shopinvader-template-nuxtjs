@@ -1,5 +1,5 @@
 <template>
-  <div v-if="availableLocales.length > 1" class="locale-switcher dropdown">
+  <div v-if="availableLocales.length > 0" class="locale-switcher dropdown">
     <label tabindex="0" class="locale-switcher__btn">
       <span class="font-semibold uppercase">
         <icon :icon="currentLocalIcon" class="text-4xl" />
