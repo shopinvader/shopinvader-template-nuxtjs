@@ -59,11 +59,15 @@ export default defineNuxtPlugin((nuxtApp) => {
    * Add route middleware to add dynamic routes for products and categories
    * Add a middleware to check if the user is logged in
    */
+
   const router = useRouter()
   addRouteMiddleware(
     async (to) => {
+      console.log('NEW ROUTE !', to.path)
+
       if (!router.hasRoute(to.path)) {
-        const path: string = to.params?.slug?.[0] || to.path.substr(1)
+        const path: string = to.params?.slug?.join('/') || to.path.substr(1)
+        console.log('PATH', path)
         const { data } = await useAsyncData('entity', async () => {
           const entity = await services.catalog.getEntityByURLKey(path)
           return entity
@@ -85,6 +89,7 @@ export default defineNuxtPlugin((nuxtApp) => {
           to.matched = router.resolve(to.path)?.matched
         }
       }
+
     },
     { global: true }
   )
