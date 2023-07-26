@@ -85,11 +85,12 @@ export default {
         const selectedIndicator: HTMLElement = indicators?.find(
           (indicatorItem) => indicatorItem.dataset.item == target.id
         )
-
-        if (item.intersectionRatio >= 0.75) {
-          selectedIndicator.classList.add('text-secondary')
-        } else {
-          selectedIndicator.classList.remove('text-secondary')
+        if(selectedIndicator) {
+          if (item?.intersectionRatio >= 0.75) {
+            selectedIndicator.classList.add('text-secondary')
+          } else {
+            selectedIndicator.classList.remove('text-secondary')
+          }
         }
       })
     }
@@ -101,7 +102,7 @@ export default {
   },
   methods: {
     slideCarousel(goToImageNumber: number) {
-      let carouselContainer: HTMLElement | null = this.$refs.slider 
+      let carouselContainer: HTMLElement | null = this.$refs.slider
       let carouselWidth = carouselContainer?.clientWidth
 
       let targetImage = goToImageNumber - 1;
