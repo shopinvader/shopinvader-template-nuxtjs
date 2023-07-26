@@ -1,5 +1,5 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { ShopinvaderErpConfig, ShopinvaderProvidersList } from '../type'
+import { ShopinvaderErpConfig, ShopinvaderProvidersList } from '../../types/ShopinvaderConfig'
 
 export const fetchAPI = async (url: string, options: any) => {
   const auth = useShopinvaderService('auth')

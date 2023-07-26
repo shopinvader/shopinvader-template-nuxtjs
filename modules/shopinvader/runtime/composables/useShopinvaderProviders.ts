@@ -1,10 +1,10 @@
-import { ShopinvaderProvidersList } from '~/plugins/shopinvader-services/type'
+import { ShopinvaderProvidersList } from '../types/ShopinvaderConfig'
 
 /**
  * useShopinvaderService
  * @param serviceName string
  */
-export default <K extends keyof ShopinvaderProvidersList>(
+export const useShopinvaderProviders = <K extends keyof ShopinvaderProvidersList>(
   serviceName: K
 ): ShopinvaderProvidersList[K] => {
   if (!useNuxtApp()?.$shopinvader) {

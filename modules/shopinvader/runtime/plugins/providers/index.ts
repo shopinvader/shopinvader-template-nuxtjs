@@ -1,4 +1,4 @@
-import { ShopinvaderConfig, ShopinvaderProvidersList } from '../type'
+import { ShopinvaderConfig, ShopinvaderProvidersList } from '../../types/ShopinvaderConfig'
 import { initElasticProvider } from './ElasticProvider'
 import { initErpProvider } from './ErpProvider'
 
@@ -12,7 +12,7 @@ export const initProviders = (
   isoLocale: string
 ): ShopinvaderProvidersList => {
   if (config == null) {
-    throw new Error('No shopinvader config found')
+    throw new Error('No shopinvader config found **')
   }
   const { elasticsearch, erp } = config
   let erpProviders = {} as ShopinvaderProvidersList

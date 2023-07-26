@@ -2,10 +2,11 @@ import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import { Product } from '~/models/Product'
 import { Category } from '~/models/Category'
-import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from './type'
-import { ProductService, CategoryService, CatalogService } from '../../services'
+import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
+import { ProductService, CategoryService, CatalogService } from '~/services'
 import { initProviders } from './providers/index'
 import {TemplateProductPage, TemplateCategoryPage} from '#components'
+
 import {
   AddressService,
   AuthService,
@@ -15,7 +16,7 @@ import {
   PaymentModeService,
   SaleService,
   SettingService
-} from '../../services'
+} from '~/services'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
@@ -23,13 +24,13 @@ declare global {
 
 export default defineNuxtPlugin((nuxtApp) => {
   const runtimeConfig = useRuntimeConfig()
-  const config =
-    runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
+  const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
   if (!config) {
-    throw new Error('No shopinvader config found')
+    throw new Error('No shopinvader config found /!\ **')
   }
   const app = useNuxtApp()
-  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || ''
+  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
+
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
   const erp = providers?.erp as ErpFetch
   const products = new ProductService(providers?.products as ElasticFetch)
@@ -63,11 +64,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   const router = useRouter()
   addRouteMiddleware(
     async (to) => {
-      console.log('NEW ROUTE !', to.path)
-
       if (!router.hasRoute(to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
-        console.log('PATH', path)
         const { data } = await useAsyncData('entity', async () => {
           const entity = await services.catalog.getEntityByURLKey(path)
           return entity
@@ -80,13 +78,11 @@ export default defineNuxtPlugin((nuxtApp) => {
           } else if (entity instanceof Category) {
             component = TemplateCategoryPage
           }
-
-          router.addRoute(to.path, {
-            component,
-            children: [],
-            path: to.path
-          })
-          to.matched = router.resolve(to.path)?.matched
+          if (component) {
+            to.matched[0].components = {
+              default: component
+            }
+          }
         }
       }
 
