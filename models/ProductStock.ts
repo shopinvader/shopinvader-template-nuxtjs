@@ -3,6 +3,6 @@ export interface ProductStock {
 }
 
 export type StockQtyResult = {
-  qty: number
+  qty: number | null
   state?: string | null
 }

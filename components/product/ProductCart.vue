@@ -141,7 +141,7 @@ export default {
      * Check if the product has stock
      */
     disabledAddToCart(): boolean {
-      if (!this.disableWhenNoStock) {
+      if (!this.disableWhenNoStock || !this.product.stock) {
         return false
       }
       if (this.disabled) {
