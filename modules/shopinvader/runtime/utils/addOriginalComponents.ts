@@ -8,20 +8,22 @@ import { Nuxt } from 'nuxt/schema'
  */
 export const addOriginalComponents = async (nuxt: Nuxt) => {
   const layers = nuxt.options._layers
-  for(let layer of layers) {
-    if(layer.cwd !== nuxt.options.srcDir) {
-      const {resolve} = createResolver(layer.cwd)
-      const files = await resolveFiles(resolve('./components'), '**/*.vue')
-      for(let filePath of files) {
-        /* get name from filePath  */
-        const name = `Original${filePath.replace(/\.vue$/, '').split('/').pop()}`
-        await addComponent({
-          name,
-          filePath,
-          pascalName: name
-        })
+  if(layers.length > 1) {
+    for(let layer of layers) {
+      if(layer.cwd !== nuxt.options.srcDir) {
+        const {resolve} = createResolver(layer.cwd)
+        const files = await resolveFiles(resolve('./components'), '**/*.vue')
+        for(let filePath of files) {
+          /* get name from filePath  */
+          const name = `Original${filePath.replace(/\.vue$/, '').split('/').pop()}`
+          await addComponent({
+            name,
+            filePath,
+            pascalName: name
+          })
+        }
       }
     }
+    console.info('Original components added')
   }
-  console.info('Original components added')
 }
