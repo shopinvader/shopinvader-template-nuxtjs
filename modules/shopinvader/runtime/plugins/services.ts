@@ -23,6 +23,7 @@ declare global {
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
+
   const runtimeConfig = useRuntimeConfig()
   const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
   if (!config) {
@@ -48,7 +49,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     auth: new AuthService(erp),
     customer: new CustomerService(erp)
   }
-  if (process.client) {
+  if (!import.meta.env.SSR) {
     /** Auto Loggin - Init the user */
     services?.auth.me()
     services?.auth.onUserLoaded(() => {

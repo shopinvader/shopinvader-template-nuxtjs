@@ -64,8 +64,7 @@ export class CartService extends Service {
     this.erp = erp
     this.productService = productService
     this.setCart = this.setCart.bind(this)
-
-    if (process.client) {
+    if (!import.meta.env.SSR) {
       const observer = new CartObserver(this.setCart)
       this.cart = new Cart(
         this.erp,
@@ -80,7 +79,7 @@ export class CartService extends Service {
     }
   }
   getCart(): Ref<CartModel | null> {
-    if (process?.client) {
+    if (!import.meta.env.SSR) {
       const store = this.store()
       const { cart } = storeToRefs(store)
       return cart || ref(null)

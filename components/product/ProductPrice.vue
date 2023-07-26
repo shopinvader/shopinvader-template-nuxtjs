@@ -29,7 +29,6 @@ export default {
   },
   computed: {
     hasDiscount(): boolean {
-      console.log(this.price.original_value, this.price.value)
       return this.price.original_value !== this.price.value
     }
   }
