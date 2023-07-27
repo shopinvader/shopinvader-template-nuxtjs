@@ -1,6 +1,9 @@
 <template>
   <account-layout slug="sales">
+   
+   
     <template #title>
+      
       <div class="flex items-center py-3">
         <div class="flex flex-grow items-center">
           <icon
@@ -13,9 +16,17 @@
         </div>
       </div>
     </template>
-    <template v-if="sales" #content>
-      <template v-if="loading"> ... </template>
-      <div class="overflow-x-auto">
+    
+    <template  #content>
+      <tempalte v-if="sales == null">
+        <div class="w-full flex justify-center">
+         <spinner :size="20"></spinner>
+         <div class="pr-3 text-xl">
+          {{ $t('account.loading') }}
+        </div>
+        </div>
+      </tempalte>
+      <div v-else-if="sales" class="overflow-x-auto">
         <table v-if="sales" class="table table hidden w-full md:table">
           <thead>
             <tr>
@@ -65,9 +76,7 @@
                   }}</span>
                 </td>
                 <td class="p-2 text-left text-sm">
-                  <span class="badge-primary badge badge-md px-3 text-xs">{{
-                    sale.stateLabel
-                  }}</span>
+                  <order-status-badge :sale="sale" ></order-status-badge>
                 </td>
                 <td class="p-2 text-right text-sm">
                   <div
@@ -175,6 +184,8 @@
 import AccountLayout from '~/components/account/AccountLayout.vue'
 import Pagination from '~/components/global/Pagination.vue'
 import PaginationStatus from '~/components/global/PaginationStatus.vue'
+import Spinner from '~/components/global/Spinner.vue'
+import OrderStatusBadge from '~/components/account/OrderStatusBadge.vue'
 import { Sale } from '~/models/Sale'
 import { ref } from 'vue'
 
@@ -183,7 +194,9 @@ export default defineNuxtComponent({
   components: {
     'account-layout': AccountLayout,
     pagination: Pagination,
-    'pagination-status': PaginationStatus
+    'pagination-status': PaginationStatus,
+    spinner: Spinner,
+    'order-status-badge': OrderStatusBadge
   },
   setup(props) {
     definePageMeta({

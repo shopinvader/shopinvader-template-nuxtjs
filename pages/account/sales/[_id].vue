@@ -52,16 +52,14 @@
           <span class="ml-2">{{ $t('btn.download') }}</span>
         </a>
       </div>
-      <div class="content__progress">
+      <div v-if="sale.state" class="content__progress">
         <div clas="text-gray">
           {{ $t('account.sales.sale_state') }}
-          <span class="badge-primary badge ml-2 text-xs uppercase">
-            {{ sale.stateLabel }}
-          </span>
+          <order-status-badge :sale="sale" ></order-status-badge>
         </div>
         <progress
-          class="progress progress-primary"
-          value="25"
+          :class="`progress progress-${saleStatusColor}`"
+          :value="sale.state == 'shipped' ? '100' : '25' "
           max="100"
         ></progress>
       </div>
@@ -147,13 +145,15 @@
 
 <script lang="ts">
 import AccountLayout from '~/components/account/AccountLayout.vue'
+import OrderStatusBadge from '~/components/account/OrderStatusBadge.vue'
 import { Sale } from '~/models/Sale'
 import { ref } from 'vue'
 
 export default defineNuxtComponent({
   name: 'PageAccountSaleDetail',
   components: {
-    'account-layout': AccountLayout
+    'account-layout': AccountLayout,
+    'order-status-badge': OrderStatusBadge
   },
   setup() {
     definePageMeta({
@@ -183,6 +183,18 @@ export default defineNuxtComponent({
         loading.value = false
       }
     }
+    const saleStatusColor = computed(() => {
+      let statusColor =''
+        if(sale?.value?.state == 'cancel') {
+          statusColor = 'error'
+        } else if (sale?.value?.state == 'processing') {
+          statusColor = 'secondary'
+        } else if (sale?.value?.state == 'invoiceable') {
+          statusColor = 'success'
+        }
+      return statusColor
+      
+    })
 
     async function download(action: string, id: number) {
       const saleService = useShopinvaderService('sales')
@@ -225,7 +237,8 @@ export default defineNuxtComponent({
       loadSale,
       route,
       router,
-      download
+      download,
+      saleStatusColor
     }
   }
 })

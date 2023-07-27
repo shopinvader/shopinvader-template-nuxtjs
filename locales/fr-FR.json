@@ -5,76 +5,111 @@
     "es": "Espagnol"
   },
   "search": {
-    "noresults": "Aucun résultat",
+    "noresults": "Aucun résultat trouvé",
     "filter": "Filtrer",
-    "results":{
+    "results": {
       "count": "{count} résultat(s)"
     },
     "sort": {
       "label": "Trier par"
     },
     "autocomplete": {
-      "noresults": "Aucun résultat",
-      "search": "Rechercher",
-      "suggestions": "Suggestions de recherche",
-      "category": "Catégories",
-      "product": "Recherche de produit par '{query}'",
-      "products_history": "Produits déjà consultés",
-      "queries": "Mes recherches récentes",
+      "noresults": "Aucun résultat trouvé",
+      "search": "Recherche ",
+      "suggestions": "Suggestions",
+      "category": "Catégorie",
+      "product": "Rechercher un produit pour '{query}'",
+      "products_history": "Vous avez récemment consulté",
+      "queries": "Mes recherches",
       "clear": "Effacer",
-      "seeall": "Voir tout"
+      "seeall": "Voir tous les résultats"
     }
   },
   "404": {
-    "title": "Page introuvable",
-    "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
-    "home": "Retour à l'accueil"
+    "title": "Page non trouvée",
+    "description": "La page que vous recherchez n'existe pas.",
+    "home": "Retour à la page d'accueil"
   },
   "product": {
     "cart": {
       "add": "Ajouter au panier"
     },
     "cross_selling": {
-      "title": "Produits liés à cet article"
+      "title": "Produits similaires"
     },
     "up_selling": {
       "title": "Autres produits"
     },
     "history": {
-      "title": "Produits déjà consultés",
+      "title": "Vous avez récemment consulté",
       "clear": "Effacer"
     },
     "stock": {
-      "resupplying": "Réapprovisionnement en cours",
       "available": "En stock",
-      "ending_soon": "Bientôt épuisé",
-      "not_available": "Indisponible"
+      "resupplying": "Réapprovisionnement en cours",
+      "ending_soon": "en stock limité",
+      "not_available": "Article en rupture de stock"
     },
     "discount": {
-      "tag": "SOLDES - { discount }%"
+      "tag": "{discount}% de réduction"
     }
   },
   "cart": {
-    "link": "Voir mon panier",
-    "title": "Panier",
-    "checkout": "Commander",
+    "link": "Voir le panier",
+    "pending": {
+      "title": "Actions en attente dans le panier",
+      "checkout": "Votre panier est hors ligne, certaines transactions sont en attente, ce qui empêche toute autre action pour le moment. Merci de votre patience.",
+      "back": "Retour"
+    },
+    "confirmation": "Votre panier a été mis à jour",
+    "checkout": "Passer à la caisse",
+    "back": "Retour",
+    "edit": "Modifier",
+    "title": "Panier d'achats",
+    "continue": "Continuer vos achats",
+    "payment": {
+      "title": "Paiement",
+      "intro": "Sélectionnez un mode de paiement",
+      "submit": "Payer",
+      "loading": "Chargement..."
+    },
     "line": {
       "quantity": "Quantité",
       "total": "Total",
-      "count":"{count} article(s) dans mon panier",
-      "delete": "Supprimer"
+      "delete": "Supprimer l'article",
+      "add": "Ajouter au panier",
+      "count": "{count} produit(s) dans votre panier",
+      "view": "Voir le panier",
+      "hide": "Masquer le panier"
     },
     "empty": "Votre panier est vide",
     "total": {
       "title": "Total",
-      "subtotal": "Subtotal"
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "tax": "Taxes"
+    },
+    "delivery": {
+      "method": {
+        "title": "Mode de livraison",
+        "intro": "Sélectionnez un mode de livraison",
+        "select": "choisir cette méthode",
+        "continue": "Continuer",
+        "no-method": "Aucun mode de livraison sélectionné"
+      }
+    },
+    "summary": {
+      "checkout": "Passer à la caisse"
     },
     "address": {
+      "title": "Mes adresses",
+      "no-address": "Aucune adresse sélectionnée",
+      "select": "Sélectionner une adresse",
       "continue": "Continuer",
       "delivery": {
-        "title":"Adresse de livraison"
+        "title": "Adresse de livraison"
       },
-      "invoice": {
+      "invoicing": {
         "title": "Adresse de facturation"
       }
     },
@@ -82,43 +117,149 @@
       "title": "Connexion"
     }
   },
+  "payment": {
+    "manual": {
+      "title": "Virement bancaire",
+      "intro": "Veuillez effectuer le virement sur le compte bancaire suivant",
+      "cta": "Valider ma commande"
+    },
+    "sips": {
+      "title": "Carte de crédit",
+      "intro": "Veuillez saisir vos informations de carte de crédit",
+      "cta": "Payer par carte de crédit"
+    }
+  },
   "account": {
     "loading": "Chargement...",
     "title": "Mon compte",
     "logout": "Déconnexion",
-    "address": {
-      "title": "Mes adresses"
-    }
-  },
-  "address": {
-    "name": "Nom et Prénom",
-    "street": "Rue",
-    "zip": "Code postal",
-    "city": "Ville",
-    "phone": "Téléphone",
-    "country": "Pays",
-    "noresult": "Aucune adresse",
-    "type" : {
-      "delivery": "Adresse de livraison",
-      "invoice": "Adresse de facturation",
-      "contact": "Adresse de contact"
+    "profile": {
+      "title": "Mes informations personnelles",
+      "accountdata": "Profil de votre compte",
+      "contact": "Vos informations de contact",
+      "changepwd": "Modifier votre mot de passe",
+      "newsletter": {
+        "title": "Abonnement à la newsletter",
+        "unsubs": "Se désabonner de la newsletter",
+        "subs": "S'abonner à la newsletter",
+        "subs_btn": "Valider",
+        "unsubs_btn": "Valider"
+      },
+      "modify_btn": "Modifier vos informations de profil"
     },
-    "fetch": {
-      "error": "Impossible de récupérer les adresses"
+    "login": {
+      "description": "",
+      "welcome_back": "Bienvenue de retour",
+      "password": "Mot de passe",
+      "forgot_password": "Mot de passe oublié",
+      "not_yet_account": "Vous n'avez pas de compte ?",
+      "create_account": "Créez-le maintenant !",
+      "sign_in": "Se connecter"
     },
-    "delete": {
-      "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
-      "error": "Impossible de supprimer l'adresse",
-      "success": "Adresse supprimée"
+    "register": {
+      "title": "Créez un compte et commencez",
+      "advantages": "Pourquoi vous inscrire chez nous ?",
+      "advantage_1": "Excellent support",
+      "advantage_2": "Livraison rapide",
+      "accept_terms": "En m'inscrivant, j'accepte les ",
+      "terms_conditions": "conditions générales",
+      "sign_up": "S'inscrire",
+      "already_have_account": "Vous avez déjà un compte ?",
+      "notification_registration_thankyou": "Merci pour votre inscription !",
+      "notification_email_sent": "Pour que votre compte soit activé, veuillez vérifier votre boîte de réception et valider l'e-mail d'inscription que nous venons de vous envoyer !",
+      "notification_token_error": "ERREUR : Jeton invalide",
+      "notification_token_error_info": "Votre jeton n'est pas valide ou n'existe pas"
+    },
+    "reset": {
+      "reset_pswd": "Réinitialiser votre mot de passe",
+      "description": "description"
+    },
+      "sales": {
+        "sale": "Commande",
+        "sale_subtotal": "Sous-total",
+        "sale_tax": "Taxe",
+        "sale_total": "Total de la commande",
+        "sale_shipping": "Livraison",
+        "sale_state": "État de la commande",
+        "state": {
+          "in_progress": "En cours",
+          "cancel": "Annulé",
+          "done": "Livré"
+        },
+        "sale_invoice_number": "N° de facture",
+        "title": "Mes commandes",
+        "table_labels": {
+          "ordernum": "Numéro de commande",
+          "orderdate": "Date de commande",
+          "pricenet": "Prix",
+          "status": "Statut",
+          "action": "Action"
+        }
+      },
+      "address": {
+        "title": "Mes adresses",
+        "name": "Nom et prénom",
+        "email": "Email",
+        "street": "Adresse postale",
+        "street2": "Adresse ligne 2",
+        "zip": "Code postal",
+        "city": "Ville",
+        "phone": "Téléphone",
+        "country": "Pays",
+        "noresult": "Aucune adresse trouvée",
+        "count": "{count} résultat(s)",
+        "edit": "Mettre à jour une adresse",
+        "fetch": {
+          "error": "Une erreur s'est produite lors de la récupération de vos adresses"
+        },
+        "type": {
+          "contact": "Adresse de contact",
+          "delivery": "Adresse de livraison",
+          "invoice": "Adresse de facturation"
+        },
+        "save": {
+          "success": "Adresse enregistrée avec succès"
+        },
+        "delete": {
+          "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+          "error": "Une erreur s'est produite lors de la suppression de cette adresse",
+          "success": "Adresse supprimée"
+        }
+      },
+      "quotations": "Mes devis",
+      "invoices": "Mes factures",
+      "emptylist": "Aucune donnée disponible"
+    },
+    "pagination": {
+      "showperpage": "Éléments par page",
+      "status": "{boundStart}-{boundStop} sur {totalItems}"
+    },
+    "actions": {
+      "modify": "Modifier",
+      "update": "Mettre à jour",
+      "create": "Créer",
+      "validate": "Valider",
+      "close": "Fermer"
+    },
+    "error": {
+      "generic": "Une erreur s'est produite, veuillez réessayer ultérieurement",
+      "retry": "Réessayer",
+      "login": {
+        "email": "Le format de l'e-mail n'est pas valide.",
+        "password": "Le format du mot de passe n'est pas valide",
+        "unable_to_login": "Erreur de connexion"
+      }
+    },
+    "btn": {
+      "view_more": "Voir plus",
+      "download": "Télécharger",
+      "back_to_homepage": "Retour à la page d'accueil"
+    },
+    "navbar": {
+      "home": "Accueil",
+      "search": "Recherche",
+      "cart": "Panier",
+      "account": "Compte"
     }
-  },
-  "actions": {
-    "modify": "Modifier",
-    "update": "Actualiser",
-    "create": "Créer " ,
-    "validate": "Valider"
-  },
-  "error": {
-    "generic": "Une erreur est survenue, veuillez essayer à nouveau ultérieurement.",
   }
 }
