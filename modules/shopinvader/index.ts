@@ -1,10 +1,10 @@
-import { defu, createDefu } from 'defu'
-import { defineNuxtModule, createResolver, useLogger, addPlugin, addImportsDir, resolveFiles, extendPages, installModule} from '@nuxt/kit'
-import { ShopinvaderConfig } from './runtime/types/ShopinvaderConfig'
+import { defineNuxtModule, createResolver, useLogger, addPlugin, addImportsDir, resolveFiles, extendPages } from '@nuxt/kit'
 import { addCustomTab } from '@nuxt/devtools-kit'
+import { createDefu } from 'defu'
+import { ShopinvaderConfig, ShopinvaderProvidersList } from './runtime/types/ShopinvaderConfig'
+import { Router } from 'vue-router'
 import {
-  addModelsTemplates,
-  addServicesTemplates,
+  addModelsServicesTemplates,
   addI18n,
   addOriginalComponents
 } from './runtime/utils'
@@ -14,6 +14,27 @@ const configMerge = createDefu((obj, key, value) => {
     return true
   }
 })
+
+type MaybePromise<T> = T | Promise<T>
+
+declare module '#app' {
+  interface RuntimeNuxtHooks {
+    'shopinvader:loaded': <Context = unknown>(
+      ctx: Context
+    ) => MaybePromise<void>
+    'shopinvader:services': <Context = unknown>(
+      services: ShopinvaderServiceList,
+      providers: ShopinvaderProvidersList,
+      ctx: Context
+    ) => MaybePromise<void>
+    'shopinvader:router': <Context = unknown>(
+      router: Router,
+      component: Component,
+      ctx: Context
+    ) => MaybePromise<void>
+  }
+}
+
 export default defineNuxtModule<ShopinvaderConfig>({
   meta: {
     name: 'shopinvader',
@@ -52,7 +73,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
     const config = configMerge(nuxt.options.runtimeConfig.shopinvader, options)
     nuxt.options.runtimeConfig.shopinvader = config
     nuxt.options.runtimeConfig.public.shopinvader = nuxt.options.runtimeConfig.shopinvader
-    console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.api_url, config.elasticsearch.url)
+
     /* I18n */
     await addI18n(nuxt)
 
@@ -64,6 +85,9 @@ export default defineNuxtModule<ShopinvaderConfig>({
     /** Composable */
     await addImportsDir(resolve('./runtime/composables'))
 
+    /** Models & services */
+    await addModelsServicesTemplates(nuxt)
+
     /** Plugins */
     const plugins = await resolveFiles(resolve('./runtime/plugins'), '*.ts')
     let order = 1
@@ -71,8 +95,6 @@ export default defineNuxtModule<ShopinvaderConfig>({
       addPlugin({src: plugin, mode: 'all', order})
       order++
     }
-    await addModelsTemplates(nuxt)
-    await addServicesTemplates(nuxt)
 
     if(nuxt.options.dev && nuxt.options?.devtools?.enabled) {
       extendPages((pages) => {
@@ -97,5 +119,9 @@ export default defineNuxtModule<ShopinvaderConfig>({
         },
       })
     }
+    console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.api_url, config.elasticsearch.url)
+    nuxt.callHook('shopinvader:loaded', nuxt)
   }
 })
+
+

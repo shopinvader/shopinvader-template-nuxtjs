@@ -1,9 +1,7 @@
 import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
-import { Product } from '~/models/Product'
-import { Category } from '~/models/Category'
+import { Product, Category } from '~/models'
 import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
-import { ProductService, CategoryService, CatalogService } from '~/services'
 import { initProviders } from './providers/index'
 import {TemplateProductPage, TemplateCategoryPage} from '#components'
 
@@ -15,14 +13,17 @@ import {
   DeliveryCarrierService,
   PaymentModeService,
   SaleService,
-  SettingService
+  SettingService,
+  ProductService,
+  CategoryService,
+  CatalogService
 } from '~/services'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(async (nuxtApp) => {
 
   const runtimeConfig = useRuntimeConfig()
   const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
@@ -49,6 +50,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     auth: new AuthService(erp),
     customer: new CustomerService(erp)
   }
+  await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
+  services.cart.productService = services.products
   if (!import.meta.env.SSR) {
     /** Auto Loggin - Init the user */
     services?.auth.me()
@@ -61,7 +64,6 @@ export default defineNuxtPlugin((nuxtApp) => {
    * Add route middleware to add dynamic routes for products and categories
    * Add a middleware to check if the user is logged in
    */
-
   const router = useRouter()
   addRouteMiddleware(
     async (to) => {
@@ -84,6 +86,7 @@ export default defineNuxtPlugin((nuxtApp) => {
               default: component
             }
           }
+          await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
         }
       }
 

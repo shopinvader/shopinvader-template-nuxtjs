@@ -1,58 +1,57 @@
 import { createResolver, resolveFiles, addTemplate } from '@nuxt/kit'
 import { Nuxt } from 'nuxt/schema'
-export const addModelsTemplates  = async (nuxt: Nuxt) => {
+
+export const addModelsServicesTemplates  = async (nuxt: Nuxt) => {
   const layers = nuxt.options._layers
+  const types = ['services', 'models']
+
+  let alias = {}
   if(layers.length > 1) {
-    for(let layer of layers) {
-      const {resolve} = createResolver(layer.cwd)
-      const models = await resolveFiles(resolve('./models'), '**/*.ts')
-      const modelsFiles:string[] = []
-      for(let model of models) {
-        const filename = model.split('/').pop()
-        if(filename !== 'index.ts') {
-          modelsFiles.push(model)
-          addTemplate({
-            filename,
-            dst: `models/${filename}`,
-            src: model,
-          })
-        }
+    for(let type of types) {
+      const { resolve } = createResolver(nuxt.options.buildDir)
+      let filenames:string[] = []
+      for(let layer of layers) {
+        const { resolve } = createResolver(layer.cwd)
+        const files = await (await resolveFiles(resolve(`./${type}`), '**/*.ts'))
+          .filter((file) => !file.endsWith('index.ts'))
+          .map((file) => file.replace('.ts', ''))
+        filenames = [...filenames, ...files]
       }
+
       addTemplate({
-        filename: 'index.ts',
-        dst: `models/index.ts`,
+        filename: `shopinvader/${type}.ts`,
+        write: true,
         getContents: () => {
-          return modelsFiles.map((filename) => `export * from '${filename}'`).join('\n')
+          return filenames.reverse().map((filename) => `export * from '${filename.replace('.ts', '')}'`).join('\n')
         },
       })
-    }
-  }
-}
-export const addServicesTemplates  = async (nuxt: Nuxt) => {
-  const layers = nuxt.options._layers
-  if(layers.length > 1) {
-    for(let layer of layers) {
-      const {resolve} = createResolver(layer.cwd)
-      const services = await resolveFiles(resolve('./services'), '**/*.ts')
-      const servicesFiles:string[] = []
-      for(let service of services) {
-        const filename = service.split('/').pop()
-        if(filename !== 'index.ts') {
-          servicesFiles.push(service)
-          addTemplate({
-            filename,
-            dst: `services/${filename}`,
-            src: service,
-          })
-        }
+
+      alias = {
+        ...alias,
+        [`~/${type}`]: resolve(`./shopinvader/${type}.ts`),
+        [type]: resolve(`./shopinvader/${type}.ts`),
+        [`#${type}`]: resolve(`./shopinvader/${type}.ts`),
       }
-      addTemplate({
-        filename: 'index.ts',
-        dst: `services/index.ts`,
-        getContents: () => {
-          return servicesFiles.map((filename) => `export * from '${filename}'`).join('\n')
-        },
-      })
     }
   }
+
+  nuxt.options.alias = {
+    ...alias,
+    ...nuxt.options.alias,
+  }
+  nuxt.hook('nitro:config', (config) => {
+    config.resolve = config.resolve || {}
+    config.resolve.alias = {
+      ...alias,
+      ...config.resolve.alias,
+    }
+  })
+  nuxt.hook('vite:extend', (ctx) => {
+    ctx.config.resolve = ctx.config.resolve || {}
+    ctx.config.resolve.alias = {
+      ...alias,
+      ...ctx.config.resolve.alias,
+    }
+  })
+
 }

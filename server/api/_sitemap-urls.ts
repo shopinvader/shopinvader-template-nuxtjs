@@ -1,5 +1,7 @@
+
+import { ElasticFetch } from '@shopinvader/fetch'
 import { initProviders } from '../../modules/shopinvader/runtime/plugins/providers'
-import { CatalogService } from '~/services'
+import { CatalogService } from '../../services'
 /**
  * Provide the list of URLs to be included in the sitemap
  */
