@@ -35,15 +35,17 @@ const auth = useShopinvaderService('auth')
 const user = auth?.getUser()
 const router = useRouter()
 const next = () => {
+  const localePath = useLocalePath()
   if (user?.value) {
-    router.push('/account')
+    router.push(localePath('/account'))
   } else {
-    router.push('/account/login')
+    router.push(localePath('/account/login'))
   }
 }
 const logout = () => {
+  const localePath = useLocalePath()
   auth?.logout()
-  navigateTo('/')
+  navigateTo(localePath('/'))
 }
 </script>
 <style lang="scss">

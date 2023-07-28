@@ -113,7 +113,7 @@ export default {
     linkPath() {
       const localePath = useLocalePath()
       return localePath({
-        path: this.product.urlKey,
+        path: '/' + this.product.urlKey,
         query: { sku: this.variant?.sku }
       })
     }

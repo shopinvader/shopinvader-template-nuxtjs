@@ -1,11 +1,10 @@
 import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
-import { Product } from '~/models/Product'
-import { Category } from '~/models/Category'
-import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from './type'
-import { ProductService, CategoryService, CatalogService } from '../../services'
+import { Product, Category } from '~/models'
+import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
 import {TemplateProductPage, TemplateCategoryPage} from '#components'
+
 import {
   AddressService,
   AuthService,
@@ -14,22 +13,26 @@ import {
   DeliveryCarrierService,
   PaymentModeService,
   SaleService,
-  SettingService
-} from '../../services'
+  SettingService,
+  ProductService,
+  CategoryService,
+  CatalogService
+} from '~/services'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(async (nuxtApp) => {
+
   const runtimeConfig = useRuntimeConfig()
-  const config =
-    runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
+  const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
   if (!config) {
-    throw new Error('No shopinvader config found')
+    throw new Error('No shopinvader config found /!\ **')
   }
   const app = useNuxtApp()
-  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || ''
+  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
+
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
   const erp = providers?.erp as ErpFetch
   const products = new ProductService(providers?.products as ElasticFetch)
@@ -47,7 +50,9 @@ export default defineNuxtPlugin((nuxtApp) => {
     auth: new AuthService(erp),
     customer: new CustomerService(erp)
   }
-  if (process.client) {
+  await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
+  services.cart.productService = services.products
+  if (!import.meta.env.SSR) {
     /** Auto Loggin - Init the user */
     services?.auth.me()
     services?.auth.onUserLoaded(() => {
@@ -63,7 +68,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   addRouteMiddleware(
     async (to) => {
       if (!router.hasRoute(to.path)) {
-        const path: string = to.params?.slug?.[0] || to.path.substr(1)
+        const path: string = to.params?.slug?.join('/') || to.path.substr(1)
         const { data } = await useAsyncData('entity', async () => {
           const entity = await services.catalog.getEntityByURLKey(path)
           return entity
@@ -76,15 +81,15 @@ export default defineNuxtPlugin((nuxtApp) => {
           } else if (entity instanceof Category) {
             component = TemplateCategoryPage
           }
-
-          router.addRoute(to.path, {
-            component,
-            children: [],
-            path: to.path
-          })
-          to.matched = router.resolve(to.path)?.matched
+          if (component) {
+            to.matched[0].components = {
+              default: component
+            }
+          }
+          await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
         }
       }
+
     },
     { global: true }
   )
