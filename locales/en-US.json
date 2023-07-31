@@ -184,6 +184,11 @@
       "sale_total": "Order total",
       "sale_shipping": "Shipping",
       "sale_state": "Order status",
+      "state": {
+        "in_progress": "Processing",
+        "cancel": "Canceled",
+        "done": "Delivered"
+      },
       "sale_invoice_number": "Invoice N°",
       "title": "My sales orders",
       "table_labels": {
