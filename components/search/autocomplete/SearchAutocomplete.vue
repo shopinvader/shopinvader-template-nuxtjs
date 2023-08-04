@@ -184,7 +184,7 @@ export default {
         .header {
           @apply flex items-center justify-between border-0 p-0 sm:p-2;
           .title {
-            @apply heading w-full border-b py-2;
+            @apply font-heading w-full border-b py-2;
           }
         }
         .dropdown__results {

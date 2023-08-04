@@ -261,7 +261,7 @@ export default {
 .searchfilter {
   @apply mb-3 bg-gray-50 p-5;
   &__title {
-    @apply heading;
+    @apply font-heading;
   }
   &__items {
     @apply mt-2 text-xs;

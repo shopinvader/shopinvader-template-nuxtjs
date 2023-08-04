@@ -38,8 +38,16 @@ export default defineNuxtConfig({
       }
     },
   },
-
+  googleFonts: {
+    families: {
+      Montserrat: [300,400,600,700],
+      'Josefin+Sans': [700],
+    },
+    download: true,
+    stylePath: 'css/fonts.css'
+  },
   modules: [
+    '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',

@@ -14,7 +14,7 @@
             <div v-for="value of variantAxis?.values" :key="value.sku">
               <button
                 type="button"
-                class="btn-primary btn-xs btn"
+                class="values__btn"
                 :class="{
                   'btn-outline': !value.selected
                 }"
@@ -25,7 +25,7 @@
               </button>
             </div>
           </template>
-          <select v-else class="select-primary select select-sm max-w-xs">
+          <select v-else class="select select-sm max-w-xs">
             <option
               v-for="value of variantAxis?.values"
               :key="value.sku"
@@ -75,7 +75,7 @@ export default defineNuxtComponent({
       &__values {
         @apply flex flex-wrap gap-1;
         button {
-          @apply m-1;
+          @apply btn btn-outline btn-xs;
         }
       }
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="aside-menu drawer" :class="{ 'side-menu': sideMenu }">
-    <input :id="name" type="checkbox" class="drawer-toggle" />
+    <input :id="name" type="checkbox" class="drawer-toggle" v-model="isOpen" />
     <div class="drawer-content flex flex-col">
       <div class="content" :class="classContent">
         <div class="content__button">
@@ -65,7 +65,15 @@ export default {
     }
   },
   setup() {
-    return {}
+    const isOpen = ref(false)
+    const router = useRouter()
+    watch(() => router.currentRoute.value, () => {
+      isOpen.value = false
+    })
+
+    return {
+      isOpen
+    }
   }
 }
 </script>
@@ -92,7 +100,7 @@ export default {
   }
   .drawer-toggle {
     &:checked ~ .drawer-side {
-      @apply relative h-screen w-screen border;
+      @apply relative h-screen w-screen md:w-[400px] border shadow;
     }
   }
   .drawer-side {

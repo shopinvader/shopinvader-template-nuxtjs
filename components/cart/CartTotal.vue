@@ -70,7 +70,7 @@ export default defineNuxtComponent({
 .cart-total {
   @apply bg-gray-100 px-6 py-10;
   &__title {
-    @apply heading text-xl;
+    @apply font-heading text-xl;
   }
   & > div {
     @apply flex flex-wrap items-center justify-between pb-2;

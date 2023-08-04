@@ -57,7 +57,7 @@ export default defineNuxtComponent({
 .cart-address-card {
   @apply flex flex-col flex-wrap gap-4 bg-slate-100;
   &__header {
-    @apply heading text-xl font-bold uppercase;
+    @apply font-heading text-xl font-bold uppercase;
   }
   &__body {
   }
