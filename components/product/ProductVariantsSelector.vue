@@ -16,7 +16,8 @@
                 type="button"
                 class="values__btn"
                 :class="{
-                  'btn-outline': !value.selected
+                  'values__btn--selected': value.selected,
+                  'values__btn--unselected': !value.selected
                 }"
                 :disabled="!value.available"
                 @click="select(value.sku)"
@@ -74,8 +75,17 @@ export default defineNuxtComponent({
       }
       &__values {
         @apply flex flex-wrap gap-1;
-        button {
-          @apply btn btn-outline btn-xs;
+        .values {
+          &__btn {
+            @apply btn btn-xs;
+            &--unselected {
+              @apply btn-outline;
+            }
+            &--selected {
+              @apply btn-primary text-primary-content;
+            }
+          }
+
         }
       }
     }

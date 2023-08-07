@@ -48,7 +48,7 @@
         </div>
         <div class="content__shortDescription">
           <!-- @slot Intro content -->
-          <slot name="intro">
+          <slot name="intro" :variant="variant">
             <div
               v-if="variant.shortDescription"
               v-html="variant.shortDescription"
@@ -105,7 +105,7 @@
     </div>
     <div class="product-detail__description">
       <!-- @slot Description content -->
-      <slot name="description">
+      <slot name="description" :variant="variant">
         <div
           v-html="variant.description"
           class="prose prose-sm max-w-none"
