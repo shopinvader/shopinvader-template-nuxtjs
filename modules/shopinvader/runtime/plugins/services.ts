@@ -70,7 +70,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       if (!router.hasRoute(to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
         const { data } = await useAsyncData('entity', async () => {
-          const entity = await services.catalog.getEntityByURLKey(path)
+          const catalog = useShopinvaderService('catalog')
+          const entity = await catalog.getEntityByURLKey(path)
           return entity
         })
         const entity = data.value

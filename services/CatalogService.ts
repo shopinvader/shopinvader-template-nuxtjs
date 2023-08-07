@@ -34,11 +34,7 @@ export class CatalogService {
     })
 
     const hits = rawsHits.map((hit: any) => {
-      if (hit._index.includes('category')) {
-        return new Category(hit)
-      } else {
-        return new Product(hit)
-      }
+      return this.jsonToModel(hit)
     })
 
     const total = result?.hits?.total?.value || 0
@@ -57,5 +53,12 @@ export class CatalogService {
     terms[field] = value
     const body = { query: { terms } }
     return this.search(body)
+  }
+  jsonToModel(hit: any): Product | Category {
+    if (hit._index.includes('category')) {
+      return new Category(hit)
+    } else {
+      return new Product(hit)
+    }
   }
 }
