@@ -65,13 +65,19 @@ export default defineNuxtPlugin(async (nuxtApp) => {
    * Add a middleware to check if the user is logged in
    */
   const router = useRouter()
+  const routes:any = {}
   addRouteMiddleware(
-    async (to) => {
+    async (to, from) => {
       if (!router.hasRoute(to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
+
         const { data } = await useAsyncData('entity', async () => {
+          if(routes?.[path]) {
+            return routes[path]
+          }
           const catalog = useShopinvaderService('catalog')
           const entity = await catalog.getEntityByURLKey(path)
+          routes[path] = entity
           return entity
         })
         const entity = data.value
@@ -87,6 +93,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
               default: component
             }
           }
+
           await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
         }
       }

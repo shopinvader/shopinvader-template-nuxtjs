@@ -59,7 +59,6 @@ export class Category extends Model {
   parent: CategoryParent | null
   mainParent: CategoryParent | null
   sequence: number
-  data: any
 
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
