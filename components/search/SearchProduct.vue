@@ -12,20 +12,7 @@
   >
     <template #filters>
       <slot name="filters">
-        <search-terms-aggregation
-          name="categories"
-          nested-path="categories"
-          field="categories.name"
-          title="Categories"
-          :aggregation-query="categoryQuery"
-          url-param="category"
-        ></search-terms-aggregation>
-        <search-terms-aggregation
-          name="color"
-          field="variant_attributes.color"
-          title="Color"
-          url-param="name"
-        ></search-terms-aggregation>
+        <search-product-filters></search-product-filters>
       </slot>
     </template>
     <template #header>
@@ -59,7 +46,7 @@ import { Product } from '~/models/Product'
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
-import esb, { BoolQuery, TermQuery } from 'elastic-builder'
+import esb from 'elastic-builder'
 
 export default {
   components: {
@@ -94,14 +81,6 @@ export default {
   methods: {
     transformResult(result: any) {
       return result?.hits?.hits?.map((data: any) => new Product(data._source))
-    },
-    categoryQuery(query: BoolQuery) {
-      if (query !== null) {
-        query.must(new TermQuery('categories.level', '0'))
-      } else {
-        query = new BoolQuery().must(new TermQuery('categories.level', '0'))
-      }
-      return query
     }
   }
 }

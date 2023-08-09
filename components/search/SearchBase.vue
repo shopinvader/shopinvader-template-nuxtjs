@@ -89,7 +89,7 @@
 <script lang="ts">
 import { provide, reactive, PropType } from 'vue'
 import Spinner from '~/components/global/Spinner.vue'
-import esb, { CardinalityAggregation, FilterAggregation, Query, TermsAggregation } from 'elastic-builder'
+import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 
 export interface Filter {
