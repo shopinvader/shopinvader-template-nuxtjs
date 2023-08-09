@@ -1,33 +1,40 @@
 <template>
-  <div class="searchfilter">
+  <div v-if="data?.items?.length > 0" class="searchfilter">
     <slot name="title" :title="title">
-      <div class="searchfilter__title">
-        {{ title }}
+      <div class="searchfilter__header" @click="opened = !opened">
+        <div class="header__title">
+          {{ title }}
+        </div>
+        <div class="header__close">
+          <icon :icon="opened ? 'uiw:up': 'uiw:down'" />
+        </div>
       </div>
     </slot>
-    <slot name="items" :items="data.items" :change="onSelectItem">
-      <div
-        v-for="item in data.items"
-        :key="item.key"
-        class="searchfilter__items"
-      >
-        <slot name="items" :item="item" :change="onSelectItem">
-          <label
-            class="item"
-            :class="{ 'item--active': data.selected.includes(item.key) }"
-          >
-            <input
-              v-model="data.selected"
-              type="checkbox"
-              class="item__checkbox"
-              :value="item.key"
-              @change="onSelectItem()"
-            />
-            <span class="item__label">{{ item.key }}</span>
-            <span class="item__count">{{ item.doc_count }}</span>
-          </label>
-        </slot>
-      </div>
+    <slot  name="items" :items="data.items" :change="onSelectItem">
+      <template v-if="opened">
+        <div
+          v-for="item in data.items"
+          :key="item.key"
+          class="searchfilter__items"
+        >
+          <slot name="items" :item="item" :change="onSelectItem">
+            <label
+              class="item"
+              :class="{ 'item--active': data.selected.includes(item.key) }"
+            >
+              <input
+                v-model="data.selected"
+                type="checkbox"
+                class="item__checkbox"
+                :value="item.key"
+                @change="onSelectItem()"
+              />
+              <span class="item__label">{{ item.key }}</span>
+              <span class="item__count">{{ item.doc_count }}</span>
+            </label>
+          </slot>
+        </div>
+      </template>
     </slot>
     <slot name="footer" :items="data.items" :size="size"> </slot>
   </div>
@@ -44,18 +51,25 @@ import {
   Query,
   TermsAggregation,
   TermsQuery,
-  TermQuery
+  TermQuery,
+  cardinalityAggregation
 } from 'elastic-builder'
 interface FacetItem {
   key: string
   doc_count: number
 }
 import { Filter } from './SearchBase.vue'
+import { Card } from '.nuxt/components'
 export default {
   props: {
     name: {
       type: String,
       required: true
+    },
+    close: {
+      type: Boolean,
+      required: false,
+      default: true
     },
     field: {
       type: String,
@@ -72,6 +86,11 @@ export default {
     },
     filterItems: {
       type: Function,
+      required: false,
+      default: null
+    },
+    cardinalityField: {
+      type: String,
       required: false,
       default: null
     },
@@ -102,6 +121,7 @@ export default {
     }
   },
   async setup(props) {
+    const opened = ref(!props.close)
     const data = reactive({
       selected: [] as string[],
       items: [] as FacetItem[],
@@ -131,6 +151,14 @@ export default {
         if (props.transformQuery !== null) {
           query = props.transformQuery(query, props.name, props.field)
         }
+      }
+      if (props.cardinalityField !== null) {
+        agg.agg(
+          cardinalityAggregation(
+            props.name + '_cardinality',
+            props.cardinalityField
+          )
+        )
       }
       return new FilterAggregation(
         props.name,
@@ -171,6 +199,7 @@ export default {
     }
 
     const refreshSearch = () => {
+
       if (props.urlParam) {
         const $router = useRouter()
         const $route = useRoute()
@@ -194,6 +223,7 @@ export default {
 
     return {
       response,
+      opened,
       data,
       onSelectItem
     }
@@ -220,16 +250,16 @@ export default {
       },
       immediate: true
     },
+
     response: {
       handler: function (response) {
         if (response?.aggregations) {
           let name = this.name
           let items = []
-
           const aggregations = response?.aggregations || {}
           if (this.transformData !== null) {
-            let response = this.transformData(aggregations)
-            items = response?.items || items
+            let data = this.transformData(aggregations)
+            items = data?.items || []
           } else {
             if (this.nestedPath) {
               name = this.nestedPath
@@ -245,23 +275,42 @@ export default {
             }
           }
 
+          if (this.cardinalityField) {
+            for(let item of items) {
+              item.doc_count = item[this.name + '_cardinality']?.value || item.doc_count
+            }
+          }
           if (this.transformItems !== null) {
-            let response = this.transformItems(items)
-            items = response?.items || items
+            let transformedItems = this.transformItems(items)
+            items = transformedItems?.items || items
           }
           this.data.items = items || []
         }
       },
       deep: true
+    },
+    close(val, old) {
+      if(val !== old) {
+        this.opened = val
+      }
+
     }
   }
 }
 </script>
 <style lang="scss">
 .searchfilter {
-  @apply mb-3 bg-gray-50 p-5;
-  &__title {
-    @apply font-heading;
+  @apply mb-3 bg-gray-50 hover:bg-gray-100 p-5;
+  &__header {
+    @apply flex flex-nowrap justify-between items-center mb-2 cursor-pointer;
+    .header {
+      &__title {
+        @apply text-lg font-heading;
+      }
+      &__close {
+
+      }
+    }
   }
   &__items {
     @apply mt-2 text-xs;

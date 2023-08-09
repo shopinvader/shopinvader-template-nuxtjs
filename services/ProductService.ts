@@ -36,6 +36,7 @@ export class ProductService {
     const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
+
     return { hits, total, aggregations }
   }
   static fullTextQuery(query: string): Query {

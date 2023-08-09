@@ -89,7 +89,7 @@
 <script lang="ts">
 import { provide, reactive, PropType } from 'vue'
 import Spinner from '~/components/global/Spinner.vue'
-import esb, { Query } from 'elastic-builder'
+import esb, { CardinalityAggregation, FilterAggregation, Query, TermsAggregation } from 'elastic-builder'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 
 export interface Filter {
@@ -139,6 +139,10 @@ export default {
       type: Boolean,
       default: true
     },
+    cardinalityField: {
+      type: String,
+      default: null
+    },
     sortOptions: {
       type: Array as PropType<Array<SortItem>>,
       default: () => {
@@ -164,7 +168,7 @@ export default {
       total: 0
     })
 
-    let response = reactive({
+    let response = ref({
       aggregations: null,
       hits: null,
       total: 0
@@ -223,6 +227,13 @@ export default {
         .size(page.size)
         .from(page.from)
 
+      if(props.cardinalityField) {
+        let agg = new CardinalityAggregation('total', props.cardinalityField)
+        if(postFilter) {
+          agg = new FilterAggregation('total', postFilter).agg(agg)
+        }
+        aggs.push(agg)
+      }
       if (aggs !== null) {
         body.aggs(aggs)
       }
@@ -233,9 +244,16 @@ export default {
         body.sort(esb.sort(sort.value.value, 'asc'))
       }
       const { aggregations, hits, total } = await props?.provider(body.toJSON())
-      response.aggregations = aggregations || null
-      response.hits = hits
-      page.total = total || 0
+
+      response.value.aggregations = aggregations || null
+      response.value.hits = hits
+
+      if(props.cardinalityField) {
+        page.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
+      } else {
+        page.total = total || 0
+      }
+
       loading.value = false
     }
 
@@ -250,10 +268,9 @@ export default {
 
     provide('search', search)
     provide('declareFilter', declareFilter)
-    provide(
-      'response',
-      computed(() => response)
-    )
+    provide('response', computed(() => {
+      return JSON.parse(JSON.stringify(response.value))
+    }))
     provide(
       'filters',
       computed(() => filters)

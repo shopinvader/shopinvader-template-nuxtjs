@@ -31,11 +31,13 @@
           </slot>
         </div>
         <div class="body__variants">
-          <product-variants
-            v-if="variants && variants?.length > 1 && variants?.length < 8"
-            :variants="variants"
-            @select-variant="changeVariant"
-          />
+          <slot name="variants" :variants="variants">
+            <product-variants
+              v-if="variants && variants?.length > 1 && variants?.length < 8"
+              :variants="variants"
+              @select-variant="changeVariant"
+            />
+          </slot>
         </div>
         <div class="body__desc">
           <slot name="desc" :product="variant"></slot>

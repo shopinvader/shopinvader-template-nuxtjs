@@ -3,26 +3,30 @@
     :size="30"
     :provider="provider"
     :query="query"
+    :pagination="true"
+    cardinality-field="url_key"
     :sort-options="[
       { label: 'Relevance', value: '_score' },
       { label: 'Name', value: 'name' }
     ]"
   >
     <template #filters>
-      <search-terms-aggregation
-        name="categories"
-        nested-path="categories"
-        field="categories.name"
-        title="Categories"
-        :aggregation-query="categoryQuery"
-        url-param="category"
-      ></search-terms-aggregation>
-      <search-terms-aggregation
-        name="color"
-        field="variant_attributes.color"
-        title="Color"
-        url-param="name"
-      ></search-terms-aggregation>
+      <slot name="filters">
+        <search-terms-aggregation
+          name="categories"
+          nested-path="categories"
+          field="categories.name"
+          title="Categories"
+          :aggregation-query="categoryQuery"
+          url-param="category"
+        ></search-terms-aggregation>
+        <search-terms-aggregation
+          name="color"
+          field="variant_attributes.color"
+          title="Color"
+          url-param="name"
+        ></search-terms-aggregation>
+      </slot>
     </template>
     <template #header>
       <div class="pt-4">
@@ -38,6 +42,9 @@
           :product="item"
           :inline="false"
         >
+          <template #variants>
+            {{ new Date().toLocaleTimeString() }}
+          </template>
         </ProductHit>
       </div>
     </template>
