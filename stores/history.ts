@@ -1,10 +1,17 @@
 import { defineStore } from 'pinia'
-import { Product } from '~~/models'
+import { Product } from '~/models'
 
 export const useHistoryStore = defineStore('history', {
   state: () => ({ queries: [] as string[], products: [] as Product[] }),
+
   persist: {
-    storage: persistedState.localStorage
+    storage: persistedState.localStorage,
+    afterRestore(ctx) {
+      const data = ctx?.store?.products || null
+      if(data) {
+        ctx.store.products = data.map((p: any) => new Product(p))
+      }
+    },
   },
   getters: {
     getQueries(): string[] {
