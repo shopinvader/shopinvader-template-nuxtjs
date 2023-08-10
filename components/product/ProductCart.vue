@@ -129,8 +129,8 @@ export default {
         ) || null
       )
     },
-    stockQty():number {
-      return this.product?.stock?.global?.qty || 0
+    stockState():string | null {
+      return this.product?.stock?.global?.state || null
     },
     lines(): CartLine[] {
       const cartService = useShopinvaderService('cart')
@@ -147,7 +147,7 @@ export default {
       if (this.disabled) {
         return true
       }
-      return this.stockQty <= 0
+      return this?.stockState === 'out_of_stock'
     }
   },
   methods: {
