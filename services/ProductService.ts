@@ -1,6 +1,6 @@
 import { ElasticFetch } from '@shopinvader/fetch'
 import { Product, ProductResult } from '../models/Product'
-import esb, { MultiMatchQuery, Query } from 'elastic-builder'
+import esb, { MultiMatchQuery, NestedQuery, Query, TermQuery } from 'elastic-builder'
 
 export class ProductService {
   provider: ElasticFetch | null = null
@@ -102,6 +102,45 @@ export class ProductService {
       return result?.hits?.[0]
     }
     return null
+  }
+  async getByURLKeyVariantAxis(urlKey: string, axes:any): Promise<Product | null> {
+    const matchQuery = []
+    for(let axis in axes) {
+      matchQuery.push(esb.matchQuery(`variant_attributes.${axis}`, axes[axis]))
+    }
+    const body = esb
+      .requestBodySearch()
+      .query(esb.boolQuery().must([
+        new TermQuery('url_key', urlKey),
+        esb.nestedQuery()
+          .path('variant_attributes')
+          .query(
+              esb.boolQuery().must(matchQuery)
+          )
+      ]))
+      .size(1)
+    const {hits} = await this.search(body.toJSON())
+    return hits?.[0]
+  }
+  async getVariantsAggregation(urlKey:string, axes:string[]) {
+    const aggs = []
+    for(let axis of axes) {
+      aggs.push(esb.termsAggregation(axis, `variant_attributes.${axis}`).size(1000))
+    }
+    const body = esb
+      .requestBodySearch()
+      .collapse('url_key', esb.innerHits('variants').size(0), 4)
+      .query(new TermQuery('url_key', urlKey))
+      .agg(
+        esb.nestedAggregation('variants', 'variant_attributes').aggs(aggs)
+      )
+      .size(0)
+    const {aggregations} = await this.provider?.search(body.toJSON())
+    const items:any = {}
+    for(let axis of axes) {
+      items[axis] = aggregations.variants[axis].buckets.map((bucket:any) => bucket.key)
+    }
+    return items
   }
 
   jsonToModel(json: any): Product {

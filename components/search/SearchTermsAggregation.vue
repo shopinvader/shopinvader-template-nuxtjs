@@ -140,17 +140,8 @@ export default {
         .order('_term', 'asc')
         .size(data.size)
 
-      if (props.nestedPath) {
-        agg = new NestedAggregation(props.name, props.nestedPath).agg(
-          new FilterAggregation(
-            props.name,
-            new TermQuery('categories.level', '0')
-          ).aggregation(agg)
-        )
-      } else {
-        if (props.transformQuery !== null) {
-          query = props.transformQuery(query, props.name, props.field)
-        }
+      if (props.transformQuery !== null) {
+        query = props.transformQuery(query, props.name, props.field)
       }
       if (props.cardinalityField !== null) {
         agg.agg(
@@ -160,10 +151,17 @@ export default {
           )
         )
       }
-      return new FilterAggregation(
-        props.name,
-        query || new MatchAllQuery()
-      ).aggregation(agg)
+
+
+      if (props.nestedPath) {
+        agg = new NestedAggregation(props.name, props.nestedPath).agg(agg)
+      }
+      let aggregation = new FilterAggregation(
+          props.name,
+          query || new MatchAllQuery()
+        ).aggregation(agg)
+      return aggregation
+
     }
 
     const getQueryAggregation = () => {
@@ -253,6 +251,7 @@ export default {
 
     response: {
       handler: function (response) {
+
         if (response?.aggregations) {
           let name = this.name
           let items = []
@@ -261,11 +260,7 @@ export default {
             let data = this.transformData(aggregations)
             items = data?.items || []
           } else {
-            if (this.nestedPath) {
-              name = this.nestedPath
-            }
             let values = aggregations
-
             while (values !== null) {
               values = values?.[name] || null
               if (values?.buckets) {
@@ -274,10 +269,13 @@ export default {
               }
             }
           }
-
           if (this.cardinalityField) {
             for(let item of items) {
-              item.doc_count = item[this.name + '_cardinality']?.value || item.doc_count
+              if(this.nestedPath) {
+                item.doc_count = null
+              } else {
+                item.doc_count = item[this.name + '_cardinality']?.value || item.doc_count
+              }
             }
           }
           if (this.transformItems !== null) {
