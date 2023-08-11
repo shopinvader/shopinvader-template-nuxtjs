@@ -12,7 +12,7 @@ export default {
         mytheme: {
           fontFamily: 'Montserrat,"sanssecondaryerif"',
           primary: '#2f64aa',
-          secondary: '#dca11d',
+          secondary: '#0F798A',
           accent: '#def2ff',
           neutral: '#42536d',
           'base-100': '#ffffff',

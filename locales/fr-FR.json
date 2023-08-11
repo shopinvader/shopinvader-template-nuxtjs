@@ -25,11 +25,6 @@
       "seeall": "Voir tout"
     }
   },
-  "404": {
-    "title": "Page introuvable",
-    "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
-    "home": "Retour à l'accueil"
-  },
   "product": {
     "cart": {
       "add": "Ajouter au panier"
@@ -56,25 +51,61 @@
   },
   "cart": {
     "link": "Voir mon panier",
-    "title": "Panier",
+    "pending": {
+      "title": "Votre panier est hors ligne",
+      "checkout": "Votre panier est hors ligne, certaines transactions sont en attente, ce qui empêche toute action ultérieure pour le moment.",
+      "back": "Retour"
+    },
+    "confirmation": "Votre panier a été mis à jour",
     "checkout": "Commander",
+    "back": "Retour",
+    "edit": "Modifier",
+    "title": "Mon panier",
+    "continue": "Continuer mes achats",
+    "payment": {
+      "title": "Paiement",
+      "intro": "Sélectionnez un mode de paiement",
+      "submit": "Payer",
+      "loading": "Chargement..."
+    },
     "line": {
       "quantity": "Quantité",
       "total": "Total",
-      "count":"{count} article(s) dans mon panier",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "add": "Ajouter au panier",
+      "count": "{count} produit(s) dans mon panier",
+      "view": "Voir mon panier",
+      "hide": "Masquer mon panier"
     },
     "empty": "Votre panier est vide",
+
     "total": {
       "title": "Total",
-      "subtotal": "Subtotal"
+      "subtotal": "Sous-total",
+      "shipping": "Livraison",
+      "tax": "Taxes"
+    },
+    "delivery": {
+      "method": {
+        "title": "Méthode de livraison",
+        "intro": "Sélectionnez une méthode de livraison",
+        "select": "Sélectionner",
+        "continue": "Continuer",
+        "no-method": "Aucune méthode de livraison Sélectionnée"
+      }
+    },
+    "summary": {
+      "checkout": "Commander"
     },
     "address": {
+      "title": "Mes adresses",
+      "no-address": "Aucune adresse Sélectionnée",
+      "select": "Sélectionner une adresse",
       "continue": "Continuer",
       "delivery": {
-        "title":"Adresse de livraison"
+        "title": "Adresse de livraison"
       },
-      "invoice": {
+      "invoicing": {
         "title": "Adresse de facturation"
       }
     },
@@ -86,9 +117,110 @@
     "loading": "Chargement...",
     "title": "Mon compte",
     "logout": "Déconnexion",
+    "profile": {
+      "title": "Mon profil",
+      "accountdata": "Mes informations de compte",
+      "contact": "Mes informations de contact",
+      "changepwd": "Changer mon mot de passe",
+      "newsletter": {
+        "title": "Newsletter",
+        "unsubs": "Se désinscrire de la Newsletter",
+        "subs": "S'inscrire à la Newsletter",
+        "subs_btn": "Valider",
+        "unsubs_btn": "Valider"
+      },
+      "modify_btn": "Modifier"
+    },
+    "login": {
+      "description": "",
+      "welcome_back": "Bienvenue",
+      "password": "Mot de passe",
+      "forgot_password": "Mot de passe oublié ?",
+      "not_yet_account": "Vous n'avez pas encore de compte ?",
+      "create_account": "Créer un compte !",
+      "sign_in": "Se connecter"
+    },
+    "register": {
+      "title": "Créer un compte",
+      "advantages": "Pourquoi créer un compte",
+      "advantage_1": "Suivi de vos commandes",
+      "advantage_2": "Historique de facture",
+      "accept_terms": "En m'enregistrant j'accepte les",
+      "terms_conditions": "Conditions générales de vente",
+      "sign_up": "S'enregistrer",
+      "already_have_account": "Vous avez déjà un compte ?",
+      "notification_registration_thankyou": "Merci pour votre inscription !",
+      "notification_email_sent": "Un email vous a été envoyé pour confirmer votre inscription.",
+      "notification_token_error": "Erreur de token",
+      "notification_token_error_info": "Le token est invalide ou a expiré."
+    },
+    "reset": {
+      "reset_pswd": "Réinitialiser mon mot de passe",
+      "description": "Veuillez saisir votre adresse email pour réinitialiser votre mot de passe.",
+      "reset_btn": "Réinitialiser",
+      "reset_success": "Merci, si un compte lié à l'adresse e-mail existe, veuillez suivre les instructions envoyées par e-mail."
+    },
+    "sales": {
+      "sale": "Mes commandes",
+      "sale_subtotal": "Sous-total",
+      "sale_tax": "Taxes",
+      "sale_total": "Total",
+      "sale_shipping": "Livraison",
+      "sale_state": "Statut",
+      "sale_invoice_number": "Facture N°",
+      "title": "Mes commandes",
+      "table_labels": {
+        "ordernum": "Numéro de commande",
+        "orderdate": "Date de commande",
+        "pricenet": "Prix net",
+        "status": "Statut",
+        "action": " "
+      }
+    },
     "address": {
-      "title": "Mes adresses"
-    }
+      "title": "Mes adresses",
+      "name": "Nom et Prénom",
+      "email": "Email",
+      "street": "Adresse",
+      "street2": "Complément d'adresse",
+      "zip": "Code postal",
+      "city": "Ville",
+      "phone": "Téléphone",
+      "country": "Pays",
+      "noresult": "Aucune adresse",
+      "count": "{count} resultat(s)",
+      "edit": "Modifier",
+      "fetch": {
+        "error": "Une erreur est survenue lors de la récupération des adresses",
+      },
+      "type": {
+        "contact": "Adresse de contact",
+        "delivery": "Adresse de livraison",
+        "invoice": "Adresse de facturation"
+      },
+      "save": {
+        "success": "Adresse enregistrée"
+      },
+      "delete": {
+        "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
+        "error": "Impossible de supprimer l'adresse",
+        "success": "Adresse supprimée"
+      }
+    },
+    "quotations": "Mes devis",
+    "invoices": "Mes factures",
+    "emptylist": "Aucun résultat"
+  },
+  "pagination": {
+    "showperpage": "Afficher par page",
+    "status": "{boundStart}-{boundStop} sur {totalItems}"
+  },
+  "actions": {
+    "modify": "Modifier",
+    "update": "Actualiser",
+    "create": "Créer " ,
+    "validate": "Valider",
+    "close": "Fermer"
   },
   "address": {
     "name": "Nom et Prénom",
@@ -112,13 +244,30 @@
       "success": "Adresse supprimée"
     }
   },
-  "actions": {
-    "modify": "Modifier",
-    "update": "Actualiser",
-    "create": "Créer " ,
-    "validate": "Valider"
-  },
   "error": {
-    "generic": "Une erreur est survenue, veuillez essayer à nouveau ultérieurement.",
+    "generic": "Une erreur est survenue",
+    "retry": "Réessayer",
+    "login": {
+      "email": "Format d'adresse e-mail invalide.",
+      "password": "Le mot de passe doit contenir au moins 6 caractères.",
+      "unable_to_login": "Impossible de se connecter"
+    },
+    "404": {
+      "title": "Page introuvable",
+      "description": "La page que vous recherchez n'existe pas ou a été déplacée.",
+      "home": "Retour à l'accueil"
+    }
+  },
+  "btn": {
+    "view_more": "Voir plus",
+    "download": "Télécharger",
+    "back_to_homepage": "Retour à l'accueil",
+    "back": "Retour"
+  },
+  "navbar": {
+    "home": "Accueil",
+    "search": "Rechercher",
+    "cart": "Panier",
+    "account": "Mon compte"
   }
 }

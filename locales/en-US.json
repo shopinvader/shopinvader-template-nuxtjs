@@ -25,11 +25,7 @@
       "seeall": "See all results"
     }
   },
-  "404": {
-    "title": "Page not found",
-    "description": "The page you are looking for does not exist.",
-    "home": "Back to the homepage"
-  },
+
   "product": {
     "cart": {
       "add": "Add to cart"
@@ -246,12 +242,18 @@
       "email": "Email format is not valid.",
       "password": "Password format not valid",
       "unable_to_login": "Login error"
+    },
+    "404": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist.",
+      "home": "Back to the homepage"
     }
   },
   "btn": {
     "view_more": "View more",
     "download": "Download",
-    "back_to_homepage": "Back to homepage"
+    "back_to_homepage": "Back to homepage",
+    "back": "Back"
   },
   "navbar": {
     "home": "Home",
