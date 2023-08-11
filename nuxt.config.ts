@@ -13,29 +13,27 @@ export default defineNuxtConfig({
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
       },
-    },
-    shopinvader: {
-      erp: {
-        website_key: process.env.ERP_WEBSITE_KEY || '',
-        api_url: process.env.ERP_HOST || '',
-        default_role: 'default'
-      },
-      endpoint: 'shopinvader',
-      elasticsearch: {
-        url: process.env.ELASTIC_URL || '',
-        indices: [
-          {
-            name: 'categories',
-            index: process.env.ELASTIC_CATEGORY || '',
-            body: {}
+      shopinvader: {
+        erp: {
+          key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || "",
+          url: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_URL || "",
+          default_role: "default",
+        },
+        endpoint: "shopinvader",
+        elasticsearch: {
+          url: process.env.NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_URL || "",
+          indices: {
+            products:
+              process.env
+                .NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_PRODUCTS ||
+              "",
+            categories:
+              process.env
+                .NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_CATEGORIES ||
+              "",
           },
-          {
-            name: 'products',
-            index: process.env.ELASTIC_PRODUCT || '',
-            body: {}
-          }
-        ]
-      }
+        },
+      },
     },
   },
   googleFonts: {

@@ -11,6 +11,7 @@ export const initProviders = (
   config: ShopinvaderConfig,
   isoLocale: string
 ): ShopinvaderProvidersList => {
+
   if (config == null) {
     throw new Error('No shopinvader config found **')
   }

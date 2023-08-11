@@ -42,25 +42,17 @@ export default defineNuxtModule<ShopinvaderConfig>({
   },
   defaults: {
     erp: {
-      website_key: 'default',
-      api_url: 'http://localhost:8000',
+      key: 'default',
+      url: 'http://localhost:8000',
       default_role: 'default'
     },
     endpoint: 'shopinvader',
     elasticsearch: {
       url: 'http://localhost:9200',
-      indices: [
-        {
-          name: 'categories',
-          index: 'categories',
-          body: {}
-        },
-        {
-          name: 'products',
-          index: 'products',
-          body: {}
-        }
-      ]
+      indices: {
+        products: 'products',
+        categories: 'categories'
+      }
     },
     layerOptions: {
       originalComponents: true
@@ -71,6 +63,9 @@ export default defineNuxtModule<ShopinvaderConfig>({
     const { resolve } = createResolver(import.meta.url)
     // Default runtimeConfig
     const config = configMerge(nuxt.options.runtimeConfig.shopinvader, options)
+    if(nuxt.runtimeConfig?.public?.shopinvader) {
+      const config = configMerge(nuxt.options.runtimeConfig.public.shopinvader, config)
+    }
     nuxt.options.runtimeConfig.shopinvader = config
     nuxt.options.runtimeConfig.public.shopinvader = nuxt.options.runtimeConfig.shopinvader
 
@@ -119,7 +114,9 @@ export default defineNuxtModule<ShopinvaderConfig>({
         },
       })
     }
-    console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.api_url, config.elasticsearch.url)
+    if(nuxt.options.dev) {
+      console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.url, config.elasticsearch.url)
+    }
     nuxt.callHook('shopinvader:loaded', nuxt)
   }
 })

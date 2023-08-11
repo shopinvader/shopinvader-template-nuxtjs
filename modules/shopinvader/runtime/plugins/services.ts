@@ -24,12 +24,12 @@ declare global {
 }
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-
   const runtimeConfig = useRuntimeConfig()
   const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
   if (!config) {
-    throw new Error('No shopinvader config found /!\ **')
+    throw new Error('No shopinvader config found')
   }
+
   const app = useNuxtApp()
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
 
