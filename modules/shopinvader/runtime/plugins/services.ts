@@ -76,7 +76,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             return routes[path]
           }
           const catalog = useShopinvaderService('catalog')
-          const entity = await catalog.getEntityByURLKey(path)
+          const sku = to?.query?.sku || null as string | null
+          const entity = await catalog.getEntityByURLKey(path, sku)
           routes[path] = entity
           return entity
         })

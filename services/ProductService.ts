@@ -39,7 +39,7 @@ export class ProductService {
 
     return { hits, total, aggregations }
   }
-  static fullTextQuery(query: string): Query {
+  fullTextQuery(query: string): Query {
     return new MultiMatchQuery(['name', 'description'], query).type(
       'phrase_prefix'
     )
@@ -52,7 +52,7 @@ export class ProductService {
       .requestBodySearch()
       .collapse('url_key', esb.innerHits('variants').size(100), 4)
       .suggest(esb.termSuggester('suggestion', 'name', query))
-      .query(ProductService.fullTextQuery(query))
+      .query(this.fullTextQuery(query))
       .size(limit)
 
     const result = await this.provider?.search(body.toJSON())

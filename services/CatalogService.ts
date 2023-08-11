@@ -41,11 +41,14 @@ export class CatalogService {
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations, rawsHits }
   }
-  getByURLKey(urlKey: string): Promise<CatalogResult> {
+  getByURLKey(urlKey: string, sku: string | null): Promise<CatalogResult> {
+    if(sku) {
+      return this.find('sku.keyword', [sku])
+    }
     return this.find('url_key', [urlKey])
   }
-  async getEntityByURLKey(urlKey: string): Promise<Product | Category | null> {
-    const result = await this.getByURLKey(urlKey)
+  async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {
+    const result = await this.getByURLKey(urlKey, sku)
     return result?.hits?.[0] || null
   }
   find(field: string, value: string[] | number[]): Promise<CatalogResult> {
