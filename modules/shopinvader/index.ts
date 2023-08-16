@@ -1,19 +1,13 @@
-import { defineNuxtModule, createResolver, useLogger, addPlugin, addImportsDir, resolveFiles, extendPages } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, useLogger, addPlugin, addImportsDir, resolveFiles, extendPages, addServerHandler } from '@nuxt/kit'
 import { addCustomTab } from '@nuxt/devtools-kit'
-import { createDefu } from 'defu'
 import { ShopinvaderConfig, ShopinvaderProvidersList } from './runtime/types/ShopinvaderConfig'
 import { Router } from 'vue-router'
+import { configMerge } from './runtime/utils'
 import {
   addModelsServicesTemplates,
   addI18n,
   addOriginalComponents
 } from './runtime/utils'
-const configMerge = createDefu((obj, key, value) => {
-  if (key === 'indices') {
-    obj[key] = value
-    return true
-  }
-})
 
 type MaybePromise<T> = T | Promise<T>
 
@@ -62,12 +56,19 @@ export default defineNuxtModule<ShopinvaderConfig>({
     const console = useLogger('shopinvader')
     const { resolve } = createResolver(import.meta.url)
     // Default runtimeConfig
-    const config = configMerge(nuxt.options.runtimeConfig.shopinvader, options)
-    if(nuxt.runtimeConfig?.public?.shopinvader) {
-      const config = configMerge(nuxt.options.runtimeConfig.public.shopinvader, config)
+    const runtimeConfig = nuxt.options.runtimeConfig || {}
+    let config = configMerge(runtimeConfig?.shopinvader || {}, options)
+    if(runtimeConfig?.public?.shopinvader) {
+      config = configMerge(runtimeConfig.public.shopinvader, config)
     }
-    nuxt.options.runtimeConfig.shopinvader = config
-    nuxt.options.runtimeConfig.public.shopinvader = nuxt.options.runtimeConfig.shopinvader
+    runtimeConfig.shopinvader = config
+    runtimeConfig.public.shopinvader = runtimeConfig.shopinvader
+
+    /* Server */
+    addServerHandler({
+      route: '/shopinvader/**',
+      handler: resolve('./runtime/server/erpProxy.ts')
+    })
 
     /* I18n */
     await addI18n(nuxt)

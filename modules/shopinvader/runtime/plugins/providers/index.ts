@@ -13,9 +13,10 @@ export const initProviders = (
 ): ShopinvaderProvidersList => {
 
   if (config == null) {
-    throw new Error('No shopinvader config found **')
+    throw new Error('No shopinvader config found')
   }
   const { elasticsearch, erp } = config
+
   let erpProviders = {} as ShopinvaderProvidersList
   let elasticProviders = {} as ShopinvaderProvidersList
   if (erp) {

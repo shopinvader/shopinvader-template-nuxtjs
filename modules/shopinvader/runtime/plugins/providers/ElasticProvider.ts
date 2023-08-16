@@ -24,7 +24,6 @@ export const initElasticProvider = (
     throw new Error('No elasticsearch config found')
   }
   for (const name in indices) {
-    console.log('name', indices)
     const indexName = `${indices[name]}_${isoLocale}`
 
     providers[name] = new ElasticFetch(

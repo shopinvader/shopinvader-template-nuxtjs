@@ -24,13 +24,32 @@ declare global {
 }
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-  const runtimeConfig = useRuntimeConfig()
-  const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
+  const app = useNuxtApp()
+
+
+  const { data:configData } = await useAsyncData(
+    async () => {
+      const runtimeConfig = useRuntimeConfig()
+      let config = {
+        ...runtimeConfig?.public?.shopinvader,
+        ...runtimeConfig?.shopinvader,
+      }
+
+      if(config?.erp?.proxy) {
+        const { origin } = useRequestURL()
+        config.erp = {
+          ...config.erp,
+          url: `${origin}/shopinvader/`,
+          proxy: null
+        }
+      }
+      return config
+    }
+  )
+  const config = configData?.value
   if (!config) {
     throw new Error('No shopinvader config found')
   }
-
-  const app = useNuxtApp()
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
 
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
