@@ -1,5 +1,8 @@
 <template>
-  <div class="product-variant-selector">
+  <div
+    class="product-variant-selector"
+    :class="{'product-variant-selector--loading': loading}"
+  >
     <div class="product-variant-selector__axis">
       <div
         v-for="(axis, name) of variantAxes"
@@ -52,31 +55,42 @@ export default defineNuxtComponent({
     }
   },
   async setup(props) {
+    const loading = ref(true)
     const productService = useShopinvaderService('products')
     const { product } = props
     let variantAxes = []
     if(product && product?.urlKey) {
-      variantAxes = await productService.getVariantsAggregation(product.urlKey, Object.keys(product.variantAttributes))
+      const { urlKey, variantAttributes } = product
+      const result = await productService.getVariantsAggregation(urlKey, variantAttributes)
+      variantAxes = result.axes
     }
+    loading.value = false
     return {
-      variantAxes
+      variantAxes,
+      loading
     }
   },
   methods: {
     async select(name:string, axis: string) {
-      const axes = {...this.product.variantAttributes}
-      axes[name] = axis
+      this.loading = true
+      const variantAttributes = {...this.product.variantAttributes}
+      variantAttributes[name] = axis
       const productService = useShopinvaderService('products')
-      const product = await productService.getByURLKeyVariantAxis(this.product.urlKey || '', axes)
+      const { product, axes } = await productService.getVariantsAggregation(this.product.urlKey || '', variantAttributes)
+      this.variantAxes = axes
       if (product) {
         this.$emit('selectVariant', product)
       }
+      this.loading = false
     }
   }
 })
 </script>
 <style lang="scss">
 .product-variant-selector {
+  &--loading {
+    @apply opacity-50;
+  }
   &__axis {
     @apply flex flex-col gap-3 py-4;
     .variant-axis {
