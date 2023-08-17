@@ -10,16 +10,16 @@
         ></account-navbar>
       </slot>
       <div class="account-layout__main">
-        <div class="main__title">
+        <div class="main__head">
           <slot name="title">
-            <div class="title__back">
+            <div class="head__back">
               <nuxt-link :to="localePath('account')">
                 <icon icon="ph:arrow-left"></icon>
               </nuxt-link>
             </div>
             <template v-if="currentPage">
-              <icon :icon="currentPage.icon"></icon>
-              <h1>{{ currentPage?.title }}</h1>
+              <icon class="head__icon" :icon="currentPage.icon"></icon>
+              <h1 class="head__title">{{ currentPage?.title }}</h1>
             </template>
           </slot>
         </div>
@@ -104,9 +104,9 @@ export default defineNuxtComponent({
   &__main {
     @apply w-full;
     .main {
-      &__title {
+      &__head {
         @apply flex items-center gap-2 border-b p-3 text-xl max-sm:shadow md:pb-3 lg:text-3xl;
-        .title {
+        .head {
           &__back {
             @apply cursor-pointer text-primary lg:hidden;
           }
