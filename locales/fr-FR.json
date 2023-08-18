@@ -25,6 +25,10 @@
       "seeall": "Voir tout"
     }
   },
+  "filters": {
+    "price_range": "De { min } à { max }.",
+    "price": "Prix"
+  },
   "product": {
     "cart": {
       "add": "Ajouter au panier"

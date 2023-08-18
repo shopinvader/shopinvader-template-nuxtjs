@@ -25,6 +25,10 @@
       "seeall": "Ver todo"
     }
   },
+  "filters": {
+    "price_range": "De { min } hasta { max }.",
+    "price": "Precio"
+  },
   "404": {
     "title": "Página no encontrada",
     "description": "La página que estás buscando no existe.",

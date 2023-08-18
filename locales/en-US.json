@@ -25,7 +25,10 @@
       "seeall": "See all results"
     }
   },
-
+  "filters": {
+    "price_range": "From { min } to { max }.",
+    "price": "Price"
+  },
   "product": {
     "cart": {
       "add": "Add to cart"

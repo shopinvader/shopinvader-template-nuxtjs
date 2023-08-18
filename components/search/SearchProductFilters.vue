@@ -13,6 +13,13 @@
     title="Color"
     url-param="name"
   ></search-terms-aggregation>
+  <search-range-price
+    name="price"
+    field="price.default.value"
+    :title="$t('filters.price')"
+    :close="false"
+    url-param="price"
+  ></search-range-price>
 </template>
 <script lang="ts">
 import { BoolQuery, TermQuery } from 'elastic-builder'
