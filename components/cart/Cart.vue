@@ -5,7 +5,7 @@
         <div class="cart__message">
           <!-- @slot Pending state and warning message content  -->
           <slot name="message" :cart="cart">
-            <div v-if="cart?.hasPendingTransactions" class="message">
+            <div v-if="hasPendingTransactions" class="message">
               {{ $t('cart.pending.checkout') }}
             </div>
           </slot>
@@ -23,18 +23,19 @@
           <slot name="total" :cart="cart">
             <cart-total class="">
               <template #footer>
-                <button
-                  type="button"
-                  :disabled="cart?.hasPendingTransactions"
-                  class="btn-secondary btn mt-6 w-full"
-                  @click="$emit('next')"
-                >
-                  {{ $t('cart.summary.checkout') }}
-                  <icon
-                    icon="material-symbols:chevron-right"
-                    class="text-lg"
-                  ></icon>
-                </button>
+                <div class="total__checkout" :class="{'tooltip tooltip-primary ':cart?.hasPendingTransactions}" :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')">
+                  <button
+                    type="button"
+                    class="checkout__btn"
+                    @click="!cart?.hasPendingTransactions && $emit('next')"
+                  >
+                    {{ $t('cart.summary.checkout') }}
+                    <icon
+                      icon="material-symbols:chevron-right"
+                      class="text-lg"
+                    ></icon>
+                  </button>
+                </div>
               </template>
             </cart-total>
           </slot>
@@ -69,7 +70,7 @@ import CartTotal from '~/components/cart/CartTotal.vue'
 import CartEmpty from '~/components/cart/CartEmpty.vue'
 import Spinner from '~/components/global/Spinner.vue'
 import { Cart } from '~~/models'
-
+let timer:any = null
 export default defineNuxtComponent({
   name: 'Cart',
   emits: {
@@ -90,6 +91,7 @@ export default defineNuxtComponent({
   setup() {
     const i18n = useI18n()
     const loading = ref(false)
+    const hasPendingTransactions = ref(false)
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
     useHead({
@@ -97,9 +99,28 @@ export default defineNuxtComponent({
     })
     return {
       cart,
-      loading
+      loading,
+      hasPendingTransactions,
+    }
+  },
+  watch: {
+    cart: {
+      handler(cart: Cart) {
+        const hasPendingTransactions = cart?.hasPendingTransactions || false
+        if (!hasPendingTransactions) {
+          this.hasPendingTransactions = false
+          if(timer) clearTimeout(timer)
+        } else {
+          timer = setTimeout(() => {
+            this.hasPendingTransactions = true
+          }, 2000);
+        }
+
+      },
+      immediate: true
     }
   }
+
 })
 </script>
 <style lang="scss">
@@ -122,6 +143,14 @@ export default defineNuxtComponent({
   }
   &__total {
     @apply col-span-3 lg:col-span-1;
+    .total {
+      &__checkout {
+        @apply w-full;
+        .checkout__btn {
+          @apply btn-secondary btn mt-6 w-full;
+        }
+      }
+    }
   }
   &__empty {
     @apply col-span-3 flex items-center justify-center p-10;
