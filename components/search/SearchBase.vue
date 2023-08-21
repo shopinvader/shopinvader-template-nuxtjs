@@ -104,6 +104,7 @@ export interface Filter {
 export interface SortItem {
   label: string
   value: string
+  order?: string
 }
 export default {
   components: {
@@ -241,7 +242,7 @@ export default {
         body.postFilter(postFilter)
       }
       if (sort.value !== null) {
-        body.sort(esb.sort(sort.value.value, 'asc'))
+        body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
       }
       const { aggregations, hits, total } = await props?.provider(body.toJSON())
 

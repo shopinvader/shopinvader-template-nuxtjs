@@ -11,7 +11,10 @@
       "count": "{count} résultat(s)"
     },
     "sort": {
-      "label": "Trier par"
+      "label": "Trier par",
+      "relevance": "Pertinence",
+      "name_asc": "A-Z",
+      "name_desc": "Z-A"
     },
     "autocomplete": {
       "noresults": "Aucun résultat",

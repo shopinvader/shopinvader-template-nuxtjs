@@ -5,9 +5,10 @@
     :query="query"
     :pagination="true"
     cardinality-field="url_key"
-    :sort-options="[
-      { label: 'Relevance', value: '_score' },
-      { label: 'Name', value: 'name' }
+    :sort-options="sortOptions || [
+      { label: $t('search.sort.relevance'), value: '_score' },
+      { label: $t('search.sort.name_asc'), value: 'name.sortable' },
+      { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
     ]"
   >
     <template #filters>
@@ -48,6 +49,11 @@ import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
 import esb from 'elastic-builder'
 
+export interface SortItem {
+  label: string
+  value: string
+  order?: string
+}
 export default {
   components: {
     ProductHit,
@@ -67,6 +73,13 @@ export default {
       default: () => {
         return esb.matchAllQuery()
       }
+    },
+    sortOptions: {
+      type: Array as PropType<Array<SortItem>>,
+      required: false,
+      default: () => {
+        return null
+      }
     }
   },
   data() {
@@ -76,6 +89,16 @@ export default {
         name: [],
         url: []
       }
+    }
+  },
+  setup() {
+    const { t } = useI18n()
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
+    return {
+      localePath,
+      cart,
+      $t: t
     }
   },
   methods: {
