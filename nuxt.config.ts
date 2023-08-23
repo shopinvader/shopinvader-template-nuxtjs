@@ -47,10 +47,12 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
+    'nuxt-simple-sitemap',
+    'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'nuxt-simple-sitemap'
+
   ],
 
   plugins: [
@@ -104,5 +106,23 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: false
+  },
+  routeRules: {
+    '/account/**': {
+      index: false,
+      ssr: false
+    },
+    '/cart': {
+      index: false,
+      ssr: false
+    },
+    '/checkout/**': {
+      index: false,
+      ssr: false
+    },
+    '/search': {
+      index: false,
+      ssr: false
+    },
   }
 })

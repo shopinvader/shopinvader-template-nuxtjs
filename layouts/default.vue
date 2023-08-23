@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <RobotMeta />
     <div id="header-target"></div>
     <slot name="header">
       <header-main></header-main>
@@ -25,7 +26,11 @@ export default defineNuxtComponent({
     'footer-main': FooterMain,
     'notifications-vue': Notifications,
     'navbar-bottom': NavbarBottomVue,
-  }
+  },
+  setup() {
+    defineRobotMeta()
+    return {}
+  },
 })
 </script>
 <style lang="scss">

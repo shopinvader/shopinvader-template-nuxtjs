@@ -30,6 +30,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^9.8.0",
     "nuxt": "^3.6.3",
+    "nuxt-simple-robots": "^3.1.1",
     "prettier": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.1",
     "sass": "^1.55.0",
