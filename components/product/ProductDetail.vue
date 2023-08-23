@@ -59,7 +59,7 @@
           <!-- @slot Variants content -->
           <slot name="variants">
             <product-variants-selector
-              v-if="variant.variantSelector?.length > 1"
+              v-if="variant.variantCount > 5 || variants === null"
               :product="variant"
               @select-variant="changeVariant"
             />
