@@ -31,7 +31,7 @@
           :inline="false"
         >
           <template #variants>
-            {{ new Date().toLocaleTimeString() }}
+
           </template>
         </ProductHit>
       </div>
