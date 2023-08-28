@@ -69,7 +69,7 @@ export default defineNuxtConfig({
 
   pages: true,
   sitemap: {
-    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**']
+    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
   i18n: {
     locales: [

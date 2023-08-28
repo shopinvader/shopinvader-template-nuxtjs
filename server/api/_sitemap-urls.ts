@@ -1,35 +1,56 @@
-
-import { ElasticFetch } from '@shopinvader/fetch'
-import { initProviders } from '../../modules/shopinvader/runtime/plugins/providers'
-import { CatalogService } from '../../services'
 /**
  * Provide the list of URLs to be included in the sitemap
  */
+const getAllUrlKeys = async (index: string) => {
+  const runtimeConfig = useRuntimeConfig()
+  const {elasticsearch = null} =
+    runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
+  const url = `${elasticsearch?.url || ""}/${index}_*/_search`
+  const data: any = await $fetch(url, {
+    method: "POST",
+    body: JSON.stringify({
+      query: {
+        match_all: {},
+      },
+      size: 0,
+      aggs: {
+        url_keys: {
+          terms: {
+            field: "url_key",
+            size: 10000,
+          },
+        },
+      },
+    }),
+  })
+  return (
+    data?.aggregations?.url_keys?.buckets?.map((u: any) => u?.key || "") || []
+  )
+}
 export default cachedEventHandler(
   async () => {
     let data: any = []
     const runtimeConfig = useRuntimeConfig()
-    const config =
+    const {elasticsearch = null} =
       runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
-    //const localeConfig = runtimeConfig?.i18n?.locales || null
-    /** Elastic Provider */
-    const providers = initProviders(config, '*')
-    if (providers) {
-      const catalogService = new CatalogService(
-        providers?.elasticsearch as ElasticFetch
-      )
-      const response = await catalogService.search({ size: 5000 })
-      data = response?.rawsHits?.map((hit: any) => {
-        return {
-          loc: hit.url_key,
-          lastmod: new Date()
-        }
-      })
+
+    if (elasticsearch) {
+      /** Elastic Provider */
+      const urlProducts =
+        (await getAllUrlKeys(elasticsearch?.indices?.products || "")) || []
+      const urlCategories =
+        (await getAllUrlKeys(elasticsearch?.indices?.categories || "")) || []
+      data = [...urlProducts, ...urlCategories]
     }
-    return data
+    return data.map((url: string) => {
+      return {
+        url: `/${url}`,
+        changefreq: "daily",
+      }
+    })
   },
   {
-    name: 'sitemap-dynamic-urls',
-    maxAge: 60 * 10 // cache URLs for 10 minutes
+    swr: true,
+    maxAge: 10 * 60,
   }
 )
