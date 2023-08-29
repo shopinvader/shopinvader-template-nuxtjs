@@ -87,6 +87,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const routes:any = {}
   addRouteMiddleware(
     async (to, from) => {
+      if(to?.meta?.auth) {
+        const auth = useShopinvaderService('auth')
+        const user = auth.getUser()
+        const localePath = useLocalePath();
+        if (!user.value) {
+          return navigateTo(localePath({ path: '/account/login' }));
+        }
+      }
       if (!router.hasRoute(to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
 
@@ -121,7 +129,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     },
     { global: true }
   )
-
   return {
     provide: {
       shopinvader: {

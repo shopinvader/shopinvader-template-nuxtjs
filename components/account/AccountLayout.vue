@@ -1,6 +1,6 @@
 <template>
   <ClientOnly>
-    <div class="account-layout">
+    <div v-if="user !== null" class="account-layout">
       <slot v-if="navbar" name="navbar">
         <account-navbar
           v-if="items && items?.length > 0"
@@ -51,9 +51,12 @@ export default defineNuxtComponent({
     }
   },
   setup() {
+    const auth = useShopinvaderService('auth')
+    const user = auth.getUser()
     const localePath = useLocalePath()
     return {
-      localePath
+      localePath,
+      user
     }
   },
   data() {
