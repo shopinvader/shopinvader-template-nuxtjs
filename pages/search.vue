@@ -1,50 +1,44 @@
 <template>
-  <search-base
-    :key="instanceKey"
-    :size="30"
+  <search-product
+    v-if="refresh"
+    ref="searchProduct"
     :provider="providerFunction"
     :query="query"
   >
-    <template #filters> </template>
     <template #header>
-      <search-selected-filters></search-selected-filters>
-    </template>
-    <template #items="{ items }">
-      <div class="grid grid-cols-1 gap-1 sm:grid-cols-2 md:grid-cols-3">
-        <ProductHit
-          v-for="item in items"
-          :key="item.id"
-          :product="item"
-          :inline="false"
-        >
-        </ProductHit>
+      <div class="text-2xl font-heading">
+        {{ $t('search.autocomplete.product', { query: queryString }) }}
       </div>
     </template>
-  </search-base>
+  </search-product>
 </template>
 <script lang="ts">
-import ProductHit from '~/components/product/ProductHit.vue'
+import SearchProduct from '~/components/search/SearchProduct.vue'
 import { Product } from '~/models/Product'
-import { ProductService } from '~/services/ProductService'
-import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
-import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import esb, { BoolQuery, TermQuery } from 'elastic-builder'
 
 export default {
   components: {
-    ProductHit,
-    'search-base': SearchBaseVue,
-    'search-selected-filters': SearchSelectedFilters
+    'search-product': SearchProduct
   },
   layout: 'default',
   setup() {
+    const { t } = useI18n()
     const $route = useRoute()
-    const instanceKey = ref(0)
-    watch($route, () => {
-      instanceKey.value++
+    const refresh = ref(false)
+    const queryString = computed(() => $route.query.q)
+    useSeoMeta({
+      title: t('search.autocomplete.product', { query: queryString?.value || '' })
     })
+    watch(queryString, value => {
+      refresh.value = false
+      setTimeout(() => {
+        refresh.value = true
+      }, 100)
+    }, {deep: true, immediate: true})
     return {
-      instanceKey
+      queryString,
+      refresh
     }
   },
   data() {
@@ -79,7 +73,8 @@ export default {
       const route = useRoute()
       const query: string | null = route.query?.q || null
       if (query !== null) {
-        return ProductService.fullTextQuery(query)
+        const productService = useShopinvaderService('products')
+        return productService.fullTextQuery(query)
       } else {
         return esb.matchAllQuery()
       }
