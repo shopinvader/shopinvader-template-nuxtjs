@@ -3,7 +3,7 @@ export interface Record {
 }
 
 export class Model {
-  private data: any
+  public data: any
   constructor(data: any) {
     this.data = data
   }

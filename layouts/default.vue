@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <RobotMeta />
     <div id="header-target"></div>
     <slot name="header">
       <header-main></header-main>
