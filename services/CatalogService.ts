@@ -45,7 +45,24 @@ export class CatalogService {
     if(sku) {
       return this.find('sku.keyword', [sku])
     }
-    return this.find('url_key', [urlKey])
+    return this.search({
+      query: {
+        bool: {
+          should: [
+            {
+              terms: {
+                url_key: [urlKey]
+              }
+            },
+            {
+              terms: {
+                redirect_url_key: [urlKey]
+              }
+            }
+          ]
+        }
+      }
+    })
   }
   async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {
     const result = await this.getByURLKey(urlKey, sku)

@@ -109,20 +109,29 @@ export default defineNuxtPlugin(async (nuxtApp) => {
           return entity
         })
         const entity = data.value
-        if (entity) {
-          let component = null
-          if (entity instanceof Product) {
-            component = TemplateProductPage
-          } else if (entity instanceof Category) {
-            component = TemplateCategoryPage
-          }
-          if (component) {
-            to.matched[0].components = {
-              default: component
-            }
-          }
+        console.log('entity', entity.urlKey, entity.redirectUrlKey)
 
-          await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
+        if (entity) {
+          if( entity?.urlKey !== path) {
+            /** Render page */
+            let component = null
+            if (entity instanceof Product) {
+              component = TemplateProductPage
+            } else if (entity instanceof Category) {
+              component = TemplateCategoryPage
+            }
+            if (component) {
+              to.matched[0].components = {
+                default: component
+              }
+            }
+            await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
+          } else if (entity?.redirectUrlKey?.length) {
+            /** Redirection */
+            navigateTo(entity.urlKey, {
+              redirectCode: 301
+            })
+          }
         }
       }
 
