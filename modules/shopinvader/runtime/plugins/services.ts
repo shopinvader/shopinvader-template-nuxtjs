@@ -109,8 +109,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
           return entity
         })
         const entity = data.value
-        console.log('entity', entity.urlKey, entity.redirectUrlKey)
-
         if (entity) {
           if( entity?.urlKey !== path) {
             /** Render page */
