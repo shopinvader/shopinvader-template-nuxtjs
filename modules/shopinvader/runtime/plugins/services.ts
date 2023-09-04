@@ -110,7 +110,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         })
         const entity = data.value
         if (entity) {
-          if( entity?.urlKey !== path) {
+          if(entity?.urlKey === path) {
             /** Render page */
             let component = null
             if (entity instanceof Product) {
