@@ -1,5 +1,5 @@
 import { Model } from './Model'
-
+import { CategoryImageSet } from './CategoryImageSet'
 export interface CategoryResult {
   hits: Category[]
   total: number
@@ -58,6 +58,7 @@ export class Category extends Model {
   childs: CategoryChild[]
   parent: CategoryParent | null
   mainParent: CategoryParent | null
+  images: CategoryImageSet[] | null
   sequence: number
 
   /** Fill fields with data from the Json provided by ElasticSearch */
@@ -78,6 +79,12 @@ export class Category extends Model {
     this.childs = []
     this.parent = null
     this.sequence = parseInt(data?.sequence || 0)
+    this.images = [] as CategoryImageSet[]
+    if (Array.isArray(data?.images)) {
+      this.images = data?.images.map((image: any) => {
+        return new CategoryImageSet(image)
+      })
+    }
     if (data?.parent !== undefined) {
       this.parent = new CategoryParent(data.parent)
     }

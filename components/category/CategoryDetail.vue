@@ -6,23 +6,30 @@
     :query="query"
   >
     <template #header>
-      <div class="border-b">
-        <h1 class="mb-0">
-          {{ category.name }}
-        </h1>
-        <div class="breadcrumbs text-sm">
-          <ul>
-            <li v-for="item in breadcrumb" :key="item.id">
-              <nuxt-link :to="localePath({ path: '/' + item.urlKey })">
-                {{ item.name }}
-              </nuxt-link>
-            </li>
-          </ul>
+
+        <div class="border-b">
+          <slot name="name" :category="category">
+            <h1 class="mb-0">
+              {{ category.name }}
+            </h1>
+          </slot>
+          <slot name="breadcrumb" :category="category">
+            <div class="breadcrumbs text-sm">
+              <ul>
+                <li v-for="item in breadcrumb" :key="item.id">
+                  <nuxt-link :to="localePath({ path: '/' + item.urlKey })">
+                    {{ item.name }}
+                  </nuxt-link>
+                </li>
+              </ul>
+            </div>
+          </slot>
         </div>
-      </div>
     </template>
     <template #footer>
-      <div v-html="category.description"></div>
+      <slot name="footer" :category="category">
+        <div v-html="category.description"></div>
+      </slot>
     </template>
   </search-product>
 </template>
