@@ -1,4 +1,4 @@
-import { Cart, Product } from '~/models'
+import { Cart, CategoryImageSet, Product } from '~/models'
 import { Category, CategoryParent } from '~/models/Category'
 
 export default definePayloadPlugin(() => {
@@ -28,5 +28,12 @@ export default definePayloadPlugin(() => {
   definePayloadReducer(
     'Product',
     (value) => value instanceof Product && value.toJSON()
+  )
+
+  /**CategoryImageSet */
+  definePayloadReviver('CategoryImageSet', (data) => new CategoryImageSet(data))
+  definePayloadReducer(
+    'CategoryImageSet',
+    (value) => value instanceof CategoryImageSet && value.toJSON()
   )
 })
