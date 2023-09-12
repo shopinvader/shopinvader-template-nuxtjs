@@ -23,7 +23,7 @@
 </template>
 <script lang="ts">
 import { BoolQuery, TermQuery } from 'elastic-builder'
-export default({
+export default defineNuxtComponent({
   methods: {
     categoryQuery(query: BoolQuery) {
       if (query !== null) {
