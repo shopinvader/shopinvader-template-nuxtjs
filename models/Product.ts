@@ -94,7 +94,10 @@ export class Product extends Model {
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
     const priceLists = Object.keys(data?.price || {})
-    this.price = new ProductPrice(data?.price[priceLists[0]]) || null
+    let price = data?.price?.[priceLists?.[0]] || null
+    if(price) {
+      this.price = new ProductPrice(price) || null
+    }
     this.images = [] as ProductImageSet[]
     if (Array.isArray(data?.images)) {
       this.images = data?.images.map((image: any) => {

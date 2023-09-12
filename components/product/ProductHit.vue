@@ -26,7 +26,7 @@
         <div class="body__title">
           <slot name="title" :product="variant">
             <nuxt-link :to="linkPath">
-              {{ variant?.model?.name }}
+              {{ variant?.model?.name || variant?.name }}
             </nuxt-link>
           </slot>
         </div>
