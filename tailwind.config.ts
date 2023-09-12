@@ -4,15 +4,19 @@ export default {
   content: [],
   plugins: [daisyui],
   theme: {
-    extend: {}
+    extend: {
+      fontFamily: {
+        heading: ["Josefin Sans"],
+      },
+    },
   },
   daisyui: {
     themes: [
       {
         mytheme: {
           fontFamily: 'Montserrat,"sanssecondaryerif"',
-          primary: '#2f64aa',
-          secondary: '#0F798A',
+          primary: '#13263d',
+          secondary: '#dca11d',
           accent: '#def2ff',
           neutral: '#42536d',
           'base-100': '#ffffff',
