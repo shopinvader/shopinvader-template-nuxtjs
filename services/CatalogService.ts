@@ -34,22 +34,38 @@ export class CatalogService {
     })
 
     const hits = rawsHits.map((hit: any) => {
-      if (hit._index.includes('category')) {
-        return new Category(hit)
-      } else {
-        return new Product(hit)
-      }
+      return this.jsonToModel(hit)
     })
 
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations, rawsHits }
   }
-  getByURLKey(urlKey: string): Promise<CatalogResult> {
-    return this.find('url_key', [urlKey])
+  getByURLKey(urlKey: string, sku: string | null): Promise<CatalogResult> {
+    if(sku) {
+      return this.find('sku.keyword', [sku])
+    }
+    return this.search({
+      query: {
+        bool: {
+          should: [
+            {
+              terms: {
+                url_key: [urlKey]
+              }
+            },
+            {
+              terms: {
+                redirect_url_key: [urlKey]
+              }
+            }
+          ]
+        }
+      }
+    })
   }
-  async getEntityByURLKey(urlKey: string): Promise<Product | Category | null> {
-    const result = await this.getByURLKey(urlKey)
+  async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {
+    const result = await this.getByURLKey(urlKey, sku)
     return result?.hits?.[0] || null
   }
   find(field: string, value: string[] | number[]): Promise<CatalogResult> {
@@ -57,5 +73,12 @@ export class CatalogService {
     terms[field] = value
     const body = { query: { terms } }
     return this.search(body)
+  }
+  jsonToModel(hit: any): Product | Category {
+    if (hit._index.includes('category')) {
+      return new Category(hit)
+    } else {
+      return new Product(hit)
+    }
   }
 }

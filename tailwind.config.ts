@@ -4,7 +4,11 @@ export default {
   content: [],
   plugins: [daisyui],
   theme: {
-    extend: {}
+    extend: {
+      fontFamily: {
+        heading: ["Josefin Sans"],
+      },
+    },
   },
   daisyui: {
     themes: [

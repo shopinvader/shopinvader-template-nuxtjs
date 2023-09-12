@@ -184,7 +184,7 @@ export default {
         .header {
           @apply flex items-center justify-between border-0 p-0 sm:p-2;
           .title {
-            @apply heading w-full border-b py-2;
+            @apply font-heading w-full border-b py-2;
           }
         }
         .dropdown__results {
@@ -203,17 +203,17 @@ export default {
   }
   &--focused {
     .search-autocomplete__form {
-      @apply fixed top-0 left-0 z-40 max-xl:h-full max-xl:w-screen max-xl:overflow-auto max-xl:bg-white xl:relative;
+      @apply fixed top-0 left-0 z-40 max-xl:h-full max-xl:w-screen max-xl:overflow-auto max-xl:bg-white xl:relative ;
       .form {
         @apply flex w-full items-center;
         &__back {
-          @apply cursor-pointer p-1 xl:hidden;
+          @apply cursor-pointer p-1 xl:hidden text-black;
         }
         &__input {
-          @apply flex-1 rounded-xl border border-secondary  bg-white transition-all xl:z-50 xl:w-full;
+          @apply flex-1 rounded-xl border border-secondary bg-white transition-all z-50 w-full;
         }
         &__dropdown {
-          @apply m-2 bg-white xl:absolute xl:-top-5  xl:-left-2  xl:mt-5 xl:w-full xl:rounded-xl xl:pt-20 xl:shadow-lg;
+          @apply m-2 bg-white absolute xl:-top-5  xl:-left-2  xl:mt-5 xl:w-full xl:rounded-xl pt-20 xl:shadow-lg;
 
           &.v-enter-active {
             animation: dropdown 0.4s;

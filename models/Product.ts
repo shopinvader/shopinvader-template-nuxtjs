@@ -48,7 +48,7 @@ export class Product extends Model {
   id: number | null = null
   model: ProductModel | null = null
   urlKey: string | null = null
-  redirectUrlKey: string | null = null
+  redirectUrlKey: string[] = []
   main = false
   shortDescription: string | null = null
   description: string | null = null
@@ -72,7 +72,7 @@ export class Product extends Model {
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
     this.urlKey = data?.url_key || null
-    this.redirectUrlKey = data?.redirect_url_key || null
+    this.redirectUrlKey = Array.isArray(data?.redirect_url_key)? data?.redirect_url_key : []
     this.main = data?.main || false
     this.shortDescription = data?.short_description || null
     this.description = data?.description || null
@@ -94,7 +94,10 @@ export class Product extends Model {
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
     const priceLists = Object.keys(data?.price || {})
-    this.price = new ProductPrice(data?.price[priceLists[0]]) || null
+    let price = data?.price?.[priceLists?.[0]] || null
+    if(price) {
+      this.price = new ProductPrice(price) || null
+    }
     this.images = [] as ProductImageSet[]
     if (Array.isArray(data?.images)) {
       this.images = data?.images.map((image: any) => {

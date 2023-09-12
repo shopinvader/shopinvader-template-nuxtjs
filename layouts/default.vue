@@ -25,7 +25,11 @@ export default defineNuxtComponent({
     'footer-main': FooterMain,
     'notifications-vue': Notifications,
     'navbar-bottom': NavbarBottomVue,
-  }
+  },
+  setup() {
+    defineRobotMeta()
+    return {}
+  },
 })
 </script>
 <style lang="scss">

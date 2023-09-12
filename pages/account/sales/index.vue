@@ -16,7 +16,7 @@
     <template v-if="sales" #content>
       <template v-if="loading"> ... </template>
       <div class="overflow-x-auto">
-        <table v-if="sales" class="table table hidden w-full md:table">
+        <table v-if="sales" class="table hidden w-full md:table">
           <thead>
             <tr>
               <th class="px-2 text-left">

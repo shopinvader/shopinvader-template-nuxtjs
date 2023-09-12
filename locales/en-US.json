@@ -11,7 +11,10 @@
       "count": "{count} result(s)"
     },
     "sort": {
-      "label": "Order by"
+      "label": "Order by",
+      "relevance": "Relevance",
+      "name_asc": "A-Z",
+      "name_desc": "Z-A"
     },
     "autocomplete": {
       "noresults": "No result found",
@@ -25,10 +28,9 @@
       "seeall": "See all results"
     }
   },
-  "404": {
-    "title": "Page not found",
-    "description": "The page you are looking for does not exist.",
-    "home": "Back to the homepage"
+  "filters": {
+    "price_range": "From { min } to { max }.",
+    "price": "Price"
   },
   "product": {
     "cart": {
@@ -246,12 +248,18 @@
       "email": "Email format is not valid.",
       "password": "Password format not valid",
       "unable_to_login": "Login error"
+    },
+    "404": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist.",
+      "home": "Back to the homepage"
     }
   },
   "btn": {
     "view_more": "View more",
     "download": "Download",
-    "back_to_homepage": "Back to homepage"
+    "back_to_homepage": "Back to homepage",
+    "back": "Back"
   },
   "navbar": {
     "home": "Home",

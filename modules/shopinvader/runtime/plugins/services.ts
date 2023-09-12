@@ -24,13 +24,32 @@ declare global {
 }
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-
-  const runtimeConfig = useRuntimeConfig()
-  const config = runtimeConfig?.public?.shopinvader || runtimeConfig?.shopinvader || null
-  if (!config) {
-    throw new Error('No shopinvader config found /!\ **')
-  }
   const app = useNuxtApp()
+
+
+  const { data:configData } = await useAsyncData(
+    async () => {
+      const runtimeConfig = useRuntimeConfig()
+      let config = {
+        ...runtimeConfig?.public?.shopinvader,
+        ...runtimeConfig?.shopinvader,
+      }
+
+      if(config?.erp?.proxy) {
+        const { origin } = useRequestURL()
+        config.erp = {
+          ...config.erp,
+          url: `${origin}/shopinvader/`,
+          proxy: null
+        }
+      }
+      return config
+    }
+  )
+  const config = configData?.value
+  if (!config) {
+    throw new Error('No shopinvader config found')
+  }
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
 
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
@@ -65,35 +84,58 @@ export default defineNuxtPlugin(async (nuxtApp) => {
    * Add a middleware to check if the user is logged in
    */
   const router = useRouter()
+  const routes:any = {}
   addRouteMiddleware(
-    async (to) => {
+    async (to, from) => {
+      if(to?.meta?.auth) {
+        const auth = useShopinvaderService('auth')
+        const user = auth.getUser()
+        const localePath = useLocalePath();
+        if (!user.value) {
+          return navigateTo(localePath({ path: '/account/login' }));
+        }
+      }
       if (!router.hasRoute(to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
+
         const { data } = await useAsyncData('entity', async () => {
-          const entity = await services.catalog.getEntityByURLKey(path)
+          if(routes?.[path]) {
+            return routes[path]
+          }
+          const catalog = useShopinvaderService('catalog')
+          const sku = to?.query?.sku || null as string | null
+          const entity = await catalog.getEntityByURLKey(path, sku)
+          routes[path] = entity
           return entity
         })
         const entity = data.value
         if (entity) {
-          let component = null
-          if (entity instanceof Product) {
-            component = TemplateProductPage
-          } else if (entity instanceof Category) {
-            component = TemplateCategoryPage
-          }
-          if (component) {
-            to.matched[0].components = {
-              default: component
+          if(entity?.urlKey === path) {
+            /** Render page */
+            let component = null
+            if (entity instanceof Product) {
+              component = TemplateProductPage
+            } else if (entity instanceof Category) {
+              component = TemplateCategoryPage
             }
+            if (component) {
+              to.matched[0].components = {
+                default: component
+              }
+            }
+            await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
+          } else if (entity?.redirectUrlKey?.length) {
+            /** Redirection */
+            navigateTo(entity.urlKey, {
+              redirectCode: 301
+            })
           }
-          await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
         }
       }
 
     },
     { global: true }
   )
-
   return {
     provide: {
       shopinvader: {

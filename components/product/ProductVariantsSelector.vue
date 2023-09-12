@@ -1,40 +1,41 @@
 <template>
-  <div class="product-variant-selector">
+  <div
+    class="product-variant-selector"
+    :class="{'product-variant-selector--loading': loading}"
+  >
     <div class="product-variant-selector__axis">
       <div
-        v-for="variantAxis of product.variantSelector"
-        :key="variantAxis.name"
-        class="variant-axis"
-      >
+        v-for="(axis, name) of variantAxes"
+        :key="name"
+        class="variant-axis">
         <div class="variant-axis__name">
-          {{ variantAxis?.name }}
+          {{ name }}
         </div>
         <div class="variant-axis__values">
-          <template v-if="variantAxis?.values?.length < 10">
-            <div v-for="value of variantAxis?.values" :key="value.sku">
+          <template v-if="axis?.length < 10">
+            <div v-for="value in axis" :key="value">
               <button
                 type="button"
-                class="btn-primary btn-xs btn"
+                class="values__btn"
                 :class="{
-                  'btn-outline': !value.selected
+                  'values__btn--selected': value == product.variantAttributes[name],
+                  'values__btn--unselected':  value != product.variantAttributes[name]
                 }"
-                :disabled="!value.available"
-                @click="select(value.sku)"
+                @click="select(name, value)"
               >
-                {{ value?.name }}
+                {{ value }}
               </button>
             </div>
           </template>
-          <select v-else class="select-primary select select-sm max-w-xs">
+          <select v-else class="select select-sm max-w-xs">
             <option
-              v-for="value of variantAxis?.values"
-              :key="value.sku"
-              :value="value.sku"
-              :disabled="!value.available"
-              :selected="value.selected"
-              @click="select(value.sku)"
+              v-for="value of axis"
+              :key="value"
+              :value="value"
+              :selected="value == product.variantAttributes[name]"
+              @click="select(name, value)"
             >
-              {{ value?.name }}
+              {{ value }}
             </option>
           </select>
         </div>
@@ -53,19 +54,43 @@ export default defineNuxtComponent({
       required: true
     }
   },
+  async setup(props) {
+    const loading = ref(true)
+    const productService = useShopinvaderService('products')
+    const { product } = props
+    let variantAxes = []
+    if(product && product?.urlKey) {
+      const { urlKey, variantAttributes } = product
+      const result = await productService.getVariantsAggregation(urlKey, variantAttributes)
+      variantAxes = result.axes
+    }
+    loading.value = false
+    return {
+      variantAxes,
+      loading
+    }
+  },
   methods: {
-    select(sku: string) {
-      const variant: Product | null =
-        this.product.variants?.find((variant) => variant.sku === sku) || null
-      if (variant) {
-        this.$emit('selectVariant', variant)
+    async select(name:string, axis: string) {
+      this.loading = true
+      const variantAttributes = {...this.product.variantAttributes}
+      variantAttributes[name] = axis
+      const productService = useShopinvaderService('products')
+      const { product, axes } = await productService.getVariantsAggregation(this.product.urlKey || '', variantAttributes)
+      this.variantAxes = axes
+      if (product) {
+        this.$emit('selectVariant', product)
       }
+      this.loading = false
     }
   }
 })
 </script>
 <style lang="scss">
 .product-variant-selector {
+  &--loading {
+    @apply opacity-50;
+  }
   &__axis {
     @apply flex flex-col gap-3 py-4;
     .variant-axis {
@@ -74,8 +99,17 @@ export default defineNuxtComponent({
       }
       &__values {
         @apply flex flex-wrap gap-1;
-        button {
-          @apply m-1;
+        .values {
+          &__btn {
+            @apply btn btn-xs;
+            &--unselected {
+              @apply btn-outline;
+            }
+            &--selected {
+              @apply btn-primary text-primary-content;
+            }
+          }
+
         }
       }
     }

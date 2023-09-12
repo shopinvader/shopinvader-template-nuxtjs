@@ -7,10 +7,12 @@
       @click="filter?.setValues([])"
     >
       <slot :filter="filter" :clear-filter="clearFilter">
-        <span class="text-xs">
+        <span class="text-xs pr-2">
           {{ filter.title }}: {{ filter.getValuesLabels() }}
         </span>
-        <span>X</span>
+        <span>
+          <icon icon="material-symbols:close" />
+        </span>
       </slot>
     </button>
   </div>

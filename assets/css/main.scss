@@ -1,57 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@font-face {
-  font-family: 'Montserrat';
-  font-weight: 300;
-  src: url('../font/Montserrat-Light.ttf') format('truetype'),
+@layer components {
+  .heading {
+    @apply font-heading uppercase font-bold
+  }
 }
-
-@font-face {
-  font-family: 'Montserrat';
-  font-weight: 400;
-  src: url('../font/Montserrat-Regular.ttf') format('truetype'),
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  font-weight: 600;
-  src: url('../font/Montserrat-SemiBold.ttf') format('truetype'),
-}
-
-@font-face {
-  font-family: 'Montserrat';
-  font-weight: 700;
-  src: url('../font/Montserrat-Bold.ttf') format('truetype'),
-}
-
-@font-face {
-  font-family: 'Josefin Sans';
-  font-weight: 700;
-  src: url('../font/JosefinSans-Bold.ttf') format('truetype'),
-}
-
-
 h2,
 .h2 {
 
-  @apply heading leading-tight text-3xl mt-0 mb-5 text-primary;
+  @apply font-heading leading-tight text-3xl mt-0 mb-5 text-primary;
 }
 
 h1,
 .h1 {
-  @apply heading leading-tight text-4xl mt-0 mb-5 text-primary;
+  @apply font-heading leading-tight text-4xl mt-0 mb-5 text-primary;
 }
 
-@layer components {
-  .heading {
-    font-family: 'Josefin Sans';
-    font-weight: 700;
-    text-transform: uppercase;
-  }
 
-}
 
 
 .backdrop {

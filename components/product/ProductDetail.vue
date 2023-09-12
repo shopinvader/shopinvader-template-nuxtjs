@@ -48,7 +48,7 @@
         </div>
         <div class="content__shortDescription">
           <!-- @slot Intro content -->
-          <slot name="intro">
+          <slot name="intro" :variant="variant">
             <div
               v-if="variant.shortDescription"
               v-html="variant.shortDescription"
@@ -59,7 +59,7 @@
           <!-- @slot Variants content -->
           <slot name="variants">
             <product-variants-selector
-              v-if="variant.variantSelector?.length > 1"
+              v-if="variant.variantCount > 5 || variants === null"
               :product="variant"
               @select-variant="changeVariant"
             />
@@ -105,7 +105,7 @@
     </div>
     <div class="product-detail__description">
       <!-- @slot Description content -->
-      <slot name="description">
+      <slot name="description" :variant="variant">
         <div
           v-html="variant.description"
           class="prose prose-sm max-w-none"

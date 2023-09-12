@@ -3,26 +3,18 @@
     :size="30"
     :provider="provider"
     :query="query"
-    :sort-options="[
-      { label: 'Relevance', value: '_score' },
-      { label: 'Name', value: 'name' }
+    :pagination="true"
+    cardinality-field="url_key"
+    :sort-options="sortOptions || [
+      { label: $t('search.sort.relevance'), value: '_score' },
+      { label: $t('search.sort.name_asc'), value: 'name.sortable' },
+      { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
     ]"
   >
     <template #filters>
-      <search-terms-aggregation
-        name="categories"
-        nested-path="categories"
-        field="categories.name"
-        title="Categories"
-        :aggregation-query="categoryQuery"
-        url-param="category"
-      ></search-terms-aggregation>
-      <search-terms-aggregation
-        name="color"
-        field="variant_attributes.color"
-        title="Color"
-        url-param="name"
-      ></search-terms-aggregation>
+      <slot name="filters">
+        <search-product-filters></search-product-filters>
+      </slot>
     </template>
     <template #header>
       <div class="pt-4">
@@ -38,6 +30,9 @@
           :product="item"
           :inline="false"
         >
+          <template #variants>
+
+          </template>
         </ProductHit>
       </div>
     </template>
@@ -52,8 +47,13 @@ import { Product } from '~/models/Product'
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
-import esb, { BoolQuery, TermQuery } from 'elastic-builder'
+import esb from 'elastic-builder'
 
+export interface SortItem {
+  label: string
+  value: string
+  order?: string
+}
 export default {
   components: {
     ProductHit,
@@ -73,6 +73,13 @@ export default {
       default: () => {
         return esb.matchAllQuery()
       }
+    },
+    sortOptions: {
+      type: Array as PropType<Array<SortItem>>,
+      required: false,
+      default: () => {
+        return null
+      }
     }
   },
   data() {
@@ -84,17 +91,19 @@ export default {
       }
     }
   },
+  setup() {
+    const { t } = useI18n()
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
+    return {
+      localePath,
+      cart,
+      $t: t
+    }
+  },
   methods: {
     transformResult(result: any) {
       return result?.hits?.hits?.map((data: any) => new Product(data._source))
-    },
-    categoryQuery(query: BoolQuery) {
-      if (query !== null) {
-        query.must(new TermQuery('categories.level', '0'))
-      } else {
-        query = new BoolQuery().must(new TermQuery('categories.level', '0'))
-      }
-      return query
     }
   }
 }

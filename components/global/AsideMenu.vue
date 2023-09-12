@@ -1,6 +1,6 @@
 <template>
   <div class="aside-menu drawer" :class="{ 'side-menu': sideMenu }">
-    <input :id="name" type="checkbox" class="drawer-toggle" />
+    <input :id="name" type="checkbox" class="drawer-toggle" v-model="isOpen" />
     <div class="drawer-content flex flex-col">
       <div class="content" :class="classContent">
         <div class="content__button">
@@ -19,12 +19,12 @@
     </div>
     <div class="drawer-side">
       <label :for="name" class="drawer-overlay"></label>
-      <div class="bg-base-100">
-        <div class="flex justify-between border-b py-2">
-          <div class="flex px-3">
+      <div class="side">
+        <div class="side__header">
+          <div class="header__title">
             <slot name="header"></slot>
           </div>
-          <div class="flex">
+          <div class="header__close">
             <label :for="name" class="btn-ghost btn-square btn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +65,15 @@ export default {
     }
   },
   setup() {
-    return {}
+    const isOpen = ref(false)
+    const router = useRouter()
+    watch(() => router.currentRoute.value, () => {
+      isOpen.value = false
+    })
+
+    return {
+      isOpen
+    }
   }
 }
 </script>
@@ -92,13 +100,22 @@ export default {
   }
   .drawer-toggle {
     &:checked ~ .drawer-side {
-      @apply relative h-screen w-screen border;
+      @apply fixed top-0 h-screen w-screen md:w-[400px] border shadow;
     }
   }
   .drawer-side {
     @apply border;
     height: 0;
     width: 0;
+    .side {
+      @apply bg-base-100;
+      &__header {
+        @apply flex justify-between border-b py-2;
+        .header__title {
+          @apply flex px-3;
+        }
+      }
+    }
   }
   &.side-menu {
     .drawer-content {

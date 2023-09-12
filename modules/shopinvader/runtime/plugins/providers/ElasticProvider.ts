@@ -19,14 +19,14 @@ export const initElasticProvider = (
 ): ShopinvaderProvidersList => {
   const allIndex: string[] = []
   const providers: ShopinvaderProvidersList = {}
-  const indices = config?.indices || []
-  if (config?.url === null || Array.isArray(indices) === false) {
+  const indices = config?.indices || {}
+  if (config?.url === null || !indices) {
     throw new Error('No elasticsearch config found')
   }
-  for (const index of indices) {
-    const indexName = `${index?.index}_${isoLocale}`
+  for (const name in indices) {
+    const indexName = `${indices[name]}_${isoLocale}`
 
-    providers[index.name] = new ElasticFetch(
+    providers[name] = new ElasticFetch(
       config.url,
       indexName,
       fetchElastic

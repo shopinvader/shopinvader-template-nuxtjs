@@ -11,7 +11,10 @@
       "count": "{count} resultado(s)"
     },
     "sort": {
-      "label": "Ordenar por"
+      "label": "Ordenar por",
+      "relevance": "Relevancia",
+      "name_asc": "A-Z",
+      "name_desc": "Z-A"
     },
     "autocomplete": {
       "noresults": "Sin resultados",
@@ -24,6 +27,10 @@
       "clear": "Borrar",
       "seeall": "Ver todo"
     }
+  },
+  "filters": {
+    "price_range": "De { min } hasta { max }.",
+    "price": "Precio"
   },
   "404": {
     "title": "Página no encontrada",

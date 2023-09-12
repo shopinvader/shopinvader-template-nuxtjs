@@ -13,40 +13,65 @@ export default defineNuxtConfig({
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
       },
-    },
-    shopinvader: {
-      erp: {
-        website_key: process.env.ERP_WEBSITE_KEY || '',
-        api_url: process.env.ERP_HOST || '',
-        default_role: 'default'
-      },
-      endpoint: 'shopinvader',
-      elasticsearch: {
-        url: process.env.ELASTIC_URL || '',
-        indices: [
-          {
-            name: 'categories',
-            index: process.env.ELASTIC_CATEGORY || '',
-            body: {}
+      shopinvader: {
+        erp: {
+          key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || "",
+          url: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_URL || "",
+          default_role: "default",
+        },
+        endpoint: "shopinvader",
+        elasticsearch: {
+          url: process.env.NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_URL || "",
+          indices: {
+            products:
+              process.env
+                .NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_PRODUCTS ||
+              "",
+            categories:
+              process.env
+                .NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_CATEGORIES ||
+              "",
           },
-          {
-            name: 'products',
-            index: process.env.ELASTIC_PRODUCT || '',
-            body: {}
-          }
-        ]
-      }
+        },
+      },
     },
   },
-
+  googleFonts: {
+    families: {
+      Montserrat: [300,400,600,700],
+      'Josefin+Sans': [700],
+    },
+    download: true,
+    stylePath: 'css/fonts.css'
+  },
   modules: [
+    '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
+    'nuxt-simple-sitemap',
+    'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    'nuxt-simple-sitemap'
+    '@vite-pwa/nuxt'
   ],
+  pwa: {
+    manifest: {
+      name: 'OROD',
+      short_name: 'OROD',
+      lang: 'fr',
+      display: 'standalone',
+      background_color: '#020617',
+      theme_color: '#020617',
+      icons: [
+        {
+          src: '/public/assets/shop-logo.svg',
+          sizes: '192x192',
+          type: 'image/png'
+        }
+      ]
+    },
 
+  },
   plugins: [
     join(dir, 'plugins/iconify.ts'),
 
@@ -61,7 +86,7 @@ export default defineNuxtConfig({
 
   pages: true,
   sitemap: {
-    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**']
+    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
   i18n: {
     locales: [
@@ -98,5 +123,23 @@ export default defineNuxtConfig({
   },
   devtools: {
     enabled: false
+  },
+  routeRules: {
+    '/account/**': {
+      index: false,
+      ssr: false
+    },
+    '/cart': {
+      index: false,
+      ssr: false
+    },
+    '/checkout/**': {
+      index: false,
+      ssr: false
+    },
+    '/search': {
+      index: false,
+      ssr: false
+    },
   }
 })

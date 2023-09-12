@@ -1,11 +1,22 @@
-export interface ShopinvaderErpConfig {
-  website_key: string
-  api_url: string
-  default_role: string
+export interface ShopinvaderProxyConfig {
+  url: string
+  auth?: string
 }
+
+export interface ShopinvaderErpConfig {
+  key: string
+  url: string
+  default_role: string
+  proxy?: ShopinvaderProxyConfig
+}
+
 export interface ShopinvaderElasticConfig {
   url: string
-  indices: Array<{ name: string; index: string; body: any }>
+  indices: {
+    products: string
+    categories: string
+    [key: string]: string
+  }
 }
 
 export interface ShopinvaderConfig {

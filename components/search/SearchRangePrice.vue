@@ -1,5 +1,5 @@
 <template>
-  <div v-if="data?.items?.length > 0" class="searchfilter">
+  <div v-if="loaded || 1==1" class="searchfilter filter-price-range">
     <slot name="title" :title="title">
       <div class="searchfilter__header" @click="opened = !opened">
         <div class="header__title">
@@ -10,37 +10,47 @@
         </div>
       </div>
     </slot>
-    <slot  name="items" :items="data.items" :change="onSelectItem">
+    <slot name="items" :items="data.stats" :change="onChangeValues">
       <template v-if="opened">
-        <div
-          v-for="item in data.items"
-          :key="item.key"
-          class="searchfilter__items"
+
+        <range-slider
+          class="searchfilter__input"
+          show-tooltip="none"
+          :tooltips="false"
+          :min="originalMin || 0"
+          :max="originalMax || 0"
+          :step="1"
+          v-model="values"
+          @update="onChangeValues"
         >
-          <slot name="items" :item="item" :change="onSelectItem">
-            <label
-              class="item"
-              :class="{ 'item--active': data.selected.includes(item.key) }"
-            >
-              <input
-                v-model="data.selected"
-                type="checkbox"
-                class="item__checkbox"
-                :value="item.key"
-                @change="onSelectItem()"
-              />
-              <span class="item__label">{{ item.key }}</span>
-              <span class="item__count">{{ item.doc_count }}</span>
-            </label>
-          </slot>
+        </range-slider>
+        <div class="searchfilter__range">
+          <div class="range__min">
+            <div class="min__label">
+              {{ $filter.currency(originalMin || 0) }}
+            </div>
+          </div>
+          <div class="range_max">
+            <div class="max__label">
+              {{ $filter.currency(originalMax || 0) }}
+            </div>
+          </div>
+        </div>
+        <div v-if="updated" class="searchfilter__value">
+          {{ $t('filters.price_range', {
+              min: $filter.currency(values[0]),
+              max: $filter.currency(values[1])
+            })
+          }}
         </div>
       </template>
     </slot>
-    <slot name="footer" :items="data.items" :size="size"> </slot>
+    <slot name="footer" :items="data.stats" :size="size"> </slot>
   </div>
 </template>
 <script lang="ts">
 import { inject, reactive } from 'vue'
+import Slider from '@vueform/slider'
 import {
   Aggregation,
   BoolQuery,
@@ -49,17 +59,17 @@ import {
   NestedAggregation,
   NestedQuery,
   Query,
-  TermsAggregation,
-  TermsQuery,
-  TermQuery,
-  cardinalityAggregation
+  StatsAggregation,
+  RangeQuery
 } from 'elastic-builder'
-interface FacetItem {
-  key: string
-  doc_count: number
+interface FacetStat {
+  count: number
+  min: number
+  max: number
+  avg: number
+  sum: number
 }
 import { Filter } from './SearchBase.vue'
-import { Card } from '.nuxt/components'
 export default {
   props: {
     name: {
@@ -89,11 +99,6 @@ export default {
       required: false,
       default: null
     },
-    cardinalityField: {
-      type: String,
-      required: false,
-      default: null
-    },
     transformQuery: {
       type: Function,
       required: false,
@@ -120,11 +125,18 @@ export default {
       default: null
     }
   },
+  components: {
+    'range-slider': Slider
+  },
   async setup(props) {
     const opened = ref(!props.close)
+    const loaded = ref(false)
+    const updated = ref(false)
+    const originalMin = ref(null)
+    const originalMax = ref(null)
     const data = reactive({
-      selected: [] as string[],
-      items: [] as FacetItem[],
+      selected: [] as number[],
+      stats: {} as FacetStat,
       total: 0,
       size: props.size
     })
@@ -133,25 +145,13 @@ export default {
     const search: (() => void) | null = inject('search') || null
     const response: (() => void) | null = inject('response') || null
     const getValuesLabels = () => {
-      return data.selected.join(', ')
+      return data.selected.map(i => Math.round(i)).join(' - ')
     }
     const getFilterAggregation = (query: BoolQuery): Aggregation => {
-      let agg: Aggregation = new TermsAggregation(props.name, props.field)
-        .order('_term', 'asc')
-        .size(data.size)
-
+      let agg: Aggregation = new StatsAggregation(props.name, props.field)
       if (props.transformQuery !== null) {
         query = props.transformQuery(query, props.name, props.field)
       }
-      if (props.cardinalityField !== null) {
-        agg.agg(
-          cardinalityAggregation(
-            props.name + '_cardinality',
-            props.cardinalityField
-          )
-        )
-      }
-
 
       if (props.nestedPath) {
         agg = new NestedAggregation(props.name, props.nestedPath).agg(agg)
@@ -166,9 +166,8 @@ export default {
 
     const getQueryAggregation = () => {
       let aggs: Query | null = null
-
-      if (data?.selected?.length > 0) {
-        aggs = new TermsQuery(props.field, data?.selected || [])
+      if (updated.value) {
+        aggs = new RangeQuery(props.field).gte(data.selected[0]).lte(data.selected[1])
         if (props.nestedPath) {
           aggs = new NestedQuery().path(props.nestedPath).query(aggs)
         }
@@ -177,7 +176,7 @@ export default {
     }
 
     const setValues = (values: any[]) => {
-      data.selected = values || []
+      data.selected = values
       refreshSearch()
     }
     if (declareFilter !== null) {
@@ -192,16 +191,16 @@ export default {
       })
     }
 
-    const onSelectItem = () => {
+    const onChangeValues = () => {
       refreshSearch()
     }
 
     const refreshSearch = () => {
-
+      updated.value = true
       if (props.urlParam) {
         const $router = useRouter()
         const $route = useRoute()
-        if (data.selected.length > 0) {
+        if (data.selected?.length > 2) {
           $router.push({
             query: {
               ...$route.query,
@@ -219,11 +218,28 @@ export default {
       }
     }
 
+    const values = computed({
+      get():number[] {
+        if(data?.selected.length == 2) {
+          return data.selected
+        }
+        return [ originalMin.value || 0, originalMax.value || 0 ]
+      },
+      set(newValue:number[]) {
+        data.selected = newValue || []
+      }
+    })
+
     return {
       response,
       opened,
       data,
-      onSelectItem
+      originalMin,
+      originalMax,
+      loaded,
+      updated,
+      values,
+      onChangeValues
     }
   },
   watch: {
@@ -251,38 +267,24 @@ export default {
 
     response: {
       handler: function (response) {
-
         if (response?.aggregations) {
           let name = this.name
-          let items = []
           const aggregations = response?.aggregations || {}
+          let stats = aggregations?.[name]?.[name] || {}
+
           if (this.transformData !== null) {
             let data = this.transformData(aggregations)
-            items = data?.items || []
-          } else {
-            let values = aggregations
-            while (values !== null) {
-              values = values?.[name] || null
-              if (values?.buckets) {
-                items = values?.buckets
-                break
-              }
-            }
-          }
-          if (this.cardinalityField) {
-            for(let item of items) {
-              if(this.nestedPath) {
-                item.doc_count = null
-              } else {
-                item.doc_count = item[this.name + '_cardinality']?.value || item.doc_count
-              }
-            }
+            stats = data?.stat || []
           }
           if (this.transformItems !== null) {
-            let transformedItems = this.transformItems(items)
-            items = transformedItems?.items || items
+            let transformedItems = this.transformItems(stats)
+            stats = transformedItems?.stats || stats
           }
-          this.data.items = items || []
+
+          this.originalMin = stats?.min
+          this.originalMax = stats?.max
+          this.data.stats = stats || []
+          this.loaded = true
         }
       },
       deep: true
@@ -296,34 +298,42 @@ export default {
   }
 }
 </script>
+<style src="@vueform/slider/themes/default.css"></style>
 <style lang="scss">
-.searchfilter {
-  @apply mb-3 bg-gray-50 hover:bg-gray-100 p-5;
-  &__header {
-    @apply flex flex-nowrap justify-between items-center mb-2 cursor-pointer;
-    .header {
-      &__title {
-        @apply text-lg font-heading;
-      }
-      &__close {
+.filter-price-range.searchfilter {
 
+  .searchfilter {
+    @apply mb-3 bg-gray-50 hover:bg-gray-100 p-5 ;
+    &__header {
+      @apply flex flex-nowrap justify-between items-center mb-2 cursor-pointer;
+      .header {
+        &__title {
+          @apply text-lg font-heading;
+        }
+        &__close {
+
+        }
       }
     }
-  }
-  &__items {
-    @apply mt-2 text-xs;
-    .item {
-      @apply flex cursor-pointer items-center;
-      &__checkbox {
-        @apply mr-2;
-      }
-      &__label {
-        @apply flex-1;
-      }
-      &__count {
-        @apply text-gray-500;
+    &__input {
+      @apply border;
+      &.slider-target {
+
+        .slider-connects {
+          @apply bg-gray-200;
+          .slider-connect {
+            @apply bg-primary;
+          }
+        }
       }
     }
+    &__range {
+      @apply mt-2 text-xs flex justify-between;
+    }
+    &__value {
+      @apply text-xs pt-2 text-center;
+    }
   }
+
 }
 </style>

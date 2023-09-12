@@ -27,7 +27,7 @@
             </h1>
             <template v-if="error.statusCode === 404">
               <div class="text-2xl">
-                {{ $t('error.404') }}
+                {{ $t('error.404.title') }}
               </div>
             </template>
             <template v-else>
@@ -37,7 +37,7 @@
             </template>
             <div class="py-4 text-center">
               <a href="/" class="btn-outline btn-primary btn-wide btn">
-                {{ $t('back') }}
+                {{ $t('btn.back') }}
               </a>
             </div>
           </div>

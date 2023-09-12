@@ -3,7 +3,7 @@
     <div class="header-lite__content">
       <slot name="logo">
         <nuxt-link :to="{ path: '/' }">
-          <global-logo></global-logo>
+          <logo></logo>
         </nuxt-link>
       </slot>
       <slot name="content"></slot>
@@ -17,7 +17,7 @@ export default defineNuxtComponent({
   name: 'global-header',
   fetchKey: 'header',
   components: {
-    'global-logo': Logo
+    logo: Logo
   },
   data() {
     return {

@@ -28,9 +28,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(value, key) in data?.elasticsearch.indices">
-                <td>{{ value?.name }}</td>
-                <td>{{ value?.index }}</td>
+              <tr v-for="(name, index) in data?.elasticsearch.indices">
+                <td>{{ name }}</td>
+                <td>{{ index }}</td>
               </tr>
             </tbody>
           </table>
