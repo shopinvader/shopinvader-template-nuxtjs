@@ -374,5 +374,24 @@
     "noresult": "No result found",
     "size": "Page size",
     "count":"{count} result(s)"
+  },
+  "contact":{
+    "title":"Contact",
+    "message":"We will be glad to hear from you!",
+    "subject":"Select a Departament",
+    "first_option":"Support",
+    "second_option":"Sales",
+    "contact_name":"Name",
+    "phone":"Phone",
+    "street":"Street",
+    "city": "City",
+    "zip": "Zip code",
+    "description":"Your message...",
+    "data_protection":"You accept our data protection policy",
+    "send":"Send",
+    "form_sent": {
+      "thankyou_title": "Thank you for contacting us !",
+      "thankyou_description": "We'll get back to you as soon as possible."
+    }
   }
 }

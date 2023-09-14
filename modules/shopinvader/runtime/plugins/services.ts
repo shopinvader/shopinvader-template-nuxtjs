@@ -16,7 +16,8 @@ import {
   ProductService,
   CategoryService,
   CatalogService,
-  PaymentService
+  PaymentService,
+  LeadsService
 } from '#services'
 
 declare global {
@@ -81,7 +82,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     sales: new SaleService(erp),
     deliveryCarriers: new DeliveryCarrierService(erp),
     payment: new PaymentService(erp),
-    customer: new CustomerService(erp)
+    customer: new CustomerService(erp),
+    leads: new LeadsService(erp)
   }
 
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
