@@ -29,7 +29,7 @@
                 :key="step.name"
                 class="step"
                 :class="{ 'step--active': step.position == currentStepIndex }"
-                @click="goToStep(index)"
+                @click="goToStep(step.position)"
               >
                 <span class="step__index"> {{ step.position }} </span>
                 <span class="step__title"> {{ step.title }} </span>
@@ -192,7 +192,12 @@ export default defineNuxtComponent({
     steps: {
       type: Array as PropType<checkoutStep[]>,
       default: () => []
+    },
+    mergeSteps: {
+      type: Boolean,
+      default: true
     }
+
   },
   setup(props) {
     const cartService = useShopinvaderService('cart')
@@ -221,18 +226,33 @@ export default defineNuxtComponent({
       },
       {
         name: 'payment',
-        title: 'Payment',
+        title: i18n.t('cart.payment.title'),
         component: CheckoutPayment,
         position: 300
       }
     ]
+    let checkoutSteps = []
     /** Merge props steps with default steps */
-    const checkoutSteps = [...defaultSteps, ...(props?.steps || [])]
+    if(props.mergeSteps) {
+      checkoutSteps = defaultSteps.reduce((steps:checkoutStep[], step:checkoutStep) => {
+        const index = steps.length
+        const propsStep = props?.steps?.find((s:checkoutStep) => s.position === step.position) || null
+        if (propsStep) {
+          steps[index] = propsStep
+        } else {
+          steps[index] = step
+        }
+        return steps
+      }, [])
+      .filter((step) => step?.component !== null)
       .sort((a, b) => a.position - b.position)
-      .map((step, index) => {
-        step.position = index
-        return step
+      .map((a, index) => {
+        a.position = index
+        return a
       })
+    } else {
+      checkoutSteps = props.steps
+    }
     const currentStepIndex = ref(0 as number)
     const maxStepIndex = ref(0 as number)
     return {
@@ -299,7 +319,6 @@ export default defineNuxtComponent({
     goToStep(step: number) {
       if (step > this.maxStepIndex) return
       this.currentStepIndex = step
-      this.$emit('next', { currentStepIndex: this.currentStepIndex })
     },
     scrollToStep(step: number) {
       const top = document
@@ -324,7 +343,7 @@ export default defineNuxtComponent({
       @apply flex w-full flex-row justify-center md:gap-8;
 
       .step {
-        @apply flex gap-2 text-center font-light uppercase text-gray-400;
+        @apply flex gap-2 text-center font-light uppercase text-gray-400 cursor-pointer hover:text-primary;
 
         &--active {
           @apply font-bold text-primary;

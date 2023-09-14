@@ -4,17 +4,17 @@
       <header-lite> </header-lite>
     </template>
     <main>
-      <checkout @next="next"></checkout>
+      <cart-checkout @next="next"></cart-checkout>
     </main>
   </NuxtLayout>
 </template>
 
 <script lang="ts">
-import Checkout from '~/components/cart/checkout/Checkout.vue'
+import {CartCheckout} from '#components'
 export default defineNuxtComponent({
   name: 'Cart',
   components: {
-    checkout: Checkout
+    cartCheckout: CartCheckout
   },
   setup() {
     const i18n = useI18n()

@@ -54,6 +54,10 @@
     },
     "discount": {
       "tag": "SOLDES - { discount }%"
+    },
+    "price": {
+      "tax": "TTC",
+      "tax_excl": "HT"
     }
   },
   "cart": {

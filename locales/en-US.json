@@ -54,6 +54,10 @@
     },
     "discount": {
       "tag": "{discount}% Off"
+    },
+    "price": {
+      "tax": "Tax included",
+      "tax_excl": "Tax excluded"
     }
   },
   "cart": {

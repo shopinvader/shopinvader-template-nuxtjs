@@ -59,6 +59,10 @@
     },
     "discount": {
       "tag": "{discount}% de descuento"
+    },
+    "price": {
+      "tax": "Impuestos incluidos",
+      "tax_excl": "Impuestos no incluidos",
     }
   },
   "cart": {

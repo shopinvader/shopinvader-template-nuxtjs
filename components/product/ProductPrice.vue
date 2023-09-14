@@ -11,7 +11,10 @@
         {{ $filter.currency(price.value) }}
       </div>
       <sub v-if="price.tax_included" class="product-price__tax">
-        VAT Incl.
+        {{$t('product.price.tax') }}
+      </sub>
+      <sub v-else class="product-price__tax">
+        {{$t('product.price.tax_excl') }}
       </sub>
     </slot>
   </div>
