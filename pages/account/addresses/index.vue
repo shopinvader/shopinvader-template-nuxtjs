@@ -32,12 +32,6 @@ export default defineNuxtComponent({
     'address-form': AddressForm,
     'account-layout': AccountLayout
   },
-  data() {
-    const $route = useRoute()
-    return {
-      selectedType: $route?.query?.type || ('delivery' as string | number)
-    }
-  },
   watch: {
     selectedType: {
       handler: function (type: string) {
@@ -58,9 +52,24 @@ export default defineNuxtComponent({
     definePageMeta({
       auth: true
     })
-    const addressTypes = ['delivery', 'invoice']
+    const { t } = useI18n()
+    const $route = useRoute()
+    const addressTypes = ['shipping', 'billing']
+    const selectedType = ref($route?.query?.type || addressTypes[0])
+    useSeoMeta({
+      title: t(`account.address.type.${selectedType.value}`)
+    })
+    watch(
+      () => selectedType.value,
+      () => {
+        useSeoMeta({
+          title: t(`account.address.type.${selectedType.value}`)
+        })
+      }
+    )
     return {
-      addressTypes
+      addressTypes,
+      selectedType
     }
   }
 })

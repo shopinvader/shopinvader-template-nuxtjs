@@ -109,10 +109,10 @@
       "no-address": "Aucune adresse Sélectionnée",
       "select": "Sélectionner une adresse",
       "continue": "Continuer",
-      "delivery": {
+      "shipping": {
         "title": "Adresse de livraison"
       },
-      "invoicing": {
+      "billing": {
         "title": "Adresse de facturation"
       }
     },
@@ -139,6 +139,7 @@
       "modify_btn": "Modifier"
     },
     "login": {
+      "title": "Connexion",
       "description": "",
       "welcome_back": "Bienvenue",
       "password": "Mot de passe",
@@ -202,8 +203,8 @@
       },
       "type": {
         "contact": "Adresse de contact",
-        "delivery": "Adresse de livraison",
-        "invoice": "Adresse de facturation"
+        "shipping": "Adresse de livraison",
+        "billing": "Adresse de facturation"
       },
       "save": {
         "success": "Adresse enregistrée"

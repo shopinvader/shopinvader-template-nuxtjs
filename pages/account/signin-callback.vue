@@ -24,6 +24,18 @@ export default {
     $auth.userManager.signinCallback().finally(() => {
       this.$router.push('/')
     })
+  },
+  setup() {
+    const localePath = useLocalePath()
+    const auth = useShopinvaderService('auth')
+    if(auth?.type !== 'credentials') {
+      /** back to home if is not auth provider credential */
+      navigateTo({ path: '/' })
+    }
+    return {
+      localePath,
+      auth
+    }
   }
 }
 </script>

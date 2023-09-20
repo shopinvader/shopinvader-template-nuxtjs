@@ -18,8 +18,16 @@
               </nuxt-link>
             </div>
             <template v-if="currentPage">
-              <icon class="head__icon" :icon="currentPage.icon"></icon>
-              <h1 class="head__title">{{ currentPage?.title }}</h1>
+              <div class="head">
+                <icon class="head__icon" :icon="currentPage.icon"></icon>
+                <h1 class="head__title">
+                  {{ currentPage?.title }}
+                </h1>
+                <button class="btn btn-primary" @click="logout">
+                  <icon icon="ph:power" class="" />
+                  {{ $t('account.logout') }}
+                </button>
+              </div>
             </template>
           </slot>
         </div>
@@ -32,12 +40,8 @@
 </template>
 
 <script lang="ts">
-import AccountNavbar from '~/components/account/AccountNavbar.vue'
 export default defineNuxtComponent({
   name: 'AccountLayout',
-  components: {
-    'account-navbar': AccountNavbar
-  },
   props: {
     slug: {
       required: false,
@@ -110,6 +114,13 @@ export default defineNuxtComponent({
       &__head {
         @apply flex items-center gap-2 border-b p-3 text-xl max-sm:shadow md:pb-3 lg:text-3xl;
         .head {
+          @apply flex justify-between w-full gap-2 items-center;
+          &__icon {
+            @apply text-2xl md:text-5xl;
+          }
+          &__title {
+            @apply flex-1 m-0 p-0 text-xl md:text-4xl;
+          }
           &__back {
             @apply cursor-pointer text-primary lg:hidden;
           }

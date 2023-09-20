@@ -109,10 +109,10 @@
       "no-address": "No address selected",
       "select": "Select an address",
       "continue": "Continue",
-      "delivery": {
+      "shipping": {
         "title": "Delivery address"
       },
-      "invoicing": {
+      "billing": {
         "title": "Invoice address"
       }
     },
@@ -214,8 +214,8 @@
       },
       "type": {
         "contact": "Contact address",
-        "delivery": "Delivery address",
-        "invoice": "Invoice address"
+        "shipping": "Delivery address",
+        "billing": "Invoice address"
       },
       "save": {
         "success": "Address saved successfully"

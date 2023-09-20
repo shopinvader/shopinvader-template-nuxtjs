@@ -10,6 +10,10 @@
 <script setup lang="ts">
 // check if a user is currently loggued in and redirect to account page
 const auth = useShopinvaderService('auth')
+if(auth?.type !== 'credentials') {
+  /** back to home if is not auth provider credential */
+  navigateTo({ path: '/' })
+}
 const { t } = useI18n()
 definePageMeta({
   layout: 'Empty'

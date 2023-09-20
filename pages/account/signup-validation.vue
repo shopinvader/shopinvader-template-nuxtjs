@@ -3,13 +3,19 @@
 </template>
 <script setup lang="ts">
 const auth = useShopinvaderService('auth')
+if(auth?.type !== 'credentials') {
+  /** back to home if is not auth provider credential */
+  navigateTo({ path: '/' })
+}
 // check if a user is currently logged in and redirect to account page
 try {
+  /*
   const user = await auth.me()
 
   if (user?.value) {
     navigateTo({ path: '/account/profile' })
   }
+  */
 } catch (e) {
   console.error(e)
 }

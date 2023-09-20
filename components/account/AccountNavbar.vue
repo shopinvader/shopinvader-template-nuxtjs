@@ -85,7 +85,7 @@ export default defineNuxtComponent({
       &__intro {
         @apply flex w-full
           bg-gradient-to-r
-          from-green-500  to-green-400
+          from-primary  to-primary/90
           p-2
           font-sans
           text-white

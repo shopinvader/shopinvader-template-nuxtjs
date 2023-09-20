@@ -117,7 +117,7 @@ export default defineNuxtComponent({
     type: {
       type: String,
       required: false,
-      default: 'address'
+      default: 'shipping'
     }
   },
   components: {
@@ -157,9 +157,7 @@ export default defineNuxtComponent({
       if (addressService === null) return
       const notifications = useNotification()
       try {
-        const addressResult = (await addressService.getAll(this.perPage, page, {
-          type: this.type
-        })) as AddressResult
+        const addressResult = (await addressService.getAll(this.type, this.perPage, page)) as AddressResult
 
         if (addressResult !== null) {
           this.addresses = addressResult?.data || ([] as Address[])
@@ -182,7 +180,7 @@ export default defineNuxtComponent({
         if (addressService === null) return
 
         try {
-          await addressService.delete(address)
+          await addressService.delete(this.type, address)
           await this.fetchAddresses(this.page)
           notifications.addMessage(
             this.$t('account.address.delete.success', { name: address.name })
@@ -200,9 +198,9 @@ export default defineNuxtComponent({
       if (addressService && address) {
         try {
           if (address.id) {
-            await addressService.update(address)
+            await addressService.update(this.type, address)
           } else {
-            await addressService.create(address)
+            await addressService.create(this.type, address)
           }
           await this.fetchAddresses(this.page)
           notifications.addMessage(

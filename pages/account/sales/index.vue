@@ -193,7 +193,10 @@ export default defineNuxtComponent({
     const route = useRoute()
     const perPages = ref([10, 20, 50])
     const localePath = useLocalePath()
-
+    const { t } = useI18n()
+    useSeoMeta({
+      title: t('account.sales.title')
+    })
     const perPage = ref(
       route.query.per_page ? parseInt(route.query.per_page as string) : 10
     )

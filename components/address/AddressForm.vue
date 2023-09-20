@@ -74,17 +74,17 @@
         class="input-bordered input w-full"
       />
     </div>
-    <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
+    <div v-if="countries.length > 0" class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
       <label class="label">
         <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select
-        v-model="value.country.id"
+        v-model="countryId"
         class="select-bordered select w-full max-w-xs"
         :disabled="submitted"
         required
       >
-        <option disabled>{{ $t('account.address.country') }}</option>
+        <option disabled v-if="countries.length > 1">{{ $t('account.address.country') }}</option>
         <option
           v-for="country of countries"
           :key="country.id"
@@ -132,7 +132,9 @@ export default defineNuxtComponent({
     address: {
       type: Object as PropType<Address> | null,
       required: false,
-      default: null
+      default: () => {
+        return new Address({})
+      }
     }
   },
   data() {
@@ -143,10 +145,21 @@ export default defineNuxtComponent({
       value: new Address({}),
       submitted: false,
       countries,
-      titles
+      titles,
+      countryId: null
     }
   },
   watch: {
+    countryId: {
+      handler: function (value) {
+        if (value) {
+          this.address.country = this.countries.find((i: Country) => {
+            return i.id == value
+          })
+        }
+      },
+      immediate: true
+    },
     address: {
       handler: function (value) {
         if (value) {
