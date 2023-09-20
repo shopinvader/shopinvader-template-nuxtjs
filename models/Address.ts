@@ -56,43 +56,41 @@ export class Address extends Model {
     this.zip = data?.zip || null
     this.email = data?.email || null
     this.lang = data?.lang || null
-    this.access = data?.access || null
+    this.access = data?.access || {
+      delete: true,
+      update: true
+    }
   }
   getJSONData(): any {
-    return {
+    let data:any = {
       name: this.name,
-      type: this.type,
       street: this.street,
       street2: this.street2,
       zip: this.zip || '',
       city: this.city || '',
       phone: this.phone || '',
-      email: this.email,
-      title: {
-        id: this.title?.id || 0
-      },
-      country: {
-        id: this.country?.id || 0
-      }
-      /*
+      email: this.email
 
-
-      phone: this.phone || '',
-      state: {
-        id: this.state?.id || 0
-      },
-      country: {
-        id: this.country?.id || 0
-      },
-      title: {
-        id: this.title?.id || 0
-      },
-      is_company: this.isCompany,
-      opt_in: this.optIn,
-      opt_out: this.optOut,
-      lang: this.lang
-      */
     }
+    if(this.country?.id) {
+      data = {
+        ...data,
+        country_id: this.country?.id
+      }
+    }
+    if(this.state?.id) {
+      data = {
+        ...data,
+        state_id: this.state?.id
+      }
+    }
+    if(this.title?.id) {
+      data = {
+        ...data,
+        title_id: this.title?.id
+      }
+    }
+    return data
   }
 }
 

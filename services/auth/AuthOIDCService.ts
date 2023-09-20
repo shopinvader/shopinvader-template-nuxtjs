@@ -11,9 +11,9 @@ export interface AuthOIDCConfig {
 }
 
 export class AuthOIDCService extends AuthService {
+  public type: string = 'oidc'
   config: AuthOIDCConfig
   client: UserManager
-
   constructor(provider: ErpFetch, config: AuthOIDCConfig) {
     super(provider)
     this.config = config
@@ -61,12 +61,12 @@ export class AuthOIDCService extends AuthService {
       this.client.startSilentRenew()
     }
   }
-  async signinRedirect(): Promise<any> {
+  async loginRedirect(): Promise<any> {
     if (this.client) {
       await this.client.signinRedirect()
     }
   }
-  async signoutRedirect(): Promise<any> {
+  async logoutRedirect(): Promise<any> {
     if (this.client) {
       await this.client.signoutRedirect()
     }

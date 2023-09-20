@@ -18,6 +18,7 @@ import {
   CategoryService,
   CatalogService
 } from '~/services'
+import { AuthOIDCService, AuthCredentialService } from '~/services/auth'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
@@ -56,6 +57,16 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const erp = providers?.erp as ErpFetch
   const products = new ProductService(providers?.products as ElasticFetch)
   const categories = new CategoryService(providers?.categories as ElasticFetch)
+  let auth: AuthService | null = null
+  if (config?.auth?.type) {
+    /** Auth Service */
+    const profile = config.auth?.profile
+    if (config.auth.type === 'oidc') {
+      auth = new AuthOIDCService(erp, profile)
+    } else {
+      auth = new AuthCredentialService(erp, profile)
+    }
+  }
   const services = {
     products,
     categories,
@@ -66,18 +77,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     sales: new SaleService(erp),
     deliveryCarriers: new DeliveryCarrierService(erp),
     paymentModes: new PaymentModeService(erp),
-    auth: new AuthService(erp),
+    auth,
     customer: new CustomerService(erp)
   }
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   services.cart.productService = services.products
-  if (!import.meta.env.SSR) {
-    /** Auto Loggin - Init the user */
-    services?.auth.me()
-    services?.auth.onUserLoaded(() => {
-      services.settings.init()
-    })
-  }
 
   /**
    * Add route middleware to add dynamic routes for products and categories

@@ -1,5 +1,6 @@
 import { ErpFetch } from '@shopinvader/fetch'
 import { AddressResult, Address } from './../models/Address'
+
 export class AddressService {
   provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {
@@ -7,8 +8,9 @@ export class AddressService {
   }
 
   async getAll(
+    type: string,
     per_page = 2,
-    page = 1,
+    page = 0,
     scope: object | null = null
   ): Promise<AddressResult | null> {
     if (this.provider == null) {
@@ -27,10 +29,10 @@ export class AddressService {
       ...scope
     } as any
 
-    const result = await this.provider?.get('addresses', params, 'json')
+    const items = await this.provider?.get(`addresses/${type}`, params, 'json')
     return {
-      size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item))
+      size: items?.length || 0,
+      data: items?.map((item: any) => new Address(item))
     } as AddressResult
   }
 
@@ -39,9 +41,9 @@ export class AddressService {
    * @param Address address
    * @returns AddressResult
    */
-  async delete(address: Address): Promise<AddressResult | null> {
+  async delete(type: string, address: Address): Promise<AddressResult | null> {
     const data = await this.provider?.post(
-      'addresses/' + address.id + '/delete'
+      `addresses/${type}/${address.id}/delete`
     )
     if (data == null) {
       return {
@@ -59,18 +61,18 @@ export class AddressService {
    * @returns Promise
    */
 
-  async update(address: Address): Promise<AddressResult> {
+  async update(type: string,address: Address): Promise<AddressResult> {
     const data = address.getJSONData()
-    const result = await this.provider?.post('addresses/' + address.id, data)
+    const result = await this.provider?.post(`addresses/${type}/${address.id}`, data)
     return {
       size: result?.size || 0,
       data: result?.data?.map((item: any) => new Address(item))
     } as AddressResult
   }
 
-  async create(address: Address): Promise<AddressResult> {
+  async create(type: string,address: Address): Promise<AddressResult> {
     const data = address.getJSONData()
-    const result = await this.provider?.post('addresses/' + 'create', data)
+    const result = await this.provider?.post(`addresses/${type}`, data)
     return {
       size: result?.size || 0,
       data: result?.data?.map((item: any) => new Address(item))

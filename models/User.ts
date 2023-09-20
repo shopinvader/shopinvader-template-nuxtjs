@@ -1,6 +1,6 @@
-import { Address } from './Address'
-export class User extends Address {
+export class User {
+  login: string | null = null
   constructor(data: any) {
-    super(data)
+    this.login = data?.login || null
   }
 }
