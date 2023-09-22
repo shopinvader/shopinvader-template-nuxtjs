@@ -39,7 +39,11 @@
               <div class="form-fieldset-last ">
                 <label>
                   <input class="mr-1" type="checkbox" name="terms" value="1" required>
-                  <span class="text-sm font-semibold">{{$t('contact.data_protection')}}</span>
+                  <span class="text-sm font-semibold">{{$t('contact.data_protection')}}</span> 
+                  <nuxt-link :to="localePath(dataPolicyPage )">
+                    <span class="text-sm font-semibold text-primary">{{$t('contact.data_policy')}}</span>
+                  </nuxt-link>
+                 
                 </label>
                 <button class="form-fieldset-last__submit" type="submit">{{$t('contact.send')}}</button>
               </div>
@@ -67,6 +71,13 @@ export default defineNuxtComponent({
       countries: [],
       submitted: false,
     }
+  },
+  props: {
+   dataPolicyPage :{
+      required: false,
+      type: String,
+      default: ''
+    },
   },
   methods: {
     save(e: Event) {
