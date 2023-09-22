@@ -68,7 +68,10 @@ export class CartService extends Service {
       const observer = new CartObserver(this.setCart)
       this.cart = new Cart(
         this.erp,
-        new WebStorageCartStorage(window.localStorage)
+        new WebStorageCartStorage(window.localStorage), {
+          syncUrl: 'carts/sync',
+          debug: false
+        }
       )
       this.cart.registerObserver(observer)
       /** Get last stored cart before fetching API with syncWithRetry */
@@ -190,7 +193,7 @@ export class CartService extends Service {
   async setDeliveryCarrier(carrierId: number) {
     const cart = this.getCart()?.value || null
     if (!cart?.uuid) return Promise.reject('No cart uuid')
-    const data: any = await this.erp.post('/v2/cart/set_delivery_method', {
+    const data: any = await this.erp.post('/cart/set_delivery_method', {
       method_id: carrierId,
       uuid: cart.uuid
     })

@@ -33,7 +33,6 @@ export class AuthCredentialService extends AuthService {
     this.userLoaded()
     this.store().$onAction(({ name, args, store }) => {
       const { user } = store
-      console.log(name, args)
       if (name == 'setUser' && args[0]?.login !== user?.login && args[0]?.login == null) {
         navigateTo(this.config.loginPage)
       }
@@ -112,7 +111,7 @@ export class AuthCredentialService extends AuthService {
    * Reset request password link
    * @param data
    */
-  async requestResetPassword(login: string): Promise<{login :string}> {
+  async resetPassword(login: string): Promise<{login :string}> {
     return await this.provider?.post("auth/request_reset_password", {login})
   }
 

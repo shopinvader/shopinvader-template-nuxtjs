@@ -58,8 +58,12 @@ export default defineNuxtComponent({
     const auth = useShopinvaderService('auth')
     const user = auth.getUser()
     const localePath = useLocalePath()
+    const logout = () => {
+      auth.logoutRedirect()
+    }
     return {
       localePath,
+      logout,
       user
     }
   },

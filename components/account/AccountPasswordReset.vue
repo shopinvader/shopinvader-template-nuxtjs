@@ -59,8 +59,10 @@ export default defineNuxtComponent({
     logo: LogoVue
   },
   data() {
+    const route = useRoute()
+
     return {
-      login: '' as string | null,
+      login: route?.query?.email || '' as string | null,
       successMessage: false as boolean,
       error: {
         auth: null as string | null,
