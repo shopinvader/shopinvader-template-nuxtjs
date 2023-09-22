@@ -34,9 +34,9 @@
           </div>
         </slot>
       </template>
-      <template #menu>
+      <template #menu="{context}">
         <slot name="menu">
-          <header-nav></header-nav>
+          <header-nav :collapsible="context == 'side'"></header-nav>
         </slot>
       </template>
     </aside-menu>

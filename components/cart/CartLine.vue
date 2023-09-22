@@ -103,7 +103,7 @@
           </div>
           <div class="value">
             <div
-              v-if="line.amount.totalWithoutDiscount"
+              v-if="line.amount.totalWithoutDiscount !== line.amount.total"
               class="price__original"
             >
               {{ $filter.currency(line.amount.totalWithoutDiscount) }}
@@ -264,10 +264,10 @@ export default defineNuxtComponent({
         }
       }
       &__price {
-        @apply flex flex-col items-center justify-between gap-2 text-sm md:flex-row;
+        @apply flex flex-col items-center justify-between gap-2 pt-2 text-sm md:flex-row;
         .price {
           &__value {
-            @apply pb-0 text-lg font-bold text-secondary;
+            @apply pb-0 text-lg font-bold text-secondary leading-3;
           }
           &__tax {
             @apply text-xs font-normal text-gray-500;

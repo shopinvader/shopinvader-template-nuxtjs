@@ -12,7 +12,7 @@
           <slot name="title"></slot>
         </div>
         <div class="content__menu">
-          <slot name="menu"></slot>
+          <slot name="menu" context="content"></slot>
         </div>
         <slot name="content"></slot>
       </div>
@@ -42,7 +42,7 @@
             </label>
           </div>
         </div>
-        <slot name="menu" class="bg-red-500"></slot>
+        <slot name="menu" context="side" class="bg-red-500"></slot>
       </div>
     </div>
   </div>
@@ -96,6 +96,9 @@ export default {
       &__content {
         @apply flex;
       }
+    }
+    .nav > :where(li) > :where(ul) {
+      @apply hidden;
     }
   }
   .drawer-toggle {

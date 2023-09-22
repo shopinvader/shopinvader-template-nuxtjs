@@ -1,5 +1,5 @@
 <template>
-  <address-list type="delivery">
+  <address-list :type="types">
     <template #address-header="{ address }">
       <div class="form-control">
         <label class="label cursor-pointer">

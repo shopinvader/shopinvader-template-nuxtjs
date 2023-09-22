@@ -11,6 +11,14 @@ export default defineNuxtConfig({
   },
   css: [join(dir, './assets/css/main.scss')],
   runtimeConfig: {
+    shopinvader: {
+      erp: {
+        proxy: {
+          auth: process.env.NUXT_SHOPINVADER_ERP_PROXY_AUTH || "",
+          url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || "",
+        },
+      },
+    },
     public: {
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
@@ -22,14 +30,10 @@ export default defineNuxtConfig({
           default_role: "default",
         },
         auth: {
-          type: 'oidc',
+          type: process.env.NUXT_PUBLIC_SHOPINVADER_AUTH_TYPR || "credentials",
           profile: {
-            authority: 'https://keycloak.demo14.shopinvader.com/auth/realms/master/',
-            clientId: 'demo14.shopinvader.com',
-            responseType: 'code',
-            scope: 'openid email',
-            redirectUri: '/account',
-            postLogoutRedirectUri: '/'
+            loginPage: "/account/login",
+            logoutPage: "/",
           }
         },
         endpoint: "shopinvader",

@@ -4,11 +4,9 @@
     class="checkout-address"
     :class="{ 'checkout-address--active': active }"
   >
-    <div v-if="error" class="alert alert-error mb-6">
-      <div>
-        <icon icon="ph:warning-circle" class="text-xl"></icon>
-        <span>{{ error }}</span>
-      </div>
+    <div v-if="error" class="alert alert-error mb-6 flex gap-1">
+      <icon icon="ph:warning-circle" class="text-xl"></icon>
+      <span>{{ error }}</span>
     </div>
     <div class="checkout-address__items">
       <address-card
@@ -20,7 +18,7 @@
         <template #header>
           <h2 class="title">
             <icon :icon="item.icon"></icon>
-            {{ $t('cart.address.' + item.type + '.title') }}
+            {{ item.label }}
           </h2>
           <div class="subtitle">
             {{ item.address?.name }}
@@ -37,7 +35,7 @@
               type="button"
               class="btn-outline btn-primary btn"
               :disabled="loading"
-              @click="selectedAddressType = item.type"
+              @click="selectedAddressType = item"
             >
               <icon icon="mdi:edit"></icon>
               <span class="pl-1">{{ $t('cart.address.select') }}</span>
@@ -52,6 +50,7 @@
         :class="{ loading: loading }"
         type="submit"
         @click="submit"
+        :disabled="loading"
       >
         {{ $t('cart.address.continue') }}
         <icon icon="material-symbols:chevron-right" class="text-lg"></icon>
@@ -71,7 +70,7 @@
       <cart-address-selector
         v-if="selectedAddressType !== null"
         class="cart-address-selector"
-        :types="selectedAddressType"
+        :types="selectedAddressType.addressType"
         :selected-address="selectedAddress"
         @select="selectedAddressType = $event"
       />
@@ -88,7 +87,9 @@ import AddressCard from '~/components/address/AddressCard.vue'
 import CartAddressSelector from '~/components/cart/address/CartAddressSelector.vue'
 import { Address } from '~/models'
 interface AddressType {
+  addressType: 'shipping' | 'billing'
   type: 'delivery' | 'invoicing'
+  label: string
   address: Address | null
   icon: string
 }
@@ -127,7 +128,7 @@ export default defineNuxtComponent({
     const loading = ref(false)
     const error = ref(null as string | null)
     const deliveryAddress = ref<Address | null>(null)
-    const selectedAddressType = ref<'delivery' | 'invoicing' | null>(null)
+    const selectedAddressType = ref<AddressType | null>(null)
 
     /** Check if the customer is logged */
     const user = auth?.getUser()
@@ -135,17 +136,21 @@ export default defineNuxtComponent({
     /** Computed and methods */
     const selectedAddress = computed(() =>
       selectedAddressType.value
-        ? cart.value?.[selectedAddressType.value]?.address || null
+        ? cart.value?.[selectedAddressType.type]?.address || null
         : null
     )
     const types: AddressType[] = reactive([
       {
+        addressType: 'shipping',
         type: 'delivery',
+        label: i18n.t('cart.address.shipping.title'),
         address: cart.value?.delivery?.address || null,
         icon: 'ph:house'
       },
       {
+        addressType: 'billing',
         type: 'invoicing',
+        label: i18n.t('cart.address.billing.title'),
         address: cart.value?.invoicing?.address || null,
         icon: 'ph:file-text'
       }

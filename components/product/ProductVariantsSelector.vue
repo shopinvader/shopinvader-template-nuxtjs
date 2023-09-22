@@ -27,7 +27,7 @@
               </button>
             </div>
           </template>
-          <select v-else class="select select-sm max-w-xs">
+          <select v-else class="values__select">
             <option
               v-for="value of axis"
               :key="value"
@@ -109,7 +109,9 @@ export default defineNuxtComponent({
               @apply btn-primary text-primary-content;
             }
           }
-
+          &__select {
+            @apply  select select-bordered select-sm max-w-xs;
+          }
         }
       }
     }
