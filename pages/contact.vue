@@ -16,8 +16,8 @@
               </a>
           </div>
         </div>
-      </slot>
-  <contact-form v-if="!thankyouMessage" @lead="sendLead"></contact-form>
+      </slot> 
+  <contact-form v-if="!thankyouMessage" @lead="sendLead" dataPolicyPage="/data-protection"></contact-form>
 </template>
 <script lang="ts">
 import { Lead } from '~/models/Lead'
@@ -39,7 +39,6 @@ export default defineNuxtComponent({
       if (leadsService && lead) {
         try {
           if (lead) {
-            console.log("leadservice lead", lead)
             await leadsService.create(lead)
           }
 
@@ -49,7 +48,7 @@ export default defineNuxtComponent({
           this.thankyouMessage = true 
         } catch (e) {
           console.error(e)
-          notifications.addError(this.$t('account.address.fetch.error'))
+          notifications.addError(this.$t('contact.error'))
         }
       }
     },
