@@ -139,7 +139,6 @@ export default {
 
   methods: {
     linkToProduct() {
-      console.log('linkToProduct', this.linkPath)
       this.$router.push({
         path: this.linkPath,
         query: { sku: this.variant?.sku }
