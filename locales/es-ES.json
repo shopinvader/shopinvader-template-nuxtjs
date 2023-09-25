@@ -62,19 +62,67 @@
     }
   },
   "cart": {
-    "link": "Carrito",
-    "checkout": "Finalizar compra",
-    "title": "Carrito de la compra",
+    "link": "Ver carrito",
+    "pending": {
+      "title": "Acciones pendientes en el carrito",
+      "checkout": "Tu carrito está fuera de línea, algunas transacciones están pendientes que impiden nuevas acciones en este momento. Gracias por su paciencia.",
+      "back": "Volver"
+    },
+    "confirmation": "Tu carrito ha sido actualizado",
+    "checkout": "Continuar",
+    "back": "Volver",
+    "edit": "Editar",
+    "title": "Carrito",
+    "continue": "Continuar",
+    "payment": {
+      "title": "Pagar",
+      "intro": "Seleccione un modo de pago",
+      "submit": "Pagar",
+      "loading": "Cargando..."
+    },
     "line": {
       "quantity": "Cantidad",
       "total": "Total",
-      "count":"{count} producto(s) en tu carrito",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "add": "Añadir al carrito",
+      "count": "{count} producto(s)",
+      "view": "Ver producto",
+      "hide": "Ocultar producto"
     },
     "empty": "Tu carrito está vacío",
     "total": {
       "title": "Total",
-      "subtotal": "Subtotal"
+      "subtotal": "Subtotal",
+      "shipping": "Gastos de envío",
+      "tax": "Impuestos"
+    },
+    "delivery": {
+      "method": {
+        "title": "método de envío",
+        "intro": "Seleccione un modo de pago",
+        "select": "Elegir este método",
+        "continue": "Continuar",
+        "no-method": "No se ha seleccionado ningún método de envío"
+      }
+    },
+    "summary": {
+      "checkout": "Confirmar"
+    },
+    "address": {
+      "title": "Mis direcciones",
+      "no-address": "No se ha seleccionado ninguna dirección",
+      "select": "Seleccionar una dirección",
+      "pick": "Seleccionar esta dirección",
+      "continue": "Continuar",
+      "shipping": {
+        "title": "Dirección de entrega"
+      },
+      "billing": {
+        "title": "Dirección de facturación"
+      }
+    },
+    "login": {
+      "title": "Iniciar sesión"
     }
   },
   "account": {

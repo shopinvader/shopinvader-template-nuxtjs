@@ -108,6 +108,7 @@
       "title": "My addresses",
       "no-address": "No address selected",
       "select": "Select an address",
+      "pick": "Select this address",
       "continue": "Continue",
       "shipping": {
         "title": "Delivery address"

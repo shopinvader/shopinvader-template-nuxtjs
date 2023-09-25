@@ -108,6 +108,7 @@
       "title": "Mes adresses",
       "no-address": "Aucune adresse Sélectionnée",
       "select": "Sélectionner une adresse",
+      "pick": "Choisir cette adresse",
       "continue": "Continuer",
       "shipping": {
         "title": "Adresse de livraison"

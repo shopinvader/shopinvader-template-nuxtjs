@@ -63,7 +63,7 @@
   >
     <template #header>
       <div class="text-2xl">
-        {{ $t('cart.address.' + selectedAddressType + '.title') }}
+        {{ selectedAddressType?.label }}
       </div>
     </template>
     <template #content>
@@ -71,8 +71,8 @@
         v-if="selectedAddressType !== null"
         class="cart-address-selector"
         :types="selectedAddressType.addressType"
-        :selected-address="selectedAddress"
-        @select="selectedAddressType = $event"
+        :selected-address="selectedAddressType?.address"
+        @select="onSelectAddress"
       />
     </template>
     <template #footer>
@@ -133,12 +133,6 @@ export default defineNuxtComponent({
     /** Check if the customer is logged */
     const user = auth?.getUser()
 
-    /** Computed and methods */
-    const selectedAddress = computed(() =>
-      selectedAddressType.value
-        ? cart.value?.[selectedAddressType.type]?.address || null
-        : null
-    )
     const types: AddressType[] = reactive([
       {
         addressType: 'shipping',
@@ -171,16 +165,21 @@ export default defineNuxtComponent({
         loading.value = false
       }
     }
-
+    const onSelectAddress = (address:Address) => {
+      selectedAddressType.value = {
+        ...selectedAddressType.value,
+        address
+      }
+    }
     return {
       selectedAddressType,
-      selectedAddress,
       error,
       cart,
       loading,
       types,
       deliveryAddress,
       submit,
+      onSelectAddress,
       user
     }
   }

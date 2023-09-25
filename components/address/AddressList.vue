@@ -68,6 +68,9 @@
                 <icon icon="mdi:edit" class="text-lg text-white"></icon>
               </button>
             </template>
+            <template #footer>
+              <slot name="address-footer" :address="address"></slot>
+            </template>
           </address-card>
         </div>
         <pagination
