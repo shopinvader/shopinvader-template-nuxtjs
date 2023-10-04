@@ -42,9 +42,9 @@ export abstract class AuthService extends Service {
   }
   setSession(value: boolean) {
     if(value) {
-      nuxtStorage.localStorage.setData('auth_user', value, 10, 'd')
+      nuxtStorage?.localStorage?.setData?.('auth_user', value, 10, 'd')
     } else {
-      nuxtStorage.localStorage.removeItem('auth_user')
+      nuxtStorage?.localStorage?.removeItem?.('auth_user')
     }
   }
   async registerUser(
@@ -63,7 +63,7 @@ export abstract class AuthService extends Service {
     return request || { success: false }
   }
   getSession(): boolean {
-    return nuxtStorage.localStorage.getData('auth_user') || false
+    return nuxtStorage?.localStorage?.getData('auth_user') || false
   }
   abstract getConfig():void
 }

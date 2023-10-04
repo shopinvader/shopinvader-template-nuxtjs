@@ -25,8 +25,10 @@ class CartObserver {
   }
 
   onCartUpdated(data: any) {
-    const cartData = { ...data.getData() }
-
+    let cartData = {}
+    if(typeof data?.getData == 'function') {
+      cartData = {...data.getData()}
+    }
     const erpCart = cartData?.erpCart || {}
     const syncError = cartData?.syncError || false
     const cart = new CartModel(erpCart)
