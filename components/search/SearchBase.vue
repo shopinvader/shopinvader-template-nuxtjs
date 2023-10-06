@@ -18,7 +18,7 @@
         <template v-if="loading">
           <slot name="loading">
             <div class="search__loading">
-              <spinner></spinner>
+              <search-loader></search-loader>
             </div>
           </slot>
         </template>
@@ -88,7 +88,6 @@
 </template>
 <script lang="ts">
 import { provide, reactive, PropType } from 'vue'
-import Spinner from '~/components/global/Spinner.vue'
 import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 
@@ -108,7 +107,6 @@ export interface SortItem {
 }
 export default {
   components: {
-    spinner: Spinner,
     'product-history': ProductHistory
   },
   props: {
