@@ -41,6 +41,7 @@
 </template>
 <script lang="ts">
 import { inject, reactive } from 'vue'
+import { isEqual } from 'lodash'
 import {
   Aggregation,
   BoolQuery,
@@ -51,7 +52,6 @@ import {
   Query,
   TermsAggregation,
   TermsQuery,
-  TermQuery,
   cardinalityAggregation
 } from 'elastic-builder'
 interface FacetItem {
@@ -59,7 +59,6 @@ interface FacetItem {
   doc_count: number
 }
 import { Filter } from './SearchBase.vue'
-import { Card } from '.nuxt/components'
 export default {
   props: {
     name: {
@@ -197,7 +196,6 @@ export default {
     }
 
     const refreshSearch = () => {
-
       if (props.urlParam) {
         const $router = useRouter()
         const $route = useRoute()
@@ -223,20 +221,24 @@ export default {
       response,
       opened,
       data,
-      onSelectItem
+      onSelectItem,
+      setValues
     }
   },
   watch: {
     $route: {
       handler: function () {
         if (this.urlParam) {
+
           const $route = useRoute()
           try {
             const query: string =
               ($route.query?.[this.urlParam] as string) || '[]'
             const values: string[] = JSON.parse(query) || []
-            if (query?.length > 0 && this.data.selected !== values) {
-              this.data.selected = values
+            const isEqualValues:boolean = isEqual(values.sort(), this.data.selected.sort()) || false
+
+            if (!isEqualValues) {
+              this.setValues(values)
             }
           } catch (e) {
             const $router = useRouter()
@@ -246,12 +248,11 @@ export default {
           }
         }
       },
-      immediate: true
+      immediate: true,
+      deep: true
     },
-
     response: {
       handler: function (response) {
-
         if (response?.aggregations) {
           let name = this.name
           let items = []

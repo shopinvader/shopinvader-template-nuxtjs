@@ -87,6 +87,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const routes:any = {}
   addRouteMiddleware(
     async (to, from) => {
+      if(to?.path == from?.path) {
+        return null
+      }
       if(to?.meta?.auth) {
         const auth = useShopinvaderService('auth')
         const user = auth.getUser()
