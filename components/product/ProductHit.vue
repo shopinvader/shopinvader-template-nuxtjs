@@ -1,8 +1,10 @@
 <template>
   <div
-    v-if="variant !== null"
     class="product-hit"
-    :class="{ 'product-hit--inline': inline }"
+    :class="{
+      'product-hit--inline': inline,
+      'product-hit--loading': !variant
+    }"
   >
     <slot name="header"></slot>
     <div class="product-hit__tag">
@@ -11,9 +13,9 @@
       </slot>
     </div>
     <div class="product-hit__image">
-      <slot name="images" :images="variant.images">
+      <slot name="images" :images="variant?.images || null">
         <product-image
-          v-if="variant.images && variant.images.length > 0"
+          v-if="variant?.images && variant.images.length > 0"
           :image="variant.images[0]"
           @click="linkToProduct()"
         >
@@ -44,14 +46,14 @@
         </div>
         <div class="body__stock">
           <slot name="product-stock">
-            <product-stock v-if="variant.stock !== null" :stock="variant?.stock">
+            <product-stock v-if="variant?.stock !== null" :stock="variant?.stock">
             </product-stock>
           </slot>
         </div>
         <div class="body__price">
-          <product-price v-if="variant.price !== null" :price="variant.price">
+          <product-price v-if="variant?.price !== null" :price="variant?.price || null">
             <template #price>
-              <slot name="price" :price="variant.price"></slot>
+              <slot name="price" :price="variant?.price"></slot>
             </template>
           </product-price>
         </div>
@@ -83,7 +85,7 @@ export default {
   props: {
     product: {
       type: Object as PropType<Product>,
-      required: true
+      required: false
     },
     inline: {
       type: Boolean,
@@ -105,19 +107,24 @@ export default {
   },
   data() {
     return {
-      variant: this.product as Product | null
+      variant: this.product as Product | null || null
     }
   },
   computed: {
     variants() {
-      return this.product.variants
+      return this.product?.variants || []
     },
     linkPath() {
-      const localePath = useLocalePath()
-      return localePath({
-        path: '/' + this.product.urlKey,
-        query: { sku: this.variant?.sku }
-      })
+      const urlKey = this.product?.urlKey || null
+      const sku = this.product?.sku || null
+      if(sku && urlKey) {
+        const localePath = useLocalePath()
+        return localePath({
+          path: '/' + urlKey,
+          query: { sku }
+        })
+      }
+      return null
     }
   },
   watch: {
@@ -235,6 +242,28 @@ export default {
       }
       .body__actions {
         @apply md:order-4 md:w-1/3 md:border-l md:p-3;
+      }
+    }
+  }
+  &--loading {
+    .product-hit {
+      &__image {
+        .noimage {
+          @apply animate-pulse bg-gray-200 rounded-lg cursor-default;
+        }
+      }
+      &__body {
+        .body {
+          &__title {
+            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-2/3;
+          }
+          &__desc {
+            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-full;
+          }
+          &__price {
+            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-1/3 items-end;
+          }
+        }
       }
     }
   }
