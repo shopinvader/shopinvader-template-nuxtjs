@@ -37,17 +37,34 @@ export class Cart extends Model {
       lines = data?.lines?.map((l: any) => new CartLine(l)) || []
     }
     this.lines = lines
-    this.linesCount = Cart.calcLinesCount(lines)
-    this.linesAmount = new CartLinesAmount(data?.amount_without_delivery || {})
+    this.linesCount = Cart.getLinesCount(lines)
+    if(data?.amount_without_delivery) {
+      this.linesAmount = new CartLinesAmount(data?.amount_without_delivery || {})
+    } else {
+      this.linesAmount = Cart.getLinesAmount(lines)
+    }
     this.loaded = false
     this.amount = new CartAmount(data?.amount || {})
     this.discount = new CartDiscount(data?.discount || {})
-    this.delivery = new CartDelivery(data?.delivery || {})
-    this.invoicing = new CartInvoicing(data?.invoicing || {})
+    this.delivery = new CartDelivery({address: data?.delivery} || {})
+    this.invoicing = new CartInvoicing({address: data?.invoicing} || {})
     this.note = data?.note
   }
 
-  private static calcLinesCount(lines: CartLine[]): number {
+  private static getLinesAmount(lines: CartLine[]): CartLinesAmount {
+    let total = 0
+    let untaxed = 0
+    let tax = 0
+
+    for (const item of lines) {
+      total += item.amount.total
+      untaxed += item.amount.untaxed
+      tax += item.amount.tax
+    }
+    return new CartLinesAmount({total, untaxed, tax})
+  }
+
+  private static getLinesCount(lines: CartLine[]): number {
     let qty = 0
     for (const item of lines) {
       if (item.qty > 0) {
@@ -59,6 +76,6 @@ export class Cart extends Model {
 
   static setLines(cart: Cart, lines: CartLine[]) {
     cart.lines = lines
-    cart.linesCount = Cart.calcLinesCount(lines)
+    cart.linesCount = Cart.getLinesCount(lines)
   }
 }

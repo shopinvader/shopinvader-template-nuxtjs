@@ -31,7 +31,7 @@
                 :class="{ 'step--active': step.position == currentStepIndex }"
                 @click="goToStep(index)"
               >
-                <span class="step__index"> {{ step.position }} </span>
+                <span class="step__index"> {{ index + 1 }} </span>
                 <span class="step__title"> {{ step.title }} </span>
               </li>
             </ul>
@@ -103,7 +103,7 @@
                   <div class="header" @click="goToStep(index)">
                     <div class="header__name">
                       <span class="name__index">
-                        {{ step.position }} {{ currentStepIndex }}
+                        {{ step.index + 1 }}
                       </span>
                       <span class="name__title">
                         {{ step.title }}
@@ -192,9 +192,18 @@ export default defineNuxtComponent({
     steps: {
       type: Array as PropType<checkoutStep[]>,
       default: () => []
+    },
+    /**
+     * Merge steps.
+     * If true, steps will be merged with default steps.
+     * If false, only steps will be used.
+     */
+    mergeSteps: {
+      type: Boolean,
+      default: true
     }
   },
-  setup(props) {
+  setup(props, { slots }) {
     const cartService = useShopinvaderService('cart')
     const cart = cartService?.getCart() || ref(null)
     const i18n = useI18n()
@@ -227,12 +236,18 @@ export default defineNuxtComponent({
       }
     ]
     /** Merge props steps with default steps */
-    const checkoutSteps = [...defaultSteps, ...(props?.steps || [])]
-      .sort((a, b) => a.position - b.position)
-      .map((step, index) => {
-        step.position = index
-        return step
-      })
+    let checkoutSteps = [...defaultSteps]
+    if(props.mergeSteps) {
+      checkoutSteps = [...defaultSteps, ...props.steps]
+      .reduce((steps, item) => {
+        steps[item?.position] = item
+        return steps
+      }, [] as checkoutStep[])
+      .filter((step) => step?.component)
+    } else if(props.steps) {
+      checkoutSteps = props.steps
+    }
+
     const currentStepIndex = ref(0 as number)
     const maxStepIndex = ref(0 as number)
     return {
@@ -318,6 +333,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .checkout {
+  @apply p-4 md:p-0;
   &__header {
     @apply hidden w-full pt-6 md:block;
     .checkout-stepper {
