@@ -2208,7 +2208,7 @@
 
 "@shopinvader/fetch@https://github.com/shopinvader/shopinvader-js-fetch#typescript":
   version "1.1.0"
-  resolved "https://github.com/shopinvader/shopinvader-js-fetch#bde4841a157036166efb36ab29464e07c8db735d"
+  resolved "https://github.com/shopinvader/shopinvader-js-fetch#152b984c1202bcd048f0b6edf75e8ad177a4bda0"
 
 "@sideway/address@^4.1.3":
   version "4.1.4"
@@ -2751,7 +2751,7 @@
     node-gyp-build "^4.2.2"
     resolve-from "^5.0.0"
 
-"@vite-pwa/nuxt@^0.1.0":
+"@vite-pwa/nuxt@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@vite-pwa/nuxt/-/nuxt-0.1.1.tgz#6cd3ee3893fc4b676841a5a209a7ac9cef9a8a3c"
   integrity sha512-wrIeo8ATGc3Nny+MiK/KSklRer22TKrAlRnkqszdM2r+0mHQ3FDQQGZdt/MFu1V/F4TEcacrx2NiU/MYVRV86A==

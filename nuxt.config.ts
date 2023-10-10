@@ -71,29 +71,9 @@ export default defineNuxtConfig({
     '@pinia-plugin-persistedstate/nuxt',
     '@vite-pwa/nuxt'
   ],
-  pwa: {
-    manifest: {
-      name: 'OROD',
-      short_name: 'OROD',
-      lang: 'fr',
-      display: 'standalone',
-      background_color: '#020617',
-      theme_color: '#020617',
-      icons: [
-        {
-          src: '/public/assets/shop-logo.svg',
-          sizes: '192x192',
-          type: 'image/png'
-        }
-      ]
-    },
-
-  },
   plugins: [
     join(dir, 'plugins/iconify.ts'),
-
   ],
-
   piniaPersistedstate: {
     cookieOptions: {
       sameSite: 'strict'
