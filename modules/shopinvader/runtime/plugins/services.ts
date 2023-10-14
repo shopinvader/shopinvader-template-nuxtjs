@@ -16,7 +16,8 @@ import {
   SettingService,
   ProductService,
   CategoryService,
-  CatalogService
+  CatalogService,
+  LeadsService
 } from '~/services'
 
 declare global {
@@ -67,7 +68,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     deliveryCarriers: new DeliveryCarrierService(erp),
     paymentModes: new PaymentModeService(erp),
     auth: new AuthService(erp),
-    customer: new CustomerService(erp)
+    customer: new CustomerService(erp),
+    leads: new LeadsService(erp)
   }
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   services.cart.productService = services.products
