@@ -390,5 +390,21 @@
     "noresult": "Aucun résultat",
     "size": "Nombre de résultats par page",
     "count":"{count} resultat(s)"
+  },
+  "contact":{
+    "title":"Contact",
+    "message":"Contactez-nous via le formulaire ci-dessous",
+    "subject":"Choisissez un service",
+    "first_option":"SAV",
+    "second_option":"Commercial",
+    "description":"Votre message...",
+    "data_protection":"Vous accéptez notre ",
+    "data_policy": "Politique de protection de données personnelles",
+    "send":"Envoyer",
+    "error": "Une erreur est survenue lors de l'envoi du formulaire.",
+    "form_sent": {
+      "thankyou_title": "Merci pour votre message !",
+      "thankyou_description": "Nous reviendrons vers vous au plus vite."
+    }
   }
 }

@@ -381,14 +381,11 @@
     "subject":"Select a Departament",
     "first_option":"Support",
     "second_option":"Sales",
-    "contact_name":"Name",
-    "phone":"Phone",
-    "street":"Street",
-    "city": "City",
-    "zip": "Zip code",
     "description":"Your message...",
-    "data_protection":"You accept our data protection policy",
+    "data_protection":"You accept our ",
+    "data_policy": "Data protection policy",
     "send":"Send",
+    "error": "An error occured, please try later or contact our support team.",
     "form_sent": {
       "thankyou_title": "Thank you for contacting us !",
       "thankyou_description": "We'll get back to you as soon as possible."
