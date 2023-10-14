@@ -17,7 +17,12 @@
           </div>
         </div>
       </slot> 
-  <contact-form v-if="!thankyouMessage" @lead="sendLead" dataPolicyPage="/data-protection"></contact-form>
+  <slot name="loading">
+    <div v-if="showLoader && !thankyouMessage" class="loading">
+      <spinner></spinner>
+    </div>
+  </slot>
+  <contact-form v-if="!thankyouMessage && !showLoader" @lead="sendLead" dataPolicyPage="/data-protection"></contact-form>
 </template>
 <script lang="ts">
 import { Lead } from '~/models/Lead'
@@ -29,7 +34,8 @@ export default defineNuxtComponent({
   },
   data(){
     return {
-      thankyouMessage: false
+      thankyouMessage: false,
+      showLoader: false
     }
   },
   methods: {
@@ -39,18 +45,20 @@ export default defineNuxtComponent({
       if (leadsService && lead) {
         try {
           if (lead) {
+            this.showLoader = true
             await leadsService.create(lead)
           }
-
           notifications.addMessage(
             this.$t('contact.form.message_sent')
           )
+          
           this.thankyouMessage = true 
         } catch (e) {
           console.error(e)
           notifications.addError(this.$t('contact.error'))
         }
       }
+      this.showLoader = false
     },
   }
 })
@@ -72,5 +80,8 @@ export default defineNuxtComponent({
       @apply text-lg font-bold mb-8;
     } 
   }
+}
+.loading {
+  @apply w-full py-24 flex justify-center align-middle items-center h-full;
 }
 </style>
