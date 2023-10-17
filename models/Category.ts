@@ -1,5 +1,5 @@
-import { Model } from './Model'
-import { CategoryImageSet } from './CategoryImageSet'
+import { Model, CategoryImageSet } from '#models'
+
 export interface CategoryResult {
   hits: Category[]
   total: number

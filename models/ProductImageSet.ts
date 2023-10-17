@@ -1,5 +1,4 @@
-import { Model } from './Model'
-import { ProductImage } from './ProductImage'
+import { Model, ProductImage } from '#models'
 
 export class ProductImageSet extends Model {
   small: ProductImage | null

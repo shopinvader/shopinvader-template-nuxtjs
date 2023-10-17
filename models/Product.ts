@@ -1,10 +1,12 @@
-import { ProductModel } from './ProductModel'
-import { ProductCategory } from './ProductCategory'
-import { ProductImageSet } from './ProductImageSet'
-import { ProductPrice } from './ProductPrice'
-import { ProductLinks } from './ProductLinks'
-import { ProductStock } from './ProductStock'
-import { Model } from './Model'
+import {
+  ProductModel,
+  ProductCategory,
+  ProductImageSet,
+  ProductPrice,
+  ProductLinks,
+  ProductStock,
+  Model
+} from '#models'
 
 export interface ProductResult {
   hits: Product[]

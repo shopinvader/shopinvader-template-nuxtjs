@@ -1,5 +1,5 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { Service } from './Service'
+import { Service } from '#services'
 import { PaymentMode } from '../models/PaymentModes'
 
 export class PaymentModeService extends Service {

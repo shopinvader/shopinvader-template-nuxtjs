@@ -1,8 +1,9 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { DeliveryCarrier } from '../models/DeliveryCarrier'
-import { Service } from './Service'
+import { DeliveryCarrier } from '#models'
+import { Service } from '#services'
 
 export class DeliveryCarrierService extends Service {
+  name = 'deliveryCarriers'
   provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {
     super()

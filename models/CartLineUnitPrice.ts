@@ -1,4 +1,4 @@
-import { Model } from './Model'
+import { Model } from '#models'
 
 export class CartLineUnitPrice extends Model {
   untaxed: number

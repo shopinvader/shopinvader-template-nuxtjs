@@ -1,7 +1,9 @@
-import { CartAmount } from './CartAmount'
-import { DeliveryCarrier } from './DeliveryCarrier'
-import { Address } from './Address'
-import { Model } from './Model'
+import {
+  CartAmount,
+  DeliveryCarrier,
+  Address,
+  Model
+} from '#models'
 
 export class CartDelivery extends Model {
   fees: CartAmount

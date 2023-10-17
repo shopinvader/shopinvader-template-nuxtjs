@@ -1,8 +1,9 @@
-import { Country } from './Country'
-import { Title } from './Title'
-import { State } from './State'
-import { Currency } from './Currency'
-import { Model } from './Model'
+import { Model,
+  Currency,
+  State,
+  Title,
+  Country
+ } from '#models'
 
 export class Settings extends Model {
   countries: Country[] | []

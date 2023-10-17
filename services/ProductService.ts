@@ -1,10 +1,13 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { Product, ProductResult, VariantAttributes } from '../models/Product'
-import esb, { Aggregation, MultiMatchQuery, NestedQuery, Query, TermQuery } from 'elastic-builder'
+import esb, { Aggregation, MultiMatchQuery, Query, TermQuery } from 'elastic-builder'
+import { Product, ProductResult, VariantAttributes } from '#models'
+import { Service } from '#services'
 
-export class ProductService {
+export class ProductService extends Service {
+  name = 'products'
   provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
+    super()
     this.provider = provider
   }
   private hits(hits: any[]) {

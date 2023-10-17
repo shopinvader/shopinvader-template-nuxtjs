@@ -1,7 +1,9 @@
-import { Sale } from '../models/Sale'
 import { ErpFetch } from '@shopinvader/fetch'
+import { Sale } from '#models'
+
 // Service to fetch Sales
 export class SaleService {
+  name = 'sales'
   provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {
     this.provider = provider

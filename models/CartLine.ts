@@ -1,8 +1,10 @@
-import { Product } from './Product'
-import { CartLineAmount } from './CartLineAmount'
-import { CartLineDiscount } from './CartLineDiscount'
-import { CartLineUnitPrice } from './CartLineUnitPrice'
-import { Model } from './Model'
+import {
+  Product,
+  CartLineAmount,
+  CartLineDiscount,
+  CartLineUnitPrice,
+  Model
+} from '#models'
 
 export class CartLine extends Model {
   // Standard fields

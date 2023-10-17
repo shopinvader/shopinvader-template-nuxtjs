@@ -1,4 +1,4 @@
-import { Model } from './Model'
+import { Model } from '#models'
 
 export type linkId = { id: number }
 export class ProductLinks extends Model {

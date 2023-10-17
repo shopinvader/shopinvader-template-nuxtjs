@@ -1,7 +1,8 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { Address } from '../models/Address'
+import { Address } from '#models'
 
 export class CustomerService {
+  name = 'customer'
   provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {
     this.provider = provider

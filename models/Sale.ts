@@ -1,5 +1,4 @@
-import { Address } from './Address'
-import { Model } from './Model'
+import { Model, Address } from '#models'
 
 export class SaleInvoicing extends Model {
   address: Address | null

@@ -1,6 +1,6 @@
-import { Model } from './Model'
-
-export class Title extends Model {
+import * as M from '#models'
+console.log(M)
+export class Title extends M.Model {
   id: number
   name: string
   constructor(data: any) {

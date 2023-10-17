@@ -1,5 +1,5 @@
 import { Address } from './Address'
-import { Model } from './Model'
+import { Model } from '#models'
 
 export class CartInvoicing extends Model {
   address: Address

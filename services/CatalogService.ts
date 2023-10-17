@@ -1,9 +1,8 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { Category } from '../models/Category'
-import { Product } from '../models/Product'
-import { CatalogResult } from '../models/Catalog'
+import { CatalogResult, Product, Category } from '#models'
 
 export class CatalogService {
+  serviceName = 'catalog'
   provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
     this.provider = provider

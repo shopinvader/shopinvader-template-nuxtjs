@@ -6,7 +6,7 @@ import {
 } from '../models'
 import { ProductService } from './ProductService'
 import { storeToRefs } from 'pinia'
-import { Service } from './Service'
+import { Service } from '#services'
 
 interface CartStore {
   cart: CartModel
@@ -56,6 +56,7 @@ class CartObserver {
 }
 
 export class CartService extends Service {
+  serviceName = 'cart'
   erp: any // ErpFetch
   cart: any | null
   id: number | null = null // Cart ID

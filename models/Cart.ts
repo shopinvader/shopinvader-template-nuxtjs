@@ -1,10 +1,12 @@
-import { CartLine } from './CartLine'
-import { CartAmount } from './CartAmount'
-import { CartLinesAmount } from './CartLinesAmount'
-import { CartDiscount } from './CartDiscount'
-import { CartInvoicing } from './CartInvoicing'
-import { CartDelivery } from './CartDelivery'
-import { Model } from './Model'
+import {
+  CartLine,
+  CartAmount,
+  CartLinesAmount,
+  CartDiscount,
+  CartInvoicing,
+  CartDelivery,
+  Model
+} from '#models'
 
 export class Cart extends Model {
   // Standard fields

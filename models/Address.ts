@@ -1,7 +1,4 @@
-import { Model } from './Model'
-import { Country } from './Country'
-import { Title } from './Title'
-import { State } from './State'
+import { State, Title, Country, Model } from '#models'
 
 export interface AddressAccess {
   read: boolean
