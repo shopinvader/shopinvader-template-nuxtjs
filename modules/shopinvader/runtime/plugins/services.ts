@@ -4,7 +4,6 @@ import { Product, Category } from '~/models'
 import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
 import {TemplateProductPage, TemplateCategoryPage} from '#components'
-
 import {
   AddressService,
   AuthService,
@@ -91,7 +90,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const routes:any = {}
   addRouteMiddleware(
     async (to, from) => {
-      if(to?.path == from?.path) {
+      const ext = to.path.split('.').pop() || ''
+      if(ext == 'js') {
         return null
       }
       if(to?.meta?.auth) {
@@ -102,16 +102,18 @@ export default defineNuxtPlugin(async (nuxtApp) => {
           return navigateTo(localePath({ path: '/account/login' }));
         }
       }
-      if (!router.hasRoute(to.path)) {
+      const routes = router.getRoutes()
+      if (!routes.some((route) => route.path === to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
-
         const { data } = await useAsyncData('entity', async () => {
           if(routes?.[path]) {
             return routes[path]
           }
           const catalog = useShopinvaderService('catalog')
+
           const sku = to?.query?.sku || null as string | null
           const entity = await catalog.getEntityByURLKey(path, sku)
+
           routes[path] = entity
           return entity
         })
