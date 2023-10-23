@@ -3,20 +3,9 @@ import {
   Cart as CartModel,
   Product,
   CartLine as CartLineModel
-} from '../models'
-import { ProductService } from './ProductService'
+} from '#models'
+import { Service, ProductService } from '#services'
 import { storeToRefs } from 'pinia'
-import { Service } from '#services'
-
-interface CartStore {
-  cart: CartModel
-  lastSale: any
-  loaded: boolean
-  hasPendingTransactions: boolean
-  hasSyncError: boolean
-  syncError: boolean
-  syncing: boolean
-}
 
 class CartObserver {
   callback: (cart: CartModel, syncError: boolean) => void // Nuxt context
@@ -36,7 +25,6 @@ class CartObserver {
       const cartLines = []
       for (const line of cartData.lines) {
         const { hasPendingTransactions, qty, productId } = line
-
         const lineData = {
           ...line.erpCartLine,
           ...{

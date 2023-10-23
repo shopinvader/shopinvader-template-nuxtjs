@@ -29,7 +29,7 @@ export class Address extends Model {
   email: string | null
   lang: string | null
   access: AddressAccess | null
-
+  main: boolean | null
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
@@ -48,13 +48,14 @@ export class Address extends Model {
     this.state = data.state ? new State(data.state) : null
     this.street = data?.street || null
     this.street2 = data?.street2 || null
-    this.type = data?.type || null
+    this.type = data?.type || 'delivery'
     this.vat = data?.vat || null
     this.zip = data?.zip || null
     this.email = data?.email || null
     this.lang = data?.lang || null
+    this.main = data?.main || null
     this.access = data?.access || {
-      delete: true,
+      delete: !this.main,
       update: true
     }
   }

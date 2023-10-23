@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.name') }}</span>
       </label>
       <input
@@ -28,7 +28,7 @@
       />
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.street') }}</span>
       </label>
       <input
@@ -51,7 +51,7 @@
       />
     </div>
     <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.zip') }}</span>
       </label>
       <input
@@ -63,7 +63,7 @@
       />
     </div>
     <div class="form-control inline-block w-full md:w-2/3">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.city') }}</span>
       </label>
       <input
@@ -75,7 +75,7 @@
       />
     </div>
     <div v-if="countries.length > 0" class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select

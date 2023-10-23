@@ -26,18 +26,29 @@
     <div class="address-card__content">
       <slot name="body" :address="address">
         <template v-if="!edit">
+          <div class="badge" v-if="address?.main">
+            {{ $t('address.main.title') }}
+          </div>
           <p>{{ address?.email }}</p>
           <span v-if="address && address?.addressType !== 'profile'">
             <p>{{ address?.street }}</p>
+            <p v-if="address?.street2">{{ address?.street2 }}</p>
             <p>
-              {{ address.zip }} {{ address.city }} - {{ address.country?.name }}
+              {{ address.zip }} {{ address.city }}
+              <span v-if="address.country">
+                - {{ address.country?.name }}
+              </span>
             </p>
-            <p v-if="address.phone !== null">
-              {{ address.phone }}
-            </p>
-            <p v-if="address.mobile !== null">
-              {{ address.mobile }}
-            </p>
+            <div class="pt-4">
+              <p v-if="address.phone" class="flex gap-2">
+                <icon icon="ic:sharp-phone" class="text-lg"></icon>
+                {{ address.phone }}
+              </p>
+              <p v-if="address.mobile" class="flex gap-2">
+                <icon icon="ic:sharp-phone" class="text-lg"></icon>
+                {{ address.mobile }}
+              </p>
+            </div>
           </span>
         </template>
         <address-form v-else-if="address" :address="address"></address-form>
@@ -77,15 +88,15 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .address-card {
-  @apply rounded bg-base-100 p-6 shadow-xl;
+  @apply rounded-lg p-6 bg-base-100 ;
 
   &__header {
     @apply flex items-center justify-between gap-4 text-2xl font-bold;
     .header__actions {
-      @apply flex justify-end gap-2;
+      @apply flex justify-end gap-1;
     }
     .header__title {
-      @apply text-base;
+      @apply font-heading;
     }
   }
 

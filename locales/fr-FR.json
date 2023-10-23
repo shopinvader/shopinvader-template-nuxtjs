@@ -199,13 +199,14 @@
       "noresult": "Aucune adresse",
       "count": "{count} resultat(s)",
       "edit": "Modifier",
+      "search": "Rechercher",
       "fetch": {
         "error": "Une erreur est survenue lors de la récupération des adresses",
       },
       "type": {
         "contact": "Adresse de contact",
-        "shipping": "Adresse de livraison",
-        "billing": "Adresse de facturation"
+        "delivery": "Adresse de livraison",
+        "invoicing": "Adresse de facturation"
       },
       "save": {
         "success": "Adresse enregistrée"
@@ -215,6 +216,7 @@
         "error": "Impossible de supprimer l'adresse",
         "success": "Adresse supprimée"
       }
+
     },
     "quotations": "Mes devis",
     "invoices": "Mes factures",
@@ -251,6 +253,9 @@
       "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
       "error": "Impossible de supprimer l'adresse",
       "success": "Adresse supprimée"
+    },
+    "main": {
+      "title": "Adresse principale"
     }
   },
   "error": {
