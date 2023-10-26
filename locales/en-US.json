@@ -178,7 +178,11 @@
       "reset_pswd": "Reset your password",
       "description": "Enter the email address linked to your account",
       "reset_btn": "Password reset",
-      "reset_success": "Thank you, if an account linked to the email address exists, please follow the instructions sent by email."
+      "reset_success": "Thank you, if an account linked to the email address exists, please follow the instructions sent by email.",
+      "set_new_pswd_title": "Set your new password",
+      "set_new_pswd_description": "Enter a new password and confirm it another time.",
+      "new_password": "New password",
+      "repeat_new_password": "Repeat new password"
     },
     "sales": {
       "sale": "Sales Order",
@@ -249,6 +253,10 @@
       "email": "Email format is not valid.",
       "password": "Password format not valid",
       "unable_to_login": "Login error"
+    },
+    "reset": {
+      "pasword_missmatch": "The passwords don't match",
+      "pswd_something_wrong": "Somethig webt wrong. Please try to  click again in you email or make another password change request."
     },
     "404": {
       "title": "Page not found",

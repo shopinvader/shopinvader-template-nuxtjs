@@ -167,7 +167,11 @@
       "reset_pswd": "Réinitialiser mon mot de passe",
       "description": "Veuillez saisir votre adresse email pour réinitialiser votre mot de passe.",
       "reset_btn": "Réinitialiser",
-      "reset_success": "Merci, si un compte lié à l'adresse e-mail existe, veuillez suivre les instructions envoyées par e-mail."
+      "reset_success": "Merci, si un compte lié à l'adresse e-mail existe, veuillez suivre les instructions envoyées par e-mail.",
+      "set_new_pswd_title": "Nouveau mot de passe",
+      "set_new_pswd_description": "Définissez un nouveau mot de passe pour votre compte",
+      "new_password": "Nouveau mot de passe",
+      "repeat_new_password": "Confirmez le mot de passe une deuxième fois"
     },
     "sales": {
       "sale": "Mes commandes",
@@ -265,6 +269,10 @@
       "email": "Format d'adresse e-mail invalide.",
       "password": "Le mot de passe doit contenir au moins 6 caractères.",
       "unable_to_login": "Impossible de se connecter"
+    },
+    "reset": {
+      "pasword_missmatch": "Les deux mot de passe ne corréspondent pas",
+      "pswd_something_wrong": "Une erreur est survenue. Veuillez cliquer à nouveau dans le mail que vous avez reçu ou faites une nouvelle demande de réinitialisation de mot de passe."
     },
     "404": {
       "title": "Page introuvable",
