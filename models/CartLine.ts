@@ -19,6 +19,7 @@ export class CartLine extends Model {
   hasPendingTransactions: boolean | null
   product: Product | null
   unitPrice: CartLineUnitPrice
+  options: any[] | null
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
     super(data)
@@ -34,5 +35,6 @@ export class CartLine extends Model {
     this.qtyUnavailableDiff = data?.qty_unavailable_diff || 0
     this.hasPendingTransactions = data?.hasPendingTransactions || false
     this.product = null
+    this.options = data?.options || null
   }
 }

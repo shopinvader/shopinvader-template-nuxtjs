@@ -2241,9 +2241,9 @@
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
 
-"@shopinvader/cart@https://github.com/shopinvader/shopinvader-js-cart#master":
-  version "0.1.0"
-  resolved "https://github.com/shopinvader/shopinvader-js-cart#6a8cdd36028a06f2447cbd8e3bb3d8e2a6629ea5"
+"@shopinvader/cart@https://github.com/shopinvader/shopinvader-js-cart#options":
+  version "0.2.0"
+  resolved "https://github.com/shopinvader/shopinvader-js-cart#e9777cdaa8cf305449086043cacd0f98c74dc77a"
   dependencies:
     uuid "^8.3.2"
 

@@ -6,8 +6,9 @@ import {
 } from '#models'
 import { Service, ProductService } from '#services'
 import { storeToRefs } from 'pinia'
-
+import _ from 'lodash'
 class CartObserver {
+  prevCartData: any
   callback: (cart: CartModel, syncError: boolean) => void // Nuxt context
   constructor(callback: (cart: CartModel, syncError: boolean) => void) {
     this.callback = callback
@@ -17,6 +18,9 @@ class CartObserver {
     let cartData = {}
     if(typeof data?.getData == 'function') {
       cartData = {...data.getData()}
+    }
+    if(_.isEqual(this.prevCartData, cartData)) {
+      return
     }
     const erpCart = cartData?.erpCart || {}
     const syncError = cartData?.syncError || false
@@ -31,6 +35,7 @@ class CartObserver {
             id: line?.erpCartLine?.id,
             qty,
             product_id: productId,
+            options: line?.options || { contact_id: 1},
             hasPendingTransactions
           }
         }
@@ -40,6 +45,7 @@ class CartObserver {
       CartModel.setLines(cart, cartLines)
       this.callback(cart, syncError)
     }
+    this.prevCartData = cartData
   }
 }
 
@@ -50,18 +56,20 @@ export class CartService extends Service {
   id: number | null = null // Cart ID
   products: Product[] = []
   productService: ProductService | null = null
+  debug = false
   constructor(erp: any, productService: ProductService) {
     super()
     this.erp = erp
     this.productService = productService
     this.setCart = this.setCart.bind(this)
+    this.transformCart = this.transformCart.bind(this)
     if (!import.meta.env.SSR) {
       const observer = new CartObserver(this.setCart)
       this.cart = new Cart(
         this.erp,
         new WebStorageCartStorage(window.localStorage), {
           syncUrl: 'carts/sync',
-          debug: false
+          debug: this.debug
         }
       )
       this.cart.registerObserver(observer)
@@ -89,32 +97,7 @@ export class CartService extends Service {
       store.setCart(null)
       return
     }
-    /** Fetch cart product to product index */
-    if (this.productService !== null) {
-      const ids: number[] =
-        cart?.lines
-          .map((l: CartLineModel) => l.productId || 0)
-          .filter(
-            (i: number | null) =>
-              i !== null && !this.products.some((p) => i === p?.id)
-          ) || []
-
-      if (ids.length > 0) {
-        const products = (await this.productService.getByIds(ids)) || []
-        if (Array.isArray(products?.hits)) {
-          this.products = [...this.products, ...products.hits]
-        }
-      }
-
-      for (const line of cart?.lines || []) {
-        const product =
-          this.products.find((p: Product) => p.id === line.productId) || null
-
-        if (product !== null) {
-          line.product = product
-        }
-      }
-    }
+    cart = await this.transformCart(cart)
     cart.hasPendingTransactions =
       cart?.lines?.some((i: CartLineModel) => {
         return i.hasPendingTransactions === true
@@ -123,15 +106,46 @@ export class CartService extends Service {
 
     store.setCart(cart)
   }
+  async transformCart(cart: CartModel): Promise<CartModel> {
+    /** Fetch cart product to product index */
+    if (this.productService !== null) {
+      const ids: number[] =
+      cart.lines
+          .map((l: CartLineModel) => l.productId || 0)
+          .filter(
+            (i: number | null) =>
+              i !== null && !this.products.some((p) => i === p?.id)
+          ) || []
 
-  addTransaction(id: number, qty: number) {
+      if (ids.length > 0) {
+        const {hits} = (await this.productService.getByIds(ids)) || []
+        const products = hits.reduce((acc: any, product: Product) => {
+          return [...acc, ...product.variants || []]
+        }, [])
+        if (Array.isArray(products)) {
+          this.products = [...this.products, ...products]
+        }
+      }
+
+      for (const line of cart.lines || []) {
+        const product =
+          this.products.find((p: Product) => p.id === line.productId) || null
+
+        if (product !== null) {
+          line.product = product
+        }
+      }
+    }
+    return cart
+  }
+  addTransaction(id: number, qty: number, options?: any) {
     if (id != null && qty != null && !isNaN(qty)) {
-      this.cart.addTransaction(new CartTransaction(id, qty))
+      this.cart.addTransaction(new CartTransaction(id, qty, undefined, options || null))
     }
   }
 
-  applyDeltaOnItem(productId: number, delta: number) {
-    this.addTransaction(productId, delta)
+  applyDeltaOnItem(productId: number, delta: number, options?: any) {
+    this.addTransaction(productId, delta, options || null)
   }
 
   /**
@@ -140,8 +154,8 @@ export class CartService extends Service {
    * @param {*} options Options
    * @returns Promise
    */
-  addItem(productId: number, qty: number) {
-    this.addTransaction(productId, qty || 1)
+  addItem(productId: number, qty: number, options?: any) {
+    this.addTransaction(productId, qty || 1, options || null)
   }
 
   /**
@@ -155,23 +169,20 @@ export class CartService extends Service {
     if (line !== null) {
       const originalQty = line?.qty || 0
       qty -= originalQty
-      this.addTransaction(productId, qty)
+      this.addTransaction(productId, qty, line?.options || null)
     }
   }
   /**
    * deleteItem : delete a cart line
    * @param {*} id cart line ID
    */
-  deleteItem(id: number) {
+  deleteItem(line: CartLineModel) {
     const cart = this.getCart()?.value || null
-    const line: CartLineModel | null =
-      cart?.lines?.find((line: CartLineModel) => line.id === id) || null
-
     if (line !== null) {
       const qty = line.qty * -1
       const productId: number | null = line?.productId || null
       if (productId !== null) {
-        this.addTransaction(productId, qty)
+        this.addTransaction(productId, qty, line?.options || null)
       }
     }
   }

@@ -6,7 +6,7 @@
 		@binding {string} onChange callback function to fire quantity change save
 	  -->
     <slot name="selector" v-bind="{ qty }" :on-change="updateQty">
-      <input-qty :qty="qty" @change="updateQty"></input-qty>
+      <input-qty v-if="qty" :qty="qty" @change="updateQty"></input-qty>
     </slot>
   </div>
 </template>
@@ -31,13 +31,13 @@ export default {
     /**  Emit when the quantity is updated */
     update: (qty: number) => true
   },
-  data() {
-    const timer: any = null
-    const qty = 1
-
+  setup(props) {
+    const qty = ref(props.line?.qty || null) as Ref<number | null>
+    const disabledArrow = ref(false) as Ref<boolean>
+    const timer = ref(null) as Ref<any>
     return {
-      disabledArrow: false as boolean,
       qty,
+      disabledArrow,
       timer
     }
   },
@@ -82,8 +82,9 @@ export default {
     async updateQty(qty: number): Promise<void> {
       const delta = qty - this.qty || 0
       const cartService = useShopinvaderService('cart')
-      if (cartService && this.line?.productId) {
-        await cartService.applyDeltaOnItem(this.line.productId, delta)
+      if (cartService && this.line?.productId && delta !== 0) {
+        const options = this.line?.options || null
+        await cartService.applyDeltaOnItem(this.line.productId, delta, options)
       }
       this.$emit('update', this.qty + delta)
     }

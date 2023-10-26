@@ -42,7 +42,7 @@ export default {
   },
   data() {
     const timer: any = null
-    const value = 1
+    const value = this.qty || 1
 
     return {
       disabledArrow: false as boolean,
@@ -59,7 +59,9 @@ export default {
       }
     },
     value(value: number, oldValue: number) {
-      this.$emit('change', value)
+      if(value !== oldValue) {
+        this.$emit('change', value)
+      }
     }
   },
   mounted() {

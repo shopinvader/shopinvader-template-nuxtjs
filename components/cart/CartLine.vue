@@ -201,7 +201,7 @@ export default defineNuxtComponent({
     deleteLine() {
       const cartService = useShopinvaderService('cart')
       if (cartService !== null) {
-        cartService.deleteItem(this.line.id)
+        cartService.deleteItem(this.line)
       }
       this.$emit('deleteLine', this.line)
     }
