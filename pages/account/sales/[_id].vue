@@ -19,7 +19,7 @@
         <div class="mr-20">
           <h3 class="text-gray-600">Date</h3>
           <p class="font-bold text-primary">
-            {{ sale.date.toLocaleDateString($i18n.locale) }}
+            {{ sale?.dateOrder?.toLocaleDateString?.($i18n.locale) }}
           </p>
         </div>
         <div class="mr-auto">
@@ -80,20 +80,20 @@
               }}</span>
             </div>
           </div>
-          <div class="footer__shipping">
+          <div v-if="sale?.delivery?.amount" class="footer__delivery">
             <div class="line-amount">
-              <span class="text">{{ $t('account.sales.sale_shipping') }}</span>
+              <span class="text">{{ $t('account.sales.sale_delivery') }}</span>
               <span class="amount">{{
-                $filter.currency(sale.shipping.amount.untaxed)
+                $filter.currency(sale.delivery.amount.untaxed)
               }}</span>
             </div>
           </div>
           <div class="footer__tax">
             <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_tax') }}</span>
-              <span class="amount">{{
-                $filter.currency(sale.amount.tax)
-              }}</span>
+              <span class="amount">
+                {{ $filter.currency(sale?.amount?.tax || 0)}}
+              </span>
             </div>
           </div>
           <div class="footer__total">
@@ -101,37 +101,37 @@
               <span class="total__text">{{
                 $t('account.sales.sale_total')
               }}</span>
-              <span class="total__amount">{{
-                $filter.currency(sale.amount.total)
-              }}</span>
+              <span class="total__amount">
+                {{ $filter.currency(sale?.amount?.total) || ''}}
+              </span>
             </div>
           </div>
         </div>
         <div class="footer__addresses">
           <div class="addresses__container">
-            <div class="shipping">
+            <div v-if="sale?.delivery?.address" class="delivery">
               <h4 class="address-title">
                 {{ $t('account.address.type.delivery') }}
               </h4>
-              <p class="address-text">{{ sale.shipping.address.street }}</p>
+              <p class="address-text">{{ sale.delivery.address.street }}</p>
               <p class="address-text">
-                {{ sale.shipping.address.zip }} {{ sale.shipping.address.city }}
+                {{ sale.delivery.address.zip }} {{ sale.delivery.address.city }}
               </p>
               <p class="address-text">
-                {{ sale.shipping.address.country.name }}
+                {{ sale.delivery.address?.country?.name || null }}
               </p>
             </div>
-            <div class="invoice">
+            <div v-if="sale?.invoicing" class="invoice">
               <h4 class="address-title">
                 {{ $t('account.address.type.invoice') }}
               </h4>
-              <p class="address-text">{{ sale.invoicing.address.street }}</p>
+              <p class="address-text">{{ sale?.invoicing?.address?.street || '' }}</p>
               <p class="address-text">
-                {{ sale.invoicing.address.zip }}
-                {{ sale.invoicing.address.city }}
+                {{ sale?.invoicing?.address?.zip || '' }}
+                {{ sale?.invoicing?.address?.city || '' }}
               </p>
               <p class="address-text">
-                {{ sale.invoicing.address.country.name }}
+                {{ sale?.invoicing?.address?.country?.name || '' }}
               </p>
             </div>
           </div>
@@ -242,7 +242,7 @@ export default defineNuxtComponent({
   &__footer {
     .footer {
       &__subtotal,
-      &__shipping,
+      &__delivery,
       &__tax,
       &__total {
         .line-amount {
@@ -259,11 +259,9 @@ export default defineNuxtComponent({
       &__tax {
         @apply rounded-full bg-gray-100 px-10 py-3;
       }
-      &__shipping,
+      &__delivery,
       &__total {
-        @apply rounded-full px-10 py-3;
-      }
-      &__total {
+        @apply px-10 py-3;
         .line-amount {
           .total__text {
             @apply text-base font-bold md:text-xl;
@@ -277,7 +275,7 @@ export default defineNuxtComponent({
         @apply mb-10 bg-gray-100 px-4 py-10;
         .addresses__container {
           @apply -mx-4 flex flex-wrap justify-around;
-          .shipping,
+          .delivery,
           .invoice {
             @apply mb-6 w-full px-4 md:mb-0 md:w-auto;
             .address-title {

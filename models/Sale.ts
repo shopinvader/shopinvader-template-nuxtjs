@@ -8,7 +8,7 @@ export class SaleInvoicing extends Model {
   }
 }
 
-export class SaleShippingAmount extends Model {
+export class SaleDeliveryAmount extends Model {
   tax: number
   untaxed: number
   total: number
@@ -20,7 +20,7 @@ export class SaleShippingAmount extends Model {
   }
 }
 
-export class SaleShippingCarrier extends Model {
+export class SaleDeliveryCarrier extends Model {
   id: number
   name: string
   description: string
@@ -36,16 +36,16 @@ export class SaleShippingCarrier extends Model {
   }
 }
 
-export class SaleShipping extends Model {
+export class SaleDelivery extends Model {
   address: Address | null
-  amount: SaleShippingAmount | null
-  selectedCarrier: SaleShippingCarrier | null
+  amount: SaleDeliveryAmount | null
+  selectedCarrier: SaleDeliveryCarrier | null
   constructor(data: any) {
     super(data)
     this.address = data.address ? new Address(data.address) : null
-    this.amount = data.amount ? new SaleShippingAmount(data.amount) : null
+    this.amount = data.amount ? new SaleDeliveryAmount(data.amount) : null
     this.selectedCarrier = data.selected_carrier
-      ? new SaleShippingCarrier(data.selected_carrier)
+      ? new SaleDeliveryCarrier(data.selected_carrier)
       : null
   }
 }
@@ -104,7 +104,7 @@ export class SaleProduct extends Model {
   name: string
   shortName: string
   images: SaleProductImageSet[]
-  model: SaleProductModel
+  model: SaleProductModel | null
   urlKey: string
   constructor(data: any) {
     super(data)
@@ -149,9 +149,9 @@ export class SaleItem extends Model {
   qtyDelivered: number
   qtyUnavailable: number
   qtyCanceled: number
-  product: SaleProduct
+  product: SaleProduct | null
   amount: SaleAmount
-  discount: SaleDiscount
+  discount: SaleDiscount | null
   unitPrice: SaleUnitPrice
   constructor(data: any) {
     super(data)
@@ -169,14 +169,14 @@ export class SaleItem extends Model {
 }
 
 export class SaleLines extends Model {
-  count: number
-  items: SaleItem[]
+  count: number = 0
+  items: SaleItem[] = []
   constructor(data: any) {
     super(data)
-    this.count = data?.count
     this.items = []
-    if (data && data.items) {
-      data.items.forEach((item: any) => this.items.push(new SaleItem(item)))
+    if (Array.isArray(data)) {
+      this.count = data?.length || 0
+      this.items = data.map((item: any) => new SaleItem(item))
     }
   }
 }
@@ -214,15 +214,16 @@ export class SalePaiement extends Model {
 export class Sale extends Model {
   id: number | null = null
   name: string
-  date: Date | null
+  dateOrder: Date | null
+  dateCommitment: Date | null
   state: string
   stateLabel: string
   note: boolean
-  invoicing: SaleInvoicing
+  invoicing: SaleInvoicing | null
   invoices: SaleInvoice[]
   lines: SaleLines | null
   amount: SaleAmount | null
-  shipping: SaleShipping | null
+  delivery: SaleDelivery | null = null
   customerRef: string
   suiteName: string
   payment: SalePaiement | null
@@ -231,20 +232,19 @@ export class Sale extends Model {
     super(data)
     this.id = data?.id
     this.name = data?.name
-    this.date = data && data.date ? new Date(data.date) : null
+    this.dateOrder = data && data.date_order ? new Date(data.date_order) : null
+    this.dateCommitment = data && data.date_commitment ? new Date(data.date_commitment) : null
     this.state = data?.state
-    this.stateLabel = data?.state_label
+    this.stateLabel = data?.state
     this.note = data?.note
-    this.invoicing = data.invoicing ? new SaleInvoicing(data.invoicing) : []
+    this.invoicing = data.invoicing ? new SaleInvoicing(data.invoicing) : null
     this.invoices = []
-    if (data && data.invoices) {
-      data.invoices.forEach((invoice: any) =>
-        this.invoices.push(new SaleInvoice(invoice))
-      )
+    if (data?.invoices?.length > 0) {
+      this.invoices = data.invoices.map((invoice: any) => new SaleInvoice(invoice))
     }
     this.lines = data.lines ? new SaleLines(data.lines) : null
     this.amount = data.amount ? new SaleAmount(data.amount) : null
-    this.shipping = data.shipping ? new SaleShipping(data.shipping) : null
+    this.delivery = data.delivery ? new SaleDelivery(data.delivery) : null
     this.customerRef = data?.customer_ref
     this.suiteName = data?.suite_name
     this.payment = data.payment ? new SalePaiement(data.payment) : null

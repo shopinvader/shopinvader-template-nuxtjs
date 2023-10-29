@@ -37,10 +37,10 @@ export class SaleService {
   ): Promise<{ count: number; sales: Sale[] }> {
     const params: { [k: string]: any } = { per_page: perPage, page }
     const res = await this.provider?.get('sales', params, {})
-    if (res.data) {
+    if (res.items) {
       return {
         count: res.size,
-        sales: res.data.map((item: any) => new Sale(item))
+        sales: res.items.map((item: any) => new Sale(item))
       }
     }
     return { count: 0, sales: [] }

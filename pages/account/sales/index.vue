@@ -52,11 +52,13 @@
                 class="hover"
               >
                 <td class="p-2 text-left text-sm">
-                  {{ sale.name }}
+                  <NuxtLink :to="`/account/sales/${sale.id}`">
+                    {{ sale.name }}
+                  </NuxtLink>
                 </td>
                 <td class="p-2 text-left text-sm">
-                  <template v-if="sale.date">
-                    {{ sale.date.toLocaleDateString($i18n.locale) }}
+                  <template v-if="sale?.dateOrder">
+                    {{ sale.dateOrder?.toLocaleDateString($i18n.locale) }}
                   </template>
                 </td>
                 <td class="p-2 text-left text-sm">
@@ -135,7 +137,6 @@
           </template>
         </div>
       </div>
-
       <div v-if="count > 0" class="flex flex-col py-3">
         <div class="form-control ml-auto max-w-xs">
           <label class="my-1">{{ $t('pagination.showperpage') }}</label>
@@ -203,9 +204,9 @@ export default defineNuxtComponent({
     const page = ref(
       route.query.page ? parseInt(route.query.page as string) : 1
     )
-    const count = ref(0)
-    const sales = ref(null)
-    const loading = ref(false)
+    const count = ref(0) as Ref<number>
+    const sales = ref(null) as Ref<Sale[] | null>
+    const loading = ref(false) as Ref<boolean>
 
     const urlQueries = computed(() => {
       return (route.query.page +
@@ -219,9 +220,9 @@ export default defineNuxtComponent({
       const saleService = useShopinvaderService('sales')
       loading.value = true
       try {
-        const res = await saleService?.getSalesList(page.value, perPage.value)
-        count.value = res.count
-        sales.value = res.sales
+        const res = await saleService?.getSalesList(page.value, perPage.value) || null
+        count.value = res?.count || 0
+        sales.value = res?.sales || []
       } catch (error: any) {
         if (
           error.name === 'HttpErrorResponse' &&
