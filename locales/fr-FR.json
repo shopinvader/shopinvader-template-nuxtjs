@@ -42,6 +42,9 @@
     "up_selling": {
       "title": "Autres produits"
     },
+    "price": {
+      "tax_included": "TTC"
+    },
     "history": {
       "title": "Produits déjà consultés",
       "clear": "Effacer"

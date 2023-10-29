@@ -36,6 +36,9 @@
     "cart": {
       "add": "Add to cart"
     },
+    "price": {
+      "tax_included": "VAT included"
+    },
     "cross_selling": {
       "title": "Related products"
     },

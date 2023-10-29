@@ -5,10 +5,18 @@ export const useShopinvaderStore = defineStore('shopinvader', {
 
   state: () => ({
     user: null as User | boolean | null,
+
     lastSale: {},
     cart: new Cart({})
   }),
-  getters: {},
+  getters: {
+    getCurrentRole(store) {
+      if(!store?.user) {
+        return 'default'
+      }
+      return store?.user?.role as string || 'default'
+    }
+  },
   actions: {
     setUser(data: User | null) {
       this.user = data == null ? false : data

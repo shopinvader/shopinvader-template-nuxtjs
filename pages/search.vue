@@ -47,7 +47,12 @@ export default {
 
   methods: {
     transformResult(result: any) {
-      return result?.hits?.hits?.map((data: any) => new Product(data._source))
+      let role: string
+      const authService = useShopinvaderService('auth')
+      if(authService?.getUser()?.role) {
+        role = authService.getUser()?.role as string
+      }
+      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
     },
     async providerFunction(body: any) {
       const productService = useShopinvaderService('products')

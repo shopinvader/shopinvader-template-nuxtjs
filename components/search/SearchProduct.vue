@@ -103,7 +103,12 @@ export default {
   },
   methods: {
     transformResult(result: any) {
-      return result?.hits?.hits?.map((data: any) => new Product(data._source))
+      const authService = useShopinvaderService('auth')
+      let role: string
+      if(authService?.getUser()?.role) {
+        role = authService.getUser()?.role as string
+      }
+      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
     }
   }
 }

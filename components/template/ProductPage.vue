@@ -14,19 +14,29 @@ const product: Product | null = useNuxtApp().payload?.data?.entity || null
 if (!product) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
 }
-useHead({
+const url = useRequestURL()
+const host = url.host
+const protocol = url.protocol
+useHead(() => ({
   title: product.name,
   meta: [
     {
       hid: 'description',
       name: 'description',
-      content: product.metaDescription || ''
+      content: product.metaDescription || product.shortDescription || ''
     },
     {
       hid: 'keywords',
       name: 'keywords',
       content: product.metaKeywords || ''
-    }
-  ]
-})
+    },
+  ],
+  link: [
+    {
+      hid: 'canonical',
+      rel: 'canonical',
+      href: `${protocol}//${host}/${product.urlKey}` || ''
+    },
+  ],
+}))
 </script>

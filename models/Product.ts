@@ -5,6 +5,8 @@ import {
   ProductPrice,
   ProductLinks,
   ProductStock,
+  ProductPriceList,
+  Product as ProductVariant,
   Model
 } from '#models'
 
@@ -65,12 +67,16 @@ export class Product extends Model {
   variantAttributes: VariantAttributes = {}
   variantSelector: ProductVariantSelector[] = []
   price: ProductPrice | null = null
+  pricesList: ProductPriceList = {}
   images: ProductImageSet[] | null
   variants: Product[] | null = null
   links: ProductLinks | null = null
   stock: ProductStock | null
-  constructor(data: any) {
+  role: string
+
+  constructor(data: any, role?:string ) {
     super(data)
+    this.role = role || 'default'
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
     this.urlKey = data?.url_key || null
@@ -96,10 +102,22 @@ export class Product extends Model {
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
     const priceLists = Object.keys(data?.price || {})
+    if(priceLists?.length > 0) {
+      this.pricesList = {}
+      for(let priceList of priceLists) {
+        this.pricesList[priceList] = new ProductPrice(data?.price?.[priceList])
+      }
+
+      if(this.pricesList?.['default']) {
+
+        this.price = this.pricesList['default']
+      }
+    }
     let price = data?.price?.[priceLists?.[0]] || null
     if(price) {
       this.price = new ProductPrice(price) || null
     }
+
     this.images = [] as ProductImageSet[]
     if (Array.isArray(data?.images)) {
       this.images = data?.images.map((image: any) => {
@@ -110,7 +128,7 @@ export class Product extends Model {
     this.variants = []
     if (Array.isArray(data?.variants)) {
       this.variants = data?.variants.map((variant: any) => {
-        return new Product(variant)
+        return new ProductVariant(variant, this.role)
       })
     }
     if (Array.isArray(data?.variant_selector)) {

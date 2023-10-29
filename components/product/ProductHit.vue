@@ -51,9 +51,9 @@
           </slot>
         </div>
         <div class="body__price">
-          <product-price v-if="variant?.price !== null" :price="variant?.price || null">
+          <product-price v-if="price !== null" :price="price">
             <template #price>
-              <slot name="price" :price="variant?.price"></slot>
+              <slot name="price" :price="price"></slot>
             </template>
           </product-price>
         </div>
@@ -70,15 +70,15 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { Product } from '~~/models/Product'
-import ProductPrice from '~/components/product/ProductPrice.vue'
+import { Product, ProductPrice } from '#models'
+import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductImage from '~/components/product/ProductImage.vue'
 import ProductVariants from '~/components/product/ProductVariants.vue'
 
 export default {
   name: 'ProductHit',
   components: {
-    'product-price': ProductPrice,
+    'product-price': ProductPriceVue,
     'product-image': ProductImage,
     'product-variants': ProductVariants
   },
@@ -125,6 +125,16 @@ export default {
         })
       }
       return null
+    },
+    price():ProductPrice | null {
+      const authService = useShopinvaderService('auth')
+      const user = authService.getUser()
+      const role = user?.value?.role as string || null
+      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
+      if(role !== null && this.variant?.pricesList?.[role]) {
+        price = this.variant?.pricesList?.[role]
+      }
+      return price
     }
   },
   watch: {

@@ -80,19 +80,21 @@
         </div>
         <div class="content__price">
           <!-- @slot Price content -->
-          <slot name="price">
-            <product-price
-              v-if="variant.price !== null"
-              :price="variant.price"
-              class="py-4 text-right"
-            >
-              <template #price>
-                <slot name="price" :price="variant.price"></slot>
-              </template>
-            </product-price>
+          <slot name="price" :variant="variant">
+            <client-only>
+              <product-price
+                v-if="price !== null"
+                :price="price"
+                class="py-4 text-right"
+              >
+                <template #price>
+                  <slot name="price" :price="price" ></slot>
+                </template>
+              </product-price>
+            </client-only>
           </slot>
           <!-- @slot Price content -->
-          <slot name="add-to-cart">
+          <slot name="add-to-cart" :variant="variant">
             <client-only>
               <product-cart
                 v-if="variant !== null"
@@ -140,7 +142,7 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { Product } from '~~/models/Product'
+import { Product, ProductPrice } from '#models'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductStock from '~/components/product/ProductStock.vue'
 import ProductVariants from '~~/components/product/ProductVariants.vue'
@@ -197,6 +199,16 @@ export default {
         this.product?.id,
         ...(this.product?.variants || []).map((v) => v.id)
       ]
+    },
+    price():ProductPrice | null {
+      const authService = useShopinvaderService('auth')
+      const user = authService.getUser()
+      const role = user?.value?.role as string || null
+      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
+      if(role !== null && this.variant?.pricesList?.[role]) {
+        price = this.variant?.pricesList?.[role]
+      }
+      return price
     }
   }
 }

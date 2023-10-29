@@ -1,7 +1,6 @@
 import { Model } from '#models'
 
 export class ProductPrice extends Model {
-  default: object
   value: number
   tax_included: boolean
   original_value: number
@@ -13,4 +12,7 @@ export class ProductPrice extends Model {
     this.tax_included = data?.tax_included
     this.original_value = data?.original_value
   }
+}
+export interface ProductPriceList {
+  [key: string]: ProductPrice
 }

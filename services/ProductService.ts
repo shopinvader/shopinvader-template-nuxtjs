@@ -158,6 +158,7 @@ export class ProductService extends Service {
   }
 
   jsonToModel(json: any): Product {
-    return new Product(json)
+    const role = this.store()?.getCurrentRole
+    return new Product(json, role)
   }
 }
