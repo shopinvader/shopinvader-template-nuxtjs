@@ -91,7 +91,10 @@ export class CartService extends Service {
 
   async setCart(cart: CartModel | null) {
     /** Store the cart on the localstorage */
-    window.localStorage.setItem('cart', JSON.stringify(cart?.toJSON()))
+
+    if(cart?.toJSON) {
+      window.localStorage.setItem('cart', JSON.stringify(cart?.toJSON()))
+    }
     const store = this.store()
     if (cart == null) {
       store.setCart(null)
@@ -108,7 +111,7 @@ export class CartService extends Service {
   }
   async transformCart(cart: CartModel): Promise<CartModel> {
     /** Fetch cart product to product index */
-    if (this.productService !== null) {
+    if (cart?.lines?.length > 0 && this.productService !== null) {
       const ids: number[] =
       cart.lines
           .map((l: CartLineModel) => l.productId || 0)

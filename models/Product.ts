@@ -76,6 +76,7 @@ export class Product extends Model {
 
   constructor(data: any, role?:string ) {
     super(data)
+
     this.role = role || 'default'
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
@@ -87,11 +88,31 @@ export class Product extends Model {
     this.name = data?.name || null
     this.shortName = data?.short_name || null
     this.seoTitle = data?.seo_title || null
-    this.metaKeywords = data?.meta_keywords || null
-    this.metaDescription = data?.meta_description || null
+    if(!this.seoTitle) {
+      this.seoTitle = this.name
+    }
+
     this.variantCount = data?.variant_count || 0
     this.stock = data?.stock || null
     this.categories = []
+    this.metaKeywords = data.meta_keywords || null
+    let metaDescription = data?.meta_description || null
+
+    if(!metaDescription) {
+      metaDescription = [
+        this.seoTitle,
+        this.shortDescription,
+        this.description
+      ]
+      .filter((item) => item)
+      .join(', ')
+      .replaceAll(/(<([^>]+)>)/gi, '')
+      .replaceAll(/(\r\n|\n|\r)/gm, " ")
+      .replaceAll(/\s+/g, ' ')
+      .substring(0, 255)
+    }
+
+    this.metaDescription = metaDescription
     if (Array.isArray(data?.categories)) {
       this.categories = data?.categories
         .map((category: any) => {
