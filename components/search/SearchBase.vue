@@ -207,6 +207,7 @@ export default {
         const query: Query | null = getFiltersQuery([filter.name])
         return filter?.getFilterAggregation(query)
       })
+      .filter((agg) => agg !== null)
     }
 
     /**
