@@ -152,7 +152,7 @@ export default {
       this.focused = false
       const router = useRouter()
       const localePath = useLocalePath()
-      router.push(localePath({ path: 'search', query: { q: this.query } }))
+      router.push(localePath({ path: '/search', query: { q: this.query } }))
     },
     resetSearch() {
       this.query = ''
