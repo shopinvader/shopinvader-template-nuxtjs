@@ -69,7 +69,6 @@ export default defineNuxtConfig({
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    '@vite-pwa/nuxt'
   ],
   plugins: [
     join(dir, 'plugins/iconify.ts'),

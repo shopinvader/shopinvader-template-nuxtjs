@@ -12,7 +12,7 @@
           {{ name }}
         </div>
         <div class="variant-axis__values">
-          <template v-if="axis?.length < 10">
+          <template v-if="axis?.length < 6">
             <div v-for="value in axis" :key="value">
               <button
                 type="button"
