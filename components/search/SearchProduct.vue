@@ -104,8 +104,9 @@ export default {
   methods: {
     transformResult(result: any) {
       const authService = useShopinvaderService('auth')
-      let role: string
-      if(authService?.getUser()?.role) {
+      let role: string | null = null
+      const user = authService.getUser()
+      if(user?.value && user?.value?.role) {
         role = authService.getUser()?.role as string
       }
       return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
