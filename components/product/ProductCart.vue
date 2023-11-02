@@ -18,7 +18,9 @@
           <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
           <Icon icon="ic:outline-plus" class="add-icon__plus" />
         </div>
-        <span class="add-label">{{ $t('product.cart.add') }} </span>
+        <span class="add-label">
+          {{ label || $t('product.cart.add') }}
+        </span>
       </button>
     </slot>
     <slot name="count" :count="line?.qty">
@@ -107,6 +109,10 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    label: {
+      type: String,
+      default: null
     }
   },
   emits: {
