@@ -87,7 +87,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
    * Add a middleware to check if the user is logged in
    */
   const router = useRouter()
-  const routes:any = {}
+  const storedRoutes:any = {}
   addRouteMiddleware(
     async (to, from) => {
       const ext = to.path.split('.').pop() || ''
@@ -106,18 +106,19 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       if (!routes.some((route) => route.path === to.path)) {
         const path: string = to.params?.slug?.join('/') || to.path.substr(1)
         const { data } = await useAsyncData('entity', async () => {
-          if(routes?.[path]) {
-            return routes[path]
+          if(storedRoutes?.[path]) {
+            return storedRoutes[path]
           }
           const catalog = useShopinvaderService('catalog')
 
           const sku = to?.query?.sku || null as string | null
           const entity = await catalog.getEntityByURLKey(path, sku)
 
-          routes[path] = entity
+          storedRoutes[path] = entity
           return entity
         })
         const entity = data.value
+
         if (entity) {
           if(entity?.urlKey === path) {
             /** Render page */
