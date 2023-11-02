@@ -10,7 +10,7 @@ export class ProductService extends Service {
     super()
     this.provider = provider
   }
-  private hits(hits: any[]) {
+  hits(hits: any[]) {
     return hits?.map((hit: any) => {
       const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
         (variant: any) => variant._source
