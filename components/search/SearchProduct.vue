@@ -6,7 +6,7 @@
     :pagination="true"
     cardinality-field="url_key"
     :sort-options="sortOptions || [
-      { label: $t('search.sort.relevance'), value: '_score' },
+      { label: $t('search.sort.relevance'), value: '_score', order: 'desc'  },
       { label: $t('search.sort.name_asc'), value: 'name.sortable' },
       { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
     ]"
