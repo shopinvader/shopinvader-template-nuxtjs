@@ -117,7 +117,9 @@ export default {
   },
   emits: {
     /**  Emit when the quantity is updated */
-    update: (qty: number) => true
+    update: (qty: number) => true,
+    /** Emit when the product is added to the cart */
+    add: (qty: number) => true
   },
   data() {
     return {
@@ -163,6 +165,7 @@ export default {
       }
       const cartService = useShopinvaderService('cart')
       if (cartService && this.product?.id !== null) {
+        this.$emit('add', this.qty)
         cartService.addItem(this.product.id, this.qty)
         if (!this.line) {
           this.cartDrowerOpened = true
