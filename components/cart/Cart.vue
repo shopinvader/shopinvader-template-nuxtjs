@@ -85,7 +85,7 @@ export default defineNuxtComponent({
   },
   computed: {
     lineCount(): number {
-      return this.cart?.lines.length || 0
+      return this.cart?.lines?.length || 0
     }
   },
   setup() {
