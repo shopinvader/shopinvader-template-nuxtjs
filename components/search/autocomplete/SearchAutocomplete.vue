@@ -203,25 +203,24 @@ export default {
   }
   &--focused {
     .search-autocomplete__form {
-      @apply fixed top-0 left-0 z-40 max-xl:h-full max-xl:w-screen max-xl:overflow-auto max-xl:bg-white xl:relative ;
+      @apply fixed top-0 -left-1/2 -right-1/2 z-40 lg:top-5 mx-auto h-screen max-h-screen lg:h-[90vh] overflow-hidden lg:container  max-lg:w-screen max-lg:overflow-auto bg-white lg:rounded-2xl lg:p-2;
       .form {
-        @apply flex w-full items-center;
+        @apply flex w-full items-center  max-lg:shadow z-50 transition-all ;
         &__back {
-          @apply cursor-pointer p-1 xl:hidden text-black;
+          @apply cursor-pointer p-1 lg:hidden text-secondary;
         }
         &__input {
-          @apply flex-1 rounded-xl border border-secondary bg-white transition-all z-50 w-full;
-        }
-        &__dropdown {
-          @apply m-2 bg-white absolute xl:-top-5  xl:-left-2  xl:mt-5 xl:w-full xl:rounded-xl pt-20 xl:shadow-lg;
+          @apply h-10 w-full rounded-2xl border border-secondary bg-transparent transition-all;
+          .button {
+            @apply text-secondary bg-transparent flex items-center;
 
-          &.v-enter-active {
-            animation: dropdown 0.4s;
-            animation-fill-mode: forwards;
           }
-          &.v-leave-active {
-            animation: dropdown 0.5s reverse;
-          }
+        }
+      }
+      .form__dropdown {
+        @apply overflow-auto h-full mb-10 -z-10 flex max-lg:justify-center;
+        .results__products {
+          @apply max-lg:order-first ;
         }
       }
     }

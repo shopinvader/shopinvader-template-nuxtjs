@@ -41,7 +41,7 @@
 </template>
 <script lang="ts">
 import { inject, reactive } from 'vue'
-import _ from 'lodash'
+import isEqual from 'lodash.isequal'
 import {
   Aggregation,
   BoolQuery,
@@ -235,7 +235,7 @@ export default {
             const query: string =
               ($route.query?.[this.urlParam] as string) || '[]'
             const values: string[] = JSON.parse(query) || []
-            const isEqualValues:boolean = _.isEqual(values.sort(), this.data.selected.sort()) || false
+            const isEqualValues:boolean = isEqual(values.sort(), this.data.selected.sort()) || false
 
             if (!isEqualValues) {
               this.setValues(values)
