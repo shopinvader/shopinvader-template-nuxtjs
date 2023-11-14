@@ -1,5 +1,6 @@
 <template>
   <search-product
+    v-if="!refresh"
     ref="searchProduct"
     :provider="providerFunction"
     :query="query"
@@ -28,6 +29,12 @@ export default {
     const queryString = computed(() => $route.query.q)
     useSeoMeta({
       title: t('search.autocomplete.product', { query: queryString?.value || '' })
+    })
+    watch(queryString, () => {
+      refresh.value = true
+      setTimeout(() => {
+        refresh.value = false
+      }, 100)
     })
     return {
       queryString,
