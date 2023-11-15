@@ -1,6 +1,5 @@
 <template>
-  CHECKOUT LOGIN
-  <div v-if="!user" class="checkout-login">
+  <div v-show="!user" class="checkout-login">
     <!-- @slot Main content -->
     <slot name="body">
       <account-login class="cart-login__form" @success="success"> </account-login>

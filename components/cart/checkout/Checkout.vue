@@ -8,7 +8,6 @@
         </div>
       </slot>
     </template>
-    currentStepIndex {{ currentStepIndex }}
     <div v-if="checkoutSteps.length > 0" class="checkout">
       <div v-if="cart?.hasPendingTransactions" class="checkout__pending">
         <!-- @slot Pending state and warning message content  -->
