@@ -4,45 +4,14 @@
     class="checkout-address"
     :class="{ 'checkout-address--active': active }"
   >
+
     <div v-if="error" class="alert alert-error mb-6 flex gap-1">
       <icon icon="ph:warning-circle" class="text-xl"></icon>
       <span>{{ error }}</span>
     </div>
     <div class="checkout-address__items">
-      <address-card
-        v-for="item in types"
-        :key="item.type"
-        :address="item.address"
-        class="address"
-      >
-        <template #header>
-          <h2 class="title">
-            <icon :icon="item.icon"></icon>
-            {{ item.label }}
-          </h2>
-          <div class="subtitle">
-            {{ item.address?.name }}
-          </div>
-        </template>
-        <template v-if="!item?.address?.id" #body>
-          <div class="h-full py-8 text-center text-error">
-            {{ $t('cart.address.no-address') }}
-          </div>
-        </template>
-        <template v-if="active" #footer>
-          <div class="flex justify-end gap-4">
-            <button
-              type="button"
-              class="btn-outline btn-primary btn"
-              :disabled="loading"
-              @click="selectedAddressType = item"
-            >
-              <icon icon="mdi:edit"></icon>
-              <span class="pl-1">{{ $t('cart.address.select') }}</span>
-            </button>
-          </div>
-        </template>
-      </address-card>
+      <cart-address-delivery class="address" :editable="active"></cart-address-delivery>
+      <cart-address-invoicing class="address" :editable="active"></cart-address-invoicing>
     </div>
     <div v-if="active" class="checkout-address__submit">
       <button
@@ -57,42 +26,10 @@
       </button>
     </div>
   </div>
-  <aside-drawer
-    :open="selectedAddressType !== null"
-    @close="selectedAddressType = null"
-  >
-    <template #header>
-      <div class="text-2xl">
-        {{ selectedAddressType?.label }}
-      </div>
-    </template>
-    <template #content>
-      <cart-address-selector
-        v-if="selectedAddressType !== null"
-        class="cart-address-selector"
-        :types="selectedAddressType.addressType"
-        :selected-address="selectedAddressType?.address"
-        @select="onSelectAddress"
-      />
-    </template>
-    <template #footer>
-      <button class="btn-primary btn">
-        {{ $t('cart.address.continue') }}
-      </button>
-    </template>
-  </aside-drawer>
 </template>
 <script lang="ts">
-import AddressCard from '~/components/address/AddressCard.vue'
-import CartAddressSelector from '~/components/cart/address/CartAddressSelector.vue'
-import { Address } from '~/models'
-interface AddressType {
-  addressType: 'shipping' | 'billing'
-  type: 'delivery' | 'invoicing'
-  label: string
-  address: Address | null
-  icon: string
-}
+import { CartAddressDelivery, CartAddressInvoicing, AddressCard } from '#components'
+import { Address } from '#models'
 
 /**
  * Checkout Address step.
@@ -109,7 +46,8 @@ export default defineNuxtComponent({
   },
   components: {
     'address-card': AddressCard,
-    'cart-address-selector': CartAddressSelector
+    'cart-address-delivery': CartAddressDelivery,
+    'cart-address-invoicing': CartAddressInvoicing
   },
   props: {
     /**
@@ -120,6 +58,13 @@ export default defineNuxtComponent({
       required: true
     }
   },
+  computed: {
+    deliveryAddress() {
+      const cartService = useShopinvaderService('cart')
+      const cart = cartService.getCart()
+      return cart.value?.delivery?.address
+    },
+  },
   async setup(props, { emit }) {
     const i18n = useI18n()
     const auth = useShopinvaderService('auth')
@@ -127,28 +72,10 @@ export default defineNuxtComponent({
     const cart = cartService.getCart()
     const loading = ref(false)
     const error = ref(null as string | null)
-    const deliveryAddress = ref<Address | null>(null)
-    const selectedAddressType = ref<AddressType | null>(null)
 
     /** Check if the customer is logged */
     const user = auth?.getUser()
 
-    const types: AddressType[] = reactive([
-      {
-        addressType: 'shipping',
-        type: 'delivery',
-        label: i18n.t('cart.address.shipping.title'),
-        address: cart.value?.delivery?.address || null,
-        icon: 'ph:house'
-      },
-      {
-        addressType: 'billing',
-        type: 'invoicing',
-        label: i18n.t('cart.address.billing.title'),
-        address: cart.value?.invoicing?.address || null,
-        icon: 'ph:file-text'
-      }
-    ])
     const submit = () => {
       try {
         loading.value = true
@@ -165,21 +92,12 @@ export default defineNuxtComponent({
         loading.value = false
       }
     }
-    const onSelectAddress = (address:Address) => {
-      selectedAddressType.value = {
-        ...selectedAddressType.value,
-        address
-      }
-    }
+
     return {
-      selectedAddressType,
       error,
       cart,
       loading,
-      types,
-      deliveryAddress,
       submit,
-      onSelectAddress,
       user
     }
   }
@@ -203,7 +121,7 @@ export default defineNuxtComponent({
   &--active {
     .checkout-address__items {
       .address {
-        @apply border border-primary text-primary;
+        @apply card shadow-lg rounded-md;
       }
     }
   }
@@ -212,14 +130,5 @@ export default defineNuxtComponent({
     @apply flex w-full flex-grow justify-end gap-6 py-4;
   }
 }
-.aside-drawer {
-  &__side {
-    .cart-address-selector {
-      @apply w-full;
-      .content__items {
-        @apply flex flex-col items-stretch gap-4;
-      }
-    }
-  }
-}
+
 </style>

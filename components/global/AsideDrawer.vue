@@ -9,7 +9,7 @@
         <div class="aside-drawer__overlay" @click="$emit('close')"></div>
         <div
           class="aside-drawer__side"
-          :class="`aside-drawer__side--${direction}`"
+          :class="[`aside-drawer__side--${direction}`, classContent]"
         >
           <div class="side__header">
             <div>

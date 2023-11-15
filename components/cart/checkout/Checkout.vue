@@ -8,6 +8,7 @@
         </div>
       </slot>
     </template>
+    currentStepIndex {{ currentStepIndex }}
     <div v-if="checkoutSteps.length > 0" class="checkout">
       <div v-if="cart?.hasPendingTransactions" class="checkout__pending">
         <!-- @slot Pending state and warning message content  -->
@@ -161,12 +162,15 @@ interface checkoutStep {
   component: Component
   position: number
 }
-import CheckoutLogin from '~/components/cart/checkout/CheckoutLogin.vue'
-import CheckoutAddress from '~/components/cart/checkout/CheckoutAddress.vue'
-import CheckoutDelivery from '~/components/cart/checkout/CheckoutDelivery.vue'
-import CheckoutPayment from '~/components/cart/checkout/CheckoutPayment.vue'
-import CartEmpty from '../CartEmpty.vue'
-import SpinnerVue from '~/components/global/Spinner.vue'
+import {
+  CartCheckoutLogin,
+  CartCheckoutAddress,
+  CartCheckoutDelivery,
+  CartCheckoutPayment,
+  CartEmpty,
+  Spinner
+} from '#components'
+
 
 /**
  * Checkout component.
@@ -179,9 +183,9 @@ export default defineNuxtComponent({
   name: 'Checkout',
   emits: ['change', 'next', 'back'],
   components: {
-    'checkout-login': CheckoutLogin,
+    'checkout-login': CartCheckoutLogin,
     'cart-empty': CartEmpty,
-    spinner: SpinnerVue
+    'spinner': Spinner
   },
   props: {
     /**
@@ -203,7 +207,7 @@ export default defineNuxtComponent({
       default: true
     }
   },
-  setup(props, { slots }) {
+  setup(props) {
     const cartService = useShopinvaderService('cart')
     const cart = cartService?.getCart() || ref(null)
     const i18n = useI18n()
@@ -213,25 +217,25 @@ export default defineNuxtComponent({
       {
         name: 'login',
         title: null,
-        component: CheckoutLogin,
-        position: 100
+        component: CartCheckoutLogin,
+        position: 0
       },
       {
         name: 'address',
         title: i18n.t('cart.address.title'),
-        component: CheckoutAddress,
+        component: CartCheckoutAddress,
         position: 100
       },
       {
         name: 'delivery',
         title: i18n.t('cart.delivery.method.title'),
-        component: CheckoutDelivery,
+        component: CartCheckoutDelivery,
         position: 200
       },
       {
         name: 'payment',
         title: 'Payment',
-        component: CheckoutPayment,
+        component: CartCheckoutPayment,
         position: 300
       }
     ]
@@ -247,7 +251,6 @@ export default defineNuxtComponent({
     } else if(props.steps) {
       checkoutSteps = props.steps
     }
-
     const currentStepIndex = ref(0 as number)
     const maxStepIndex = ref(0 as number)
     return {
@@ -353,7 +356,7 @@ export default defineNuxtComponent({
     }
   }
   &__cart {
-    @apply mt-3 flex flex-row  flex-wrap items-center justify-start gap-2 bg-gray-100 p-3;
+    @apply mt-3 flex flex-row  flex-wrap items-center justify-start gap-2 bg-slate-100 p-3;
     .cart {
       &__icon {
         @apply text-4xl text-primary;

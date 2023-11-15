@@ -33,10 +33,10 @@ export class Address extends Model {
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
-    this.title = data.title ? new Title(data.title) : null
+    this.title = data?.title ? new Title(data.title) : null
     this.addressType = data?.address_type || null
     this.city = data?.city || null
-    this.country = data.country ? new Country(data.country) : null
+    this.country = data?.country ? new Country(data.country) : null
     this.displayName = data?.display_name || null
     this.isCompany = data?.is_company || null
     this.mobile = data?.mobile || null
@@ -45,7 +45,7 @@ export class Address extends Model {
     this.optOut = data?.opt_out || true
     this.phone = data?.phone || null
     this.ref = data?.ref || null
-    this.state = data.state ? new State(data.state) : null
+    this.state = data?.state ? new State(data.state) : null
     this.street = data?.street || null
     this.street2 = data?.street2 || null
     this.type = data?.type || 'delivery'

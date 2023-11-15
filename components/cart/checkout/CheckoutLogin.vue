@@ -1,13 +1,14 @@
 <template>
+  CHECKOUT LOGIN
   <div v-if="!user" class="checkout-login">
     <!-- @slot Main content -->
     <slot name="body">
-      <account-login class="cart-login__form" @success="next"> </account-login>
+      <account-login class="cart-login__form" @success="success"> </account-login>
     </slot>
   </div>
 </template>
 <script lang="ts">
-import AccountLogin from '~/components/account/AccountLogin.vue'
+import { AccountLogin } from '#components'
 /**
  * Checkout Login step.
  * This component is used in the Checkout funnel.
@@ -27,16 +28,16 @@ export default defineNuxtComponent({
   setup(props, { emit }) {
     const auth = useShopinvaderService('auth')
     const user = auth?.getUser()
-    if (user?.value) {
+    const success = () => {
       emit('next')
     }
-    return {
-      user
+    if (user?.value) {
+      success()
     }
-  },
-  methods: {
-    next() {
-      this.$emit('next')
+
+    return {
+      user,
+      success
     }
   }
 })

@@ -23,6 +23,7 @@ export class Cart extends Model {
   invoicing: CartInvoicing
   delivery: CartDelivery
   note: string
+  orderRef: string = ''
   hasPendingTransactions = false
   hasSyncError = false
   syncing = false
@@ -48,9 +49,10 @@ export class Cart extends Model {
     this.loaded = false
     this.amount = new CartAmount(data?.amount || {})
     this.discount = new CartDiscount(data?.discount || {})
-    this.delivery = new CartDelivery({address: data?.delivery} || {})
-    this.invoicing = new CartInvoicing({address: data?.invoicing} || {})
+    this.delivery = new CartDelivery({address: data?.delivery?.address} || {})
+    this.invoicing = new CartInvoicing({address: data?.invoicing?.address} || {})
     this.note = data?.note
+    this.orderRef = data?.client_order_ref || ''
   }
 
   private static getLinesAmount(lines: CartLine[]): CartLinesAmount {
