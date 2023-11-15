@@ -2,11 +2,13 @@ import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
 import {
   Cart as CartModel,
   Product,
-  CartLine as CartLineModel
+  CartLine as CartLineModel,
+  Address
 } from '#models'
 import { Service, ProductService } from '#services'
 import { storeToRefs } from 'pinia'
-import _ from 'lodash'
+import isEqual from 'lodash.isequal'
+
 class CartObserver {
   prevCartData: any
   callback: (cart: CartModel, syncError: boolean) => void // Nuxt context
@@ -19,7 +21,7 @@ class CartObserver {
     if(typeof data?.getData == 'function') {
       cartData = {...data.getData()}
     }
-    if(_.isEqual(this.prevCartData, cartData)) {
+    if(isEqual(this.prevCartData, cartData)) {
       return
     }
     const erpCart = cartData?.erpCart || {}
@@ -77,7 +79,11 @@ export class CartService extends Service {
       if (window?.localStorage?.getItem('cart')) {
         this.setCart(JSON.parse(window.localStorage.getItem('cart') || '{}'))
       }
-      this.cart.syncWithRetry()
+      if(window?.requestIdleCallback) {
+        requestIdleCallback(() => {
+          this.cart.syncWithRetry()
+        })
+      }
     }
   }
   getCart(): Ref<CartModel | null> {
@@ -98,6 +104,7 @@ export class CartService extends Service {
     const store = this.store()
     if (cart == null) {
       store.setCart(null)
+      window.localStorage.removeItem('cart')
       return
     }
     cart = await this.transformCart(cart)
@@ -190,6 +197,17 @@ export class CartService extends Service {
     }
   }
 
+  async setAddress(type: string, address:Address) {
+    const cart = this.getCart()?.value || null
+    if(!cart) return null
+    if(type == 'delivery') {
+      cart.delivery.address = address
+    } else {
+      cart.invoicing.address = address
+    }
+    this.update(cart)
+  }
+
   /**
    * Set shipping mode on the current cart
    * Get carrier list via DeliveryCarrier service
@@ -205,5 +223,22 @@ export class CartService extends Service {
     if (data?.id) {
       this.setCart(new CartModel(cart))
     }
+  }
+  async update(cart: CartModel) {
+    const data: any = await this.erp.post('carts/update', {
+      client_order_ref: cart.orderRef || '',
+      delivery: {
+        address_id: cart?.delivery?.address?.id || null
+      },
+      invoicing: {
+        address_id: cart?.invoicing?.address?.id || null
+      },
+      note: cart.note || ''
+    })
+    await this.setCart(data)
+  }
+  clear() {
+    this.setCart(new CartModel({}))
+
   }
 }

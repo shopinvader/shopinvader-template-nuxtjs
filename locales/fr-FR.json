@@ -117,11 +117,18 @@
         "title": "Adresse de livraison"
       },
       "billing": {
-        "title": "Adresse de facturation"
+        "title": "Adresse de facturation",
+        "warning_same": "Cette adresse est aussi utilisée pour la livraison, en la modifiant, vous modifierez aussi l'adresse de livraison de ce panier."
       }
     },
     "login": {
       "title": "Connexion"
+    },
+    "validated": {
+      "title": "Merci !",
+      "intro": "Votre commande a bien été validée.",
+      "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
+      "link":"Voir mes commandes"
     }
   },
   "account": {

@@ -117,11 +117,18 @@
         "title": "Delivery address"
       },
       "billing": {
-        "title": "Invoice address"
+        "title": "Invoice address",
+        "warning_same": "This address is used as your shipping address, editing it will change the shipping address in your cart."
       }
     },
     "login": {
       "title": "Login"
+    },
+    "validated": {
+      "title": "Thank you",
+      "intro": "Your order has been validated",
+      "message": "You will receive an email with the details of your order. You can also find it in your account.",
+      "link":"View my orders",
     }
   },
   "payment": {

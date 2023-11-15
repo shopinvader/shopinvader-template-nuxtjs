@@ -121,11 +121,18 @@
         "title": "Dirección de entrega"
       },
       "billing": {
-        "title": "Dirección de facturación"
+        "title": "Dirección de facturación",
+        "warning_same": "Esta dirección se utiliza como dirección de envío, si la edita cambiará la dirección de envío de su carrito. "
       }
     },
     "login": {
       "title": "Iniciar sesión"
+    },
+    "validated": {
+      "title": "¡Gracias por su pedido!",
+      "intro": "Su pedido ha sido validado.",
+      "message": "Recibirá un correo electrónico de confirmación en breve. Puede seguir el estado de su pedido en la sección \"Mi cuenta\".",
+      "link": "Ver mis pedidos"
     }
   },
   "account": {
