@@ -27,7 +27,7 @@
       <slot name="body" :product="variant">
         <div class="body__title">
           <slot name="title" :product="variant">
-            <nuxt-link :to="linkPath">
+            <nuxt-link v-if="linkPath" :to="linkPath">
               {{ variant?.model?.name || variant?.name }}
             </nuxt-link>
           </slot>
@@ -149,10 +149,13 @@ export default {
 
   methods: {
     linkToProduct() {
-      this.$router.push({
-        path: this.linkPath,
-        query: { sku: this.variant?.sku }
-      })
+      const path = this.linkPath || null
+      if(path) {
+        this.$router.push({
+          path,
+          query: { sku: this.variant?.sku }
+        })
+      }
     },
     changeVariant(variant: Product) {
       this.variant = variant
