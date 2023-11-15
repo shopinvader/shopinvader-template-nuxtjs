@@ -326,7 +326,7 @@ export default {
     }
   }
   &__loading {
-    @apply flex h-screen w-full items-center justify-center;
+    @apply flex min-h-screen  w-full items-center justify-center;
   }
   &__results {
     @apply w-full px-4 lg:w-3/4 xl:w-4/5;
