@@ -44,7 +44,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Product } from '~/models'
+import { Product, VariantAttributes } from '~/models'
 
 export default defineNuxtComponent({
   emits: ['selectVariant'],
@@ -72,14 +72,29 @@ export default defineNuxtComponent({
   },
   methods: {
     async select(name:string, axis: string) {
-      this.loading = true
       const variantAttributes = {...this.product.variantAttributes}
       variantAttributes[name] = axis
+      this.findProduct(variantAttributes)
+    },
+    async findProduct(variantAttributes: VariantAttributes) {
+      this.loading = true
       const productService = useShopinvaderService('products')
       const { product, axes } = await productService.getVariantsAggregation(this.product.urlKey || '', variantAttributes)
       this.variantAxes = axes
       if (product) {
         this.$emit('selectVariant', product)
+      } else {
+        /* if the current selection does not exists */
+        let haschange = false
+        for(let [key, value] of Object.entries(variantAttributes)) {
+          if(!axes?.[key]?.includes(value)) {
+            variantAttributes[key] = axes[key][0]
+            haschange = true
+          }
+        }
+        if(haschange) {
+          this.findProduct(variantAttributes)
+        }
       }
       this.loading = false
     }
