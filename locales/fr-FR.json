@@ -16,6 +16,10 @@
       "name_asc": "A-Z",
       "name_desc": "Z-A"
     },
+    "filters": {
+      "all": "Voir tous les résultats",
+      "reduce": "Réduire"
+    },
     "autocomplete": {
       "noresults": "Aucun résultat",
       "search": "Rechercher",

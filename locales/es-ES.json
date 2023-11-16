@@ -26,6 +26,10 @@
       "queries": "Búsquedas recientes",
       "clear": "Borrar",
       "seeall": "Ver todo"
+    },
+    "filters": {
+      "all": "Ver todo",
+      "reduce": "Reducir"
     }
   },
   "filters": {

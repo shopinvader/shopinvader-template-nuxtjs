@@ -26,6 +26,10 @@
       "queries": "My searches",
       "clear": "Clear",
       "seeall": "See all results"
+    },
+    "filters": {
+      "all": "See all",
+      "reduce": "Reduce"
     }
   },
   "filters": {
