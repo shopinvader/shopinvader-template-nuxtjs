@@ -99,7 +99,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         const user = auth.getUser()
         const localePath = useLocalePath();
         if (!user.value) {
-          return navigateTo(localePath({ path: '/account/login' }));
+          return nuxtApp.runWithContext(() =>
+            navigateTo(localePath({ path: '/account/login' }))
+          )
         }
       }
       const routes = router.getRoutes()
@@ -135,9 +137,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
           } else if (entity?.redirectUrlKey?.length) {
             /** Redirection */
-            return navigateTo(`/${entity.urlKey}`, {
-              redirectCode: 301
-            })
+            return nuxtApp.runWithContext(() =>
+              navigateTo(`/${entity.urlKey}`, {
+                redirectCode: 301
+              })
+            )
           }
         }
       }
