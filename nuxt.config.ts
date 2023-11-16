@@ -134,7 +134,7 @@ export default defineNuxtConfig({
       ssr: false
     },
     '/search': {
-      index: false,
+      index: true,
       ssr: false
     },
   }

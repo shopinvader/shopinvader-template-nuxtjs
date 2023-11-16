@@ -118,7 +118,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
           return entity
         })
         const entity = data.value
-
         if (entity) {
           if(entity?.urlKey === path) {
             /** Render page */
@@ -136,7 +135,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
           } else if (entity?.redirectUrlKey?.length) {
             /** Redirection */
-            navigateTo(entity.urlKey, {
+            return navigateTo(`/${entity.urlKey}`, {
               redirectCode: 301
             })
           }

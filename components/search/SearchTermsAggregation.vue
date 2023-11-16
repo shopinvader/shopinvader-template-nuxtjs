@@ -228,7 +228,7 @@ export default {
   watch: {
     $route: {
       handler: function () {
-        if (this.urlParam) {
+        if (!import.meta.env.SSR && this.urlParam) {
 
           const $route = useRoute()
           try {
