@@ -112,7 +112,7 @@ export class ProductService extends Service {
     let i =0
     for(let axis in axes) {
       const axesValues = Object.entries(axes).slice(0, i)
-      let agg:Aggregation = esb.termsAggregation(axis, `variant_attributes.${axis}`)
+      let agg:Aggregation = esb.termsAggregation(axis, `variant_attributes.${axis}`).size(1000).order('_term', 'asc')
       if(axesValues?.length > 0) {
         const query = esb.boolQuery().must(
           axesValues.map(([key, value]) =>  esb.termQuery(`variant_attributes.${key}`, value))
