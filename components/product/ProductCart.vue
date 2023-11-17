@@ -93,8 +93,7 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { CartLine } from '~~/models'
-import { Product } from '~~/models/Product'
+import { CartLine, Product } from '#models'
 export default {
   name: 'ProductCart',
   props: {

@@ -42,8 +42,8 @@
   </search-base>
 </template>
 <script lang="ts">
+import { Product } from '#models'
 import ProductHit from '~/components/product/ProductHit.vue'
-import { Product } from '~/models/Product'
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'

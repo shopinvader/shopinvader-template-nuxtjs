@@ -120,7 +120,7 @@
 <script lang="ts">
 import { PropType, ref } from 'vue'
 import { Address } from '~/models'
-import { Country } from '~~/models/Country'
+import { Country } from '#models'
 import { Icon } from '@iconify/vue'
 
 export default defineNuxtComponent({

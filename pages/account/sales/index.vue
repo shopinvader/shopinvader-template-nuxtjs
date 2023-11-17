@@ -175,7 +175,6 @@
 import AccountLayout from '~/components/account/AccountLayout.vue'
 import Pagination from '~/components/global/Pagination.vue'
 import PaginationStatus from '~/components/global/PaginationStatus.vue'
-import { Sale } from '~/models/Sale'
 import { ref } from 'vue'
 
 export default defineNuxtComponent({

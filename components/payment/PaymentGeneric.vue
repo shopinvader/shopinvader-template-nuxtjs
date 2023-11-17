@@ -34,7 +34,7 @@
 </template>
 <script lang="ts">
 import { ErpFetch } from '@shopinvader/fetch'
-import { PaymentMode } from '~/models/PaymentModes'
+import { PaymentMode } from '#models'
 import { PaymentManualService } from '~/services'
 
 export default defineNuxtComponent({

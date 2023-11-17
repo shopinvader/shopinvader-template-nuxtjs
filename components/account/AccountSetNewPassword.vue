@@ -97,7 +97,7 @@
   </div>
 </template>
 <script lang="ts">
-import { AuthCredentialService } from '~/services/auth'
+import { AuthCredentialService } from '#services'
 import LogoVue from '../global/Logo.vue'
 
 export default defineNuxtComponent({
@@ -146,7 +146,7 @@ export default defineNuxtComponent({
       }
     },
     async submit(e: Event) {
-     
+
       const auth = this.auth
       this.loading = true
       if (this?.token && this?.newPassword) {

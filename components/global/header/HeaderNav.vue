@@ -55,7 +55,7 @@
   </nav>
 </template>
 <script lang="ts">
-import { Category } from '~~/models/Category'
+import { Category } from '#models'
 
 export default defineNuxtComponent({
   fetchKey: 'category',

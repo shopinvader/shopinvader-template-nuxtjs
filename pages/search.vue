@@ -14,7 +14,7 @@
 </template>
 <script lang="ts">
 import SearchProduct from '~/components/search/SearchProduct.vue'
-import { Product } from '~/models/Product'
+import { Product } from '#models'
 import esb, { BoolQuery, TermQuery } from 'elastic-builder'
 
 export default {

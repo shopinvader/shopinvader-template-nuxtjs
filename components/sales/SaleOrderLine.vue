@@ -30,7 +30,7 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { SaleLines } from '~~/models/Sale'
+import { SaleLines } from '#models'
 import OrderInvoiceLine from './OrderInvoiceLine.vue'
 
 export default defineNuxtComponent({

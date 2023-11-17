@@ -1,5 +1,4 @@
-import { AuthAPIConfig } from '~/services/auth/AuthAPI'
-import { AuthOIDCConfig } from '~/services/auth/AuthOIDC'
+import { AuthAPIConfig, AuthOIDCConfig } from '#services'
 
 export interface ShopinvaderProxyConfig {
   url: string

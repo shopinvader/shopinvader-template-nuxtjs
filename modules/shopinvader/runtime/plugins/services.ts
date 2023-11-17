@@ -17,7 +17,7 @@ import {
   CategoryService,
   CatalogService
 } from '~/services'
-import { AuthOIDCService, AuthCredentialService } from '~/services/auth'
+import { AuthOIDCService, AuthCredentialService } from '#services'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}

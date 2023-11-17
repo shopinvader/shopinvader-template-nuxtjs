@@ -52,7 +52,7 @@
 </template>
 <script lang="ts">
 import PaymentGeneric from '~/components/payment/PaymentGeneric.vue'
-import { PaymentMode } from '~/models/PaymentModes'
+import { PaymentMode } from '#models'
 
 interface PaymentWithComponent extends PaymentMode {
   component: any
