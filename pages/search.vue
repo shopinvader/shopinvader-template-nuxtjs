@@ -1,5 +1,6 @@
 <template>
   <search-product
+    v-if="!refresh"
     ref="searchProduct"
     :provider="providerFunction"
     :query="query"
@@ -13,7 +14,7 @@
 </template>
 <script lang="ts">
 import SearchProduct from '~/components/search/SearchProduct.vue'
-import { Product } from '~/models/Product'
+import { Product } from '#models'
 import esb, { BoolQuery, TermQuery } from 'elastic-builder'
 
 export default {
@@ -28,6 +29,12 @@ export default {
     const queryString = computed(() => $route.query.q)
     useSeoMeta({
       title: t('search.autocomplete.product', { query: queryString?.value || '' })
+    })
+    watch(queryString, () => {
+      refresh.value = true
+      setTimeout(() => {
+        refresh.value = false
+      }, 100)
     })
     return {
       queryString,
@@ -47,7 +54,12 @@ export default {
 
   methods: {
     transformResult(result: any) {
-      return result?.hits?.hits?.map((data: any) => new Product(data._source))
+      let role: string
+      const authService = useShopinvaderService('auth')
+      if(authService?.getUser()?.role) {
+        role = authService.getUser()?.role as string
+      }
+      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
     },
     async providerFunction(body: any) {
       const productService = useShopinvaderService('products')

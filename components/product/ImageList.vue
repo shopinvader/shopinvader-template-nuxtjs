@@ -54,7 +54,7 @@
 </template>
 
 <script lang="ts">
-import { ProductImageSet } from '~~/models/ProductImageSet'
+import { ProductImageSet } from '#models'
 import ProductImageVue from './ProductImage.vue'
 
 export default {

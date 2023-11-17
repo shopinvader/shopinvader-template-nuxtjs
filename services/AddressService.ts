@@ -1,55 +1,57 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { AddressResult, Address } from './../models/Address'
+import { AddressResult, Address } from '#models'
+
 export class AddressService {
   provider: ErpFetch | null = null
+  addresses: Address[] | null = null
   constructor(provider: ErpFetch) {
     this.provider = provider
   }
 
-  async getAll(
-    per_page = 2,
-    page = 1,
-    scope: object | null = null
-  ): Promise<AddressResult | null> {
+  async getAll(): Promise<Address[] | null> {
     if (this.provider == null) {
       return null
     }
-
-    if (scope != null) {
-      scope = Object.entries(scope).reduce((acc: any, [key, value]) => {
-        acc['scope[' + key + ']'] = value
-        return acc
-      }, {})
+    this.addresses = []
+    const mainAddress = await this.getMainAddress() || null
+    if(mainAddress){
+      this.addresses.push(mainAddress)
     }
-    const params = {
-      per_page,
-      page,
-      ...scope
-    } as any
-
-    const result = await this.provider?.get('addresses', params, 'json')
-    return {
-      size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item))
-    } as AddressResult
+    const deliveryAddresses = await this.fetchAddresses('delivery') || []
+    this.addresses = this.addresses.concat(deliveryAddresses)
+    return this.addresses
   }
+  async fetchAddresses(type:string): Promise<Address[] | null> {
+    const results = await this.provider?.get(`addresses/${type}`, {}, 'json') || []
+    return await results.map((item: any) => new Address({...item, type}))
+  }
+  async getMainAddress(): Promise<Address | null> {
+    const data = await this.provider?.get(`addresses/invoicing`, {}, 'json')
+    if(data?.[0]) {
+      const item = {
+        ...data[0],
+        type: 'invoicing',
+        main: true
+      }
 
+      return new Address(item)
+    }
+    return null
+  }
   /**
    * delete an address
    * @param Address address
-   * @returns AddressResult
+   * @returns Address[]
    */
-  async delete(address: Address): Promise<AddressResult | null> {
-    const data = await this.provider?.post(
-      'addresses/' + address.id + '/delete'
-    )
-    if (data == null) {
-      return {
-        size: data?.size || 0,
-        data: data?.data?.map((item: any) => new Address(item))
-      } as AddressResult
+  async delete(address: Address): Promise<Address[] | null> {
+    if(this.addresses == null) {
+      this.addresses  = await this.getAll() || []
     }
-    return null
+    await this.provider?.delete(
+      `addresses/${address.type}/${address.id}`, {}, {}, 'text'
+    )
+    this.addresses = this.addresses.filter((item: Address) => item.id !== address.id)
+    return this.addresses
   }
 
   /**
@@ -59,21 +61,62 @@ export class AddressService {
    * @returns Promise
    */
 
-  async update(address: Address): Promise<AddressResult> {
+  async update(address: Address): Promise<Address> {
+    if(this.addresses == null) {
+      this.addresses  = await this.getAll() || []
+    }
     const data = address.getJSONData()
-    const result = await this.provider?.post('addresses/' + address.id, data)
-    return {
-      size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item))
-    } as AddressResult
+    const result:Address = await this.provider?.post(`addresses/${address.type}/${address.id}`, data)
+    const index = this.addresses.findIndex((item: Address) => item.id === address.id)
+    this.addresses[index] = new Address({
+      ...result,
+      type: address.type
+    })
+    return this.addresses[index]
   }
 
-  async create(address: Address): Promise<AddressResult> {
+  async create(address: Address): Promise<Address> {
+    if(this.addresses == null) {
+      this.addresses  = await this.getAll() || []
+    }
     const data = address.getJSONData()
-    const result = await this.provider?.post('addresses/' + 'create', data)
-    return {
-      size: result?.size || 0,
-      data: result?.data?.map((item: any) => new Address(item))
-    } as AddressResult
+    const result = await this.provider?.post(`addresses/${address.type}`, data)
+
+    this.addresses.push(new Address({
+      ...result,
+      type: address.type
+    }))
+    return result
+  }
+  normalizeString(str: string): string {
+    return str?.toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+  }
+  async search(queryString: string, type?: string): Promise<Address[]> {
+    if(!this.addresses) {
+      this.addresses = await this.getAll() || []
+    }
+
+    if(!queryString){
+      return this.addresses || [] as Address[]
+    }
+
+    const normalizedQuery = this.normalizeString(queryString)
+    return this.addresses.filter((item: Address) => {
+      if(type && item.type !== type){
+        return false
+      }
+      const name = [
+        item.name,
+        item.street,
+        item.street2,
+        item.city,
+        item.zip,
+        item.country?.name
+      ].join(' ')
+      return this.normalizeString(name).includes(normalizedQuery) || false
+    }) || [] as Address[]
   }
 }

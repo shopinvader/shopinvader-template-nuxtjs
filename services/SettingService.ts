@@ -1,7 +1,8 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { Settings } from '../models/Settings'
+import { Settings } from '#models'
 
 export class SettingService {
+  name = 'settings'
   provider: ErpFetch | null = null
   options: any = null
 

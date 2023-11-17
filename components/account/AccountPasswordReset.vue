@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div  v-if="auth?.type=='credentials'">
     <slot name="head">
       <div class="reset-heading">
         <h2 class="reset-heading__title">
@@ -59,13 +59,23 @@ export default defineNuxtComponent({
     logo: LogoVue
   },
   data() {
+    const route = useRoute()
+
     return {
-      login: '' as string | null,
+      login: route?.query?.email || '' as string | null,
       successMessage: false as boolean,
       error: {
         auth: null as string | null,
         login: null as string | null
       }
+    }
+  },
+  setup() {
+    const localePath = useLocalePath()
+    const auth = useShopinvaderService('auth')
+    return {
+      localePath,
+      auth
     }
   },
   methods: {

@@ -1,11 +1,12 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { Category } from '../models/Category'
-import { Product } from '../models/Product'
-import { CatalogResult } from '../models/Catalog'
+import { CatalogResult, Product, Category } from '#models'
+import { Service } from '#services'
 
-export class CatalogService {
+export class CatalogService extends Service {
+  serviceName = 'catalog'
   provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
+    super()
     this.provider = provider
   }
 
@@ -78,7 +79,8 @@ export class CatalogService {
     if (hit._index.includes('category')) {
       return new Category(hit)
     } else {
-      return new Product(hit)
+      const role = this.store()?.getCurrentRole
+      return new Product(hit, role)
     }
   }
 }

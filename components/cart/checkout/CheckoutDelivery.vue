@@ -90,7 +90,7 @@
   </div>
 </template>
 <script lang="ts">
-import { DeliveryCarrier } from '~/models/DeliveryCarrier'
+import { DeliveryCarrier } from '#models'
 
 import DeliveryGeneric from '~/components/delivery/DeliveryGeneric.vue'
 import Spinner from '~/components/global/Spinner.vue'

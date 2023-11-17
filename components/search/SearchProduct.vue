@@ -6,7 +6,7 @@
     :pagination="true"
     cardinality-field="url_key"
     :sort-options="sortOptions || [
-      { label: $t('search.sort.relevance'), value: '_score' },
+      { label: $t('search.sort.relevance'), value: '_score', order: 'desc'  },
       { label: $t('search.sort.name_asc'), value: 'name.sortable' },
       { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
     ]"
@@ -42,8 +42,8 @@
   </search-base>
 </template>
 <script lang="ts">
+import { Product } from '#models'
 import ProductHit from '~/components/product/ProductHit.vue'
-import { Product } from '~/models/Product'
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
@@ -103,7 +103,13 @@ export default {
   },
   methods: {
     transformResult(result: any) {
-      return result?.hits?.hits?.map((data: any) => new Product(data._source))
+      const authService = useShopinvaderService('auth')
+      let role: string | null = null
+      const user = authService.getUser()
+      if(user?.value && user?.value?.role) {
+        role = authService.getUser()?.role as string
+      }
+      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
     }
   }
 }

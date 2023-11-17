@@ -15,6 +15,12 @@
   </nuxt-layout>
 </template>
 <script setup lang="ts">
+const auth = useShopinvaderService('auth')
+if(auth?.type !== 'credentials') {
+  /** back to home if is not auth provider credential */
+  navigateTo({ path: '/' })
+}
+
 definePageMeta({
   layout: false
 })

@@ -27,7 +27,6 @@ export default defineNuxtComponent({
     'navbar-bottom': NavbarBottomVue,
   },
   setup() {
-    defineRobotMeta()
     return {}
   },
 })

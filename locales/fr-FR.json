@@ -16,6 +16,10 @@
       "name_asc": "A-Z",
       "name_desc": "Z-A"
     },
+    "filters": {
+      "all": "Voir tous les résultats",
+      "reduce": "Réduire"
+    },
     "autocomplete": {
       "noresults": "Aucun résultat",
       "search": "Rechercher",
@@ -41,6 +45,9 @@
     },
     "up_selling": {
       "title": "Autres produits"
+    },
+    "price": {
+      "tax_included": "TTC"
     },
     "history": {
       "title": "Produits déjà consultés",
@@ -108,16 +115,24 @@
       "title": "Mes adresses",
       "no-address": "Aucune adresse Sélectionnée",
       "select": "Sélectionner une adresse",
+      "pick": "Choisir cette adresse",
       "continue": "Continuer",
-      "delivery": {
+      "shipping": {
         "title": "Adresse de livraison"
       },
-      "invoicing": {
-        "title": "Adresse de facturation"
+      "billing": {
+        "title": "Adresse de facturation",
+        "warning_same": "Cette adresse est aussi utilisée pour la livraison, en la modifiant, vous modifierez aussi l'adresse de livraison de ce panier."
       }
     },
     "login": {
       "title": "Connexion"
+    },
+    "validated": {
+      "title": "Merci !",
+      "intro": "Votre commande a bien été validée.",
+      "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
+      "link":"Voir mes commandes"
     }
   },
   "account": {
@@ -139,6 +154,7 @@
       "modify_btn": "Modifier"
     },
     "login": {
+      "title": "Connexion",
       "description": "",
       "welcome_back": "Bienvenue",
       "password": "Mot de passe",
@@ -165,7 +181,11 @@
       "reset_pswd": "Réinitialiser mon mot de passe",
       "description": "Veuillez saisir votre adresse email pour réinitialiser votre mot de passe.",
       "reset_btn": "Réinitialiser",
-      "reset_success": "Merci, si un compte lié à l'adresse e-mail existe, veuillez suivre les instructions envoyées par e-mail."
+      "reset_success": "Merci, si un compte lié à l'adresse e-mail existe, veuillez suivre les instructions envoyées par e-mail.",
+      "set_new_pswd_title": "Nouveau mot de passe",
+      "set_new_pswd_description": "Définissez un nouveau mot de passe pour votre compte",
+      "new_password": "Nouveau mot de passe",
+      "repeat_new_password": "Confirmez le mot de passe une deuxième fois"
     },
     "sales": {
       "sale": "Mes commandes",
@@ -197,13 +217,14 @@
       "noresult": "Aucune adresse",
       "count": "{count} resultat(s)",
       "edit": "Modifier",
+      "search": "Rechercher",
       "fetch": {
         "error": "Une erreur est survenue lors de la récupération des adresses",
       },
       "type": {
         "contact": "Adresse de contact",
         "delivery": "Adresse de livraison",
-        "invoice": "Adresse de facturation"
+        "invoicing": "Adresse de facturation"
       },
       "save": {
         "success": "Adresse enregistrée"
@@ -213,6 +234,7 @@
         "error": "Impossible de supprimer l'adresse",
         "success": "Adresse supprimée"
       }
+
     },
     "quotations": "Mes devis",
     "invoices": "Mes factures",
@@ -249,6 +271,9 @@
       "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",
       "error": "Impossible de supprimer l'adresse",
       "success": "Adresse supprimée"
+    },
+    "main": {
+      "title": "Adresse principale"
     }
   },
   "error": {
@@ -258,6 +283,10 @@
       "email": "Format d'adresse e-mail invalide.",
       "password": "Le mot de passe doit contenir au moins 6 caractères.",
       "unable_to_login": "Impossible de se connecter"
+    },
+    "reset": {
+      "pasword_missmatch": "Les deux mot de passe ne corréspondent pas",
+      "pswd_something_wrong": "Une erreur est survenue. Veuillez cliquer à nouveau dans le mail que vous avez reçu ou faites une nouvelle demande de réinitialisation de mot de passe."
     },
     "404": {
       "title": "Page introuvable",

@@ -1,13 +1,16 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { Product, ProductResult, VariantAttributes } from '../models/Product'
-import esb, { Aggregation, MultiMatchQuery, NestedQuery, Query, TermQuery } from 'elastic-builder'
+import esb, { Aggregation, MultiMatchQuery, Query, TermQuery } from 'elastic-builder'
+import { Product, ProductResult, VariantAttributes } from '#models'
+import { Service } from '#services'
 
-export class ProductService {
+export class ProductService extends Service {
+  name = 'products'
   provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
+    super()
     this.provider = provider
   }
-  private hits(hits: any[]) {
+  hits(hits: any[]) {
     return hits?.map((hit: any) => {
       const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
         (variant: any) => variant._source
@@ -109,7 +112,7 @@ export class ProductService {
     let i =0
     for(let axis in axes) {
       const axesValues = Object.entries(axes).slice(0, i)
-      let agg:Aggregation = esb.termsAggregation(axis, `variant_attributes.${axis}`)
+      let agg:Aggregation = esb.termsAggregation(axis, `variant_attributes.${axis}`).size(1000).order('_term', 'asc')
       if(axesValues?.length > 0) {
         const query = esb.boolQuery().must(
           axesValues.map(([key, value]) =>  esb.termQuery(`variant_attributes.${key}`, value))
@@ -155,6 +158,7 @@ export class ProductService {
   }
 
   jsonToModel(json: any): Product {
-    return new Product(json)
+    const role = this.store()?.getCurrentRole
+    return new Product(json, role)
   }
 }

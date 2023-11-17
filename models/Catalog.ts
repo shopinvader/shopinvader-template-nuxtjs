@@ -1,5 +1,4 @@
-import { Category } from './Category'
-import { Product } from './Product'
+import { Category, Product } from '#models'
 
 export interface CatalogResult {
   hits: (Category | Product)[]

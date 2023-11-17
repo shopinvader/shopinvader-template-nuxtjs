@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="auth?.type=='credentials'">
     <slot name="register-thankyou">
       <div v-if="accountIsCreated" class="message">
         <div class="message__container">
@@ -60,6 +60,7 @@
                   name="firstname"
                   type="text"
                   required
+                  :disabled="loading"
                   :placeholder="$t('account.address.name')"
                 />
               </div>
@@ -73,6 +74,7 @@
                   id="email"
                   type="email"
                   required
+                  :disabled="loading"
                   :placeholder="$t('account.address.email')"
                 />
               </div>
@@ -87,6 +89,7 @@
                   name="password"
                   type="password"
                   required
+                  :disabled="loading"
                   placeholder="***************"
                 />
               </div>
@@ -94,7 +97,7 @@
                 <div class="checkbox-container">
                   <div class="checkbox-container__outer">
                     <div class="checkbox-content">
-                      <input type="checkbox" class="" />
+                      <input type="checkbox" class="" :disabled="loading" />
                       <label
                         class="font-bold text-gray-500"
                         for="signUpLightReverseCheckbox1-1"
@@ -110,7 +113,8 @@
               <div class="w-full p-3">
                 <div class="-m-2 flex flex-wrap md:justify-end">
                   <div class="w-full p-2">
-                    <button type="submit" class="btn-primary btn w-full">
+                    <button type="submit" class="btn-primary btn w-full" :disabled="loading">
+                      <span v-if="loading" class="loading loading-spinner"></span>
                       {{ $t('account.register.sign_up') }}
                     </button>
                   </div>
@@ -149,12 +153,15 @@ export default {
   },
   setup() {
     const localePath = useLocalePath()
+    const auth = useShopinvaderService('auth')
     return {
-      localePath
+      localePath,
+      auth
     }
   },
   data() {
     return {
+      loading: false as boolean,
       error: '' as string,
       password: '' as string,
       email: '' as string,
@@ -164,6 +171,7 @@ export default {
   },
   methods: {
     async createAccount() {
+      this.loading = true
       const auth = useShopinvaderService('auth')
       const notifications = useNotification()
       try {
@@ -174,6 +182,8 @@ export default {
         console.error(e)
         this.error = this.$t('error.login.unable_to_login')
         notifications.addError(this.$t('error.login.unable_to_login'))
+      } finally {
+        this.loading = false
       }
     }
   }

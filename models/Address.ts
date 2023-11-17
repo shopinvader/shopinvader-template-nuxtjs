@@ -1,7 +1,4 @@
-import { Model } from './Model'
-import { Country } from './Country'
-import { Title } from './Title'
-import { State } from './State'
+import { State, Title, Country, Model } from '#models'
 
 export interface AddressAccess {
   read: boolean
@@ -32,14 +29,14 @@ export class Address extends Model {
   email: string | null
   lang: string | null
   access: AddressAccess | null
-
+  main: boolean | null
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
-    this.title = data.title ? new Title(data.title) : null
+    this.title = data?.title ? new Title(data.title) : null
     this.addressType = data?.address_type || null
     this.city = data?.city || null
-    this.country = data.country ? new Country(data.country) : null
+    this.country = data?.country ? new Country(data.country) : null
     this.displayName = data?.display_name || null
     this.isCompany = data?.is_company || null
     this.mobile = data?.mobile || null
@@ -48,51 +45,50 @@ export class Address extends Model {
     this.optOut = data?.opt_out || true
     this.phone = data?.phone || null
     this.ref = data?.ref || null
-    this.state = data.state ? new State(data.state) : null
+    this.state = data?.state ? new State(data.state) : null
     this.street = data?.street || null
     this.street2 = data?.street2 || null
-    this.type = data?.type || null
+    this.type = data?.type || 'delivery'
     this.vat = data?.vat || null
     this.zip = data?.zip || null
     this.email = data?.email || null
     this.lang = data?.lang || null
-    this.access = data?.access || null
+    this.main = data?.main || null
+    this.access = data?.access || {
+      delete: !this.main,
+      update: true
+    }
   }
   getJSONData(): any {
-    return {
+    let data:any = {
       name: this.name,
-      type: this.type,
       street: this.street,
       street2: this.street2,
       zip: this.zip || '',
       city: this.city || '',
       phone: this.phone || '',
-      email: this.email,
-      title: {
-        id: this.title?.id || 0
-      },
-      country: {
-        id: this.country?.id || 0
-      }
-      /*
+      email: this.email
 
-
-      phone: this.phone || '',
-      state: {
-        id: this.state?.id || 0
-      },
-      country: {
-        id: this.country?.id || 0
-      },
-      title: {
-        id: this.title?.id || 0
-      },
-      is_company: this.isCompany,
-      opt_in: this.optIn,
-      opt_out: this.optOut,
-      lang: this.lang
-      */
     }
+    if(this.country?.id) {
+      data = {
+        ...data,
+        country_id: this.country?.id
+      }
+    }
+    if(this.state?.id) {
+      data = {
+        ...data,
+        state_id: this.state?.id
+      }
+    }
+    if(this.title?.id) {
+      data = {
+        ...data,
+        title_id: this.title?.id
+      }
+    }
+    return data
   }
 }
 

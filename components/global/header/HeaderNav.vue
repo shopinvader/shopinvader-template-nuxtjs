@@ -1,59 +1,61 @@
 <template>
-  <ul class="nav">
-    <li
-      v-for="(category, index) in categories"
-      :key="category.id"
-      :tabindex="index"
-      class="nav-item"
-    >
-      <nuxt-link :to="localePath({ path: '/' + category.urlKey })">
-        {{ category.name }}
-        <svg
-          v-if="category.childs.length > 0"
-          class="fill-current"
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          <path
-            d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
-          />
-        </svg>
-      </nuxt-link>
-      <ul v-if="category.childs.length > 0" class="subnav">
-        <li
-          v-for="child in category.childs"
-          :key="child.id"
-          class="subnav-item"
-        >
-          <nuxt-link :to="localePath({ path: '/' + child.urlKey })">
-            {{ child.name }}
+  <nav class="navbar">
+    <ul class="navbar__level1">
+      <li
+        v-for="(level1, index) in categories"
+        :key="level1.id"
+        :tabindex="index"
+        class="level1__item"
+        :class="{
+          'level1__item--active': hoverIndex == level1.id,
+          'level1__item--clicked': clickedIndex == level1.id
+        }"
+        @mouseover="hoverIndex = level1.id"
+        @mouseleave="hoverIndex = null"
+
+      >
+        <div class="item__link">
+          <nuxt-link :to="localePath({ path: '/' + level1.urlKey })">
+            {{ level1.name }}
           </nuxt-link>
-          <ul v-if="child.childs.length > 0" class="subnav2">
-            <li
-              v-for="child2 in child.childs"
-              :key="child2.id"
-              class="subnav2-item"
-            >
-              <nuxt-link :to="localePath({ path: '/' + child2.urlKey })">
-                {{ child2.name }}
+          <button type="button" class="btn btn-ghost btn-sm" @click="clickedIndex = clickedIndex == level1.id ? null : level1.id">
+            <icon icon="material-symbols:chevron-right" />
+          </button>
+        </div>
+        <ul
+          v-if="level1.childs?.length > 0"
+          :tabindex="index"
+          class="item__level2"
+        >
+          <li
+            v-for="level2 in level1.childs"
+            :key="level2.id"
+            class="level2__item"
+          >
+            <div class="item__link">
+              <nuxt-link :to="localePath({ path: '/' + level2.urlKey })">
+                {{ level2.name }}
               </nuxt-link>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-    <li class="nav-item-sm">
-      <nuxt-link to="/account">
-        <Icon icon="ph:user" class="text-sm text-blue-500" />
-        {{ $t('account.title') }}
-      </nuxt-link>
-    </li>
-  </ul>
+            </div>
+            <ul v-if="level2?.childs?.length > 0" class="item__level3">
+              <li
+                v-for="level3 in level2.childs"
+                :key="level3.id"
+                class="level3__item"
+              >
+                <nuxt-link class="item__link" :to="localePath({ path: '/' + level3.urlKey })">
+                  {{ level3.name }}
+                </nuxt-link>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
 </template>
 <script lang="ts">
-import { Category } from '~~/models/Category'
+import { Category } from '#models'
 
 export default defineNuxtComponent({
   fetchKey: 'category',
@@ -86,54 +88,92 @@ export default defineNuxtComponent({
   },
   setup() {
     const localePath = useLocalePath()
+    const hoverIndex = ref<number | null>(null)
+    const clickedIndex = ref<number | null>(null)
     return {
-      localePath
+      localePath,
+      hoverIndex,
+      clickedIndex
     }
   }
 })
 </script>
 <style lang="scss">
 .drawer-content {
-  .nav {
-    @apply menu p-0 font-semibold lg:menu-horizontal;
-
-    &-item {
-      position: inherit;
-      .subnav {
-        @apply relative left-0 z-20 -mt-2 w-screen grid-cols-5  items-start gap-4 p-2 lg:rounded-box lg:absolute lg:bg-base-100 lg:shadow;
-
-        &-item {
-          @apply border-r text-sm font-bold text-primary;
-          .subnav2 {
-            @apply text-base font-normal;
+  .navbar {
+    @apply flex justify-start flex-1 p-0 relative;
+    .navbar__level1 {
+      position: unset !important;
+      .level1__item {
+        @apply transition duration-150 ease-out hover:ease-in;
+        & > .item__link {
+          @apply m-1 text-sm font-semibold uppercase px-1 py-3;
+          .btn {
+            @apply hidden;
+          }
+        }
+        & > .item__level2 {
+          @apply hidden;
+        }
+        &--active {
+          & > .item__link {
+            @apply bg-primary text-white;
+          }
+          & > .item__level2 {
+            @apply flex flex-row flex-wrap absolute bg-primary -mt-1 text-white z-[1] m-auto menu p-2 shadow rounded-box w-full -left-1/2 -right-1/2 min-h-[20vw];
+            .level2__item {
+              & > .item__link {
+                @apply font-bold;
+              }
+            }
+            .item__level3 {
+              @apply ml-0 pl-0 ;
+            }
           }
         }
       }
     }
-    &-item-sm {
-      @apply flex md:hidden;
-    }
-    & > :where(li:hover) > :where(ul) {
-      @apply grid;
-    }
   }
 }
 .drawer-side {
-  .nav {
-    @apply pl-4;
-    li {
-      @apply flex flex-col;
-      a {
-        @apply flex items-center justify-start gap-3  py-3 pl-2 hover:bg-gray-100;
-      }
-    }
-    .subnav {
-      @apply font-bold;
-      &-item {
-        @apply border-b pl-3;
-      }
-      .subnav2 {
-        @apply font-normal;
+  width: 100vw !important;
+  .side {
+    @apply h-screen min-w-[420px] overflow-auto;
+    .navbar {
+      ul.navbar__level1 {
+        @apply flex flex-col justify-center items-center w-full;
+        .level1__item {
+          @apply text-sm border-b py-1 w-full flex-grow;
+          &:hover {
+            @apply cursor-pointer;
+          }
+          .item__link {
+            @apply flex justify-between;
+          }
+          .item__level2 {
+            @apply hidden;
+          }
+          &--clicked {
+            & > .item__link {
+              @apply font-bold;
+              .btn {
+                @apply rotate-90;
+              }
+            }
+            .item__level2 {
+              @apply flex flex-col border-l border-black pl-3 ;
+              .level2__item {
+                @apply border-b py-2;
+              }
+              ul {
+                @apply pl-3;
+                li {
+                  @apply py-2 ;
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

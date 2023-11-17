@@ -20,8 +20,8 @@
 </template>
 
 <script lang="ts">
-import { Product, ProductResult } from '~~/models/Product'
-import { linkId } from '~~/models/ProductLinks'
+import { Product } from '#models'
+import { linkId } from '~/models/ProductLinks'
 import ProductHitVue from './ProductHit.vue'
 
 export default defineNuxtComponent({

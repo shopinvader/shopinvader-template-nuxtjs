@@ -147,7 +147,7 @@
 
 <script lang="ts">
 import AccountLayout from '~/components/account/AccountLayout.vue'
-import { Sale } from '~/models/Sale'
+import { Sale } from '#models'
 import { ref } from 'vue'
 
 export default defineNuxtComponent({

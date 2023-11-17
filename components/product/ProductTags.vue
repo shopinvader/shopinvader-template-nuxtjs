@@ -7,7 +7,7 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { Product } from '~~/models/Product'
+import { Product } from '#models'
 export default {
   name: 'ProductTags',
   props: {

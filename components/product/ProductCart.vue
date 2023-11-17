@@ -18,7 +18,9 @@
           <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
           <Icon icon="ic:outline-plus" class="add-icon__plus" />
         </div>
-        <span class="add-label">{{ $t('product.cart.add') }} </span>
+        <span class="add-label">
+          {{ label || $t('product.cart.add') }}
+        </span>
       </button>
     </slot>
     <slot name="count" :count="line?.qty">
@@ -91,8 +93,7 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { CartLine } from '~~/models'
-import { Product } from '~~/models/Product'
+import { CartLine, Product } from '#models'
 export default {
   name: 'ProductCart',
   props: {
@@ -107,11 +108,17 @@ export default {
     disabled: {
       type: Boolean,
       default: false
+    },
+    label: {
+      type: String,
+      default: null
     }
   },
   emits: {
     /**  Emit when the quantity is updated */
-    update: (qty: number) => true
+    update: (qty: number) => true,
+    /** Emit when the product is added to the cart */
+    add: (qty: number) => true
   },
   data() {
     return {
@@ -157,6 +164,7 @@ export default {
       }
       const cartService = useShopinvaderService('cart')
       if (cartService && this.product?.id !== null) {
+        this.$emit('add', this.qty)
         cartService.addItem(this.product.id, this.qty)
         if (!this.line) {
           this.cartDrowerOpened = true

@@ -1,5 +1,10 @@
-import { Cart, CategoryImageSet, Product } from '~/models'
-import { Category, CategoryParent } from '~/models/Category'
+import {
+  Cart,
+  CategoryImageSet,
+  Category,
+  CategoryParent,
+  Product
+} from '#models'
 
 export default definePayloadPlugin(() => {
   /**Cart */

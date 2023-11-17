@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.name') }}</span>
       </label>
       <input
@@ -28,7 +28,7 @@
       />
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.street') }}</span>
       </label>
       <input
@@ -51,7 +51,7 @@
       />
     </div>
     <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.zip') }}</span>
       </label>
       <input
@@ -63,7 +63,7 @@
       />
     </div>
     <div class="form-control inline-block w-full md:w-2/3">
-      <label class="label">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.city') }}</span>
       </label>
       <input
@@ -74,17 +74,17 @@
         class="input-bordered input w-full"
       />
     </div>
-    <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
-      <label class="label">
+    <div v-if="countries.length > 0" class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
+      <label class="label required">
         <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select
-        v-model="value.country.id"
+        v-model="countryId"
         class="select-bordered select w-full max-w-xs"
         :disabled="submitted"
         required
       >
-        <option disabled>{{ $t('account.address.country') }}</option>
+        <option disabled v-if="countries.length > 1">{{ $t('account.address.country') }}</option>
         <option
           v-for="country of countries"
           :key="country.id"
@@ -120,7 +120,7 @@
 <script lang="ts">
 import { PropType, ref } from 'vue'
 import { Address } from '~/models'
-import { Country } from '~~/models/Country'
+import { Country } from '#models'
 import { Icon } from '@iconify/vue'
 
 export default defineNuxtComponent({
@@ -132,7 +132,9 @@ export default defineNuxtComponent({
     address: {
       type: Object as PropType<Address> | null,
       required: false,
-      default: null
+      default: () => {
+        return new Address({})
+      }
     }
   },
   data() {
@@ -143,10 +145,21 @@ export default defineNuxtComponent({
       value: new Address({}),
       submitted: false,
       countries,
-      titles
+      titles,
+      countryId: null
     }
   },
   watch: {
+    countryId: {
+      handler: function (value) {
+        if (value) {
+          this.address.country = this.countries.find((i: Country) => {
+            return i.id == value
+          })
+        }
+      },
+      immediate: true
+    },
     address: {
       handler: function (value) {
         if (value) {

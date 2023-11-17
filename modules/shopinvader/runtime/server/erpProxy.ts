@@ -1,4 +1,4 @@
-import { createError, readBody, getMethod } from 'h3';
+import { createError, readBody, getMethod, setResponseHeader, setResponseStatus } from 'h3';
 import https from 'https';
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig()?.shopinvader || {}
@@ -36,6 +36,14 @@ export default defineEventHandler(async (event) => {
       body,
       headers
     })
+    const cookies = response.headers.get('set-cookie')
+    const contentType = response.headers.get('content-type') || 'application/json'
+    if(cookies) {
+      setResponseHeader(event, 'set-cookie', cookies)
+    }
+    setResponseHeader(event, 'content-type', contentType)
+    setResponseStatus(event, response.status)
+
     return response._data
   } catch (error:any) {
     return createError({

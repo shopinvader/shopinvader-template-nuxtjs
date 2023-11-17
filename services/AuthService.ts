@@ -1,75 +1,25 @@
 import { storeToRefs } from 'pinia'
 import { ErpFetch } from '@shopinvader/fetch'
-import { Service } from './Service'
-import { User } from '../models'
+import { Service } from '#services'
+import { User } from '#models'
 import nuxtStorage from 'nuxt-storage'
 
-export class AuthService extends Service {
+export abstract class AuthService extends Service {
   provider: ErpFetch | null = null
   callbacksUserLoaded: any[] = []
   callbacksUserUnLoaded: any[] = []
-
+  type: string = ''
+  loaded: boolean = false
+  abstract loginRedirect(page?:string): Promise<any>
+  abstract logoutRedirect(page?:string): Promise<any>
   constructor(provider: ErpFetch) {
     super()
     this.provider = provider
   }
-  async me(): Promise<Ref<User | null>> {
-    const loggedUser = nuxtStorage.localStorage.getData('auth_user') || null
-    if (loggedUser) {
-      const data = await this.provider?.get('profile', [], null)
-      this.setUser(data)
-    }
-    return this.getUser()
-  }
-  logout() {
-    this.provider?.post('auth/logout', {})
-    this.setUser(null)
-  }
-  async login(login: string, password: string): Promise<any> {
-    const user: Ref<User | null> = this.getUser()
-
-    if (!user?.value) {
-      const data = await this.provider?.post('auth/login', {
-        login,
-        password
-      })
-      if (data?.login) {
-        this.setSession(user !== null)
-        await this.me()
-      }
-    }
-  }
-  async registerUser(
-    name: string,
-    password: string,
-    login: string
-  ): Promise<boolean> {
-    let request = { success: false }
-    if (login && password && name) {
-      request = await this.provider?.post('auth/register', {
-        name,
-        login,
-        password
-      })
-    }
-    return request || false
-  }
-  /**
-   * checkRegisterToken : Check the token for the customer registration
-   *
-   */
-  async checkRegisterToken(token: string): Promise<boolean> {
-    let response = { success: false }
-    //response = await this.provider?.post('auth/token', {token})
-    //TODO REMOVE THIS LINE
-    response = { success: true }
-
-    return response?.success
-  }
-  getUser(): Ref<User | null> {
+  getUser(): Ref<User | boolean | null> {
     const store = this.store()
     const { user } = storeToRefs(store)
-    return user || null
+    return user
   }
   setUser(data: any) {
     const store = this.store()
@@ -90,22 +40,30 @@ export class AuthService extends Service {
       }
     }
   }
-  async resetPassword(login: string): Promise<any> {
-    let request = { success: false }
-    request = await this.provider?.post('auth/password_reset', { login })
-    return request?.success || false
-  }
   setSession(value: boolean) {
-    nuxtStorage.localStorage.setData('auth_user', value, 10, 'd')
-  }
-  onUserLoaded(callback: any) {
-    if (typeof callback == 'function') {
-      this.callbacksUserLoaded.push(callback)
+    if(value) {
+      nuxtStorage?.localStorage?.setData?.('auth_user', value, 10, 'd')
+    } else {
+      nuxtStorage?.localStorage?.removeItem?.('auth_user')
     }
   }
-  onUserUnloaded(callback: any) {
-    if (typeof callback == 'function') {
-      this.callbacksUserUnLoaded.push(callback)
+  async registerUser(
+    name: string,
+    password: string,
+    login: string
+  ): Promise<{ success: boolean}> {
+    let request = { success: false }
+    if (login && password && name) {
+      request = await this.provider?.post('auth/register', {
+        name,
+        login,
+        password
+      })
     }
+    return request || { success: false }
   }
+  getSession(): boolean {
+    return nuxtStorage?.localStorage?.getData('auth_user') || false
+  }
+  abstract getConfig():void
 }

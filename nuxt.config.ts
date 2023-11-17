@@ -1,6 +1,8 @@
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+
 const dir = dirname(fileURLToPath(import.meta.url))
+
 export default defineNuxtConfig({
   app: {
     head: {
@@ -9,6 +11,14 @@ export default defineNuxtConfig({
   },
   css: [join(dir, './assets/css/main.scss')],
   runtimeConfig: {
+    shopinvader: {
+      erp: {
+        proxy: {
+          auth: process.env.NUXT_SHOPINVADER_ERP_PROXY_AUTH || "",
+          url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || "",
+        },
+      },
+    },
     public: {
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
@@ -18,6 +28,13 @@ export default defineNuxtConfig({
           key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || "",
           url: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_URL || "",
           default_role: "default",
+        },
+        auth: {
+          type: process.env.NUXT_PUBLIC_SHOPINVADER_AUTH_TYPR || "credentials",
+          profile: {
+            loginPage: "/account/login",
+            logoutPage: "/",
+          }
         },
         endpoint: "shopinvader",
         elasticsearch: {
@@ -52,31 +69,10 @@ export default defineNuxtConfig({
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    '@vite-pwa/nuxt'
   ],
-  pwa: {
-    manifest: {
-      name: 'OROD',
-      short_name: 'OROD',
-      lang: 'fr',
-      display: 'standalone',
-      background_color: '#020617',
-      theme_color: '#020617',
-      icons: [
-        {
-          src: '/public/assets/shop-logo.svg',
-          sizes: '192x192',
-          type: 'image/png'
-        }
-      ]
-    },
-
-  },
   plugins: [
     join(dir, 'plugins/iconify.ts'),
-
   ],
-
   piniaPersistedstate: {
     cookieOptions: {
       sameSite: 'strict'
@@ -138,7 +134,7 @@ export default defineNuxtConfig({
       ssr: false
     },
     '/search': {
-      index: false,
+      index: true,
       ssr: false
     },
   }

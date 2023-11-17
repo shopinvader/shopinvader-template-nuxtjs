@@ -39,8 +39,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PaymentMode } from '~/models/PaymentModes'
-import { SipsPayment } from '~/models'
+import { SipsPayment, PaymentMode } from '#models'
 import { PaymentSipsService } from '~/services'
 import { ErpFetch } from '@shopinvader/fetch'
 

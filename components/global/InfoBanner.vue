@@ -13,11 +13,10 @@
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { InfoBanner } from '~~/models/cms/InfoBanner'
 export default {
   props: {
     infos: {
-      type: Object as PropType<InfoBanner>,
+      type: Object,
       default: null
     }
   },

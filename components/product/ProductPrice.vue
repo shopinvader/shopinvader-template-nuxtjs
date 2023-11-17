@@ -11,14 +11,14 @@
         {{ $filter.currency(price.value) }}
       </div>
       <sub v-if="price.tax_included" class="product-price__tax">
-        VAT Incl.
+        {{ $t('product.price.tax_included') }}
       </sub>
     </slot>
   </div>
 </template>
 <script lang="ts">
 import { PropType } from 'vue'
-import { ProductPrice } from '~~/models/ProductPrice'
+import { ProductPrice } from '#models'
 export default {
   name: 'ProductPrice',
   props: {

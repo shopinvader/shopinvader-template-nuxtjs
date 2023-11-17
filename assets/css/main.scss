@@ -27,3 +27,17 @@ h1,
 body {
   @apply antialiased;
 }
+
+.form-control {
+  .label {
+    &.required {
+      .label-text {
+        &:after {
+          @apply text-error inline pr-1;
+          content: "*";
+
+        }
+      }
+    }
+  }
+}

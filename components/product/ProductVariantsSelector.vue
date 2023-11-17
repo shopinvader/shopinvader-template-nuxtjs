@@ -12,7 +12,7 @@
           {{ name }}
         </div>
         <div class="variant-axis__values">
-          <template v-if="axis?.length < 10">
+          <template v-if="axis?.length < 6">
             <div v-for="value in axis" :key="value">
               <button
                 type="button"
@@ -27,7 +27,7 @@
               </button>
             </div>
           </template>
-          <select v-else class="select select-sm max-w-xs">
+          <select v-else class="values__select">
             <option
               v-for="value of axis"
               :key="value"
@@ -44,7 +44,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Product } from '~/models'
+import { Product, VariantAttributes } from '~/models'
 
 export default defineNuxtComponent({
   emits: ['selectVariant'],
@@ -72,14 +72,29 @@ export default defineNuxtComponent({
   },
   methods: {
     async select(name:string, axis: string) {
-      this.loading = true
       const variantAttributes = {...this.product.variantAttributes}
       variantAttributes[name] = axis
+      this.findProduct(variantAttributes)
+    },
+    async findProduct(variantAttributes: VariantAttributes) {
+      this.loading = true
       const productService = useShopinvaderService('products')
       const { product, axes } = await productService.getVariantsAggregation(this.product.urlKey || '', variantAttributes)
       this.variantAxes = axes
       if (product) {
         this.$emit('selectVariant', product)
+      } else {
+        /* if the current selection does not exists */
+        let haschange = false
+        for(let [key, value] of Object.entries(variantAttributes)) {
+          if(!axes?.[key]?.includes(value)) {
+            variantAttributes[key] = axes[key][0]
+            haschange = true
+          }
+        }
+        if(haschange) {
+          this.findProduct(variantAttributes)
+        }
       }
       this.loading = false
     }
@@ -109,7 +124,9 @@ export default defineNuxtComponent({
               @apply btn-primary text-primary-content;
             }
           }
-
+          &__select {
+            @apply  select select-bordered select-sm max-w-xs;
+          }
         }
       }
     }

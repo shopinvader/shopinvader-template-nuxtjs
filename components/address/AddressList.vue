@@ -1,10 +1,31 @@
 <template>
   <div class="addresses">
     <div class="addresses__header">
-      <slot name="header" :total="total">
+      <slot name="header" :total="addresses.length">
+        <div v-if="count > 4" class="header__search">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">
+                {{ $t('account.address.search') }}
+              </span>
+            </label>
+            <label class="input-group">
+              <input
+                type="text"
+                :placeholder="$t('account.address.search')"
+                class="input input-bordered"
+                v-model="searchQuery"
+                @input="searchAddress(searchQuery)"
+              />
+              <span>
+                <icon icon="mdi:magnify" class="text-lg"></icon>
+              </span>
+            </label>
+          </div>
+        </div>
         <div>
-          <template v-if="total > 0">
-            {{ $t('account.address.count', { count: total }) }}
+          <template v-if="addresses.length > 0">
+            {{ $t('account.address.count', { count: addresses.length }) }}
           </template>
         </div>
         <button
@@ -30,13 +51,13 @@
           {{ error }}
         </div>
       </div>
-      <template v-else-if="addresses == null">
+      <template v-else-if="loading">
         <spinner :size="20"></spinner>
         <div class="pr-3 text-xl">
           {{ $t('account.loading') }}
         </div>
       </template>
-      <template v-else-if="total == 0">
+      <template v-else-if="addresses.length == 0">
         {{ $t('account.address.noresult') }}
       </template>
       <div v-else class="list__content">
@@ -68,17 +89,11 @@
                 <icon icon="mdi:edit" class="text-lg text-white"></icon>
               </button>
             </template>
+            <template #footer>
+              <slot name="address-footer" :address="address"></slot>
+            </template>
           </address-card>
         </div>
-        <pagination
-          v-if="addresses !== null && total > addresses?.length"
-          :total="total"
-          :size="perPage"
-          :page="page"
-          class="w-full flex-grow"
-          @change="fetchAddresses($event)"
-        >
-        </pagination>
       </div>
     </div>
     <aside-drawer :open="editedAddress !== null" @close="editedAddress = null">
@@ -106,34 +121,31 @@
   </div>
 </template>
 <script lang="ts">
-import { Address, AddressResult } from '~~/models/Address'
-import Pagination from '~/components/global/Pagination.vue'
+import { Address } from '#models'
 import AddressCard from '~/components/address/AddressCard.vue'
 import AddressForm from '~/components/address/AddressForm.vue'
 import AsideDrawer from '~/components/global/AsideDrawer.vue'
-
 export default defineNuxtComponent({
   props: {
     type: {
       type: String,
       required: false,
-      default: 'address'
+      default: null
     }
   },
   components: {
-    pagination: Pagination,
     'address-form': AddressForm,
     'address-card': AddressCard,
     'aside-drawer': AsideDrawer
   },
   data() {
     return {
-      addresses: null as Address[] | null,
       errors: [] as string[],
-      total: 0,
-      page: 1,
-      perPage: 6,
-      editedAddress: null as Address | null
+      addresses: [] as Address[],
+      editedAddress: null as Address | null,
+      count: 0,
+      loading: false,
+      searchQuery: ''
     }
   },
   computed: {
@@ -144,31 +156,28 @@ export default defineNuxtComponent({
   },
   watch: {
     user: {
-      handler: function () {
-        this.fetchAddresses(1)
+      handler: async function () {
+        await this.searchAddress()
+        this.count = this.addresses.length
       },
       immediate: true
-    }
+    },
+
   },
   methods: {
-    async fetchAddresses(page = 1) {
-      this.page = page
+    async searchAddress(query?: string | null) {
       const addressService = useShopinvaderService('addresses')
       if (addressService === null) return
       const notifications = useNotification()
       try {
-        const addressResult = (await addressService.getAll(this.perPage, page, {
-          type: this.type
-        })) as AddressResult
-
-        if (addressResult !== null) {
-          this.addresses = addressResult?.data || ([] as Address[])
-          this.total = addressResult?.size || 0
-        }
+        this.loading = true
+        this.addresses = await addressService.search(query || '')
       } catch (e) {
         console.error(e)
         this.errors.push(this.$t('account.address.fetch.error'))
         notifications.addError(this.$t('account.address.fetch.error'))
+      } finally {
+        this.loading = false
       }
     },
     async deleteAddress(address: Address) {
@@ -177,19 +186,22 @@ export default defineNuxtComponent({
           this.$t('account.address.delete.confirm', { name: address.name })
         )
       ) {
+        this.loading = true
         const notifications = useNotification()
         const addressService = useShopinvaderService('addresses')
         if (addressService === null) return
 
         try {
           await addressService.delete(address)
-          await this.fetchAddresses(this.page)
           notifications.addMessage(
             this.$t('account.address.delete.success', { name: address.name })
           )
+          this.searchAddress(this.searchQuery)
         } catch (e) {
           console.error(e)
           notifications.addError(this.$t('account.address.delete.error'))
+        } finally {
+          this.loading = false
         }
       }
     },
@@ -199,24 +211,27 @@ export default defineNuxtComponent({
       const notifications = useNotification()
       if (addressService && address) {
         try {
+          this.loading = true
           if (address.id) {
             await addressService.update(address)
           } else {
             await addressService.create(address)
           }
-          await this.fetchAddresses(this.page)
+          this.searchAddress(this.searchQuery)
           notifications.addMessage(
             this.$t('account.address.save.success', { name: address.name })
           )
         } catch (e) {
           console.error(e)
           notifications.addError(this.$t('account.address.fetch.error'))
+        } finally {
+          this.loading = false
         }
       }
     },
     createAddress() {
       this.editedAddress = new Address({
-        type: this.type
+        type: 'delivery',
       })
     }
   }
@@ -227,7 +242,15 @@ export default defineNuxtComponent({
   @apply flex flex-col;
 
   &__header {
-    @apply flex items-center justify-between px-2;
+    @apply flex flex-wrap gap-4 items-end justify-between pb-2 border-b;
+    .header {
+      &__search {
+        @apply flex-grow;
+        .label {
+          @apply pb-0;
+        }
+      }
+    }
   }
 
   &__list {

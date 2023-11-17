@@ -175,7 +175,6 @@
 import AccountLayout from '~/components/account/AccountLayout.vue'
 import Pagination from '~/components/global/Pagination.vue'
 import PaginationStatus from '~/components/global/PaginationStatus.vue'
-import { Sale } from '~/models/Sale'
 import { ref } from 'vue'
 
 export default defineNuxtComponent({
@@ -193,7 +192,10 @@ export default defineNuxtComponent({
     const route = useRoute()
     const perPages = ref([10, 20, 50])
     const localePath = useLocalePath()
-
+    const { t } = useI18n()
+    useSeoMeta({
+      title: t('account.sales.title')
+    })
     const perPage = ref(
       route.query.per_page ? parseInt(route.query.per_page as string) : 10
     )

@@ -1,5 +1,6 @@
 <template>
   <section
+    v-if="auth?.type=='credentials'"
     class="flex h-screen flex-col items-center overflow-hidden bg-gradient-to-tr from-gray-400 via-yellow-50 to-gray-400 py-10"
   >
     <div v-if="!urlHasToken" class="container mx-auto px-4">
@@ -62,7 +63,8 @@ export default defineComponent({
       }
     }
     return {
-      urlHasToken
+      urlHasToken,
+      auth
     }
   }
 })

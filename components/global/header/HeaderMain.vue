@@ -7,7 +7,7 @@
       :sideMenu="scrolled"
     >
       <template #button>
-        <div class="text-primary">
+        <div class="menu">
           <icon
             icon="solar:hamburger-menu-outline"
             class="text-3xl text-primary"
@@ -34,9 +34,9 @@
           </div>
         </slot>
       </template>
-      <template #menu>
+      <template #menu="{context}">
         <slot name="menu">
-          <header-nav></header-nav>
+          <header-nav :collapsible="context == 'side'"></header-nav>
         </slot>
       </template>
     </aside-menu>
@@ -91,6 +91,9 @@ header {
   &.scrolled {
     @apply shadow-xl;
     .header-navbar {
+      .menu {
+        @apply text-primary;
+      }
       .logo {
         @apply max-w-lg;
         &__baseline {

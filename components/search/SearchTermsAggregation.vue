@@ -10,7 +10,7 @@
         </div>
       </div>
     </slot>
-    <slot  name="items" :items="data.items" :change="onSelectItem">
+    <slot name="items" :items="data.items" :change="onSelectItem">
       <template v-if="opened">
         <div
           v-for="item in data.items"
@@ -29,22 +29,32 @@
                 :value="item.key"
                 @change="onSelectItem()"
               />
-              <span class="item__label">{{ item.key }}</span>
+              <span class="item__label" v-html=" item?.label || item.key"></span>
               <span class="item__count">{{ item.doc_count }}</span>
             </label>
           </slot>
         </div>
       </template>
+      <button v-if="opened && data?.total > size"
+        class="btn btn-link btn-xs pt-3"
+        @click="displayAll"
+      >
+        <span v-if="sizeQuery == size">{{ $t('search.filters.all') }}</span>
+        <span v-else>{{ $t('search.filters.reduce') }}</span>
+      </button>
     </slot>
-    <slot name="footer" :items="data.items" :size="size"> </slot>
+    <slot name="footer" :items="data.items" :size="size" :total="data?.total">
+
+    </slot>
   </div>
 </template>
 <script lang="ts">
 import { inject, reactive } from 'vue'
-import { isEqual } from 'lodash'
+import isEqual from 'lodash.isequal'
 import {
   Aggregation,
   BoolQuery,
+  CardinalityAggregation,
   FilterAggregation,
   MatchAllQuery,
   NestedAggregation,
@@ -56,6 +66,7 @@ import {
 } from 'elastic-builder'
 interface FacetItem {
   key: string
+  label: string
   doc_count: number
 }
 import { Filter } from './SearchBase.vue'
@@ -121,11 +132,11 @@ export default {
   },
   async setup(props) {
     const opened = ref(!props.close)
+    const sizeQuery = ref(props.size)
     const data = reactive({
       selected: [] as string[],
       items: [] as FacetItem[],
-      total: 0,
-      size: props.size
+      total: 0
     })
     const declareFilter: ((params: Filter) => void) | null =
       inject('declareFilter') || null
@@ -137,7 +148,7 @@ export default {
     const getFilterAggregation = (query: BoolQuery): Aggregation => {
       let agg: Aggregation = new TermsAggregation(props.name, props.field)
         .order('_term', 'asc')
-        .size(data.size)
+        .size(sizeQuery.value)
 
       if (props.transformQuery !== null) {
         query = props.transformQuery(query, props.name, props.field)
@@ -150,17 +161,19 @@ export default {
           )
         )
       }
-
-
+      let aggs: Aggregation[] = [agg]
+      const uniqueAgg = new CardinalityAggregation('unique', props.field)
       if (props.nestedPath) {
-        agg = new NestedAggregation(props.name, props.nestedPath).agg(agg)
+        aggs =[ new NestedAggregation(props.name, props.nestedPath)
+          .aggs([agg, uniqueAgg])]
+      } else {
+        aggs.push(uniqueAgg)
       }
       let aggregation = new FilterAggregation(
           props.name,
           query || new MatchAllQuery()
-        ).aggregation(agg)
+        ).aggregations(aggs)
       return aggregation
-
     }
 
     const getQueryAggregation = () => {
@@ -216,19 +229,28 @@ export default {
         search()
       }
     }
-
+    const displayAll = () => {
+      if(sizeQuery.value == props.size) {
+        sizeQuery.value = data.total
+      } else {
+        sizeQuery.value = props.size
+      }
+      refreshSearch()
+    }
     return {
       response,
       opened,
       data,
+      sizeQuery,
       onSelectItem,
-      setValues
+      setValues,
+      displayAll
     }
   },
   watch: {
     $route: {
       handler: function () {
-        if (this.urlParam) {
+        if (!import.meta.env.SSR && this.urlParam) {
 
           const $route = useRoute()
           try {
@@ -256,20 +278,27 @@ export default {
         if (response?.aggregations) {
           let name = this.name
           let items = []
+          let total = 0
           const aggregations = response?.aggregations || {}
+
           if (this.transformData !== null) {
             let data = this.transformData(aggregations)
             items = data?.items || []
           } else {
             let values = aggregations
+
             while (values !== null) {
               values = values?.[name] || null
+              if (values?.unique) {
+                total = values?.unique?.value
+              }
               if (values?.buckets) {
                 items = values?.buckets
                 break
               }
             }
           }
+
           if (this.cardinalityField) {
             for(let item of items) {
               if(this.nestedPath) {
@@ -279,11 +308,13 @@ export default {
               }
             }
           }
+
           if (this.transformItems !== null) {
             let transformedItems = this.transformItems(items)
             items = transformedItems?.items || items
           }
           this.data.items = items || []
+          this.data.total = total || 0
         }
       },
       deep: true

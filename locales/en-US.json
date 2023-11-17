@@ -26,6 +26,10 @@
       "queries": "My searches",
       "clear": "Clear",
       "seeall": "See all results"
+    },
+    "filters": {
+      "all": "See all",
+      "reduce": "Reduce"
     }
   },
   "filters": {
@@ -35,6 +39,9 @@
   "product": {
     "cart": {
       "add": "Add to cart"
+    },
+    "price": {
+      "tax_included": "VAT included"
     },
     "cross_selling": {
       "title": "Related products"
@@ -108,16 +115,24 @@
       "title": "My addresses",
       "no-address": "No address selected",
       "select": "Select an address",
+      "pick": "Select this address",
       "continue": "Continue",
-      "delivery": {
+      "shipping": {
         "title": "Delivery address"
       },
-      "invoicing": {
-        "title": "Invoice address"
+      "billing": {
+        "title": "Invoice address",
+        "warning_same": "This address is used as your shipping address, editing it will change the shipping address in your cart."
       }
     },
     "login": {
       "title": "Login"
+    },
+    "validated": {
+      "title": "Thank you",
+      "intro": "Your order has been validated",
+      "message": "You will receive an email with the details of your order. You can also find it in your account.",
+      "link":"View my orders",
     }
   },
   "payment": {
@@ -177,7 +192,11 @@
       "reset_pswd": "Reset your password",
       "description": "Enter the email address linked to your account",
       "reset_btn": "Password reset",
-      "reset_success": "Thank you, if an account linked to the email address exists, please follow the instructions sent by email."
+      "reset_success": "Thank you, if an account linked to the email address exists, please follow the instructions sent by email.",
+      "set_new_pswd_title": "Set your new password",
+      "set_new_pswd_description": "Enter a new password and confirm it another time.",
+      "new_password": "New password",
+      "repeat_new_password": "Repeat new password"
     },
     "sales": {
       "sale": "Sales Order",
@@ -214,8 +233,8 @@
       },
       "type": {
         "contact": "Contact address",
-        "delivery": "Delivery address",
-        "invoice": "Invoice address"
+        "shipping": "Delivery address",
+        "billing": "Invoice address"
       },
       "save": {
         "success": "Address saved successfully"
@@ -248,6 +267,10 @@
       "email": "Email format is not valid.",
       "password": "Password format not valid",
       "unable_to_login": "Login error"
+    },
+    "reset": {
+      "pasword_missmatch": "The passwords don't match",
+      "pswd_something_wrong": "Somethig webt wrong. Please try to  click again in you email or make another password change request."
     },
     "404": {
       "title": "Page not found",
