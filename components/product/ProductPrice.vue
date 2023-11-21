@@ -17,7 +17,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { ProductPrice } from '#models'
 export default {
   name: 'ProductPrice',

@@ -11,7 +11,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { CartLine } from '~/models'
 /**
  * Display a selector to update the quantity of a cart's line.

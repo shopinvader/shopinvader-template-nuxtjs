@@ -36,7 +36,7 @@
 import SearchProduct from '~/components/search/SearchProduct.vue'
 import { Category } from '#models'
 import esb from 'elastic-builder'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
 export default {
   name: 'CategoryPage',

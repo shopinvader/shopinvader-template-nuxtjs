@@ -44,7 +44,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Product, VariantAttributes } from '~/models'
+import { Product, type VariantAttributes } from '~/models'
 
 export default defineNuxtComponent({
   emits: ['selectVariant'],

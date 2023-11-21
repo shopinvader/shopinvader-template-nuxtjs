@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 export default {
   name: 'AutocompleteSuggestions',
   events: ['click'],

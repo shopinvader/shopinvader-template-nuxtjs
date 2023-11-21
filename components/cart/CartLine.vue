@@ -125,7 +125,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { CartLine } from '~/models'
 import CartLineQtyVue from './CartLineQty.vue'
 import ProductImageVue from '../product/ProductImage.vue'

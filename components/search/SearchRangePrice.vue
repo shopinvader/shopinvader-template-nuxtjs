@@ -69,7 +69,7 @@ interface FacetStat {
   avg: number
   sum: number
 }
-import { Filter } from './SearchBase.vue'
+import { type Filter } from './SearchBase.vue'
 export default {
   props: {
     name: {

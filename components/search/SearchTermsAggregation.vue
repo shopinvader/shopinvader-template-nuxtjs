@@ -69,7 +69,7 @@ interface FacetItem {
   label: string
   doc_count: number
 }
-import { Filter } from './SearchBase.vue'
+import { type Filter } from './SearchBase.vue'
 export default {
   props: {
     name: {

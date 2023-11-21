@@ -18,7 +18,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Filter } from './SearchBase.vue'
+import { type Filter } from './SearchBase.vue'
 export default {
   name: 'SearchSelectedFilters',
   setup() {

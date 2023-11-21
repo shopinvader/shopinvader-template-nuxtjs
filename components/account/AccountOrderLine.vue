@@ -29,7 +29,7 @@
   </OrderInvoiceLine>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { SaleLines } from '#models'
 import OrderInvoiceLine from './OrderInvoiceLine.vue'
 

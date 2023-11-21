@@ -23,7 +23,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { DeliveryCarrier } from '~/models'
 
 export default {

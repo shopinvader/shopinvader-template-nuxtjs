@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Product } from '#models'
-import { linkId } from '~/models/ProductLinks'
+import type { linkId } from '#models'
 import ProductHitVue from './ProductHit.vue'
 
 export default defineNuxtComponent({

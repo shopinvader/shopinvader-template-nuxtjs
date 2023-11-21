@@ -141,7 +141,7 @@
   <json-viewer :data="variant"></json-viewer>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { Product, ProductPrice } from '#models'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductStock from '~/components/product/ProductStock.vue'

@@ -18,7 +18,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Category, CategoryResult } from '#models'
+import { Category, type CategoryResult } from '#models'
 export default {
   name: 'AutocompleteCategory',
   events: ['click'],

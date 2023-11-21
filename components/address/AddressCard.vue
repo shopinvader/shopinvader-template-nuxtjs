@@ -61,7 +61,7 @@
 </template>
 <script lang="ts">
 import { Icon } from '@iconify/vue'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { Address } from '~/models'
 import AddressFormVue from './AddressForm.vue'
 export default defineNuxtComponent({

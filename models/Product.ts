@@ -4,8 +4,8 @@ import {
   ProductImageSet,
   ProductPrice,
   ProductLinks,
-  ProductStock,
-  ProductPriceList,
+  type ProductStock,
+  type ProductPriceList,
   Product as ProductVariant,
   Model
 } from '#models'

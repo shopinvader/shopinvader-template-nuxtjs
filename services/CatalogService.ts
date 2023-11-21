@@ -1,5 +1,5 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { CatalogResult, Product, Category } from '#models'
+import { type CatalogResult, Product, Category } from '#models'
 import { Service } from '#services'
 
 export class CatalogService extends Service {

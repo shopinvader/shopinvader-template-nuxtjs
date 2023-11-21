@@ -1,6 +1,6 @@
 import { ElasticFetch } from '@shopinvader/fetch'
 import esb, { Aggregation, MultiMatchQuery, Query, TermQuery } from 'elastic-builder'
-import { Product, ProductResult, VariantAttributes } from '#models'
+import { Product, type ProductResult, type VariantAttributes } from '#models'
 import { Service } from '#services'
 
 export class ProductService extends Service {

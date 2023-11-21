@@ -69,7 +69,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { Product, ProductPrice } from '#models'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductImage from '~/components/product/ProductImage.vue'

@@ -29,7 +29,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { useHistoryStore } from '~/stores/history'
 import ProductHit from './ProductHit.vue'
 

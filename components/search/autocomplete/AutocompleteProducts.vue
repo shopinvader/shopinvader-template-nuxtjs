@@ -63,7 +63,7 @@
 </template>
 <script lang="ts">
 import { Product } from '~/models'
-import { ProductResult } from '#models'
+import { type ProductResult } from '#models'
 import ProductHit from '../../product/ProductHit.vue'
 import ProductHistory from '../../product/ProductHistory.vue'
 import Spinner from '~~/components/global/Spinner.vue'

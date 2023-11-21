@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import iconify from '~~/plugins/iconify'
 interface Page {
   title: string

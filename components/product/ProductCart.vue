@@ -92,7 +92,7 @@
   </aside-drawer>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 import { CartLine, Product } from '#models'
 export default {
   name: 'ProductCart',

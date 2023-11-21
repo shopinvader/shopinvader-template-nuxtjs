@@ -118,7 +118,7 @@
   </form>
 </template>
 <script lang="ts">
-import { PropType, ref } from 'vue'
+import { type PropType, ref } from 'vue'
 import { Address } from '~/models'
 import { Country } from '#models'
 import { Icon } from '@iconify/vue'

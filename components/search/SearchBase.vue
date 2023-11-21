@@ -87,7 +87,7 @@
   </div>
 </template>
 <script lang="ts">
-import { provide, reactive, PropType } from 'vue'
+import { provide, reactive, type PropType } from 'vue'
 import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 

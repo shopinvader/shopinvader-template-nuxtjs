@@ -9,7 +9,7 @@
   </div>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 export class CardStyle {
   shadow: boolean
   compact: boolean

@@ -8,7 +8,7 @@
 </template>
 <script lang="ts">
 import { Category } from '~~/models'
-import { PropType } from 'vue'
+import type { PropType } from 'vue'
 
 export default {
   name: 'CategoryLink',

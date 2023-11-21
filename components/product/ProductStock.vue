@@ -24,8 +24,8 @@
   </slot>
 </template>
 <script lang="ts">
-import { PropType } from 'vue'
-import { ProductStock } from '#models'
+import type { PropType } from 'vue'
+import type { ProductStock } from '#models'
 
 export default {
   name: 'ProductStock',
