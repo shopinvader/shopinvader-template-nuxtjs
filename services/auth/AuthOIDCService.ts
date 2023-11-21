@@ -17,7 +17,7 @@ export class AuthOIDCService extends AuthService {
   constructor(provider: ErpFetch, config: AuthOIDCConfig) {
     super(provider)
     this.config = config
-    if (process.client) {
+    if (!import.meta.env.SSR) {
       const baseUrl = window.location.origin || ''
 
       this.client = new UserManager({
