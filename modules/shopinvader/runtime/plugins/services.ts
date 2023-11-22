@@ -34,12 +34,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         ...runtimeConfig?.public?.shopinvader,
         ...runtimeConfig?.shopinvader,
       }
-
       if(config?.erp?.proxy) {
-        const { origin } = useRequestURL()
         config.erp = {
           ...config.erp,
-          url: `${origin}/shopinvader/`,
           proxy: null
         }
       }
