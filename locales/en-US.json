@@ -41,7 +41,8 @@
       "add": "Add to cart"
     },
     "price": {
-      "tax_included": "VAT included"
+      "tax_included": "VAT included",
+      "tax_excluded": "VAT excluded"
     },
     "cross_selling": {
       "title": "Related products"

@@ -13,6 +13,9 @@
       <sub v-if="price.tax_included" class="product-price__tax">
         {{ $t('product.price.tax_included') }}
       </sub>
+      <sub v-else class="product-price__tax">
+        {{ $t('product.price.tax_excluded') }}
+      </sub>
     </slot>
   </div>
 </template>

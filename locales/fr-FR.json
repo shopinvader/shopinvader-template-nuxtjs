@@ -47,7 +47,8 @@
       "title": "Autres produits"
     },
     "price": {
-      "tax_included": "TTC"
+      "tax_included": "TTC",
+      "tax_excluded": "HT"
     },
     "history": {
       "title": "Produits déjà consultés",

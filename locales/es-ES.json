@@ -46,7 +46,8 @@
       "add": "Añadir al carrito"
     },
     "price": {
-      "tax_included": "Impuestos incluidos"
+      "tax_included": "Impuestos incluidos",
+      "tax_excluded": "Impuestos no incluidos"
     },
     "cross_selling": {
       "title": "Productos relacionados"
