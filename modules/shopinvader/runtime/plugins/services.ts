@@ -71,7 +71,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     cart: new CartService(erp, products),
     settings: new SettingService(erp),
     addresses: new AddressService(erp),
-    sales: new SaleService(erp),
+    sales: new SaleService(erp, products),
     deliveryCarriers: new DeliveryCarrierService(erp),
     paymentModes: new PaymentModeService(erp),
     auth,

@@ -65,9 +65,7 @@
                   }}</span>
                 </td>
                 <td class="p-2 text-left text-sm">
-                  <span class="badge-primary badge badge-md px-3 text-xs">{{
-                    sale.stateLabel
-                  }}</span>
+                  <sale-status :sale="sale"></sale-status>
                 </td>
                 <td class="p-2 text-right text-sm">
                   <div
@@ -112,9 +110,7 @@
                   {{ sale.date.toLocaleDateString($i18n.locale) }}
                 </div>
                 <div class="border-l-4 border-primary px-2">
-                  <span class="badge badge-xs p-2 text-xs">
-                    {{ sale.stateLabel }}
-                  </span>
+                  <sale-status :sale="sale"></sale-status>
                 </div>
               </div>
               <div class="sales-table-sm__col">
@@ -123,7 +119,6 @@
                   class="flex justify-end align-middle text-lg"
                 >
                   {{ $filter.currency(sale.amount.total) }}
-
                   <icon
                     name="right"
                     class="mr-2 text-2xl font-bold text-primary"
@@ -175,6 +170,7 @@
 import AccountLayout from '~/components/account/AccountLayout.vue'
 import Pagination from '~/components/global/Pagination.vue'
 import PaginationStatus from '~/components/global/PaginationStatus.vue'
+import { Sale } from '#models'
 import { ref } from 'vue'
 
 export default defineNuxtComponent({
@@ -203,7 +199,7 @@ export default defineNuxtComponent({
       route.query.page ? parseInt(route.query.page as string) : 1
     )
     const count = ref(0)
-    const sales = ref(null)
+    const sales = ref(null) as Ref<Sale[] | null>
     const loading = ref(false)
 
     const urlQueries = computed(() => {
@@ -218,7 +214,7 @@ export default defineNuxtComponent({
       const saleService = useShopinvaderService('sales')
       loading.value = true
       try {
-        const res = await saleService?.getSalesList(page.value, perPage.value)
+        const res = await saleService?.getAll(page.value, perPage.value)
         count.value = res?.count || 0
         sales.value = res?.items || []
       } catch (error: any) {
@@ -255,7 +251,7 @@ export default defineNuxtComponent({
       setRouteQueryParams()
     }
 
-    function navigateToSale(id) {
+    function navigateToSale(id: number) {
       navigateTo({ path: `/account/sales/${id}` })
     }
 
@@ -308,7 +304,7 @@ export default defineNuxtComponent({
     @apply flex flex-col border-b md:hidden;
   }
   &__rows {
-    @apply hover flex flex-row flex-wrap border-b py-3;
+    @apply hover flex flex-row flex-wrap border-b py-3 cursor-pointer;
   }
   &__col {
     @apply flex w-1/2 flex-col justify-center align-middle text-sm first-letter:p-2;

@@ -145,6 +145,7 @@ export class SaleUnitPrice extends Model {
 export class SaleLine extends Model {
   id: number
   name: string
+  productId: number
   qty: number
   qtyDelivered: number
   qtyUnavailable: number
@@ -161,6 +162,7 @@ export class SaleLine extends Model {
     this.qtyDelivered = data?.qty_delivered
     this.qtyUnavailable = data?.qty_unavailable
     this.qtyCanceled = data?.qty_canceled
+    this.productId = data?.product_id
     this.product = new SaleProduct(data?.product || null)
     this.amount = new SaleAmount(data.amount || {})
     this.unitPrice = new SaleUnitPrice(data.unit_price || {})
@@ -203,7 +205,6 @@ export class Sale extends Model {
   name: string
   date: Date | null
   state: string
-  stateLabel: string
   stateProgress: number
   note: boolean
   invoicing: SaleInvoicing
@@ -219,10 +220,28 @@ export class Sale extends Model {
     super(data)
     this.id = data?.id
     this.name = data?.name
-    this.stateProgress = data?.state_progress || 10
-    this.date = data && data.date_order ? new Date(data.date_order) : null
     this.state = data?.state
-    this.stateLabel = data?.state_label
+    switch (this.state) {
+      case "cancel":
+        this.stateProgress = 0
+        break
+      case "pending":
+        this.stateProgress = 30
+        break
+      case "processing":
+        this.stateProgress = 50
+        break
+      case "delivery_partial":
+        this.stateProgress = 70
+        break
+      case "delivery_full":
+        this.stateProgress = 100
+        break
+      default:
+        this.stateProgress = 0
+        break
+    }
+    this.date = data && data.date_order ? new Date(data.date_order) : null
     this.note = data?.note
     this.invoicing = data?.invoicing ? new SaleInvoicing(data.invoicing) : []
     this.invoices = []

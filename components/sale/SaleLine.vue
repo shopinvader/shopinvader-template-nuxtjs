@@ -26,6 +26,7 @@
               <nuxt-link
                 :to="localePath({path:`/${line.product.urlKey}`})"
                 target="_blank"
+                class="underline"
               >
                 {{ $t('sale.product_link') }}
               </nuxt-link>
@@ -55,17 +56,20 @@ import type { PropType } from 'vue'
 import { SaleLine } from '#models'
 
 export default defineNuxtComponent({
-  name: 'OrderInvoiceLine',
+  name: 'SaleLine',
   props: {
     line: {
       type: Object as PropType<SaleLine>,
       required: true
     }
   },
+
   setup(props) {
+    const toggle = ref(false)
     const localePath = useLocalePath()
     return {
-      localePath
+      localePath,
+      toggle
     }
   }
 })
@@ -74,7 +78,7 @@ export default defineNuxtComponent({
 .line {
   @apply  flex flex-wrap items-center rounded-lg border-2 p-3;
   &__image {
-    @apply w-full px-4 lg:mb-0 lg:w-24 lg:h-24 bg-base-100;
+    @apply w-full px-4 lg:mb-0 lg:w-24 lg:h-24 bg-base-100 flex justify-center items-center;
   }
   &__content {
     @apply flex flex-grow w-full justify-between px-4 lg:w-9/12;
@@ -89,6 +93,9 @@ export default defineNuxtComponent({
         .title {
           @apply flex-grow  text-gray-500;
         }
+      }
+      &__content {
+        @apply pb-3;
       }
       &__qty {
         @apply text-gray-500;

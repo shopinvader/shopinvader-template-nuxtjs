@@ -9,7 +9,7 @@
             </h1>
           </div>
           <button type="button" class="btn btn-link flex gap-1" @click="logout">
-            <icon icon="clarity:power-line" />
+            <icon name="logout" />
             {{ $t('account.logout') }}
           </button>
         </div>

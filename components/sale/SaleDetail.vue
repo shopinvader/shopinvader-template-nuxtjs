@@ -31,20 +31,21 @@
             </div>
           </slot>
         </div>
-        <div class="header__action">
-          <slot name="action" :sale="sale"></slot>
-        </div>
         <div class="header__state">
           <slot name="state" :sale="sale">
-            <div v-if="sale.stateLabel" class="state" :class="`state--${sale.state}`" >
-              {{ sale.stateLabel }}
+            <div class="label">
+              {{ $t('sale.state') }}
             </div>
+            <sale-status :sale="sale" />
           </slot>
+        </div>
+        <div class="header__action">
+          <slot name="action" :sale="sale"></slot>
         </div>
       </slot>
       <div class="header__progess">
         <slot name="progress" :sale="sale">
-          <progress class="progress progress-primary" :value="sale.stateProgress" max="100"></progress>
+          <progress class="progress progress-success" :value="sale.stateProgress" max="100"></progress>
         </slot>
       </div>
     </div>
@@ -139,7 +140,7 @@
     &__header {
       @apply flex flex-wrap flex-row gap-5  py-5;
       .header {
-        &__number, &__date, &__customerRef {
+        &__number, &__date, &__customerRef, &__state {
           @apply text-left;
           .label {
             @apply text-gray-700 p-0;

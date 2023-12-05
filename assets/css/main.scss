@@ -29,7 +29,7 @@ body {
 }
 
 .form-control {
-  .label {
+  .label, label {
     &.required {
       .label-text {
         &:after {

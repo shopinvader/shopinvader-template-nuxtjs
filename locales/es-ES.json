@@ -159,7 +159,15 @@
       "modify_btn": "Editar la información de perfil"
     },
     "sales": {
+      "sale": "Mis pedidos",
+      "sale_subtotal": "Total parcial",
+      "sale_tax": "Impuestos",
+      "sale_total": "Total",
+      "sale_shipping": "entrega",
+      "sale_state": "Estado",
+      "sale_invoice_number": "Factura no.",
       "title": "Mis pedidos",
+      "noresult": "Sin pedidos",
       "table_labels": {
         "ordernum": "Número de pedido",
         "orderdate": "Fecha de pedido",
@@ -219,5 +227,37 @@
   },
   "btn": {
     "view_more": "Ver más"
+  },
+  "sale": {
+    "title": "Pedido #{name}",
+    "date": "Date",
+    "name": "Número",
+    "state": "Estado",
+    "quantity": "cantidad {qty}",
+    "price": "Total {price}",
+    "product_link": "Ver el producto",
+    "invoicing": {
+      "address": " Dirección de facturación"
+    },
+    "delivery": {
+      "address": "Dirección de entrega"
+    },
+    "amount": {
+      "total": "Total",
+      "shipping": "Envío",
+      "untaxed": "Total libre de impuestos",
+      "tax": "Impuestos"
+    },
+    "status": {
+      "cancel": "Cancelada",
+      "draft": "Pendiente",
+      "sale": "Pendiente",
+      "pending": "Pendiente",
+      "processing": "Procesando",
+      "delivery_full": "Orden entregada",
+      "delivery_partial": "Parcialmente entregado",
+      "estimating": "Esperando presupuesto",
+      "estimated": "Para confirmar"
+    }
   }
 }

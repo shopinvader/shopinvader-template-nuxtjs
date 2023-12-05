@@ -197,6 +197,7 @@
       "sale_state": "Statut",
       "sale_invoice_number": "Facture N°",
       "title": "Mes commandes",
+      "noresult": "Aucune commande",
       "table_labels": {
         "ordernum": "Numéro de commande",
         "orderdate": "Date de commande",
@@ -306,5 +307,37 @@
     "search": "Rechercher",
     "cart": "Panier",
     "account": "Mon compte"
+  },
+  "sale": {
+    "title": "Commande n°{name}",
+    "date": "Date",
+    "name": "Numéro",
+    "state": "Statut",
+    "quantity": "Quantité {qty}",
+    "price": "Total {price}",
+    "product_link": "Voir le produit",
+    "invoicing": {
+      "address": "Adresse de facturation"
+    },
+    "delivery": {
+      "address": "Adresse de livraison"
+    },
+    "amount": {
+      "total": "Total",
+      "shipping": "Frais de port",
+      "untaxed": "Total HT",
+      "tax": "TVA"
+    },
+    "status": {
+      "cancel": "Annulée",
+      "draft": "En attente",
+      "sale": "En cours",
+      "pending": "En attente",
+      "processing": "En cours",
+      "delivery_full": "Livrée",
+      "delivery_partial": "Partiellement livrée",
+      "estimating": "En attente d'estimation",
+      "estimated": "À confirmer"
+    }
   }
 }
