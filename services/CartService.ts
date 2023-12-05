@@ -71,20 +71,19 @@ export class CartService extends Service {
         this.erp,
         new WebStorageCartStorage(window.localStorage), {
           syncUrl: 'carts/sync',
-          debug: this.debug
+          debug: true
         }
       )
       this.cart.registerObserver(observer)
       /** Get last stored cart before fetching API with syncWithRetry */
       if (window?.localStorage?.getItem('cart')) {
         this.setCart(JSON.parse(window.localStorage.getItem('cart') || '{}'))
-      }
-      if(window?.requestIdleCallback) {
-        requestIdleCallback(() => {
-          this.cart.syncWithRetry()
-        })
+        this.sync()
       }
     }
+  }
+  sync() {
+    this.cart?.syncWithRetry()
   }
   getCart(): Ref<CartModel | null> {
     if (!import.meta.env.SSR) {
@@ -238,6 +237,7 @@ export class CartService extends Service {
     await this.setCart(data)
   }
   clear() {
+    this.cart?.clearPendingTransactions()
     this.setCart(new CartModel({}))
 
   }

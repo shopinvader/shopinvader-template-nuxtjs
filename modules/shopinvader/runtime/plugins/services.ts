@@ -25,8 +25,6 @@ declare global {
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const app = useNuxtApp()
-
-
   const { data:configData } = await useAsyncData(
     async () => {
       const runtimeConfig = useRuntimeConfig()
@@ -34,6 +32,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         ...runtimeConfig?.public?.shopinvader,
         ...runtimeConfig?.shopinvader,
       }
+
       if(config?.erp?.proxy) {
         config.erp = {
           ...runtimeConfig?.public?.shopinvader?.erp,
@@ -50,6 +49,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
 
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
+
   const erp = providers?.erp as ErpFetch
   const products = new ProductService(providers?.products as ElasticFetch)
   const categories = new CategoryService(providers?.categories as ElasticFetch)
@@ -62,6 +62,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     } else {
       auth = new AuthCredentialService(erp, profile)
     }
+
   }
   const services = {
     products,
@@ -78,7 +79,16 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   }
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   services.cart.productService = services.products
-
+  if(services?.auth && services?.cart) {
+    /** Retrieve cart content on user login */
+    auth?.onUserLoaded((user) => {
+      services.cart.sync()
+    })
+    /** Clear cart after user logout */
+    auth?.onUserUnLoaded(() => {
+      services.cart.clear()
+    })
+  }
   /**
    * Add route middleware to add dynamic routes for products and categories
    * Add a middleware to check if the user is logged in

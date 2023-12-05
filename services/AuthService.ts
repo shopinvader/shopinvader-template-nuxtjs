@@ -10,17 +10,20 @@ export abstract class AuthService extends Service {
   callbacksUserUnLoaded: any[] = []
   type: string = ''
   loaded: boolean = false
+  storage: any = null
   abstract loginRedirect(page?:string): Promise<any>
   abstract logoutRedirect(page?:string): Promise<any>
   constructor(provider: ErpFetch) {
     super()
     this.provider = provider
+    this.storage = nuxtStorage?.localStorage
   }
   getUser(): Ref<User | boolean | null> {
     const store = this.store()
     const { user } = storeToRefs(store)
     return user
   }
+
   setUser(data: any) {
     const store = this.store()
     const user: User | null = data ? new User(data) : null
@@ -40,11 +43,25 @@ export abstract class AuthService extends Service {
       }
     }
   }
+  /**
+   * Register a callback function to be called when the user is loaded
+   * @param callback function
+   */
+  onUserLoaded(callback: (user: User) => void) {
+    this.callbacksUserLoaded.push(callback)
+  }
+  /**
+   * Register a callback function to be called when the user is unloaded
+   * @param callback
+   */
+  onUserUnLoaded(callback: (user: User) => void) {
+    this.callbacksUserUnLoaded.push(callback)
+  }
   setSession(value: boolean) {
     if(value) {
-      nuxtStorage?.localStorage?.setData?.('auth_user', value, 10, 'd')
+      this.storage?.setData?.('auth_user', value, 10, 'd')
     } else {
-      nuxtStorage?.localStorage?.removeItem?.('auth_user')
+      this.storage?.removeItem?.('auth_user')
     }
   }
   async registerUser(
@@ -63,7 +80,7 @@ export abstract class AuthService extends Service {
     return request || { success: false }
   }
   getSession(): boolean {
-    return nuxtStorage?.localStorage?.getData('auth_user') || false
+    return this.storage?.getData('auth_user') || false
   }
   abstract getConfig():void
 }
