@@ -52,7 +52,7 @@
             v-if="!selectedCarrier"
             class="flex items-center gap-2 font-bold"
           >
-            <icon icon="ph:info" />
+            <icon name="info" />
             {{ $t('cart.delivery.method.no-method') }}
           </div>
           <button
@@ -71,7 +71,7 @@
 
       <div class="checkout-delivery__footer">
         <button type="button" class="btn-ghost btn" @click="back">
-          <icon icon="material-symbols:chevron-left"></icon>
+          <icon name="left"></icon>
           {{ $t('cart.back') }}
         </button>
       </div>
@@ -79,7 +79,7 @@
     <div v-else class="checkout-delivery__summary">
       <div class="method">
         <div class="method__icon">
-          <icon icon="solar:box-line-duotone" />
+          <icon name="solar:box-line-duotone" />
         </div>
         <div class="method__title">
           {{ $t('cart.delivery.method.title') }} :

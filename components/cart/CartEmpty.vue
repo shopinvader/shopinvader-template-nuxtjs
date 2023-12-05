@@ -2,7 +2,7 @@
   <div class="cart-empty">
     <!-- @slot Message display when the cart is empty   -->
     <slot v-if="cart?.loaded" name="empty">
-      <icon icon="ph:bag" class="text-6xl text-gray-300"></icon>
+      <icon name="cart" class="text-6xl text-gray-300"></icon>
       <div class="cart-empty__title">
         {{ $t('cart.empty') }}
       </div>

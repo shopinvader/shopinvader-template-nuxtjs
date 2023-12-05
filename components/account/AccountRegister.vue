@@ -4,7 +4,7 @@
       <div v-if="accountIsCreated" class="message">
         <div class="message__container">
           <div class="icon-wrapper">
-            <icon icon="ic:outline-email" class="icon-wrapper__icon"> </icon>
+            <icon name="ic:outline-email" class="icon-wrapper__icon"> </icon>
           </div>
           <div class="text-content">
             {{ $t('account.register.notification_registration_thankyou') }}
@@ -30,13 +30,13 @@
                 {{ $t('account.register.advantages') }}
               </h3>
               <li class="catchphrases-list__item">
-                <icon icon="mdi:check" class="item-icon" />
+                <icon name="check" class="item-icon" />
                 <p class="item-text">
                   {{ $t('account.register.advantage_1') }}
                 </p>
               </li>
               <li class="catchphrases-list__item">
-                <icon icon="mdi:check" class="item-icon" />
+                <icon name="check" class="item-icon" />
                 <p class="item-text">
                   {{ $t('account.register.advantage_2') }}
                 </p>

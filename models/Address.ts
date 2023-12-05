@@ -59,6 +59,9 @@ export class Address extends Model {
       update: true
     }
   }
+  toString(): string {
+    return `${this.name}, ${this.street} ${this.street2} - ${this.zip} ${this.city} ${this.country?.name}`
+  }
   getJSONData(): any {
     let data:any = {
       name: this.name,

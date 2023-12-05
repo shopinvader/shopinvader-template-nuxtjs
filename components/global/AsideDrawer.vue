@@ -16,7 +16,7 @@
               <slot name="header" :open="open"></slot>
             </div>
             <icon
-              icon="ic:round-close"
+              name="close"
               class="cursor-pointer text-3xl"
               @click="$emit('close')"
             ></icon>
@@ -38,13 +38,9 @@
 </template>
 <script lang="ts">
 import { defineNuxtComponent } from '#app'
-import { Icon } from '@iconify/vue'
 export default defineNuxtComponent({
   name: 'Drawer',
   emits: ['close'],
-  components: {
-    icon: Icon
-  },
   props: {
     open: {
       type: Boolean,

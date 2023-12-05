@@ -44,7 +44,7 @@
           -->
           <slot name="cart" :cart="cart">
             <div class="cart__icon">
-              <Icon icon="solar:cart-3-bold-duotone" />
+              <icon name="solar:cart-3-bold-duotone" />
             </div>
             <div class="cart__body">
               <nuxt-link class="body__title" :to="{ path: '/cart' }">
@@ -64,7 +64,7 @@
                 @click="displayCart = !displayCart"
               >
                 <icon
-                  icon="line-md:chevron-small-down"
+                  name="down"
                   class="text-lg"
                   :rotate="displayCart && '180deg'"
                 />

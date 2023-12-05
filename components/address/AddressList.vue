@@ -18,7 +18,7 @@
                 @input="searchAddress(searchQuery)"
               />
               <span>
-                <icon icon="mdi:magnify" class="text-lg"></icon>
+                <icon name="mdi:magnify" class="text-lg"></icon>
               </span>
             </label>
           </div>
@@ -33,7 +33,7 @@
           class="btn-primary btn-sm btn"
           @click="createAddress"
         >
-          <icon icon="mdi:plus" class="text-lg"></icon>
+          <icon name="mdi:plus" class="text-lg"></icon>
           {{ $t('actions.create') }}
         </button>
       </slot>
@@ -78,7 +78,7 @@
                 :title="$t('actions.delete')"
                 @click="deleteAddress(address)"
               >
-                <icon icon="mdi:trash" class="text-lg text-white"></icon>
+                <icon name="remove" class="text-lg text-white"></icon>
               </button>
               <button
                 v-if="address.access?.update"
@@ -86,7 +86,7 @@
                 :title="$t('actions.update')"
                 @click="editedAddress = address"
               >
-                <icon icon="mdi:edit" class="text-lg text-white"></icon>
+                <icon name="edit" class="text-lg text-white"></icon>
               </button>
             </template>
             <template #footer>

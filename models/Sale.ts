@@ -8,7 +8,7 @@ export class SaleInvoicing extends Model {
   }
 }
 
-export class SaleShippingAmount extends Model {
+export class SaleDeliveryAmount extends Model {
   tax: number
   untaxed: number
   total: number
@@ -20,7 +20,7 @@ export class SaleShippingAmount extends Model {
   }
 }
 
-export class SaleShippingCarrier extends Model {
+export class SaleDeliveryCarrier extends Model {
   id: number
   name: string
   description: string
@@ -36,16 +36,16 @@ export class SaleShippingCarrier extends Model {
   }
 }
 
-export class SaleShipping extends Model {
+export class SaleDelivery extends Model {
   address: Address | null
-  amount: SaleShippingAmount | null
-  selectedCarrier: SaleShippingCarrier | null
+  amount: SaleDeliveryAmount | null
+  selectedCarrier: SaleDeliveryCarrier | null
   constructor(data: any) {
     super(data)
     this.address = data.address ? new Address(data.address) : null
-    this.amount = data.amount ? new SaleShippingAmount(data.amount) : null
+    this.amount = data.amount ? new SaleDeliveryAmount(data.amount) : null
     this.selectedCarrier = data.selected_carrier
-      ? new SaleShippingCarrier(data.selected_carrier)
+      ? new SaleDeliveryCarrier(data.selected_carrier)
       : null
   }
 }
@@ -118,7 +118,7 @@ export class SaleProduct extends Model {
         this.images.push(new SaleProductImageSet(image))
       )
     }
-    this.model = data.model ? new SaleProductModel(data.model) : null
+    this.model = new SaleProductModel(data?.model || null)
     this.urlKey = data?.url_key
   }
 }
@@ -142,7 +142,7 @@ export class SaleUnitPrice extends Model {
   }
 }
 
-export class SaleItem extends Model {
+export class SaleLine extends Model {
   id: number
   name: string
   qty: number
@@ -161,23 +161,10 @@ export class SaleItem extends Model {
     this.qtyDelivered = data?.qty_delivered
     this.qtyUnavailable = data?.qty_unavailable
     this.qtyCanceled = data?.qty_canceled
-    this.product = data?.product ? new SaleProduct(data?.product) : null
+    this.product = new SaleProduct(data?.product || null)
     this.amount = new SaleAmount(data.amount || {})
     this.unitPrice = new SaleUnitPrice(data.unit_price || {})
     this.discount = data.discount ? new SaleDiscount(data.discount) : null
-  }
-}
-
-export class SaleLines extends Model {
-  count: number
-  items: SaleItem[]
-  constructor(data: any) {
-    super(data)
-    this.count = data?.count
-    this.items = []
-    if (data && data.items) {
-      data.items.forEach((item: any) => this.items.push(new SaleItem(item)))
-    }
   }
 }
 
@@ -217,12 +204,13 @@ export class Sale extends Model {
   date: Date | null
   state: string
   stateLabel: string
+  stateProgress: number
   note: boolean
   invoicing: SaleInvoicing
   invoices: SaleInvoice[]
-  lines: SaleLines | null
+  lines: SaleLine[] | []
   amount: SaleAmount | null
-  shipping: SaleShipping | null
+  delivery: SaleDelivery | null
   customerRef: string
   suiteName: string
   payment: SalePaiement | null
@@ -231,20 +219,21 @@ export class Sale extends Model {
     super(data)
     this.id = data?.id
     this.name = data?.name
-    this.date = data && data.date ? new Date(data.date) : null
+    this.stateProgress = data?.state_progress || 10
+    this.date = data && data.date_order ? new Date(data.date_order) : null
     this.state = data?.state
     this.stateLabel = data?.state_label
     this.note = data?.note
-    this.invoicing = data.invoicing ? new SaleInvoicing(data.invoicing) : []
+    this.invoicing = data?.invoicing ? new SaleInvoicing(data.invoicing) : []
     this.invoices = []
     if (data && data.invoices) {
       data.invoices.forEach((invoice: any) =>
         this.invoices.push(new SaleInvoice(invoice))
       )
     }
-    this.lines = data.lines ? new SaleLines(data.lines) : null
+    this.lines = Array.isArray(data?.lines) ? data.lines.map((l:any) => new SaleLine(l)) : []
     this.amount = data.amount ? new SaleAmount(data.amount) : null
-    this.shipping = data.shipping ? new SaleShipping(data.shipping) : null
+    this.delivery = data.delivery ? new SaleDelivery(data.delivery) : null
     this.customerRef = data?.customer_ref
     this.suiteName = data?.suite_name
     this.payment = data.payment ? new SalePaiement(data.payment) : null

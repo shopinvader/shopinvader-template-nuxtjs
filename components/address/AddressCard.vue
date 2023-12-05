@@ -6,12 +6,12 @@
           <div class="flex items-center gap-2">
             <icon
               v-if="address?.addressType !== 'profile'"
-              icon="ic:sharp-location-on"
+              name="location"
               class="text-xl text-primary"
             ></icon>
             <icon
               v-else
-              icon="ic:outline-account-circle"
+              name="user-circle"
               class="text-xl text-primary"
             ></icon>
 
@@ -41,11 +41,11 @@
             </p>
             <div class="pt-4">
               <p v-if="address.phone" class="flex gap-2">
-                <icon icon="ic:sharp-phone" class="text-lg"></icon>
+                <icon name="ic:sharp-phone" class="text-lg"></icon>
                 {{ address.phone }}
               </p>
               <p v-if="address.mobile" class="flex gap-2">
-                <icon icon="ic:sharp-phone" class="text-lg"></icon>
+                <icon name="ic:sharp-phone" class="text-lg"></icon>
                 {{ address.mobile }}
               </p>
             </div>
@@ -60,7 +60,6 @@
   </div>
 </template>
 <script lang="ts">
-import { Icon } from '@iconify/vue'
 import type { PropType } from 'vue'
 import { Address } from '~/models'
 import AddressFormVue from './AddressForm.vue'
@@ -68,7 +67,6 @@ export default defineNuxtComponent({
   name: 'AddressCard',
   components: {
     'address-form': AddressFormVue,
-    icon: Icon
   },
   props: {
     address: {

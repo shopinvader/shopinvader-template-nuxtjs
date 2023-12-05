@@ -87,7 +87,7 @@
           :title="$t('cart.line.delete')"
           @click="deleteLine"
         >
-          <Icon icon="ph:trash" class="text-xl" />
+          <icon name="remove" class="text-xl" />
           {{ $t('cart.line.delete') }}
         </button>
       </div>

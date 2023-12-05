@@ -5,7 +5,7 @@
       <div class="navbar-bottom__icons">
         <nuxt-link :to="localePath('/')" class="icon">
           <div class="navlink">
-            <icon class="home-icon" icon="ph:house-simple"></icon>
+            <icon class="home-icon" name="home"></icon>
             <span class="navlink__label">
               {{ $t('navbar.home') }}
             </span>
@@ -13,7 +13,7 @@
         </nuxt-link>
         <nuxt-link :to="localePath('/search')" class="icon iconlink">
           <div class="navlink">
-            <icon class="search-icon" icon="ph:magnifying-glass" />
+            <icon class="search-icon" name="search" />
             <span class="navlink__label">
               {{ $t('navbar.search') }}
             </span>

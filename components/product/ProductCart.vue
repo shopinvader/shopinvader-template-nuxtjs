@@ -15,8 +15,8 @@
         @click="addToCart"
       >
         <div v-if="!disabledAddToCart" class="add-icon">
-          <Icon icon="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
-          <Icon icon="ic:outline-plus" class="add-icon__plus" />
+          <icon name="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
+          <icon name="ic:outline-plus" class="add-icon__plus" />
         </div>
         <span class="add-label">
           {{ label || $t('product.cart.add') }}
@@ -42,14 +42,14 @@
       <div class="cart-confirmation">
         <slot name="addedtocart-content" :line="line">
           <div class="cart-confirmation__title">
-            <icon icon="mdi:check" class="icon" />
+            <icon name="check" class="icon" />
             {{ $t('cart.confirmation') }}
             <div class="flex-1 text-right">
               <nuxt-link
                 class="btn-secondary btn-sm btn"
                 :to="localePath('cart')"
               >
-                <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
+                <icon name="cart" class="mr-2"></icon>
                 {{ $t('cart.checkout') }}
               </nuxt-link>
             </div>
@@ -84,7 +84,7 @@
           {{ $t('cart.continue') }}
         </button>
         <nuxt-link :to="localePath('cart')" class="btn-secondary btn">
-          <icon icon="clarity:shopping-bag-line" class="mr-2"></icon>
+          <icon name="cart" class="mr-2"></icon>
           {{ $t('cart.checkout') }}
         </nuxt-link>
       </slot>

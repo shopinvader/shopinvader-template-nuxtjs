@@ -4,7 +4,7 @@
       <div class="flex items-center py-3">
         <div class="flex flex-grow items-center">
           <icon
-            icon="material-symbols:view-list-rounded"
+            name="material-symbols:view-list-rounded"
             class="pr-2 text-5xl"
           ></icon>
           <h1 class="text-3xl">
@@ -75,7 +75,7 @@
                   >
                     <NuxtLink :to="`/account/sales/${sale.id}`">
                       <icon
-                        icon="material-symbols:chevron-right"
+                        name="right"
                         class="mr-2 text-2xl font-bold text-primary"
                       ></icon>
                     </NuxtLink>
@@ -125,7 +125,7 @@
                   {{ $filter.currency(sale.amount.total) }}
 
                   <icon
-                    icon="material-symbols:chevron-right"
+                    name="right"
                     class="mr-2 text-2xl font-bold text-primary"
                     @click="navigateToSale(sale.id)"
                   />
@@ -219,8 +219,8 @@ export default defineNuxtComponent({
       loading.value = true
       try {
         const res = await saleService?.getSalesList(page.value, perPage.value)
-        count.value = res.count
-        sales.value = res.sales
+        count.value = res?.count || 0
+        sales.value = res?.items || []
       } catch (error: any) {
         if (
           error.name === 'HttpErrorResponse' &&

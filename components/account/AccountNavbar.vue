@@ -3,7 +3,7 @@
     <div class="account-navbar__content">
       <div class="content__intro">
         <div class="intro__icon">
-          <icon icon="ph:user-circle-fill" class="text-5xl" />
+          <icon name="user-circle" class="text-5xl" />
         </div>
         <div class="intro__body">
           <NuxtLink :to="localePath('account')" class="title">
@@ -13,7 +13,7 @@
         </div>
         <div class="intro__btn">
           <button class="btn-link text-white" @click="display = !display">
-            <icon icon="ph:list" class="text-4xl" />
+            <icon name="ph:list" class="text-4xl" />
           </button>
         </div>
       </div>
@@ -24,7 +24,7 @@
           :class="{ active: page.active }"
         >
           <NuxtLink :to="localePath(page.slug)">
-            <icon :icon="page.icon" />
+            <icon :name="page.icon" />
             {{ page.title }}
           </NuxtLink>
         </li>
@@ -35,7 +35,6 @@
 
 <script lang="ts">
 import type { PropType } from 'vue'
-import iconify from '~~/plugins/iconify'
 interface Page {
   title: string
   icon: string
@@ -44,7 +43,6 @@ interface Page {
 }
 export default defineNuxtComponent({
   name: 'AccountNavbar',
-  components: { iconify },
   props: {
     items: {
       required: true,

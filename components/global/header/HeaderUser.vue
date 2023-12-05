@@ -1,7 +1,7 @@
 <template>
   <div class="header-user" :class="{'header-user--logged': user}">
     <button type="button" tabindex="0" class="button" @click="next">
-      <Icon :icon="!user ? 'clarity:user-line' : 'clarity:user-solid'" class="button__icon" />
+      <icon :name="!user ? 'user' : 'user-logged'" class="button__icon" />
       <span class="button__label">
         {{ user?.name || $t('account.title') }}
       </span>

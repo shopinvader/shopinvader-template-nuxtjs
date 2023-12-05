@@ -27,7 +27,7 @@
           <div class="icon">
             <span class="icon__effect"></span>
             <span class="icon__content">
-              <icon icon="svg-spinners:bars-scale-middle" />
+              <icon name="svg-spinners:bars-scale-middle" />
             </span>
           </div>
           <div>
@@ -44,7 +44,7 @@
     </div>
     <div class="checkout-payment__footer">
       <button type="button" class="btn-ghost btn" @click="back">
-        <icon icon="material-symbols:chevron-left"></icon>
+        <icon name="left"></icon>
         {{ $t('cart.back') }}
       </button>
     </div>

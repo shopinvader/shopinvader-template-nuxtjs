@@ -62,6 +62,7 @@ export default defineNuxtConfig({
     stylePath: 'css/fonts.css'
   },
   modules: [
+    "nuxt-icon",
     '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
     'nuxt-simple-sitemap',
@@ -69,9 +70,6 @@ export default defineNuxtConfig({
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-  ],
-  plugins: [
-    join(dir, 'plugins/iconify.ts'),
   ],
   piniaPersistedstate: {
     cookieOptions: {

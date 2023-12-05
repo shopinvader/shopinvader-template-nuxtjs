@@ -33,7 +33,7 @@
                 <button type="button" @click="newPasswordView = !newPasswordView" class="btn btn-link">
                   <icon
                     class="view-icon"
-                    :icon="newPasswordView ? 'clarity:eye-line': 'clarity:eye-hide-line'"
+                    :name="newPasswordView ? 'view': 'hide'"
                   />
                 </button>
               </div>
@@ -62,7 +62,7 @@
                 <button type="button" @click="repeatPasswordView = !repeatPasswordView" class="btn btn-link">
                   <icon
                     class="view-icon"
-                    :icon="repeatPasswordView ? 'clarity:eye-line': 'clarity:eye-hide-line'"
+                    :name="repeatPasswordView ? 'view': 'hide'"
                   />
                 </button>
               </div>

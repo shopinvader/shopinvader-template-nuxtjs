@@ -10,7 +10,7 @@
             :to="localePath('/')"
             class="btn-primary btn-sm btn rounded-full text-white"
           >
-            <icon icon="material-symbols:arrow-back-ios" class="inline"> </icon>
+            <icon name="material-symbols:arrow-back-ios" class="inline"> </icon>
             {{ $t('btn.back_to_homepage') }}
           </nuxt-link>
         </div>
@@ -20,7 +20,7 @@
           >
             <div class="pb-6 text-center">
               <icon
-                icon="material-symbols:close"
+                name="close"
                 class="inline rounded-full bg-error p-1 text-4xl text-white"
               >
               </icon>

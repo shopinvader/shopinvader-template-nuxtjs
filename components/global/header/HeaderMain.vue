@@ -9,7 +9,7 @@
       <template #button>
         <div class="menu">
           <icon
-            icon="solar:hamburger-menu-outline"
+            name="menu"
             class="text-3xl text-primary"
           />
         </div>

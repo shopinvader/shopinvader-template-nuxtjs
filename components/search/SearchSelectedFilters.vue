@@ -11,7 +11,7 @@
           {{ filter.title }}: {{ filter.getValuesLabels() }}
         </span>
         <span>
-          <icon icon="material-symbols:close" />
+          <icon name="close" />
         </span>
       </slot>
     </button>

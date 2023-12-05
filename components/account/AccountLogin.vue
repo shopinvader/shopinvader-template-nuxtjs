@@ -51,7 +51,7 @@
                 <button type="button" @click="passwordView = !passwordView" class="btn btn-link">
                   <icon
                     class="view-icon"
-                    :icon="passwordView ? 'clarity:eye-line': 'clarity:eye-hide-line'"
+                    :name="passwordView ? 'view': 'hide'"
                   />
                 </button>
               </div>
@@ -71,7 +71,7 @@
         <div class="w-full p-3">
           <div class="subscription-form__error" >
             <template v-if="error.auth">
-              <icon class="text-xl" icon="clarity:error-line" />
+              <icon class="text-xl" name="error" />
               {{ error.auth }}
             </template>
           </div>

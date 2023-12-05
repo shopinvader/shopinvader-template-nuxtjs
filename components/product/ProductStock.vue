@@ -2,22 +2,22 @@
   <slot v-if="state !== null" name="stock-status">
     <div class="stock-status">
       <div v-if="state == 'in_stock'" class="stock-status__available">
-        <icon icon="mdi:check" class="stock-icon " />
+        <icon name="check" class="stock-icon " />
         <span class="stock-text">{{ $t('product.stock.available') }}</span>
       </div>
       <div v-else-if="state == 'in_limited'" class="stock-status__ending ">
-        <icon icon="iconamoon:attention-circle-thin" class="stock-icon" />
+        <icon name="attention" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.ending_soon') }}</span>
       </div>
       <div v-else-if="state == 'resupplying'" class="stock-status__ending ">
-        <icon icon="iconamoon:attention-circle-thin" class="stock-icon" />
+        <icon name="attention" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.resupplying') }}</span>
       </div>
       <div
         v-else-if="state == 'out_of_stock'"
         class=" stock-status__out-of-stock"
       >
-        <icon icon="entypo:cycle" class="stock-icon" />
+        <icon name="entypo:cycle" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.not_available') }}</span>
       </div>
     </div>

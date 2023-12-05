@@ -1,7 +1,7 @@
 <template>
   <div v-show="show" class="alert shadow-lg" :class="className">
     <div class="flex items-start">
-      <icon :icon="icon" class="cursor-pointer text-xl"></icon>
+      <icon :name="icon" class="cursor-pointer text-xl"></icon>
       <div>
         <h3 class="font-bold">{{ title }}</h3>
         <div class="text-xs">{{ message }}</div>
@@ -10,7 +10,7 @@
     <div class="flex-none">
       <button class="btn-ghost btn btn-sm">
         <icon
-          icon="carbon:close"
+          name="close"
           class="cursor-pointer"
           @click="show = false"
         ></icon>
@@ -19,11 +19,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Icon } from '@iconify/vue'
 export default {
-  components: {
-    icon: Icon
-  },
   props: {
     message: {
       type: String,

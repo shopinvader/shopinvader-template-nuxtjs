@@ -6,7 +6,7 @@
   >
 
     <div v-if="error" class="alert alert-error mb-6 flex gap-1">
-      <icon icon="ph:warning-circle" class="text-xl"></icon>
+      <icon name="error" class="text-xl"></icon>
       <span>{{ error }}</span>
     </div>
     <div class="checkout-address__items">
@@ -22,7 +22,7 @@
         :disabled="loading"
       >
         {{ $t('cart.address.continue') }}
-        <icon icon="material-symbols:chevron-right" class="text-lg"></icon>
+        <icon name="right" class="text-lg"></icon>
       </button>
     </div>
   </div>

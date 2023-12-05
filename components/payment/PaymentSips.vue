@@ -2,7 +2,7 @@
   <div v-if="service" class="payment-sips">
     <div class="payment-sips__icon">
       <slot name="icon">
-        <icon icon="solar:card-2-bold-duotone" />
+        <icon name="solar:card-2-bold-duotone" />
       </slot>
     </div>
     <div class="payment-sips__body">
@@ -15,10 +15,10 @@
         <slot name="body">
           {{ paymentMode?.description || $t('payment.sips.intro') }}
           <div class="icons">
-            <icon icon="logos:mastercard" />
-            <icon icon="logos:visa" />
-            <icon icon="logos:amex" />
-            <icon icon="twemoji:credit-card" />
+            <icon name="logos:mastercard" />
+            <icon name="logos:visa" />
+            <icon name="logos:amex" />
+            <icon name="twemoji:credit-card" />
           </div>
         </slot>
       </div>

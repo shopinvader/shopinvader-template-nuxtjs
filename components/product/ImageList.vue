@@ -32,7 +32,7 @@
         ref="indicators"
         class="slider-indicators-mobile__items"
       >
-        <icon icon="radix-icons:dot-filled" class="items-icons"></icon>
+        <icon name="radix-icons:dot-filled" class="items-icons"></icon>
       </a>
     </div>
   </template>

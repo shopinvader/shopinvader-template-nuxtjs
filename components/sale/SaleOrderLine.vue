@@ -23,14 +23,14 @@
     </template>
     <template #actions>
       <button class="btn-primary btn-xs btn">
-        <icon icon="ph:arrow-right"></icon>
+        <icon name="right"></icon>
       </button>
     </template>
   </OrderInvoiceLine>
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { SaleLines } from '#models'
+import { SaleLine } from '#models'
 import OrderInvoiceLine from './OrderInvoiceLine.vue'
 
 export default defineNuxtComponent({
@@ -40,7 +40,7 @@ export default defineNuxtComponent({
   },
   props: {
     line: {
-      type: Object as PropType<SaleLines>,
+      type: Object as PropType<SaleLine>,
       required: true
     }
   }

@@ -2,7 +2,7 @@
   <div v-if="service" class="payment-manual">
     <div class="payment-manual__icon">
       <slot name="icon">
-        <icon icon="solar:card-transfer-bold-duotone" />
+        <icon name="solar:card-transfer-bold-duotone" />
       </slot>
     </div>
     <div class="payment-manual__body">

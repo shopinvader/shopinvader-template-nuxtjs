@@ -38,7 +38,7 @@
             >
               {{ invoice.name }}
               <icon
-                icon="material-symbols:download-for-offline-outline"
+                name="download"
                 class="inline text-2xl"
               ></icon>
             </div>
@@ -48,7 +48,7 @@
           class="btn-primary btn-sm btn mt-8 md:mt-0"
           @click="download('sale', sale.id)"
         >
-          <icon icon="material-symbols:print" class="text-2xl"></icon>
+          <icon name="printer" class="text-2xl"></icon>
           <span class="ml-2">{{ $t('btn.download') }}</span>
         </a>
       </div>
@@ -66,7 +66,7 @@
         ></progress>
       </div>
       <AccountOrderLine
-        v-for="line in sale.lines.items"
+        v-for="line in sale.lines || []"
         :line="line"
         v-bind:key="line.id"
       ></AccountOrderLine>
@@ -76,7 +76,7 @@
             <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_subtotal') }}</span>
               <span class="amount">{{
-                $filter.currency(sale.amount.untaxed)
+                $filter.currency(sale?.amount?.untaxed)
               }}</span>
             </div>
           </div>
@@ -84,7 +84,7 @@
             <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_shipping') }}</span>
               <span class="amount">{{
-                $filter.currency(sale.shipping.amount.untaxed)
+                $filter.currency(sale.delivery?.amount?.untaxed || 0)
               }}</span>
             </div>
           </div>
@@ -92,7 +92,7 @@
             <div class="line-amount">
               <span class="text">{{ $t('account.sales.sale_tax') }}</span>
               <span class="amount">{{
-                $filter.currency(sale.amount.tax)
+                $filter.currency(sale?.amount?.tax)
               }}</span>
             </div>
           </div>
@@ -102,7 +102,7 @@
                 $t('account.sales.sale_total')
               }}</span>
               <span class="total__amount">{{
-                $filter.currency(sale.amount.total)
+                $filter.currency(sale?.amount?.total)
               }}</span>
             </div>
           </div>
@@ -113,25 +113,27 @@
               <h4 class="address-title">
                 {{ $t('account.address.type.delivery') }}
               </h4>
-              <p class="address-text">{{ sale.shipping.address.street }}</p>
               <p class="address-text">
-                {{ sale.shipping.address.zip }} {{ sale.shipping.address.city }}
+                {{ sale?.delivery?.address?.street || '' }}
               </p>
               <p class="address-text">
-                {{ sale.shipping.address.country.name }}
+                {{ sale.delivery?.address?.zip || ''  }} {{ sale.delivery?.address?.city || '' }}
+              </p>
+              <p class="address-text">
+                {{ sale.delivery?.address?.country?.name || '' }}
               </p>
             </div>
             <div class="invoice">
               <h4 class="address-title">
                 {{ $t('account.address.type.invoice') }}
               </h4>
-              <p class="address-text">{{ sale.invoicing.address.street }}</p>
+              <p class="address-text">{{ sale.invoicing?.address?.street || ''  }}</p>
               <p class="address-text">
-                {{ sale.invoicing.address.zip }}
-                {{ sale.invoicing.address.city }}
+                {{ sale.invoicing?.address?.zip || '' }}
+                {{ sale.invoicing?.address?.city || '' }}
               </p>
               <p class="address-text">
-                {{ sale.invoicing.address.country.name }}
+                {{ sale.invoicing?.address?.country?.name || '' }}
               </p>
             </div>
           </div>

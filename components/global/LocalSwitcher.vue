@@ -2,16 +2,16 @@
   <div v-if="availableLocales.length > 0" class="locale-switcher dropdown">
     <label tabindex="0" class="locale-switcher__btn">
       <span class="font-semibold uppercase">
-        <icon :icon="currentLocalIcon" class="text-4xl" />
+        <icon :name="currentLocalIcon" class="text-4xl" />
       </span>
-      <icon icon="ph:caret-down-light" class="text-lg" />
+      <icon name="down" class="text-lg" />
     </label>
     <ul
       class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2 shadow"
     >
       <li v-for="item in availableLocales" :key="item.code">
         <a :key="item.code" :href="localePath('index', item.code)">
-          <icon :icon="item.icon" class="text-2xl" />{{ item.name }}
+          <icon :name="item.icon" class="text-2xl" />{{ item.name }}
         </a>
       </li>
     </ul>
