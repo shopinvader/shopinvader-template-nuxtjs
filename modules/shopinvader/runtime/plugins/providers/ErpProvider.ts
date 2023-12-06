@@ -16,12 +16,9 @@ export const fetchAPI = async (url: string, options: any) => {
 export const initErpProvider = (
   options: ShopinvaderErpConfig
 ): ShopinvaderProvidersList => {
-  const erpUrl = options?.url || null
+  const erpUrl = options?.url || ''
   const erpKey = options?.key || ''
 
-  if (erpUrl === null) {
-    throw new Error('API URL not found')
-  }
   return {
     erp: new ErpFetch(erpUrl, erpKey, fetchAPI)
   }
