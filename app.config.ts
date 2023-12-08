@@ -3,7 +3,6 @@ export default defineAppConfig({
     aliases: {
       addresses:"ph:address-book-light",
       sales:"ph:list-dashes",
-
       check: "ph:check",
       left: "ph:arrow-left",
       right: "ph:arrow-right",
@@ -12,6 +11,7 @@ export default defineAppConfig({
       "search-circle": "ic:round-search",
       plus: "mdi:plus",
       delete: "mdi:trash",
+      remove: "ph:trash",
       edit: "ph:pencil",
       info: "ph:info",
       close: "ph:x",
@@ -19,6 +19,7 @@ export default defineAppConfig({
       "user-logged": "ph:user-duotone",
       "user-circle": "ph:user-circle",
       "close-circle": "ic:round-close",
+      phone: "ph:phone",
       variants: "fluent:box-multiple-20-regular",
       printer: "ph:printer",
       error: "ph:warning-circle",
@@ -29,7 +30,7 @@ export default defineAppConfig({
       attention: "iconamoon:attention-circle-thin",
       down: "ph:caret-down-light",
       up: "ph:caret-up-light",
-      home: "ph:home",
+      home: "ph:house",
       history: "ic:baseline-history",
       view: "clarity:eye-line",
       "hide": "clarity:eye-hide-line",

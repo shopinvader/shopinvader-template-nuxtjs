@@ -43,6 +43,9 @@
           <slot name="action" :sale="sale"></slot>
         </div>
       </slot>
+      <div class="header__info">
+        <slot name="info" :sale="sale"></slot>
+      </div>
       <div class="header__progess">
         <slot name="progress" :sale="sale">
           <progress class="progress progress-success" :value="sale.stateProgress" max="100"></progress>
@@ -53,16 +56,22 @@
       <slot name="delivery" :sale="sale">
         <address-card v-if="sale?.delivery?.address" :address="sale.delivery.address">
           <template #header :address="sale?.delivery?.address">
-            {{$t('sale.delivery.address')}}
-            <span class="mx-1">{{ sale?.delivery?.address?.name }}</span>
+            <div>
+              <icon name="location" />
+              {{$t('sale.delivery.address')}}
+            </div>
+            <div class="">{{ sale?.delivery?.address?.name }}</div>
           </template>
         </address-card>
       </slot>
       <slot name="invoice" :sale="sale">
         <address-card  v-if="sale?.invoicing?.address" :address="sale.invoicing.address">
           <template #header :address="sale?.invoicing?.address">
-            {{$t('sale.invoicing.address')}}
-            <span class="mx-1">{{ sale?.invoicing?.address?.name }}</span>
+            <div>
+              <icon name="billing" ></icon>
+              {{$t('sale.invoicing.address')}}
+            </div>
+            <div class="">{{ sale?.invoicing?.address?.name }}</div>
           </template>
         </address-card>
       </slot>
@@ -160,12 +169,15 @@
         &__progess {
           @apply w-full flex-grow;
         }
+        &__info {
+          @apply w-full flex-grow;
+        }
       }
     }
     &__addresses {
       @apply flex flex-row flex-wrap justify-center md:justify-start gap-4;
       .address-card {
-        @apply p-4 bg-base-100 rounded w-full md:w-auto;
+        @apply p-4 bg-base-100 rounded w-full md:w-auto lg:w-5/12 xl:w-1/3;
         .header {
           &__title {
             @apply text-lg;
@@ -173,7 +185,7 @@
 
         }
         &__content {
-          @apply text-sm ml-0 ;
+          @apply text-sm ml-0 pl-1 ;
         }
       }
     }

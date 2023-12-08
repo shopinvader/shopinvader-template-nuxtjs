@@ -26,10 +26,10 @@
                 {{ $t('account.sales.table_labels.orderdate') }}
               </th>
               <th class="px-2 text-left">
-                {{ $t('account.sales.table_labels.pricenet') }}
+                {{ $t('account.sales.table_labels.status') }}
               </th>
               <th class="px-2 text-left">
-                {{ $t('account.sales.table_labels.status') }}
+                {{ $t('account.sales.table_labels.pricenet') }}
               </th>
               <th class="px-2 text-right">
                 {{ $t('account.sales.table_labels.action') }}
@@ -241,8 +241,8 @@ export default defineNuxtComponent({
       })
     }
 
-    function onChangePage(page: any) {
-      page.value = page
+    function onChangePage(p: any) {
+      page.value = p
       setRouteQueryParams()
     }
 
@@ -293,6 +293,11 @@ export default defineNuxtComponent({
 })
 </script>
 <style lang="scss">
+.table {
+  tr.hover {
+    @apply cursor-pointer;
+  }
+}
 .sales-table-sm {
   @apply block flex w-full md:hidden;
 

@@ -314,9 +314,9 @@ export default defineNuxtComponent({
      * @param step
      */
     goToStep(step: number) {
+      this.$emit('change')
       if (step > this.maxStepIndex) return
       this.currentStepIndex = step
-      this.$emit('next', { currentStepIndex: this.currentStepIndex })
     },
     scrollToStep(step: number) {
       const top = document

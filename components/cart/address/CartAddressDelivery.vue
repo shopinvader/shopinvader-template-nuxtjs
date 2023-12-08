@@ -48,6 +48,7 @@
                       @click="onUpdateAddress(address)"
                     >
                       {{ $t('cart.address.pick') }}
+                      <icon name="right"></icon>
                     </button>
                   </div>
                 </template>

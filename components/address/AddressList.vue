@@ -78,7 +78,7 @@
                 :title="$t('actions.delete')"
                 @click="deleteAddress(address)"
               >
-                <icon name="remove" class="text-lg text-white"></icon>
+                <icon name="delete" class="text-lg text-white"></icon>
               </button>
               <button
                 v-if="address.access?.update"
@@ -86,7 +86,7 @@
                 :title="$t('actions.update')"
                 @click="editedAddress = address"
               >
-                <icon name="edit" class="text-lg text-white"></icon>
+              <icon name="edit" class="text-lg"></icon>
               </button>
             </template>
             <template #footer>

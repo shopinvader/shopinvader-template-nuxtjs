@@ -91,7 +91,6 @@ export class ProductService extends Service {
         },
         size: ids.length
       }
-      console.log('body', body)
       return this.search(body)
     } else {
       return new Promise((resolve) => {

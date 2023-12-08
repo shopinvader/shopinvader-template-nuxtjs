@@ -20,7 +20,7 @@ export class SaleService {
     page: number = 1,
     perPage: number = 10
   ): Promise<{ count: number; items: Sale[] }> {
-    const params: { [k: string]: any } = { per_page: perPage, page }
+    const params: { [k: string]: any } = { page_size: perPage, page }
     const res = await this.provider?.get('sales', params, null)
     return {
       count: res?.count || 0,
@@ -33,7 +33,7 @@ export class SaleService {
     if (!json) return null
     const model = this.jsonToModel(json)
 
-    return this.fetchProductToQuotation(model)
+    return await this.fetchProductToQuotation(model)
   }
 
   download(id: number): Promise<Blob | null> {
@@ -53,13 +53,12 @@ export class SaleService {
       .map((line: any) => line.productId)
       .filter((id: any) => id)
     const res = (await this.productService?.getByIds(ids)) || {hits: []}
-    console.log('res', res?.hits?.length)
+
     if (res?.hits?.length > 0) {
       sale.lines = sale.lines.map((line: any) => {
         const product =
           res.hits.find((product: any) => product.id === line.productId) ||
           null
-        console.log('product', product)
         if (product) {
           line.product = product
         }

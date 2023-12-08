@@ -14,29 +14,38 @@ const props = defineProps({
 </script>
 <style lang="scss">
   .status {
+    @apply relative text-sm pl-4 m-0;
+    &:before {
+      @apply absolute left-0 top-1  rounded-full block h-3 w-3 bg-base-500;
+      content: '';
+
+    }
     &.state--draft {
-      @apply badge badge-warning;
+
     }
     &.state--cancel {
-      @apply badge badge-error;
+      @apply before:bg-error;
     }
     &.state--sale {
-      @apply badge badge-info;
+      @apply before:bg-info;
+    }
+    &.state--pending {
+      @apply before:bg-info;
     }
     &.state--processing {
-      @apply badge badge-info;
+      @apply before:bg-warning;
     }
     &.state--delivery_full {
-      @apply badge badge-secondary;
+      @apply before:bg-success;
     }
     &.state--delivery_partial {
-      @apply badge badge-success;
+      @apply before:bg-accent;
     }
     &.state--estimating {
-      @apply badge badge-info;
+      @apply before:bg-info;
     }
     &.state--estimated {
-      @apply badge badge-success;
+      @apply before:bg-info;
     }
   }
 </style>

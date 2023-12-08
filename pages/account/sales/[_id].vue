@@ -6,7 +6,7 @@
           {{ error }}
         </div>
         <div v-if="sale" class="account-sale__header">
-          <nuxt-link :to="localePath('account-sales')" class="btn btn-link">
+          <nuxt-link :to="localePath('account-sales')" class="btn btn-link max-md:hidden">
             <icon name="left"></icon>
             {{ $t('btn.back') }}
           </nuxt-link>
@@ -25,8 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { Sale } from '#models';
-
+  import type { Sale } from '#models';
   definePageMeta({
     auth: true
   })
@@ -57,16 +56,19 @@ import type { Sale } from '#models';
   }
   &__header {
     @apply text-primary-500;
+    h1 {
+      @apply text-xl md:text-3xl mb-0;
+    }
   }
   &__detail {
-    @apply mt-4 bg-primary-50/20 p-4 lg:p-6;
+    @apply mt-4 bg-primary-50/20 md:p-4 lg:p-6;
     .detail {
       &__title {
-        @apply text-3xl mb-0 bg-white p-4 lg:p-6 pb-0;
+        @apply text-3xl mb-0 bg-white md:p-4 lg:p-6 pb-0;
       }
     }
     .sale {
-      @apply bg-white border-0 p-6;
+      @apply bg-white border-0 p-0 md:p-6;
     }
   }
 }

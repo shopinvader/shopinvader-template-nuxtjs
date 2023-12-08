@@ -79,5 +79,8 @@ export default {
 <style lang="scss">
 .pagination {
   @apply join gap-1;
+  .btn-active {
+    @apply text-white bg-primary;
+  }
 }
 </style>

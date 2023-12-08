@@ -26,7 +26,7 @@
     <div class="address-card__content">
       <slot name="body" :address="address">
         <template v-if="!edit">
-          <div class="badge" v-if="address?.main">
+          <div class="badge badge-primary" v-if="address?.main">
             {{ $t('address.main.title') }}
           </div>
           <p>{{ address?.email }}</p>
@@ -41,11 +41,11 @@
             </p>
             <div class="pt-4">
               <p v-if="address.phone" class="flex gap-2">
-                <icon name="ic:sharp-phone" class="text-lg"></icon>
+                <icon name="phone" class="text-lg"></icon>
                 {{ address.phone }}
               </p>
               <p v-if="address.mobile" class="flex gap-2">
-                <icon name="ic:sharp-phone" class="text-lg"></icon>
+                <icon name="phone" class="text-lg"></icon>
                 {{ address.mobile }}
               </p>
             </div>

@@ -188,7 +188,7 @@ export default {
           }
         }
         .dropdown__results {
-          @apply relative flex flex-wrap;
+          @apply relative w-full flex flex-wrap;
           .results {
             &__side {
               @apply flex w-full flex-col md:w-1/3 md:border-r;

@@ -76,12 +76,12 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .line {
-  @apply  flex flex-wrap items-center rounded-lg border-2 p-3;
+  @apply  flex flex-wrap items-start md:items-center rounded-lg border-2 p-3;
   &__image {
-    @apply w-full px-4 lg:mb-0 lg:w-24 lg:h-24 bg-base-100 flex justify-center items-center;
+    @apply px-4 lg:mb-0 w-16 h-16 lg:w-24 lg:h-24 bg-base-100 flex justify-center items-center;
   }
   &__content {
-    @apply flex flex-grow w-full justify-between px-4 lg:w-9/12;
+    @apply flex flex-grow w-9/12 justify-between px-4 lg:w-9/12;
     .content {
       &__text {
         @apply flex flex-col flex-grow;

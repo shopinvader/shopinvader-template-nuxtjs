@@ -55,16 +55,34 @@ export default defineNuxtComponent({
       default: 'left'
     }
   },
+  watch: {
+    open: {
+      immediate: true,
+      handler(open) {
+        if (open) {
+          document.body.classList.add('aside--opened')
+        } else {
+          document.body.classList.remove('aside--opened')
+        }
+      }
+    }
+  },
   setup() {
     return {}
   }
 })
 </script>
 <style lang="scss">
+body {
+  &.aside--opened {
+    @apply max-h-screen overflow-hidden;
+  }
+}
+
 .aside-drawer {
   @apply fixed top-0 z-50 flex items-start;
   &--right {
-    @apply right-0 justify-end;
+    @apply justify-end;
     .aside-drawer__side {
       @apply right-0;
     }

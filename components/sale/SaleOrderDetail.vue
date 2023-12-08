@@ -18,6 +18,7 @@
 <script setup lang="ts">
   import type { Sale } from '#models';
   const loading = ref(false)
+  const error = ref('')
   const props = defineProps({
     sale: {
       type: Object as PropType<Sale>,
@@ -25,6 +26,7 @@
     }
   })
   const download = async (action: string, id: number) => {
+    loading.value = true
     const saleService = useShopinvaderService('sales')
     let docName
     let downloadService
@@ -35,7 +37,7 @@
       downloadService = await saleService?.downloadInvoice(id)
       docName = 'invoice_' + id + '.pdf'
     }
-    loading.value = false
+
     try {
       const blob = await downloadService || null
       if(!blob) return
@@ -49,10 +51,11 @@
       a.click()
       window.URL.revokeObjectURL(fatUrl)
       document.body.removeChild(a)
-    } catch (error: any) {
-      console.log(error)
+    } catch (err: any) {
+      console.log(err)
+      error.value = err
     } finally {
-      //loading.value = false
+      loading.value = false
     }
   }
 </script>

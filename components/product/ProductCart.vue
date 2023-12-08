@@ -15,7 +15,7 @@
         @click="addToCart"
       >
         <div v-if="!disabledAddToCart" class="add-icon">
-          <icon name="clarity:shopping-bag-line" class="text-xl lg:text-2xl" />
+          <icon name="cart" class="text-xl lg:text-2xl" />
           <icon name="ic:outline-plus" class="add-icon__plus" />
         </div>
         <span class="add-label">
@@ -32,38 +32,29 @@
       </div>
     </slot>
   </div>
-  <aside-drawer :open="cartDrowerOpened" direction="right" @close="closeDrawer">
+  <aside-drawer :open="cartDrowerOpened" direction="right" @close="closeDrawer" class-content="cart-confirmation">
     <template #header>
-      <div class="w-full text-2xl">
+      <div class="cart-confirmation__header">
         {{ $t('cart.title') }}
       </div>
     </template>
     <template #content>
-      <div class="cart-confirmation">
-        <slot name="addedtocart-content" :line="line">
-          <div class="cart-confirmation__title">
+      <div class="cart-confirmation__content">
+        <slot name="addedtocart-content" :line="line" class="content">
+          <div class="content__title">
             <icon name="check" class="icon" />
             {{ $t('cart.confirmation') }}
-            <div class="flex-1 text-right">
-              <nuxt-link
-                class="btn-secondary btn-sm btn"
-                :to="localePath('cart')"
-              >
-                <icon name="cart" class="mr-2"></icon>
-                {{ $t('cart.checkout') }}
-              </nuxt-link>
-            </div>
           </div>
           <cart-line
             v-if="line"
-            class="cart-confirmation__line"
+            class="content__line"
             :line="line"
             :readonly="true"
           >
           </cart-line>
           <product-links
             v-if="product"
-            class="cart-confirmation__links"
+            class="content__links"
             :links="product.links?.crossLink || []"
           >
             <template #head>
@@ -74,20 +65,22 @@
       </div>
     </template>
     <template #footer>
-      <slot name="addedtocart-footer" :line="line">
-        <button
-          :to="localePath('cart')"
-          type="button"
-          class="btn-outline btn"
-          @click="closeDrawer"
-        >
-          {{ $t('cart.continue') }}
-        </button>
-        <nuxt-link :to="localePath('cart')" class="btn-secondary btn">
-          <icon name="cart" class="mr-2"></icon>
-          {{ $t('cart.checkout') }}
-        </nuxt-link>
-      </slot>
+      <div class="cart-confirmation__footer">
+        <slot name="addedtocart-footer" :line="line">
+          <button
+            :to="localePath('cart')"
+            type="button"
+            class="btn-back"
+            @click="closeDrawer"
+          >
+            {{ $t('cart.continue') }}
+          </button>
+          <nuxt-link :to="localePath('cart')" class="btn-checkout">
+            <icon name="cart"></icon>
+            {{ $t('cart.checkout') }}
+          </nuxt-link>
+        </slot>
+      </div>
     </template>
   </aside-drawer>
 </template>
@@ -166,8 +159,8 @@ export default {
       if (cartService && this.product?.id !== null) {
         this.$emit('add', this.qty)
         cartService.addItem(this.product.id, this.qty)
+        this.cartDrowerOpened = true
         if (!this.line) {
-          this.cartDrowerOpened = true
         }
       }
     },
@@ -207,23 +200,68 @@ export default {
 }
 .aside-drawer {
   .cart-confirmation {
-    &__title {
-      @apply flex w-full items-center gap-3 p-2 align-middle text-2xl;
-      .icon {
-        @apply text-success;
-      }
+    &__header {
+      @apply w-full text-lg md:text-2xl;
     }
-    &__line {
-      @apply border-l-0 border-r-0;
-    }
-    &__links {
-      .product-links__items {
-        @apply grid grid-cols-2 gap-1 md:grid-cols-3;
-        .items__product {
-          .product-hit {
-            @apply card border bg-base-100;
+    &__content {
+      @apply w-full;
+      .content {
+        &__title {
+          @apply flex w-full items-center gap-3 pb-2 align-middle text-lg md:text-2xl;
+          .icon {
+            @apply text-success;
           }
         }
+        &__line {
+          @apply border-l-0 border-r-0 flex justify-start flex-nowrap items-center gap-2 py-2;
+          .cartline {
+            &__content {
+              @apply flex flex-col flex-grow gap-0 justify-start;
+              .content__title {
+                @apply flex flex-col justify-start items-start gap-1 pb-0;
+              }
+              .content__qty {
+                .label {
+                  @apply block justify-start text-sm p-0;
+                }
+              }
+              .content__price {
+                @apply flex flex-row justify-start p-0 leading-3;
+                .label {
+                  @apply text-sm p-0;
+                }
+                .value .price__value {
+                  @apply text-base font-normal text-secondary-950 p-0;
+                }
+              }
+            }
+            &__image {
+              @apply w-16 h-16;
+            }
+          }
+        }
+        &__links {
+          .product-links__items {
+            @apply grid grid-cols-2 gap-1 md:grid-cols-3;
+            .items__product {
+              .product-hit {
+                @apply card border bg-base-100;
+              }
+            }
+          }
+        }
+      }
+    }
+    &__footer {
+      @apply w-full flex justify-between items-center gap-2;
+      .btn-back {
+        @apply btn-outline btn max-md:hidden;
+      }
+      .btn-checkout {
+        .icon {
+          @apply text-xl;
+        }
+        @apply btn-success btn max-md:btn-block px-8 shadow-2xl text-white;
       }
     }
   }
