@@ -36,7 +36,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       }
       if(config?.erp?.proxy) {
         config.erp = {
-          ...config.erp,
+          ...runtimeConfig?.public?.shopinvader?.erp,
           proxy: null
         }
       }
