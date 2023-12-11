@@ -8,7 +8,7 @@
     <form @submit="submit" class="search-autocomplete__form">
       <div class="form">
         <span v-show="focused" class="form__back" @click="resetSearch">
-          <Icon icon="ic:baseline-arrow-back" class="text-3xl" />
+          <icon name="ic:baseline-arrow-back" class="text-3xl" />
         </span>
         <label class="form__input">
           <input
@@ -24,10 +24,10 @@
           <span class="button" @click="resetSearch">
             <Icon
               v-if="!query"
-              icon="ic:round-search"
+              name="search"
               class="text-lg md:text-xl"
             />
-            <Icon v-else icon="ic:round-close" class="text-lg md:text-xl" />
+            <icon v-else name="close-circle" class="text-lg md:text-xl" />
           </span>
         </label>
       </div>
@@ -188,7 +188,7 @@ export default {
           }
         }
         .dropdown__results {
-          @apply relative flex flex-wrap;
+          @apply relative w-full flex flex-wrap;
           .results {
             &__side {
               @apply flex w-full flex-col md:w-1/3 md:border-r;

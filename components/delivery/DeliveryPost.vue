@@ -7,7 +7,7 @@
     @click="$emit('select', deliveryCarrier)"
   >
     <div class="method__icon">
-      <icon icon="solar:delivery-line-duotone" />
+      <icon name="solar:delivery-line-duotone" />
     </div>
     <div class="method__body">
       <div class="body__title">

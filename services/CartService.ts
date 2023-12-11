@@ -3,7 +3,8 @@ import {
   Cart as CartModel,
   Product,
   CartLine as CartLineModel,
-  Address
+  Address,
+  Sale
 } from '#models'
 import { Service, ProductService } from '#services'
 import { storeToRefs } from 'pinia'
@@ -71,20 +72,19 @@ export class CartService extends Service {
         this.erp,
         new WebStorageCartStorage(window.localStorage), {
           syncUrl: 'carts/sync',
-          debug: this.debug
+          debug: true
         }
       )
       this.cart.registerObserver(observer)
       /** Get last stored cart before fetching API with syncWithRetry */
       if (window?.localStorage?.getItem('cart')) {
         this.setCart(JSON.parse(window.localStorage.getItem('cart') || '{}'))
-      }
-      if(window?.requestIdleCallback) {
-        requestIdleCallback(() => {
-          this.cart.syncWithRetry()
-        })
+        this.sync()
       }
     }
+  }
+  sync() {
+    this.cart?.syncWithRetry()
   }
   getCart(): Ref<CartModel | null> {
     if (!import.meta.env.SSR) {
@@ -224,6 +224,7 @@ export class CartService extends Service {
       this.setCart(new CartModel(cart))
     }
   }
+
   async update(cart: CartModel) {
     const data: any = await this.erp.post('carts/update', {
       client_order_ref: cart.orderRef || '',
@@ -235,9 +236,22 @@ export class CartService extends Service {
       },
       note: cart.note || ''
     })
-    await this.setCart(data)
+    await this.setCart(new CartModel(data))
+  }
+
+  /**
+   * Get last confirmed cart
+   * @returns Sale | null
+   */
+  getLastSale():Sale | null  {
+    const data = this.store()?.lastSale || null
+    if(data) {
+      return new Sale(data)
+    }
+    return null
   }
   clear() {
+    this.cart?.clearPendingTransactions()
     this.setCart(new CartModel({}))
 
   }

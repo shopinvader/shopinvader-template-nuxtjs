@@ -1,7 +1,7 @@
 <template>
   <nuxt-link :to="localePath({ path: '/cart' })" class="cart-icon">
     <div class="button">
-      <Icon icon="clarity:shopping-bag-line" class="button__icon" />
+      <icon name="cart" class="button__icon" />
       <span class="button__label">
         {{ $t('cart.title') }}
       </span>

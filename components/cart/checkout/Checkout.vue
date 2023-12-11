@@ -44,7 +44,7 @@
           -->
           <slot name="cart" :cart="cart">
             <div class="cart__icon">
-              <Icon icon="solar:cart-3-bold-duotone" />
+              <icon name="solar:cart-3-bold-duotone" />
             </div>
             <div class="cart__body">
               <nuxt-link class="body__title" :to="{ path: '/cart' }">
@@ -64,7 +64,7 @@
                 @click="displayCart = !displayCart"
               >
                 <icon
-                  icon="line-md:chevron-small-down"
+                  name="down"
                   class="text-lg"
                   :rotate="displayCart && '180deg'"
                 />
@@ -314,9 +314,9 @@ export default defineNuxtComponent({
      * @param step
      */
     goToStep(step: number) {
+      this.$emit('change')
       if (step > this.maxStepIndex) return
       this.currentStepIndex = step
-      this.$emit('next', { currentStepIndex: this.currentStepIndex })
     },
     scrollToStep(step: number) {
       const top = document

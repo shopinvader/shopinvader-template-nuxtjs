@@ -18,6 +18,9 @@ export const useShopinvaderStore = defineStore('shopinvader', {
     }
   },
   actions: {
+    setLastSale(sale: any) {
+      this.lastSale = sale
+    },
     setUser(data: User | null) {
       this.user = data == null ? false : data
     },

@@ -14,17 +14,17 @@
           <slot name="title">
             <div class="head__back">
               <nuxt-link :to="localePath('account')">
-                <icon icon="ph:arrow-left"></icon>
+                <icon name="left"></icon>
               </nuxt-link>
             </div>
             <template v-if="currentPage">
               <div class="head">
-                <icon class="head__icon" :icon="currentPage.icon"></icon>
+                <icon class="head__icon" :name="currentPage.icon"></icon>
                 <h1 class="head__title">
                   {{ currentPage?.title }}
                 </h1>
                 <button class="btn btn-primary" @click="logout">
-                  <icon icon="ph:power" class="" />
+                  <icon name="logout" class="" />
                   {{ $t('account.logout') }}
                 </button>
               </div>
@@ -72,27 +72,27 @@ export default defineNuxtComponent({
       items: [
         {
           title: this.$t('account.profile.title'),
-          icon: 'ph:user-list',
+          icon: 'profile',
           slug: 'account-profile'
         },
         {
           title: this.$t('account.address.title'),
-          icon: 'ph:address-book-light',
+          icon: 'addresses',
           slug: 'account-addresses'
         },
         {
           title: this.$t('account.sales.title'),
-          icon: 'ph:list-dashes',
+          icon: 'sales',
           slug: 'account-sales'
         },
         {
           title: this.$t('account.quotations'),
-          icon: 'ph:file',
+          icon: 'quotations',
           slug: 'account-quotations'
         },
         {
           title: this.$t('account.invoices'),
-          icon: 'ph:files',
+          icon: 'invoices',
           slug: 'account-invoices'
         }
       ]

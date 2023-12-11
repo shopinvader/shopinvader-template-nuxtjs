@@ -31,6 +31,7 @@
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^9.8.0",
     "nuxt": "^3.8.2",
+    "nuxt-icon": "^0.6.6",
     "nuxt-simple-robots": "^3.1.1",
     "prettier": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.1",
@@ -42,7 +43,6 @@
     "vue-eslint-parser": "^9.1.0"
   },
   "dependencies": {
-    "@iconify/vue": "^4.0.2",
     "@nuxt/kit": "^3.7.4",
     "@nuxt/types": "^2.15.8",
     "@nuxtjs/tailwindcss": "^6.6.6",

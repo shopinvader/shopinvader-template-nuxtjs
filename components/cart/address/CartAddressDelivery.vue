@@ -2,7 +2,7 @@
    <address-card class="cart-address-delivery" :address="deliveryAddress">
     <template #header>
       <h2 class="title">
-        <icon icon="ph:package"></icon>
+        <icon name="shipping"></icon>
         {{ $t('cart.address.shipping.title') }}
       </h2>
       <div class="subtitle">
@@ -48,6 +48,7 @@
                       @click="onUpdateAddress(address)"
                     >
                       {{ $t('cart.address.pick') }}
+                      <icon name="right"></icon>
                     </button>
                   </div>
                 </template>

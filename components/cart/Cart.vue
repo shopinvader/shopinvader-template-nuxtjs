@@ -31,7 +31,7 @@
                   >
                     {{ $t('cart.summary.checkout') }}
                     <icon
-                      icon="material-symbols:chevron-right"
+                      name="right"
                       class="text-lg"
                     ></icon>
                   </button>

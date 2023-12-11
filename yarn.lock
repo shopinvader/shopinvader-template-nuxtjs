@@ -708,6 +708,13 @@
   dependencies:
     "@iconify/types" "*"
 
+"@iconify/collections@^1.0.356":
+  version "1.0.365"
+  resolved "https://registry.yarnpkg.com/@iconify/collections/-/collections-1.0.365.tgz#61724dfb58b0686e1ce619e83445a7c392d3e411"
+  integrity sha512-6FXq+UxWcFMf7jObz6HdAaK9d+3n6Q0PwiT6tFRnzxPi12pPLd+SydG900KIvqmzjRt/62Hu5SpF/x59SUDp9w==
+  dependencies:
+    "@iconify/types" "*"
+
 "@iconify/types@*", "@iconify/types@^2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@iconify/types/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
@@ -725,7 +732,7 @@
     kolorist "^1.8.0"
     local-pkg "^0.4.3"
 
-"@iconify/vue@^4.0.2":
+"@iconify/vue@^4.1.1":
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/@iconify/vue/-/vue-4.1.1.tgz#c143c2973a4990ba2b47b766f80a9bca97937305"
   integrity sha512-RL85Bm/DAe8y6rT6pux7D2FJSiUEM/TPfyK7GrbAOfTSwrhvwJW+S5yijdGcmtXouA8MtuH9C7l4hiSE4mLMjg==
@@ -1088,6 +1095,15 @@
   dependencies:
     "@nuxt/kit" "^3.8.1"
     "@nuxt/schema" "^3.8.1"
+    execa "^7.2.0"
+
+"@nuxt/devtools-kit@^1.0.2":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@nuxt/devtools-kit/-/devtools-kit-1.0.4.tgz#dace89a92d4397f414d473b21a3164f35cbb8abe"
+  integrity sha512-AXNeI1dBilNryCmwuTd3lU7CrPBhzUJ5ntTFiXw9MmFwe5QT3NOxDFOv0gX7z1DFnmBEmx5mPKWysCwh7htEnQ==
+  dependencies:
+    "@nuxt/kit" "^3.8.2"
+    "@nuxt/schema" "^3.8.2"
     execa "^7.2.0"
 
 "@nuxt/devtools-ui-kit@^1.0.3":
@@ -7039,6 +7055,16 @@ nuxi@^3.10.0:
   integrity sha512-veZXw2NuaQ1PrpvHrnQ1dPgkAjv0WqPlvFReg5Iubum0QVGWdJJvGuNsltDQyPcZ7X7mhMXq9SLIpokK4kpvKA==
   optionalDependencies:
     fsevents "~2.3.3"
+
+nuxt-icon@^0.6.6:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/nuxt-icon/-/nuxt-icon-0.6.6.tgz#e0033bba4a1a1bab87af37dd09e6266653eb0925"
+  integrity sha512-rTRUIjYVlYAyj6ZPVVwGxyyiINNudhC6r9vF96Ec5ZaLOC6mSdUBnJ3oV6sJgViYrIkDLwbIjviFvRcZzvgu3g==
+  dependencies:
+    "@iconify/collections" "^1.0.356"
+    "@iconify/vue" "^4.1.1"
+    "@nuxt/devtools-kit" "^1.0.2"
+    "@nuxt/kit" "^3.8.1"
 
 nuxt-simple-robots@^3.1.1:
   version "3.1.9"

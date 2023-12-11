@@ -8,7 +8,7 @@
     <ul class="autocomplete-history">
       <li v-for="item in items" :key="item" class="autocomplete-history__item">
         <span class="item__label">
-          <icon icon="ic:baseline-history"></icon>
+          <icon name="history"></icon>
           <a @click="onQueryClick(item)">{{ item }}</a>
         </span>
         <button
@@ -16,7 +16,7 @@
           @click="removeItem(item)"
           class="btn-link text-black"
         >
-          <icon icon="ic:round-close" class=""></icon>
+          <icon name="close-circle" class=""></icon>
         </button>
       </li>
     </ul>

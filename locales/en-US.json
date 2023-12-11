@@ -208,6 +208,7 @@
       "sale_state": "Order status",
       "sale_invoice_number": "Invoice N°",
       "title": "My sales orders",
+      "noresult": "No sales order found",
       "table_labels": {
         "ordernum": "Order Number",
         "orderdate": "Order Date",
@@ -290,5 +291,37 @@
     "search": "Search",
     "cart": "Cart",
     "account": "Account"
+  },
+  "sale": {
+    "title": "Order #{name}",
+    "date": "Date",
+    "name": "Number",
+    "state": "Status",
+    "quantity": "Quantity {qty}",
+    "price": "Total {price}",
+    "product_link": "View product",
+    "invoicing": {
+      "address": "Invoicing address"
+    },
+    "delivery": {
+      "address": "Delivery address"
+    },
+    "amount": {
+      "total": "Total",
+      "shipping": "Shipping",
+      "untaxed": "Total untaxed",
+      "tax": "Tax"
+    },
+    "status": {
+      "cancel": "Canceled",
+      "draft": "Pending",
+      "sale": "",
+      "pending": "Pending",
+      "processing": "Processing",
+      "delivery_full": "Delivered order",
+      "delivery_partial": "Partially delivered",
+      "estimating": "Waiting for estimate",
+      "estimated": "To confirm"
+    }
   }
 }

@@ -19,7 +19,7 @@
             {{ level1.name }}
           </nuxt-link>
           <button type="button" class="btn btn-ghost btn-sm" @click="clickedIndex = clickedIndex == level1.id ? null : level1.id">
-            <icon icon="material-symbols:chevron-right" />
+            <icon name="right" />
           </button>
         </div>
         <ul

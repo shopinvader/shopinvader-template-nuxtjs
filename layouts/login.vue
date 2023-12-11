@@ -4,7 +4,7 @@
       <div class=""></div>
       <div class="login__container">
         <nuxt-link :to="localePath('/')" class="container__link">
-          <icon icon="material-symbols:arrow-back-ios" class="inline"> </icon>
+          <icon name="left" class="inline"> </icon>
           {{ $t('btn.back_to_homepage') }}
         </nuxt-link>
         <div class="container__body">

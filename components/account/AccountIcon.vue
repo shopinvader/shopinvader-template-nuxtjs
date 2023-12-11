@@ -1,7 +1,7 @@
 <template>
   <nuxt-link :to="link" class="account-link">
     <div class="account-link__icon">
-      <Icon :icon="icon" />
+      <icon :name="icon" />
     </div>
     <div class="account-link__content">{{ label }}</div>
   </nuxt-link>

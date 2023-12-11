@@ -111,7 +111,7 @@
         <slot name="actions" :address="value"></slot>
       </div>
       <button type="submit" :disabled="submitted" class="btn-primary btn">
-        <icon icon="mdi:check" class="mr-2 h-5 w-5" />
+        <icon name="check" class="mr-2 h-5 w-5" />
         {{ $t('actions.validate') }}
       </button>
     </div>
@@ -121,13 +121,9 @@
 import { type PropType, ref } from 'vue'
 import { Address } from '~/models'
 import { Country } from '#models'
-import { Icon } from '@iconify/vue'
 
 export default defineNuxtComponent({
   emits: ['saved'],
-  components: {
-    icon: Icon
-  },
   props: {
     address: {
       type: Object as PropType<Address> | null,

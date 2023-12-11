@@ -20,7 +20,7 @@
         <div
           class="flex flex-wrap items-center justify-center px-5 py-20 xl:px-10"
         >
-          <icon class="text-[20rem] text-gray-300" icon="clarity:error-line" />
+          <icon class="text-[20rem] text-gray-300" name="error" />
           <div>
             <h1 class="text-9xl text-primary">
               {{ error.statusCode }}

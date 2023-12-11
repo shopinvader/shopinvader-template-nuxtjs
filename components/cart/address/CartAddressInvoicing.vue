@@ -2,7 +2,7 @@
   <address-card class="address" :address="invoicingAddress">
     <template #header>
       <h2 class="title">
-        <icon icon="ph:receipt"></icon>
+        <icon name="billing"></icon>
         {{ $t('cart.address.billing.title') }}
       </h2>
       <div class="subtitle">
@@ -14,7 +14,7 @@
       <slot v-if="invoicingAddress" name="action" onOpen>
         <div class="cart-address-invoicing__btn">
           <button class="btn" @click="onOpen">
-            <icon icon="mdi:edit"></icon>
+            <icon name="edit"></icon>
             <span class="pl-1">{{ $t('account.address.edit') }}</span>
           </button>
         </div>
@@ -31,7 +31,7 @@
         </template>
         <template #content>
           <div v-if="hasSameAddresses" class="alert-same-address">
-            <icon icon="ph:warning"></icon>
+            <icon name="warning"></icon>
             <span>
               {{ $t('cart.address.billing.warning_same') }}
             </span>
