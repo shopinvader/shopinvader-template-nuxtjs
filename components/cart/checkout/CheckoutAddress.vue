@@ -21,7 +21,7 @@
         @click="submit"
         :disabled="loading"
       >
-        {{ $t('cart.address.continue') }}***
+        {{ $t('cart.address.continue') }}
         <icon name="right" class="text-lg"></icon>
       </button>
     </div>
