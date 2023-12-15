@@ -1,108 +1,110 @@
 <template>
   <div  v-if="auth?.type=='credentials'">
-    <slot name="head">
-      <div class="reset-heading">
-        <h2 class="reset-heading__title">
-          {{ $t('account.reset.set_new_pswd_title') }}
-        </h2>
-        <p class="reset-heading__description">
-          {{ $t('account.reset.set_new_pswd_description') }}
-        </p>
-      </div>
-    </slot>
-    <form @submit.prevent="submit">
-      <div class="reset-form">
-        <div class="reset-form__row">
-          <label class="" for="newPassword">
-            {{ $t('account.reset.new_password') }}
-          </label>
-          <div class="pswd-container">
-            <div class="pswd-container__wrapper">
-              <div class="pswd-input">
-                <input
-                  id="newPassword"
-                  v-model="newPassword"
-                  class=""
-                  required
-                  :disabled="loading"
-                  :type="newPasswordView ? 'text' : 'password'"
-                  :placeholder="newPasswordView ? '' : '*************'"
-                />
-              </div>
-              <div class="pswd-view">
-                <button type="button" @click="newPasswordView = !newPasswordView" class="btn btn-link">
-                  <icon
-                    class="view-icon"
-                    :name="newPasswordView ? 'view': 'hide'"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
+    <template v-if="!successMessage">
+      <slot name="head">
+        <div class="reset-heading">
+          <h2 class="reset-heading__title">
+            {{ $t('account.reset.set_new_pswd_title') }}
+          </h2>
+          <p class="reset-heading__description">
+            {{ $t('account.reset.set_new_pswd_description') }}
+          </p>
         </div>
-        <div class="reset-form__row">
-          <label class="" for="repeatNewPassword">
-            {{ $t('account.reset.repeat_new_password') }}
-          </label>
-          <div class="pswd-container">
-            <div class="pswd-container__wrapper">
-              <div class="pswd-input">
-                <input
-                  id="repeatNewPassword"
-                  v-model="repeatNewPassword"
-                  @keyup="checkValidity()"
-                  class=""
-                  required
-                  :disabled="loading"
-                  :type="repeatPasswordView ? 'text' : 'password'"
-                  :placeholder="repeatPasswordView ? '' : '*************'"
-                />
-              </div>
-              <div class="pswd-view">
-                <button type="button" @click="repeatPasswordView = !repeatPasswordView" class="btn btn-link">
-                  <icon
-                    class="view-icon"
-                    :name="repeatPasswordView ? 'view': 'hide'"
+      </slot>
+      <form @submit.prevent="submit">
+        <div class="reset-form">
+          <div class="reset-form__row">
+            <label class="" for="newPassword">
+              {{ $t('account.reset.new_password') }}
+            </label>
+            <div class="pswd-container">
+              <div class="pswd-container__wrapper">
+                <div class="pswd-input">
+                  <input
+                    id="newPassword"
+                    v-model="newPassword"
+                    class=""
+                    required
+                    :disabled="loading"
+                    :type="newPasswordView ? 'text' : 'password'"
+                    :placeholder="newPasswordView ? '' : '*************'"
                   />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-          <div class="reset-form__error" v-if="error.newPassword">
-            {{ error.newPassword }}
-          </div>
-          <div class="w-full p-3">
-            <div class="reset-btn">
-              <div class="reset-btn__wrapper">
-                <button type="submit" class="" :disabled="loading">
-                  <span v-if="loading" class="loading loading-spinner"></span>
-                  {{ $t('actions.validate') }}
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="w-full p-3">
-            <slot name="footer">
-              <div class="footer-success" v-if="successMessage">
-                {{ $t('account.reset.set_new_pswd_success') }}
-                <div>
-                  <nuxt-link
-                    :to="localePath('account.login')"
-                    class="btn btn-link"
-                  >
-                    {{ $t('account.reset.set_new_pswd_success_link') }}
-                    <icon name="right" />
-                  </nuxt-link>
+                </div>
+                <div class="pswd-view">
+                  <button type="button" @click="newPasswordView = !newPasswordView" class="btn btn-link">
+                    <icon
+                      class="view-icon"
+                      :name="newPasswordView ? 'view': 'hide'"
+                    />
+                  </button>
                 </div>
               </div>
-              <div class="footer-error" v-if="error.auth">
-                {{ error.auth }}
-              </div>
-            </slot>
+            </div>
           </div>
+          <div class="reset-form__row">
+            <label class="" for="repeatNewPassword">
+              {{ $t('account.reset.repeat_new_password') }}
+            </label>
+            <div class="pswd-container">
+              <div class="pswd-container__wrapper">
+                <div class="pswd-input">
+                  <input
+                    id="repeatNewPassword"
+                    v-model="repeatNewPassword"
+                    @keyup="checkValidity()"
+                    class=""
+                    required
+                    :disabled="loading"
+                    :type="repeatPasswordView ? 'text' : 'password'"
+                    :placeholder="repeatPasswordView ? '' : '*************'"
+                  />
+                </div>
+                <div class="pswd-view">
+                  <button type="button" @click="repeatPasswordView = !repeatPasswordView" class="btn btn-link">
+                    <icon
+                      class="view-icon"
+                      :name="repeatPasswordView ? 'view': 'hide'"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+            <div class="reset-form__error" v-if="error.newPassword">
+              {{ error.newPassword }}
+            </div>
+            <div class="w-full p-3">
+              <div class="reset-btn">
+                <div class="reset-btn__wrapper">
+                  <button type="submit" class="" :disabled="loading">
+                    <span v-if="loading" class="loading loading-spinner"></span>
+                    {{ $t('actions.validate') }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="w-full p-3">
+              <slot name="footer">
+                <div class="footer-error" v-if="error.auth">
+                  {{ error.auth }}
+                </div>
+              </slot>
+            </div>
+        </div>
+      </form>
+    </template>
+    <div class="reset-form__success" v-else>
+      {{ $t('account.reset.set_new_pswd_success') }}
+      <div>
+        <nuxt-link
+          :to="localePath('account')"
+          class="btn"
+        >
+          {{ $t('account.reset.set_new_pswd_success_link') }}
+          <icon name="right" />
+        </nuxt-link>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -155,7 +157,6 @@ export default defineNuxtComponent({
       }
     },
     async submit(e: Event) {
-
       const auth = this.auth
       this.loading = true
       if (this?.token && this?.newPassword) {
@@ -229,8 +230,8 @@ export default defineNuxtComponent({
       }
     }
   }
-  .footer-success {
-    @apply rounded-3xl border border-success p-4 text-center text-gray-600;
+  &__success {
+    @apply text-center text-gray-600 flex flex-col gap-4 justify-center;
   }
   .footer-error {
     @apply rounded-3xl border border-error p-4 text-center text-gray-600;
