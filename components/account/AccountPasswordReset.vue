@@ -1,53 +1,70 @@
 <template>
-  <div  v-if="auth?.type=='credentials'">
-    <slot name="head">
-      <div class="reset-heading">
-        <h2 class="reset-heading__title">
-          {{ $t('account.reset.reset_pswd') }}
-        </h2>
-        <p class="reset-heading__description">
-          {{ $t('account.reset.description') }}
-        </p>
-      </div>
-    </slot>
-    <form @submit.prevent="submit">
-      <div class="reset-form">
-        <div class="reset-form__row">
-          <label class="" for="email">{{ $t('account.address.email') }}</label>
-          <input
-            id="email"
-            v-model="login"
-            class=""
-            type="email"
-            @keyup="checkValidity('login', $event)"
-            required
-            placeholder="Enter email address"
-          />
+  <div v-if="auth?.type=='credentials'">
+    <template v-if="!successMessage">
+      <slot name="head">
+        <div class="reset-heading">
+          <h2 class="reset-heading__title">
+            {{ $t('account.reset.reset_pswd') }}
+          </h2>
+          <p class="reset-heading__description">
+            {{ $t('account.reset.description') }}
+          </p>
         </div>
-        <div class="reset-form__error" v-if="error.login">
-          {{ error.login }}
-        </div>
-        <div class="w-full p-3">
-          <div class="reset-btn">
-            <div class="reset-btn__wrapper">
-              <button type="submit" class="">
-                {{ $t('account.reset.reset_btn') }}
-              </button>
+      </slot>
+      <form @submit.prevent="submit">
+        <div class="reset-form">
+          <div class="reset-form__row">
+            <label class="" for="email">{{ $t('account.address.email') }}</label>
+            <input
+              id="email"
+              v-model="login"
+              class=""
+              type="email"
+              @keyup="checkValidity('login', $event)"
+              required
+              placeholder="Enter email address"
+            />
+          </div>
+          <div class="reset-form__error" v-if="error.login">
+            {{ error.login }}
+          </div>
+          <div class="w-full p-3">
+            <div class="reset-btn">
+              <div class="reset-btn__wrapper">
+                <button type="submit" class="">
+                  {{ $t('account.reset.reset_btn') }}
+                </button>
+              </div>
             </div>
           </div>
+          <div class="w-full p-3">
+            <slot name="footer">
+
+              <div class="footer-error" v-if="error.auth">
+                {{ error.auth }}
+              </div>
+            </slot>
+          </div>
         </div>
-        <div class="w-full p-3">
-          <slot name="footer">
-            <div class="footer-success" v-if="successMessage">
-              {{ $t('account.reset.reset_success') }}
-            </div>
-            <div class="footer-error" v-if="error.auth">
-              {{ error.auth }}
-            </div>
-          </slot>
+      </form>
+    </template>
+    <div v-else class="reset-success" v-if="successMessage">
+      <slot name="success">
+        <h2 class="reset-success__title">
+          {{ $t('account.reset.reset_pswd') }}
+        </h2>
+        {{ $t('account.reset.reset_success') }}
+        <div>
+          <nuxt-link
+            :to="localePath('account')"
+            class="btn btn-primary"
+          >
+            <icon name="left" />
+            {{ $t('btn.back') }}
+          </nuxt-link>
         </div>
-      </div>
-    </form>
+      </slot>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -99,6 +116,7 @@ export default defineNuxtComponent({
           if (resetPasswordSent) {
             this.successMessage = true
           }
+          this.login = ''
         } catch (e) {
           console.error(e)
           this.error.auth = e?.message || this.t$('error.login.unable_to_login')
@@ -142,11 +160,11 @@ export default defineNuxtComponent({
       }
     }
   }
-  .footer-success {
-    @apply rounded-3xl border border-success p-4 text-center text-gray-600;
-  }
   .footer-error {
     @apply rounded-3xl border border-error p-4 text-center text-gray-600;
   }
+}
+.reset-success {
+  @apply flex flex-col gap-4 justify-center text-gray-600;
 }
 </style>

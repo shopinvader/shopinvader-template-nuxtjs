@@ -185,6 +185,8 @@
       "reset_success": "Merci, si un compte lié à l'adresse e-mail existe, veuillez suivre les instructions envoyées par e-mail.",
       "set_new_pswd_title": "Nouveau mot de passe",
       "set_new_pswd_description": "Définissez un nouveau mot de passe pour votre compte",
+      "set_new_pswd_success": "Votre mot de passe a été réinitialisé avec succès.",
+      "set_new_pswd_success_link": "Se connecter",
       "new_password": "Nouveau mot de passe",
       "repeat_new_password": "Confirmez le mot de passe une deuxième fois"
     },

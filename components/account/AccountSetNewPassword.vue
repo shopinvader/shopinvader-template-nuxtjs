@@ -85,7 +85,16 @@
           <div class="w-full p-3">
             <slot name="footer">
               <div class="footer-success" v-if="successMessage">
-                {{ $t('account.reset.reset_success') }}
+                {{ $t('account.reset.set_new_pswd_success') }}
+                <div>
+                  <nuxt-link
+                    :to="localePath('account.login')"
+                    class="btn btn-link"
+                  >
+                    {{ $t('account.reset.set_new_pswd_success_link') }}
+                    <icon name="right" />
+                  </nuxt-link>
+                </div>
               </div>
               <div class="footer-error" v-if="error.auth">
                 {{ error.auth }}
