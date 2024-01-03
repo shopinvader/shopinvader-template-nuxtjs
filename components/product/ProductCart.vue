@@ -231,7 +231,7 @@ export default {
                   @apply text-sm p-0;
                 }
                 .value .price__value {
-                  @apply text-base font-normal text-secondary-950 p-0;
+                  @apply text-base font-normal  p-0;
                 }
               }
             }

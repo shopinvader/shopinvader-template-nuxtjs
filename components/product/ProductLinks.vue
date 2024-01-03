@@ -3,7 +3,7 @@
     <div class="product-links__head">
       <slot name="head"></slot>
     </div>
-    <div class="product-links__items">
+    <reveal-items class="product-links__items" selector=".items__product">
       <div
         v-for="product in productLinks"
         :key="product?.id || 0"
@@ -15,7 +15,7 @@
           </template>
         </product-hit>
       </div>
-    </div>
+    </reveal-items>
   </div>
 </template>
 

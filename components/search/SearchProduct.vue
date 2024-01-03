@@ -23,8 +23,8 @@
       <search-selected-filters></search-selected-filters>
     </template>
     <template #items="{ items }">
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-        <ProductHit
+      <reveal-items class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3" selector=".product-hit" :scroll="true">
+        <product-hit
           v-for="item in items"
           :key="item.id"
           :product="item"
@@ -33,8 +33,8 @@
           <template #variants>
 
           </template>
-        </ProductHit>
-      </div>
+        </product-hit>
+      </reveal-items>
     </template>
     <template #footer>
       <slot name="footer"></slot>
@@ -43,10 +43,13 @@
 </template>
 <script lang="ts">
 import { Product } from '#models'
-import ProductHit from '~/components/product/ProductHit.vue'
-import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
-import SearchBaseVue from '~~/components/search/SearchBase.vue'
-import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
+import {
+  ProductHit,
+  SearchSelectedFilters,
+  SearchBase,
+  SearchTermsAggregation,
+  RevealItems
+ } from '#components'
 import esb from 'elastic-builder'
 
 export interface SortItem {
@@ -56,10 +59,11 @@ export interface SortItem {
 }
 export default {
   components: {
-    ProductHit,
-    'search-base': SearchBaseVue,
+    'product-hit': ProductHit,
+    'search-base': SearchBase,
     'search-terms-aggregation': SearchTermsAggregation,
-    'search-selected-filters': SearchSelectedFilters
+    'search-selected-filters': SearchSelectedFilters,
+    'reveal-items': RevealItems
   },
   layout: 'default',
   props: {

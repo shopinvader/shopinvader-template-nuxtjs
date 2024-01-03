@@ -5,16 +5,19 @@
         <h2 class="border-b text-xl">{{ $t('product.history.title') }}</h2>
       </slot>
     </div>
-    <div class="product-history__list">
-      <div
-        v-for="product in products"
-        class="product-history__item"
-        :key="product.id"
-      >
-        <product-hit :product="product" :readonly="true" :inline="false">
-        </product-hit>
+    <reveal-items selector=".product-history__item">
+      <div class="product-history__list">
+
+        <div
+          v-for="product in products"
+          class="product-history__item"
+          :key="product.id"
+        >
+          <product-hit :product="product" :readonly="true" :inline="false">
+          </product-hit>
+        </div>
       </div>
-    </div>
+    </reveal-items>
     <div class="product-history__footer">
       <slot name="footer">
         <button

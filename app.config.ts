@@ -39,4 +39,7 @@ export default defineAppConfig({
       download: "material-symbols:download-for-offline-outline",
     },
   },
+  animation: {
+    reveals: false
+  }
 })
