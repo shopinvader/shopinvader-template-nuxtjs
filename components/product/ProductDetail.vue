@@ -57,7 +57,7 @@
         </div>
         <div class="content__variants">
           <!-- @slot Variants content -->
-          <slot name="variants">
+          <slot name="variants" :variant="variant" :variants="variants" :changeVariant  ="changeVariant">
             <product-variants-selector
               v-if="variant.variantCount > 5 || variants === null"
               :product="variant"
@@ -143,27 +143,28 @@
 <script lang="ts">
 import type { PropType } from 'vue'
 import { Product, ProductPrice } from '#models'
-import ProductPriceVue from '~/components/product/ProductPrice.vue'
-import ProductStock from '~/components/product/ProductStock.vue'
-import ProductVariants from '~~/components/product/ProductVariants.vue'
-import ProductVariantsSelector from '~~/components/product/ProductVariantsSelector.vue'
-
-import ProductCartVue from '~~/components/product/ProductCart.vue'
-import JsonViewer from '~/components/debug/JsonViewer.vue'
-import ProductLinksVue from './ProductLinks.vue'
-import ImageListVue from './ImageList.vue'
 import { useHistoryStore } from '~/stores/history'
-import ProductHistory from './ProductHistory.vue'
+import {
+  ProductPrice as ProductPriceVue,
+  ProductStock,
+  ProductVariants,
+  ProductVariantsSelector,
+  ProductCart,
+  DebugJsonViewer,
+  ProductLinks,
+  ProductImageList,
+  ProductHistory
+ } from '#components'
 
 export default {
   components: {
-    'image-list': ImageListVue,
-    'product-price': ProductPriceVue,
-    'json-viewer': JsonViewer,
+    'image-list': ProductImageList,
+    'product-price': ProductPrice,
+    'json-viewer': DebugJsonViewer,
     'product-variants': ProductVariants,
     'product-variants-selector': ProductVariantsSelector,
-    'product-cart': ProductCartVue,
-    'product-links': ProductLinksVue,
+    'product-cart': ProductCart,
+    'product-links': ProductLinks,
     'product-history': ProductHistory,
     'product-stock': ProductStock
   },
