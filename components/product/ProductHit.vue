@@ -118,6 +118,7 @@ export default {
       const urlKey = this.product?.urlKey || null
       const sku = this.product?.sku || null
       if(sku && urlKey) {
+        // console.log("test dora 2")
         const localePath = useLocalePath()
         return localePath({
           path: '/' + urlKey,
@@ -149,12 +150,20 @@ export default {
 
   methods: {
     linkToProduct() {
+      const $route = useRoute()
       const path = this.linkPath || null
       if(path) {
         this.$router.push({
           path,
           query: { sku: this.variant?.sku }
         })
+        if (path == $route.fullPath) {
+          // hack to force route update to rerender page without reload
+          this.$router.push({
+            path: $route.fullPath,
+            query: { sku: this.variant?.sku + '?update'}
+          })
+        }
       }
     },
     changeVariant(variant: Product) {
