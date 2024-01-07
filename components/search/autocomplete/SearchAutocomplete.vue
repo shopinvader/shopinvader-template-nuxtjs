@@ -55,11 +55,13 @@
                 </div>
               </div>
               <div class="results__products">
-                <autocomplete-products
-                  :query="searchedQuery"
-                  @set-suggestions="setSuggestions"
-                  @go-search="goSearchPage"
-                ></autocomplete-products>
+                <div @click="focusOff">
+                  <autocomplete-products
+                    :query="searchedQuery"
+                    @set-suggestions="setSuggestions"
+                    @go-search="goSearchPage"
+                  ></autocomplete-products>
+                </div>
               </div>
             </div>
           </div>
@@ -157,6 +159,9 @@ export default {
     },
     resetSearch() {
       this.query = ''
+      this.focused = false
+    },
+    focusOff() {
       this.focused = false
     }
   }
