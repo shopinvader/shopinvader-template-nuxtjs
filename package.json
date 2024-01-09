@@ -14,6 +14,9 @@
     "lint": "eslint --ext \".ts,.js,.vue\" --ignore-path .gitignore .",
     "lintfix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .gitignore ."
   },
+  "resolutions": {
+    "string-width": "4.2.3"
+  },
   "devDependencies": {
     "@nuxt/devtools": "^0.4.1",
     "@nuxtjs/google-fonts": "^3.0.2",
