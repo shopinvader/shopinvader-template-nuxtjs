@@ -55,11 +55,13 @@
                 </div>
               </div>
               <div class="results__products">
-                <autocomplete-products
-                  :query="searchedQuery"
-                  @set-suggestions="setSuggestions"
-                  @go-search="goSearchPage"
-                ></autocomplete-products>
+                <div @click="focusOff">
+                  <autocomplete-products
+                    :query="searchedQuery"
+                    @set-suggestions="setSuggestions"
+                    @go-search="goSearchPage"
+                  ></autocomplete-products>
+                </div>
               </div>
             </div>
           </div>
@@ -104,7 +106,7 @@ export default {
   watch: {
     $route: {
       handler: function (val, old) {
-        if (val?.path !== old?.path) {
+        if (val?.fullPath !== old?.fullPath) {
           const query = (val.query.q || '') as string
           this.focused = false
           this.query = query
@@ -132,6 +134,7 @@ export default {
       e?.preventDefault()
       e?.stopPropagation()
       this.goSearchPage()
+
     },
     async onKeySearch(e: KeyboardEvent) {
       this.loading = true
@@ -156,6 +159,9 @@ export default {
     },
     resetSearch() {
       this.query = ''
+      this.focused = false
+    },
+    focusOff() {
       this.focused = false
     }
   }

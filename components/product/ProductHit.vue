@@ -149,6 +149,7 @@ export default {
 
   methods: {
     linkToProduct() {
+      const $route = useRoute()
       const path = this.linkPath || null
       if(path) {
         this.$router.push({
