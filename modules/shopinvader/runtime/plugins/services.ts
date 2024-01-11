@@ -62,7 +62,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     } else {
       auth = new AuthCredentialService(erp, profile)
     }
-
+    await auth?.init()
   }
   const services = {
     products,
@@ -80,6 +80,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   services.cart.productService = services.products
   if(services?.auth && services?.cart) {
+
     /** Retrieve cart content on user login */
     auth?.onUserLoaded((user) => {
       services.cart.sync()
@@ -106,9 +107,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         const user = auth.getUser()
         const localePath = useLocalePath();
         if (!user.value) {
-          return nuxtApp.runWithContext(() =>
-            navigateTo(localePath({ path: '/account/login' }))
-          )
+          return nuxtApp.runWithContext(() => {
+            if(to.path !== '/account/login') {
+              navigateTo(localePath({ path: '/account/login' }))
+            }
+          })
         }
       }
       const routes = router.getRoutes()

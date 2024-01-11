@@ -20,14 +20,17 @@ export default defineEventHandler(async (event) => {
     })
 
     const headers:any = {
-      'Content-Type': reqHeaders?.['content-type'] || 'application/json',
+      'Content-Type': reqHeaders?.['content-type'] || 'application/json'
     }
 
     if(reqHeaders?.cookie) {
       headers['cookie'] = reqHeaders.cookie
     }
+
     if(config?.auth) {
       headers['Authorization'] = config.auth
+    } else if(reqHeaders?.authorization) {
+      headers['Authorization'] = reqHeaders.authorization
     }
 
     const response = await $fetch.raw(`${config?.url}${url}`, {
