@@ -84,16 +84,6 @@ export default defineNuxtComponent({
           title: this.$t('account.sales.title'),
           icon: 'sales',
           slug: 'account-sales'
-        },
-        {
-          title: this.$t('account.quotations'),
-          icon: 'quotations',
-          slug: 'account-quotations'
-        },
-        {
-          title: this.$t('account.invoices'),
-          icon: 'invoices',
-          slug: 'account-invoices'
         }
       ]
     }

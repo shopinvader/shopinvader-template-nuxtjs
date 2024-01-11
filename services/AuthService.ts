@@ -18,29 +18,49 @@ export abstract class AuthService extends Service {
     this.provider = provider
     this.storage = nuxtStorage?.localStorage
   }
+  abstract init(): Promise<any>
   getUser(): Ref<User | boolean | null> {
     const store = this.store()
     const { user } = storeToRefs(store)
     return user
   }
-
-  setUser(data: any) {
+  async fetchUser(): Promise<any> {
+    let user = null
+    try {
+      const data = await this.provider?.get("addresses/invoicing", [], null)
+      if(data?.length > 0) {
+        user = this.setUser(data[0])
+      }
+    } catch (e) {
+      this.setUser(null)
+    } finally {
+      return null
+    }
+  }
+  setUser(data: any): User | null {
     const store = this.store()
-    const user: User | null = data ? new User(data) : null
-    store.setUser(user)
-    this.setSession(user !== null)
-    if (user !== null) {
-      for (const callback of this.callbacksUserLoaded) {
-        if (typeof callback == 'function') {
-          callback(user)
+    if(data) {
+      const user: User | null = data ? new User(data) : null
+      store.setUser(user)
+      this.setSession(user !== null)
+      if (user !== null) {
+        for (const callback of this.callbacksUserLoaded) {
+          if (typeof callback == 'function') {
+            callback(user)
+          }
+        }
+      } else {
+        for (const callback of this.callbacksUserUnLoaded) {
+          if (typeof callback == 'function') {
+            callback(user)
+          }
         }
       }
+      return user || null
     } else {
-      for (const callback of this.callbacksUserUnLoaded) {
-        if (typeof callback == 'function') {
-          callback(user)
-        }
-      }
+      store.setUser(null)
+      this.setSession(null)
+      return null
     }
   }
   /**
