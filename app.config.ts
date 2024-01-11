@@ -4,6 +4,7 @@ export default defineAppConfig({
   nuxtIcon: {
     aliases: {
       addresses:"ph:address-book-light",
+      profile:"ph:person-light",
       sales:"ph:list-dashes",
       check: "ph:check",
       left: "ph:arrow-left",
