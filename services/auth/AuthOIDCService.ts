@@ -50,7 +50,6 @@ export class AuthOIDCService extends AuthService {
          try {
           // Process the redirect callback from the identity provider
           const data = await this.client.signinCallback()
-          console.log('signinCallback', data)
         } finally {
           // Use replaceState to redirect the user away and remove the querystring parameters
           window.history.replaceState({}, document.title, window.location.pathname);
@@ -80,7 +79,6 @@ export class AuthOIDCService extends AuthService {
     const user = this.getSession() ? await this.fetchUser() : false
     if(!user) {
       if (this.client) {
-        console.log('signinRedirect', url)
         await this.client.signinRedirect({ state: 'abcdef', redirect_uri: url })
       }
     } else {
