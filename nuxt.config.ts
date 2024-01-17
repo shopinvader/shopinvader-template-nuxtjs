@@ -70,6 +70,7 @@ export default defineNuxtConfig({
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
+    '@vueuse/motion/nuxt'
   ],
   piniaPersistedstate: {
     cookieOptions: {

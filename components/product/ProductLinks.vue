@@ -5,9 +5,10 @@
     </div>
     <div class="product-links__items">
       <div
-        v-for="product in productLinks"
+        v-for="(product, index) in productLinks"
         :key="product?.id || 0"
         class="items__product"
+        v-motion="motion(index)"
       >
         <product-hit :product="product" :inline="false">
           <template #actions>
@@ -52,8 +53,17 @@ export default defineNuxtComponent({
     if (this.ids?.length > 0) {
       this.productLinks = (await productService?.getByIds(this.ids))?.hits || []
     }
-
-
+  },
+  methods: {
+    motion(index: number) {
+      const { animations } = useAppConfig() as any
+      if(!animations) return false
+      let motion = animations?.productLinks || false
+      if(typeof motion === 'function') {
+        motion = motion(index)
+      }
+      return motion || false
+    }
   }
 })
 </script>

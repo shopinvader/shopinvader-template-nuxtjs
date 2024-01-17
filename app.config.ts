@@ -1,3 +1,5 @@
+
+
 export default defineAppConfig({
   nuxtIcon: {
     aliases: {
@@ -39,4 +41,58 @@ export default defineAppConfig({
       download: "material-symbols:download-for-offline-outline",
     },
   },
+  animations: {
+    productLinks: (index:any) => {
+      return {
+        initial:{
+          opacity: 0,
+          y: 100,
+        },
+        visibleOnce: {
+          opacity: 1,
+          y: 0,
+          transition: {
+            duration: 300,
+            type: 'spring',
+            stiffness: '50',
+            delay: index * 100,
+          },
+        }
+      }
+    },
+    searchProduct: (index:any) => {
+      return {
+        initial:{
+          opacity: 0,
+        },
+        visibleOnce: {
+          opacity: 1,
+          transition: {
+            duration: 300,
+            type: 'spring',
+            stiffness: '50',
+            delay: index * 100,
+          },
+        }
+      }
+    },
+    cartLines: (index:any) => {
+      return {
+        initial:{
+          opacity: 0,
+          y: -100,
+        },
+        visibleOnce: {
+          y: 0,
+          opacity: 1,
+          transition: {
+            duration: 100,
+            type: 'spring',
+            stiffness: '50',
+            delay: index * 200,
+          },
+        }
+      }
+    }
+  }
 })

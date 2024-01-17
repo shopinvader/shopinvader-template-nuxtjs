@@ -25,10 +25,11 @@
     <template #items="{ items }">
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
         <ProductHit
-          v-for="item in items"
+          v-for="(item, index) in items"
           :key="item.id"
           :product="item"
           :inline="false"
+          v-motion="motion(index)"
         >
           <template #variants>
 
@@ -110,6 +111,15 @@ export default {
         role = authService.getUser()?.role as string
       }
       return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
+    },
+    motion(index:number) {
+      const { animations } = useAppConfig() as any
+      if(!animations) return false
+      let motion = animations?.searchProduct || false
+      if(typeof motion === 'function') {
+        motion = motion(index)
+      }
+      return motion || false
     }
   }
 }

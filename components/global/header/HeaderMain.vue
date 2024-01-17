@@ -80,16 +80,22 @@ export default defineNuxtComponent({
   },
   methods: {
     handleScroll() {
-      this.scrolled = window.scrollY > 0
+      this.scrolled = window.scrollY > 200
     }
   }
 })
 </script>
 <style lang="scss">
 header {
-  @apply sticky top-0 z-40 border-b bg-white pb-2;
+  @apply top-0 z-40 border-b bg-white pb-2;
   &.scrolled {
-    @apply shadow-xl;
+    opacity: 0;
+    animation-name: header-slide;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    animation-delay: .5s;
+    @apply sticky shadow-xl;
     .header-navbar {
       .menu {
         @apply text-primary;
@@ -153,5 +159,16 @@ header {
   .header {
     @apply max-md:sticky max-md:-top-14 max-md:z-10 max-md:bg-white;
   }
+}
+@keyframes header-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
 }
 </style>

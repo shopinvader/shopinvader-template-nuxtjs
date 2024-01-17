@@ -1,10 +1,11 @@
 <template>
   <div class="cart-lines">
     <cart-line
-      v-for="line in lines"
+      v-for="(line, index) in lines"
       :key="line.id"
       :line="line"
       :readonly="readonly"
+      v-motion="motion(index)"
     >
     </cart-line>
   </div>
@@ -35,7 +36,17 @@ export default defineNuxtComponent({
       default: false
     }
   },
-  computed: {}
+  methods: {
+    motion(index: number) {
+      const { animations } = useAppConfig() as any
+      if(!animations) return false
+      let motion = animations?.cartLines || false
+      if(typeof motion === 'function') {
+        motion = motion(index)
+      }
+      return motion || false
+    }
+  }
 })
 </script>
 <style lang="scss">
