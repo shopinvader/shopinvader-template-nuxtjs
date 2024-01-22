@@ -127,7 +127,7 @@ export default {
 .slider-indicators {
   @apply hidden w-full justify-start gap-2 py-2 lg:flex;
   &__items {
-    @apply h-36 w-1/6 rounded bg-gray-50 cursor-pointer hover:bg-gray-200;
+    @apply h-36 rounded bg-gray-50 cursor-pointer hover:bg-gray-200;
     .items-image {
       @apply mx-auto h-36 object-fill p-2;
     }
