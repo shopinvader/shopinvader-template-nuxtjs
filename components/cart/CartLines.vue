@@ -5,7 +5,7 @@
       :key="line.id"
       :line="line"
       :readonly="readonly"
-      v-motion="motion(index)"
+      v-animate="{name: 'cartLines', index}"
     >
     </cart-line>
   </div>
@@ -36,17 +36,6 @@ export default defineNuxtComponent({
       default: false
     }
   },
-  methods: {
-    motion(index: number) {
-      const { animations } = useAppConfig() as any
-      if(!animations) return false
-      let motion = animations?.cartLines || false
-      if(typeof motion === 'function') {
-        motion = motion(index)
-      }
-      return motion || false
-    }
-  }
 })
 </script>
 <style lang="scss">
