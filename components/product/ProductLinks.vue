@@ -8,7 +8,7 @@
         v-for="(product, index) in productLinks"
         :key="product?.id || 0"
         class="items__product"
-        v-motion="motion(index)"
+        v-animate="{name: 'productLinks', index}"
       >
         <product-hit :product="product" :inline="false">
           <template #actions>
@@ -54,17 +54,6 @@ export default defineNuxtComponent({
       this.productLinks = (await productService?.getByIds(this.ids))?.hits || []
     }
   },
-  methods: {
-    motion(index: number) {
-      const { animations } = useAppConfig() as any
-      if(!animations) return false
-      let motion = animations?.productLinks || false
-      if(typeof motion === 'function') {
-        motion = motion(index)
-      }
-      return motion || false
-    }
-  }
 })
 </script>
 

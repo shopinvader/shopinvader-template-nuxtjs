@@ -21,7 +21,7 @@
     </div>
     <div class="product-detail__image">
       <!-- @slot Image content -->
-      <slot name="image" :images="variant.images || []">
+      <slot name="image" :variant="variant" :images="variant.images || []">
         <image-list :images="variant.images || []" :slider="true" />
       </slot>
     </div>
