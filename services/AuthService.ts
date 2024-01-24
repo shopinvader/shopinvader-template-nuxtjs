@@ -27,9 +27,9 @@ export abstract class AuthService extends Service {
   async fetchUser(): Promise<any> {
     let user = null
     try {
-      const data = await this.provider?.get("addresses/invoicing", [], null)
-      if(data?.length > 0) {
-        user = this.setUser(data[0])
+      const profile = await this.provider?.get("customer", [], null)
+      if(profile) {
+        user = this.setUser(profile)
       }
     } catch (e) {
       this.setUser(null)
