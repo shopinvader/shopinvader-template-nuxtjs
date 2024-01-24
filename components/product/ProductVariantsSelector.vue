@@ -18,8 +18,8 @@
                 type="button"
                 class="values__btn"
                 :class="{
-                  'values__btn--selected': value == product.variantAttributes[name],
-                  'values__btn--unselected':  value != product.variantAttributes[name]
+                  'values__btn--selected': value?.toLowerCase() == product.variantAttributes[name]?.toLowerCase(),
+                  'values__btn--unselected':  value?.toLowerCase() != product.variantAttributes[name]?.toLowerCase()
                 }"
                 @click="select(name, value)"
               >
