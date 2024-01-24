@@ -22,30 +22,32 @@ import { AuthOIDCService, AuthCredentialService } from '#services'
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
 }
-
+const isValidURL = (url: string) => {
+  try {
+    new URL(url)
+    return true
+  } catch (e) {
+    return false
+  }
+}
 export default defineNuxtPlugin(async (nuxtApp) => {
   const app = useNuxtApp()
-  const { data:configData } = await useAsyncData(
-    async () => {
-      const runtimeConfig = useRuntimeConfig()
-      let config = {
-        ...runtimeConfig?.public?.shopinvader,
-        ...runtimeConfig?.shopinvader,
-      }
-
-      if(config?.erp?.proxy) {
-        config.erp = {
-          ...runtimeConfig?.public?.shopinvader?.erp,
-          proxy: null
-        }
-      }
-      return config
-    }
-  )
-  const config = configData?.value
-  if (!config) {
-    throw new Error('No shopinvader config found')
+  const shopinvaderConfig = useRuntimeConfig()?.public?.shopinvader as ShopinvaderConfig
+  let config = {
+    ...shopinvaderConfig
   }
+  const url = config?.erp?.url || ''
+  if(!url || !isValidURL(url) ) {
+    const url = useRequestURL()
+    config = {
+      ...config,
+      erp: {
+        ...config?.erp,
+        url:  `${url.origin}/shopinvader/`
+      }
+    }
+  }
+
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
 
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
@@ -65,6 +67,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     await auth?.init()
   }
   const services = {
+    config,
     products,
     categories,
     catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
