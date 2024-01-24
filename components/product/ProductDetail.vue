@@ -190,6 +190,14 @@ export default {
       localePath
     }
   },
+  watch: {
+    product: {
+      handler: function (product: Product) {
+        this.variant = product
+      },
+      deep: true
+    }
+  },
   computed: {
     variants() {
       return this.product?.variants || null
