@@ -30,13 +30,6 @@ useHead(() => ({
       name: 'keywords',
       content: product.metaKeywords || ''
     },
-  ],
-  link: [
-    {
-      hid: 'canonical',
-      rel: 'canonical',
-      href: `${protocol}//${host}/${product.urlKey}` || ''
-    },
-  ],
+  ]
 }))
 </script>

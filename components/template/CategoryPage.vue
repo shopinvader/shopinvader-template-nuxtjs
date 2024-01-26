@@ -30,13 +30,6 @@ useHead({
       name: 'keywords',
       content: category.metaKeywords || ''
     }
-  ],
-  link: [
-    {
-      hid: 'canonical',
-      rel: 'canonical',
-      href: `${protocol}//${host}/${category.urlKey}` || ''
-    },
-  ],
+  ]
 })
 </script>
