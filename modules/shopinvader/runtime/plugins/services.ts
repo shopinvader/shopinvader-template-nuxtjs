@@ -61,7 +61,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     } else {
       auth = new AuthCredentialService(erp, profile)
     }
-
   }
   const services = {
     config,
@@ -81,9 +80,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   nuxtApp.hook('app:mounted', async (context) => {
     services.cart.productService = services.products
-    for (const key in services) {
-      if (services[key] && services[key].init) {
-        await services[key].init(services)
+    if(services) {
+      for(let service of Object.values(services)) {
+        await service?.init?.()
       }
     }
   })

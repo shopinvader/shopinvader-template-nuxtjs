@@ -24,6 +24,9 @@ export class AuthCredentialService extends AuthService {
       loginPage: localePath(config.loginPage) as string,
       logoutPage: localePath(config.logoutPage) as string
     }
+
+  }
+  async init() {
     if(this.getSession()) {
       this.profile()
     } else {
@@ -80,7 +83,7 @@ export class AuthCredentialService extends AuthService {
    * logout user
    */
   async logout(): Promise<any> {
-    this.setUser(null)
+    await this.setUser(null)
     await this.provider?.post("auth/logout", {})
   }
 

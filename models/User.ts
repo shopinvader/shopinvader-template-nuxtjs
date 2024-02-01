@@ -8,4 +8,10 @@ export class User  {
     this.login = data?.login || data?.email || null
     this.role = data?.role || 'default'
   }
+  getJSONData() {
+    return {
+      name: this.name,
+      role: this.role
+    }
+  }
 }

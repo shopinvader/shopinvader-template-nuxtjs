@@ -1,6 +1,6 @@
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
-import { ErpFetch } from '@shopinvader/fetch'
 import { AuthService } from '../AuthService'
+import type { ErpFetchObservable } from '~/modules/shopinvader'
 
 
 export interface AuthOIDCConfig {
@@ -17,13 +17,24 @@ export class AuthOIDCService extends AuthService {
   config: AuthOIDCConfig
   client: UserManager
   redirectUri: string
-  constructor(provider: ErpFetch, config: AuthOIDCConfig) {
+  constructor(provider: ErpFetchObservable, config: AuthOIDCConfig) {
+
     super(provider)
     this.config = config
+    if(!import.meta.env.SSR && provider) {
+      provider.onError((res:any) => {
+        /** Logout if get 401 API RESPONSE */
+        const user = this.getUser()?.value
+        if(user && res?.status == 401) {
+          this.logoutRedirect()
+        }
+      })
+    }
 
   }
-  async init() {
+  public async init() {
     if (!import.meta.env.SSR) {
+
       const { origin } = useRequestURL()
       this.redirectUri =  new URL(this.config.redirectUri, origin).href
       this.client = new UserManager({
@@ -43,51 +54,60 @@ export class AuthOIDCService extends AuthService {
       this.client.events.addUserLoaded(this.userLoaded)
       this.client.events.addUserUnloaded(this.userUnloaded)
       const query = window.location.search
-      const oidcUser = await this.client.getUser()
-      if(oidcUser) {
-        await this.userLoaded()
-      } else if (query.includes('code=') && query.includes('state=')) {
-         try {
-          // Process the redirect callback from the identity provider
-          const data = await this.client.signinCallback()
-        } finally {
-          // Use replaceState to redirect the user away and remove the querystring parameters
-          window.history.replaceState({}, document.title, window.location.pathname);
+
+      let oidcUser = null
+      let loginReturn = query.includes('code=') && query.includes('state=')
+
+      try {
+        if(loginReturn) {
+          oidcUser = await this.client.signinCallback()
+        } else if(this.getSession()) {
+          await this.userLoaded()
+        }
+      } finally {
+        // Use replaceState to redirect the user away and remove the querystring parameters
+        if (loginReturn) {
+          setTimeout(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }, 300)
         }
       }
+
     }
   }
   async userLoaded() {
     try {
-      const {access_token = ''} = await this.client.getUser()
+      let oidcUser = await this.client.getUser()
       const headers = {
-        Authorization: `Bearer ${access_token}`
+        Authorization: `Bearer ${oidcUser?.access_token}`
       }
       await this.provider?.post("signin", [], { headers }, '')
       const user = await this.fetchUser()
     } catch (e) {
       console.error(e)
-      await this.client.clearStaleState()
+      await this.client.signoutSilentCallback()
     }
 
   }
   async userUnloaded() {
-    await this.provider?.post("signout", [], {}, '')
+    //await this.provider?.post("signout", [], {}, '')
   }
   async loginRedirect(url?:string): Promise<any> {
-    console.log(this.getSession())
     const user = this.getSession() ? await this.fetchUser() : false
     if(!user) {
       if (this.client) {
-        await this.client.signinRedirect({ state: 'abcdef', redirect_uri: url })
+        await this.client.signinRedirect({ redirect_uri: url })
       }
     } else {
       navigateTo(this.config.redirectUri)
     }
   }
   async logoutRedirect(): Promise<any> {
-    if (this.client) {
+    const user = await this.client.getUser()
+    if (this.client && user) {
+      await this.setUser(false)
       await this.client.signoutRedirect()
     }
   }
+
 }
