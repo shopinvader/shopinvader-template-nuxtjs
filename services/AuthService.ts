@@ -34,10 +34,24 @@ export abstract class AuthService extends Service {
     } catch (e) {
       this.setUser(null)
     } finally {
-      return null
+      return user
     }
   }
-  setUser(data: any): User | null {
+  async saveUser(profile:User):Promise<User | null> {
+    let user = null
+    try {
+      const json = profile.getJSONData()
+      user = await this.provider?.post("customer", json)
+    } catch (e) {
+      console.error(e)
+      user = null
+      throw e
+    } finally {
+      user = await this.setUser(user)
+      return user
+    }
+  }
+  async setUser(data: any): Promise<User | null> {
     const store = this.store()
     if(data) {
       const user: User | null = data ? new User(data) : null
@@ -46,13 +60,13 @@ export abstract class AuthService extends Service {
       if (user !== null) {
         for (const callback of this.callbacksUserLoaded) {
           if (typeof callback == 'function') {
-            callback(user)
+            await callback(user)
           }
         }
       } else {
         for (const callback of this.callbacksUserUnLoaded) {
           if (typeof callback == 'function') {
-            callback(user)
+            await callback(user)
           }
         }
       }
