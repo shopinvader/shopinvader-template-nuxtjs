@@ -122,9 +122,11 @@
 </template>
 <script lang="ts">
 import { Address } from '#models'
-import AddressCard from '~/components/address/AddressCard.vue'
-import AddressForm from '~/components/address/AddressForm.vue'
-import AsideDrawer from '~/components/global/AsideDrawer.vue'
+import {
+  AddressCard,
+  AddressForm,
+  AsideDrawer
+} from '#components'
 export default defineNuxtComponent({
   props: {
     type: {

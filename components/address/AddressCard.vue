@@ -29,7 +29,7 @@
           <div class="badge badge-primary" v-if="address?.main">
             {{ $t('address.main.title') }}
           </div>
-          <p>{{ address?.email }}</p>
+
           <span v-if="address && address?.addressType !== 'profile'">
             <p>{{ address?.street }}</p>
             <p v-if="address?.street2">{{ address?.street2 }}</p>
@@ -40,13 +40,17 @@
               </span>
             </p>
             <div class="pt-4">
-              <p v-if="address.phone" class="flex gap-2">
+              <p v-if="address.phone" class="flex gap-1">
                 <icon name="phone" class="text-lg"></icon>
                 {{ address.phone }}
               </p>
-              <p v-if="address.mobile" class="flex gap-2">
+              <p v-if="address.mobile" class="flex gap-1">
                 <icon name="phone" class="text-lg"></icon>
                 {{ address.mobile }}
+              </p>
+              <p v-if="address.email" class="flex gap-1">
+                <icon name="email" class="text-lg"></icon>
+                {{ address.email }}
               </p>
             </div>
           </span>
