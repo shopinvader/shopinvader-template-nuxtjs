@@ -182,7 +182,8 @@ export default defineNuxtComponent({
   },
   setup(props) {
     definePageMeta({
-      auth: true
+      auth: true,
+      pageTransition: false,
     })
     const router = useRouter()
     const route = useRoute()

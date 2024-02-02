@@ -20,7 +20,8 @@ export default defineNuxtComponent({
   async setup() {
     const { t } = useI18n()
     definePageMeta({
-      auth: true
+      auth: true,
+      pageTransition: false,
     })
     useSeoMeta({
       title: t('account.address.title')

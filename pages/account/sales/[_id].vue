@@ -27,7 +27,8 @@
 <script lang="ts" setup>
   import type { Sale } from '#models';
   definePageMeta({
-    auth: true
+    auth: true,
+    pageTransition: false,
   })
   const route = useRoute()
   const error = ref<Error | null>(null)

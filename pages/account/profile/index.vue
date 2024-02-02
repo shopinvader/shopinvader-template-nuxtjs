@@ -56,7 +56,8 @@ export default defineNuxtComponent({
     const auth = useShopinvaderService('auth')
     const user = computed(() => auth?.getUser().value)
     definePageMeta({
-      auth: true
+      auth: true,
+      pageTransition: false,
     })
     useSeoMeta({
       title: t('account.profile.title')

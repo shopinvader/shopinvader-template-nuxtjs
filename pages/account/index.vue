@@ -43,7 +43,8 @@ export default defineNuxtComponent({
     const auth = useShopinvaderService('auth')
     const user = auth.getUser().value
     definePageMeta({
-      auth: true
+      auth: true,
+      pageTransition: false,
     })
     const logout = () => {
       auth.logoutRedirect()
