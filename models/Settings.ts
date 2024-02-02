@@ -14,11 +14,11 @@ export class Settings extends Model {
     super(data)
     this.countries = data?.countries?.map(
       (country: any) => new Country(country)
-    )
-    this.titles = data?.titles?.map((title: any) => new Title(title))
-    this.states = data?.states?.map((state: any) => new State(state))
+    ) || []
+    this.titles = data?.titles?.map((title: any) => new Title(title)) || []
+    this.states = data?.states?.map((state: any) => new State(state)) || []
     this.currencies = data?.currencies?.map(
       (currency: any) => new Currency(currency)
-    )
+    ) || []
   }
 }

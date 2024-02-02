@@ -17,7 +17,9 @@
     </div>
     <div class="form-control inline-block w-full">
       <label class="label required">
-        <span class="label-text">{{ $t('account.address.name') }}</span>
+        <span class="label-text">
+          {{ $t('account.address.name') }}
+        </span>
       </label>
       <input
         v-model="value.name"
@@ -29,7 +31,9 @@
     </div>
     <div class="form-control inline-block w-full">
       <label class="label required">
-        <span class="label-text">{{ $t('account.address.street') }}</span>
+        <span class="label-text">
+          {{ $t('account.address.street') }}
+        </span>
       </label>
       <input
         v-model="value.street"
@@ -97,7 +101,10 @@
     </div>
     <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs">
       <label class="label">
-        <span class="label-text">{{ $t('account.address.phone') }}</span>
+        <span class="label-text">
+          <icon name="phone" />
+          {{ $t('account.address.phone') }}
+        </span>
       </label>
       <input
         v-model="value.phone"
@@ -106,15 +113,17 @@
         class="input-bordered input w-full md:max-w-xs"
       />
     </div>
-    <div class="my-2 flex w-full items-center border-t pt-4">
-      <div class="flex-grow">
-        <slot name="actions" :address="value"></slot>
+    <slot name="footer" :address="value">
+      <div class="my-2 flex w-full items-center border-t pt-4">
+        <div class="flex-grow">
+          <slot name="actions" :address="value"></slot>
+        </div>
+        <button type="submit" :disabled="submitted" class="btn-primary btn">
+          <icon name="check" class="mr-2 h-5 w-5" />
+          {{ $t('actions.validate') }}
+        </button>
       </div>
-      <button type="submit" :disabled="submitted" class="btn-primary btn">
-        <icon name="check" class="mr-2 h-5 w-5" />
-        {{ $t('actions.validate') }}
-      </button>
-    </div>
+    </slot>
   </form>
 </template>
 <script lang="ts">

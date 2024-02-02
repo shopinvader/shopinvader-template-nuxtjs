@@ -6,9 +6,11 @@
   </account-layout>
 </template>
 <script lang="ts">
-import AddressForm from '~~/components/address/AddressForm.vue'
-import AddressList from '~~/components/address/AddressList.vue'
-import AccountLayout from '~~/components/account/AccountLayout.vue'
+import {
+  AddressForm,
+  AddressList,
+  AccountLayout
+} from '#components'
 export default defineNuxtComponent({
   name: 'PageAccountAddresses',
   components: {
