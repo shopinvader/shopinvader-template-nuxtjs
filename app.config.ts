@@ -29,6 +29,7 @@ export default defineAppConfig({
       cart: "clarity:shopping-bag-line",
       shipping: "ph:package",
       billing: "ph:receipt",
+      email:"ph:envelope",
       warning: "ph:warning",
       attention: "iconamoon:attention-circle-thin",
       down: "ph:caret-down-light",
