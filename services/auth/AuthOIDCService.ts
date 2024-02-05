@@ -17,6 +17,7 @@ export class AuthOIDCService extends AuthService {
   config: AuthOIDCConfig
   client: UserManager
   redirectUri: string
+  services: ShopinvaderServiceList
   constructor(provider: ErpFetchObservable, config: AuthOIDCConfig) {
 
     super(provider)
@@ -32,7 +33,8 @@ export class AuthOIDCService extends AuthService {
     }
 
   }
-  public async init() {
+  public async init(services:ShopinvaderServiceList) {
+    this.services = services
     if (!import.meta.env.SSR) {
 
       const { origin } = useRequestURL()
@@ -57,12 +59,11 @@ export class AuthOIDCService extends AuthService {
 
       let oidcUser = null
       let loginReturn = query.includes('code=') && query.includes('state=')
-
       try {
         if(loginReturn) {
           oidcUser = await this.client.signinCallback()
         } else if(this.getSession()) {
-          await this.userLoaded()
+          await this.fetchUser()
         }
       } finally {
         // Use replaceState to redirect the user away and remove the querystring parameters
@@ -90,7 +91,7 @@ export class AuthOIDCService extends AuthService {
 
   }
   async userUnloaded() {
-    //await this.provider?.post("signout", [], {}, '')
+      await this.provider?.post("signout", [], {}, '')
   }
   async loginRedirect(url?:string): Promise<any> {
     const user = this.getSession() ? await this.fetchUser() : false

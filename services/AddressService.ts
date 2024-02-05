@@ -2,12 +2,15 @@ import { ErpFetch } from '@shopinvader/fetch'
 import { type AddressResult, Address } from '#models'
 
 export class AddressService {
+  services: ShopinvaderServiceList| null = null
   provider: ErpFetch | null = null
   addresses: Address[] | null = null
   constructor(provider: ErpFetch) {
     this.provider = provider
   }
-
+  init(services: ShopinvaderServiceList) {
+    this.services = services
+  }
   async getAll(): Promise<Address[] | null> {
     if (this.provider == null) {
       return null
@@ -23,7 +26,7 @@ export class AddressService {
   }
   async fetchAddresses(type:string): Promise<Address[] | null> {
     const results = await this.provider?.get(`addresses/${type}`, {}, 'json') || []
-    return await results.map((item: any) => new Address({...item, type}))
+    return await results.map((item: any) => this.jsonToModel({...item, type}))
   }
   async getMainAddress(): Promise<Address | null> {
     const data = await this.provider?.get(`addresses/invoicing`, {}, 'json')
@@ -34,7 +37,7 @@ export class AddressService {
         main: true
       }
 
-      return new Address(item)
+      return this.jsonToModel(item)
     }
     return null
   }
@@ -68,7 +71,7 @@ export class AddressService {
     const data = address.getJSONData()
     const result:Address = await this.provider?.post(`addresses/${address.type}/${address.id}`, data)
     const index = this.addresses.findIndex((item: Address) => item.id === address.id)
-    this.addresses[index] = new Address({
+    this.addresses[index] = this.jsonToModel({
       ...result,
       type: address.type
     })
@@ -82,7 +85,7 @@ export class AddressService {
     const data = address.getJSONData()
     const result = await this.provider?.post(`addresses/${address.type}`, data)
 
-    this.addresses.push(new Address({
+    this.addresses.push(this.jsonToModel({
       ...result,
       type: address.type
     }))
@@ -118,5 +121,12 @@ export class AddressService {
       ].join(' ')
       return this.normalizeString(name).includes(normalizedQuery) || false
     }) || [] as Address[]
+  }
+  jsonToModel(json: any): Address {
+    const address =  new Address(json)
+    if(this.services?.settings) {
+      address.country = this.services.settings.options?.countries.find((item: any) => item.id === json.country_id)
+    }
+    return address
   }
 }

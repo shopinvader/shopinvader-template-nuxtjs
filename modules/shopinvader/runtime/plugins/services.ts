@@ -65,14 +65,15 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       auth = new AuthCredentialService(erp, profile)
     }
   }
+  const settings = new SettingService(erp)
   const services = {
     config,
     products,
     categories,
     catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
     cart: new CartService(erp, products),
-    settings: new SettingService(erp),
-    addresses: new AddressService(erp),
+    settings,
+    addresses: new AddressService(erp, settings),
     sales: new SaleService(erp, products),
     deliveryCarriers: new DeliveryCarrierService(erp),
     paymentModes: new PaymentModeService(erp),
@@ -82,7 +83,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   if(services) {
     for(let service of Object.values(services)) {
-      await service?.init?.()
+      await service?.init?.(services)
     }
   }
   services.cart.productService = services.products
