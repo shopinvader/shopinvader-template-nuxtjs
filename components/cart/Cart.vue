@@ -18,6 +18,12 @@
           <!-- @slot After lines content  -->
           <slot name="lines-footer"></slot>
         </div>
+        <div class="cart__coupon">
+          <!-- @slot Cart coupon block content  -->
+          <slot name="coupon" :cart="cart">
+            <cart-coupon></cart-coupon>
+          </slot>
+        </div>
         <div class="cart__total">
           <!-- @slot Cart total block content  -->
           <slot name="total" :cart="cart">
@@ -136,13 +142,24 @@ export default defineNuxtComponent({
     }
   }
   &__lines {
-    @apply col-span-3 lg:col-span-2;
+    @apply col-span-3 xl:col-span-2 row-span-2;
     .cart-lines {
       @apply w-full;
     }
   }
+  &__coupon {
+    @apply col-span-3 md:col-start-2 md:col-span-2 lg:col-start-3 lg:col-span-1;
+    .total {
+      &__checkout {
+        @apply w-full;
+        .checkout__btn {
+          @apply btn-secondary btn mt-6 w-full;
+        }
+      }
+    }
+  }
   &__total {
-    @apply col-span-3 lg:col-span-1;
+    @apply col-span-3 md:col-start-2 md:col-span-2 lg:col-start-3 lg:col-span-1;
     .total {
       &__checkout {
         @apply w-full;
