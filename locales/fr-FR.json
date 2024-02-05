@@ -136,6 +136,12 @@
       "intro": "Votre commande a bien été validée.",
       "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
       "link":"Voir mes commandes"
+    },
+    "coupon": {
+      "title": "Un code promo ?",
+      "apply": "Valider",
+      "error": "Code invalide ou expiré",
+      "success": "Code promo appliqué !"
     }
   },
   "account": {

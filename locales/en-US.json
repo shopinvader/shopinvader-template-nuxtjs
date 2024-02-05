@@ -134,6 +134,12 @@
       "intro": "Your order has been validated",
       "message": "You will receive an email with the details of your order. You can also find it in your account.",
       "link":"View my orders",
+    },
+    "coupon": {
+      "title": "A promo code?",
+      "apply": "Apply",
+      "error": "Invalid or expired code",
+      "success": "Promo code applied!"
     }
   },
   "payment": {

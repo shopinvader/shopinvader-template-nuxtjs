@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: ["Montserrat"],
+        heading: "Montserrat",
       },
       colors: {
         slate: colors.slate,
