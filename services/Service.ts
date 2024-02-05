@@ -32,17 +32,9 @@ export const useShopinvaderStore = defineStore('shopinvader', {
 
 export class Service {
   serviceName: string = 'Service'
-  services: Service[] = []
-  setServices(services: Service[]) {
-    this.services = services || []
-  }
-  getService(name: string): Service {
-    for(const service of this.services) {
-      if(service.serviceName == name) {
-        return service
-      }
-    }
-    return this?.services?.find() || null
+  services: ShopinvaderServiceList | null = null
+  init(services: ShopinvaderServiceList) {
+    this.services = services
   }
   store() {
     return useShopinvaderStore()
