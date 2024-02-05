@@ -88,6 +88,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     paymentModes: new PaymentModeService(erp),
     customer: new CustomerService(erp)
   }
+
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   if(services) {
     for(let service of Object.values(services)) {

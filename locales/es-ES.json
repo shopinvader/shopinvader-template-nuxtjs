@@ -138,6 +138,12 @@
       "intro": "Su pedido ha sido validado.",
       "message": "Recibirá un correo electrónico de confirmación en breve. Puede seguir el estado de su pedido en la sección \"Mi cuenta\".",
       "link": "Ver mis pedidos"
+    },
+    "coupon": {
+      "title": "¿Tienes un código promocional?",
+      "apply": "Aplicar",
+      "error": "Código inválido o expirado",
+      "success": "¡Código promocional aplicado!"
     }
   },
   "account": {

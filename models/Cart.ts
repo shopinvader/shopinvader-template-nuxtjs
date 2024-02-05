@@ -48,7 +48,7 @@ export class Cart extends Model {
     }
     this.loaded = false
     this.amount = new CartAmount(data?.amount || {})
-    this.discount = new CartDiscount(data?.discount || {})
+    this.discount = new CartDiscount(data || {})
     this.delivery = new CartDelivery({address: data?.delivery?.address} || {})
     this.invoicing = new CartInvoicing({address: data?.invoicing?.address} || {})
     this.note = data?.note

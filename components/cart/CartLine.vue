@@ -103,13 +103,13 @@
           </div>
           <div class="value">
             <div
-              v-if="line.amount.totalWithoutDiscount !== line.amount.total"
+              v-if="amount && amount.totalWithoutDiscount !== amount.total"
               class="price__original"
             >
-              {{ $filter.currency(line.amount.totalWithoutDiscount) }}
+              {{ $filter.currency(amount.totalWithoutDiscount) }}***
             </div>
             <div class="price__value">
-              {{ $filter.currency(line.amount.total) }}
+              {{ $filter.currency(amount.total) }}
             </div>
           </div>
         </slot>
@@ -126,7 +126,7 @@
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { CartLine } from '~/models'
+import { CartLineAmount, CartLine } from '~/models'
 import CartLineQtyVue from './CartLineQty.vue'
 import ProductImageVue from '../product/ProductImage.vue'
 
@@ -176,6 +176,9 @@ export default defineNuxtComponent({
     }
   },
   computed: {
+    amount(): CartLineAmount {
+      return this.line?.amount || new CartLineAmount({})
+    },
     product() {
       return this.line?.product || false
     },
