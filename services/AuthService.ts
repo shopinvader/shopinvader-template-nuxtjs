@@ -18,7 +18,7 @@ export abstract class AuthService extends Service {
     this.provider = provider
     this.storage = nuxtStorage?.localStorage
   }
-  abstract init(): Promise<any>
+  abstract init(services:ShopinvaderServiceList): Promise<any>
   getUser(): Ref<User | boolean | null> {
     const store = this.store()
     const { user } = storeToRefs(store)
