@@ -83,7 +83,7 @@
         <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select
-        v-model="countryId"
+        v-model="value.country"
         class="select-bordered select w-full max-w-xs"
         :disabled="submitted"
         required
@@ -92,8 +92,8 @@
         <option
           v-for="country of countries"
           :key="country.id"
-          :value="country.id"
-          :selected="country.id === value?.country?.id"
+          :value="country"
+
         >
           {{ country.name }}
         </option>
