@@ -1697,7 +1697,7 @@
 
 "@shopinvader/cart@https://github.com/shopinvader/shopinvader-js-cart#options":
   version "0.2.3"
-  resolved "https://github.com/shopinvader/shopinvader-js-cart#53f1e2e7e4bc5ba126eae39560353fe6f3d050c9"
+  resolved "https://github.com/shopinvader/shopinvader-js-cart#0d7f10f2e952029ce0068f9f4891aebad21590f6"
   dependencies:
     uuid "^8.3.2"
 
