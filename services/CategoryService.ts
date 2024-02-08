@@ -1,11 +1,13 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { Category, type CategoryResult } from '#models'
 import esb, { MultiMatchQuery } from 'elastic-builder'
+import { Category, type CategoryResult } from '#models'
+import { Service } from '#services'
 
-export class CategoryService {
+export class CategoryService extends Service {
   name = 'categories'
   provider: ElasticFetch | null = null
   constructor(provider: ElasticFetch) {
+    super()
     this.provider = provider
   }
   async search(body: any): Promise<CategoryResult> {

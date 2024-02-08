@@ -2,7 +2,10 @@ import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
+
 import {
+  AuthOIDCService,
+  AuthCredentialService,
   AddressService,
   AuthService,
   CartService,
@@ -14,8 +17,7 @@ import {
   ProductService,
   CategoryService,
   CatalogService
-} from '~/services'
-import { AuthOIDCService, AuthCredentialService } from '#services'
+} from '#services'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
@@ -67,14 +69,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     config,
     products,
     categories,
+    auth,
     catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
-    cart: new CartService(erp, products),
-    settings,
-    addresses: new AddressService(erp, settings),
-    sales: new SaleService(erp, products),
+    cart: new CartService(erp),
+    settings: new SettingService(erp),
+    addresses: new AddressService(erp),
+    sales: new SaleService(erp),
     deliveryCarriers: new DeliveryCarrierService(erp),
     paymentModes: new PaymentModeService(erp),
-    auth,
     customer: new CustomerService(erp)
   }
 
