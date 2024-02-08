@@ -4,9 +4,11 @@ import {
   Product,
   CartLine as CartLineModel,
   Address,
+  CouponCode,
   Sale
 } from '#models'
-import { Service, ProductService } from '#services'
+
+import { Service } from '#services'
 import { storeToRefs } from 'pinia'
 import isEqual from 'lodash.isequal'
 
@@ -18,7 +20,7 @@ class CartObserver {
   }
 
   onCartUpdated(data: any) {
-    let cartData = {}
+    let cartData:any = {}
     if(typeof data?.getData == 'function') {
       cartData = {...data.getData()}
     }
@@ -38,7 +40,7 @@ class CartObserver {
             id: line?.erpCartLine?.id,
             qty,
             product_id: productId,
-            options: line?.options || { contact_id: 1},
+            options: line?.options || {},
             hasPendingTransactions
           }
         }
@@ -53,17 +55,17 @@ class CartObserver {
 }
 
 export class CartService extends Service {
+  services: ShopinvaderServiceList | null = null
   serviceName = 'cart'
+  syncUrl:string = 'carts/sync'
   erp: any // ErpFetch
   cart: any | null
   id: number | null = null // Cart ID
   products: Product[] = []
-  productService: ProductService | null = null
   debug = false
-  constructor(erp: any, productService: ProductService) {
+  constructor(erp: any) {
     super()
     this.erp = erp
-    this.productService = productService
     this.setCart = this.setCart.bind(this)
     this.transformCart = this.transformCart.bind(this)
   }
@@ -74,16 +76,28 @@ export class CartService extends Service {
       this.cart = new Cart(
         this.erp,
         new WebStorageCartStorage(window.localStorage), {
-          syncUrl: 'carts/sync',
+          syncUrl: this.syncUrl,
           debug: true
         }
       )
       this.cart.registerObserver(observer)
       /** Get last stored cart before fetching API with syncWithRetry */
       if (window?.localStorage?.getItem('cart')) {
-        this.setCart(JSON.parse(window.localStorage.getItem('cart') || '{}'))
+        const data = JSON.parse(window.localStorage.getItem('cart') || '{}')
+        this.setCart(new CartModel(data))
         this.sync()
       }
+    }
+    if(services?.auth && services?.cart) {
+      const { auth } = services
+      /** Retrieve cart content on user login */
+      auth?.onUserLoaded((user) => {
+        services.cart.sync()
+      })
+      /** Clear cart after user logout */
+      auth?.onUserUnLoaded(() => {
+        services.cart.clear()
+      })
     }
   }
   sync() {
@@ -121,7 +135,7 @@ export class CartService extends Service {
   }
   async transformCart(cart: CartModel): Promise<CartModel> {
     /** Fetch cart product to product index */
-    if (cart?.lines?.length > 0 && this.productService !== null) {
+    if (cart?.lines?.length > 0 && this.services?.products !== null) {
       const ids: number[] =
         cart.lines
           .map((l: CartLineModel) => l.productId || 0)
@@ -131,7 +145,7 @@ export class CartService extends Service {
           ) || []
 
       if (ids.length > 0) {
-        const {hits} = (await this.productService.getByIds(ids)) || []
+        const { hits } = (await this.services?.products.getByIds(ids)) || { hits:[] }
         const products = hits.reduce((acc: any, product: Product) => {
           return [...acc, ...product.variants || []]
         }, [])
@@ -269,6 +283,20 @@ export class CartService extends Service {
   clear() {
     this.cart?.clearPendingTransactions()
     this.setCart(new CartModel({}))
+  }
 
+  /**
+   * Apply a coupon to the cart
+   * @param couponCode The coupon code to apply
+   */
+  async applyCoupon(code: string) {
+    if(!code) return null
+    const cart:any = await this.erp.post('cart/coupon', {
+      code
+    })
+
+    if (cart?.id) {
+      this.setCart(new CartModel(cart));
+    }
   }
 }

@@ -51,9 +51,13 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
 
-  const erp = providers?.erp as ErpFetch
-  const products = new ProductService(providers?.products as ElasticFetch)
-  const categories = new CategoryService(providers?.categories as ElasticFetch)
+  const {
+    erp,
+    products,
+    categories,
+    elasticsearch
+  } = providers?.erp as ErpFetch
+
   let auth: AuthService | null = null
   if (config?.auth?.type) {
     /** Auth Service */
@@ -64,13 +68,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       auth = new AuthCredentialService(erp, profile)
     }
   }
-  const settings = new SettingService(erp)
   const services = {
-    config,
-    products,
-    categories,
     auth,
-    catalog: new CatalogService(providers?.elasticsearch as ElasticFetch),
+    config,
+    products: new ProductService(products as ElasticFetch),
+    categories: new CategoryService(categories as ElasticFetch),
+    catalog: new CatalogService(elasticsearch as ElasticFetch),
     cart: new CartService(erp),
     settings: new SettingService(erp),
     addresses: new AddressService(erp),
@@ -82,24 +85,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   nuxtApp.hook('app:mounted', async (context) => {
-    services.cart.productService = services.products
     if(services) {
       for(let service of Object.values(services)) {
         await service?.init?.(services)
       }
     }
   })
-
-  if(services?.auth && services?.cart) {
-    /** Retrieve cart content on user login */
-    auth?.onUserLoaded((user) => {
-      services.cart.sync()
-    })
-    /** Clear cart after user logout */
-    auth?.onUserUnLoaded(() => {
-      services.cart.clear()
-    })
-  }
 
   return {
     provide: {
