@@ -4,18 +4,20 @@
       <slot name="head"></slot>
     </div>
     <div class="product-links__items">
-      <div
-        v-for="(product, index) in productLinks"
-        :key="product?.id || 0"
-        class="items__product"
-        v-animate="{name: 'productLinks', index}"
-      >
-        <product-hit :product="product" :inline="false">
-          <template #actions>
-            <span></span>
-          </template>
-        </product-hit>
-      </div>
+      <slot name="products" :products="productLinks">
+        <div
+          v-for="(product, index) in productLinks"
+          :key="product?.id || 0"
+          class="items__product"
+          v-animate="{name: 'productLinks', index}"
+        >
+          <product-hit :product="product" :inline="false">
+            <template #actions>
+              <span></span>
+            </template>
+          </product-hit>
+        </div>
+      </slot>
     </div>
   </div>
 </template>
