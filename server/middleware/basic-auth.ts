@@ -5,10 +5,12 @@ function mapCredentialsToBasicAuthHeaders(multipleCredentials: string): string[]
 }
 
 export default defineEventHandler((event:any) => {
-  const { basicAuth } = useRuntimeConfig();
+  const config = useRuntimeConfig() || {};
+  const basicAuth:string = config?.basicAuth || '' as string;
+  const url:string = event.node.req.url
 
   // If `basicAuth` is empty, do not prompt for authentication
-  if (!basicAuth) {
+  if (!basicAuth || url.includes('/shopinvader')) {
     return;
   }
 
@@ -16,7 +18,6 @@ export default defineEventHandler((event:any) => {
   // `user:pass` becomes `Basic dXNlcjpwYXNz`
   const validAuthHeaders = mapCredentialsToBasicAuthHeaders(basicAuth);
   const authHeader = getHeader(event, 'authorization');
-
   // If the given authentication header is valid, do not prompt for authentication
   if (authHeader && validAuthHeaders.some((validAuthHeader) => validAuthHeader === authHeader)) {
     return;
