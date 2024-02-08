@@ -1,4 +1,4 @@
-import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
+import { ElasticFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
 import { Product, Category } from '#models'
 import type { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
@@ -15,12 +15,12 @@ import {
   CartService,
   CustomerService,
   DeliveryCarrierService,
-  PaymentModeService,
   SaleService,
   SettingService,
   ProductService,
   CategoryService,
-  CatalogService
+  CatalogService,
+  PaymentService
 } from '#services'
 
 declare global {
@@ -85,7 +85,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     addresses: new AddressService(erp),
     sales: new SaleService(erp),
     deliveryCarriers: new DeliveryCarrierService(erp),
-    paymentModes: new PaymentModeService(erp),
+    payment: new PaymentService(erp),
     customer: new CustomerService(erp)
   }
 

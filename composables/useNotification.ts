@@ -9,6 +9,7 @@ const notification = defineStore('notification', {
   state: () => ({
     messages: [] as NotificationMessage[]
   }),
+
   actions: {
     addMessage(message: string, title?: string) {
       this.messages.push({
@@ -27,6 +28,10 @@ const notification = defineStore('notification', {
         type: 'error',
         title
       })
+      const index = this.messages.length - 1
+      setTimeout(() => {
+        this.messages.splice(index, 1)
+      }, 5000)
     }
   }
 })
