@@ -11,30 +11,23 @@
       <template v-if="!loading">
         <!-- @slot Payment modes list -->
         <slot name="items" :cart="cart">
-          <component
-            :is="component"
-            v-for="{ mode, component } of modes"
-            :key="mode.id"
-            class="item"
-            :payment-mode="mode"
-            @success="next"
-            @error="error = $event"
-          />
+          <template v-for="{method, component} in methods">
+            <component :is="component" :method="method" :paymentData="paymentData" />
+          </template>
         </slot>
       </template>
       <template v-else>
         <div class="checkout-payment__loading">
-          <div class="icon">
-            <span class="icon__effect"></span>
-            <span class="icon__content">
-              <icon name="svg-spinners:bars-scale-middle" />
-            </span>
-          </div>
+          <spinner></spinner>
           <div>
             {{ $t('cart.payment.loading') }}
           </div>
         </div>
       </template>
+      <div v-if="error" class="checkout-payment__error">
+        <span name="alert"></span>
+        {{ error }}
+      </div>
     </div>
     <div class="checkout-payment__total">
       <!-- @slot Total content-->
@@ -51,15 +44,15 @@
   </div>
 </template>
 <script lang="ts">
-import PaymentGeneric from '~/components/payment/PaymentGeneric.vue'
-import { PaymentMode } from '#models'
+import { PaymentGeneric } from '#components'
+import { PaymentData, PaymentMethod } from '#models'
 
-interface PaymentWithComponent extends PaymentMode {
+interface PaymentWithComponent extends PaymentMethod {
   component: any
-  mode: PaymentMode
+  method: PaymentMethod
 }
-
 const importPaymentComponent = (name: string) => {
+  name = name.charAt(0).toUpperCase() + name.slice(1)
   return defineAsyncComponent(() =>
     import(`../../payment/Payment${name}.vue`).catch(() => {
       return PaymentGeneric
@@ -80,12 +73,8 @@ export default defineNuxtComponent({
     /** Emit to go back to the previous step */
     back: () => true
   },
-  data() {
-    return {
-      loading: false,
-      modes: [] as PaymentWithComponent[],
-      error: null
-    }
+  components: {
+    'payment-generic': PaymentGeneric,
   },
   props: {
     active: {
@@ -97,44 +86,60 @@ export default defineNuxtComponent({
     next() {
       this.$emit('next')
     },
+
     back() {
       this.$emit('back')
     },
-    async fetchPaymentModes() {
-      const paymentModes = useShopinvaderService('paymentModes')
-      try {
-        this.loading = true
-        this.error = null
-        this.modes = []
-        if (paymentModes) {
-          const { modes = [] } = await paymentModes.getAll()
-          this.modes =
-            modes.map((mode: PaymentMode) => {
-              const name =
-                mode.code?.charAt(0).toUpperCase() +
-                mode.code?.slice(1).toLowerCase()
-              const component = importPaymentComponent(name)
-              return {
-                component,
-                mode
-              } as PaymentWithComponent
-            }) || []
-        }
-      } catch (e: any) {
-        this.error = e?.message || e
-      } finally {
-        this.loading = false
-      }
-    }
+
+
   },
-  async mounted() {
-    await this.fetchPaymentModes()
-  },
-  setup() {
+
+  async setup() {
+    const paymentData = ref(null) as Ref<PaymentData | null>
     const cartService = useShopinvaderService('cart')
+    const paymentService = useShopinvaderService('payment')
     const cart = cartService.getCart()
+    const router = useRouter()
+    const loading = ref(true)
+    const methods = ref([] as PaymentWithComponent[])
+    const error = ref(null)
+
+    /* Fetch API to retrieve payment method available for the current */
+    try {
+      error.value = null
+      methods.value = []
+      if(!paymentService) {
+        throw new Error('Payment service not available')
+      }
+      paymentData.value = await cartService.getPayable()
+      if(paymentData) {
+        const modes = await paymentService.getPaymentMethods(paymentData.value?.payable)
+        methods.value = modes.map((method: PaymentMethod) => {
+          const component = importPaymentComponent(method.code)
+          return {
+            method,
+            component: component || 'payment-generic'
+          }
+        })
+      }
+    } catch (e: any) {
+      console.error(e)
+      error.value = e
+    } finally {
+      loading.value = false
+    }
+
+
+
+    onMounted(async () => {
+
+    })
     return {
-      cart
+      cart,
+      paymentData,
+      methods,
+      error,
+      loading
     }
   }
 })
@@ -158,16 +163,16 @@ export default defineNuxtComponent({
     }
   }
   &__items {
-    @apply col-span-2 flex flex-col justify-start gap-2;
-    .item {
-      @apply border-t;
-    }
+    @apply col-span-full md:col-span-2 flex flex-col justify-start gap-2;
+  }
+  &__error {
+    @apply col-span-full md:col-span-1 alert alert-error;
   }
   &__total {
-    @apply col-span-1;
+    @apply col-span-full md:col-span-1;
   }
   &__footer {
-    @apply col-span-3;
+    @apply col-span-full md:col-span-3;
   }
 }
 </style>

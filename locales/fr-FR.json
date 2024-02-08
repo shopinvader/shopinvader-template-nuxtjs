@@ -355,5 +355,8 @@
       "estimating": "En attente d'estimation",
       "estimated": "À confirmer"
     }
+  },
+  "payment": {
+    "select": "Sélectionner"
   }
 }

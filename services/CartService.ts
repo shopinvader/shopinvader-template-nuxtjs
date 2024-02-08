@@ -4,8 +4,8 @@ import {
   Product,
   CartLine as CartLineModel,
   Address,
-  CouponCode,
-  Sale
+  Sale,
+  PaymentData
 } from '#models'
 
 import { Service } from '#services'
@@ -81,12 +81,24 @@ export class CartService extends Service {
         }
       )
       this.cart.registerObserver(observer)
+
       /** Get last stored cart before fetching API with syncWithRetry */
       if (window?.localStorage?.getItem('cart')) {
-        const data = JSON.parse(window.localStorage.getItem('cart') || '{}')
+        let data = JSON.parse(window.localStorage.getItem('cart') || '{}')
+
+        const urlParams = new URLSearchParams(window.location.search)
+        const status = urlParams.get('status') || null
+        const reference = urlParams.get('reference') || null
+        if(status == 'success' && reference) {
+          this.store().setLastSale(data)
+          this.cart?.clearPendingTransactions()
+          data = {}
+        }
         this.setCart(new CartModel(data))
         this.sync()
       }
+
+
     }
     if(services?.auth && services?.cart) {
       const { auth } = services
@@ -99,6 +111,7 @@ export class CartService extends Service {
         services.cart.clear()
       })
     }
+
   }
   sync() {
     this.cart?.syncWithRetry()
@@ -298,5 +311,13 @@ export class CartService extends Service {
     if (cart?.id) {
       this.setCart(new CartModel(cart));
     }
+  }
+
+  async getPayable(): Promise<PaymentData | null> {
+    const data = await this.erp.get('cart/current/payable', {})
+    if(data) {
+      return new PaymentData(data)
+    }
+    return null
   }
 }

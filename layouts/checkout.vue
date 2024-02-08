@@ -9,6 +9,7 @@
         <slot></slot>
       </client-only>
     </main>
+    <footer-main></footer-main>
     <navbar-bottom class="md:hidden"></navbar-bottom>
     <notifications-vue></notifications-vue>
   </div>
@@ -18,3 +19,13 @@
     layout: false
   })
 </script>
+<style lang="scss">
+main {
+  @apply container mx-auto flex-grow;
+}
+
+#app {
+  @apply flex min-h-screen flex-col;
+}
+</style>
+
