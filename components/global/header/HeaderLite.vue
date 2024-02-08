@@ -2,9 +2,9 @@
   <header class="header-lite">
     <div class="header-lite__content">
       <slot name="logo">
-        <nuxt-link :to="{ path: '/' }">
+        <a :href="localePath({ path: '/'}) ">
           <logo></logo>
-        </nuxt-link>
+        </a>
       </slot>
       <slot name="content"></slot>
     </div>
@@ -25,10 +25,12 @@ export default defineNuxtComponent({
     }
   },
   async setup() {
+    const localePath = useLocalePath()
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
     return {
-      cart
+      cart,
+      localePath
     }
   },
   mounted() {
