@@ -61,7 +61,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     products,
     categories,
     elasticsearch
-  } = providers?.erp as ErpFetch
+  } = providers
 
   let auth: AuthService | null = null
   if (config?.auth?.type) {
@@ -73,6 +73,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       auth = new AuthCredentialService(erp, profile)
     }
   }
+
   const services = {
     auth,
     config,
