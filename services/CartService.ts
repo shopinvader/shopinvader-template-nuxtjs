@@ -66,6 +66,9 @@ export class CartService extends Service {
     this.productService = productService
     this.setCart = this.setCart.bind(this)
     this.transformCart = this.transformCart.bind(this)
+  }
+  init(services: ShopinvaderServiceList): void {
+    super.init(services)
     if (!import.meta.env.SSR) {
       const observer = new CartObserver(this.setCart)
       this.cart = new Cart(
@@ -120,7 +123,7 @@ export class CartService extends Service {
     /** Fetch cart product to product index */
     if (cart?.lines?.length > 0 && this.productService !== null) {
       const ids: number[] =
-      cart.lines
+        cart.lines
           .map((l: CartLineModel) => l.productId || 0)
           .filter(
             (i: number | null) =>
@@ -143,6 +146,19 @@ export class CartService extends Service {
 
         if (product !== null) {
           line.product = product
+        }
+      }
+    }
+    if(this.services?.settings) {
+      const countries = await this.services?.settings?.get('countries') || []
+      if(countries?.length > 0) {
+        if(cart.delivery.address) {
+          let address = cart.delivery.address
+          cart.delivery.address.country = countries.find((c: any) => c.id === address?.country?.id) || null
+        }
+        if(cart.invoicing.address) {
+          let address = cart.delivery.address
+          cart.invoicing.address.country = countries.find((c: any) => c.id === address?.country?.id) || null
         }
       }
     }

@@ -1,17 +1,22 @@
 import { ErpFetch } from '@shopinvader/fetch'
 import { Sale } from '#models'
-import { ProductService } from "#services"
+import { Service, ProductService } from "#services"
+
 // Service to fetch Sales
-export class SaleService {
+export class SaleService extends Service {
   name = 'sales'
   provider: ErpFetch | null = null
   productService: ProductService | null = null
 
-  constructor(provider: ErpFetch, productService: ProductService) {
+  constructor(provider: ErpFetch) {
+    super()
     this.provider = provider
-    this.productService = productService
   }
 
+  init(services: ShopinvaderServiceList) {
+    super.init(services)
+    this.productService = services.products
+  }
   // BACKEND CALLS
   // =============
   /** @return models of sales with less data */

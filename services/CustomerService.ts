@@ -1,10 +1,12 @@
 import { ErpFetch } from '@shopinvader/fetch'
 import { Address } from '#models'
+import { Service } from '#services'
 
-export class CustomerService {
+export class CustomerService extends Service {
   name = 'customer'
   provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {
+    super()
     this.provider = provider
   }
 

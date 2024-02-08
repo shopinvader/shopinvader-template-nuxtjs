@@ -1,15 +1,13 @@
 import { ErpFetch } from '@shopinvader/fetch'
+import { Service } from '#services'
 import { type AddressResult, Address } from '#models'
 
-export class AddressService {
-  services: ShopinvaderServiceList| null = null
+export class AddressService extends Service {
   provider: ErpFetch | null = null
   addresses: Address[] | null = null
   constructor(provider: ErpFetch) {
+    super()
     this.provider = provider
-  }
-  init(services: ShopinvaderServiceList) {
-    this.services = services
   }
   async getAll(): Promise<Address[] | null> {
     if (this.provider == null) {

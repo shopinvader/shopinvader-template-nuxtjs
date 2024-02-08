@@ -10,6 +10,7 @@ export class ProductService extends Service {
     super()
     this.provider = provider
   }
+
   hits(hits: any[]) {
     return hits?.map((hit: any) => {
       const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
@@ -42,11 +43,13 @@ export class ProductService extends Service {
 
     return { hits, total, aggregations }
   }
+
   fullTextQuery(query: string): Query {
     return new MultiMatchQuery(['name', 'description'], query).type(
       'phrase_prefix'
     )
   }
+
   async autocompleteSearch(
     query: string,
     limit: number
@@ -65,6 +68,7 @@ export class ProductService extends Service {
     const suggestions = result?.suggest?.suggestion || []
     return { hits, total, aggregations, suggestions }
   }
+
   /**
    *
    * @param field
