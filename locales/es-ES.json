@@ -265,5 +265,8 @@
       "estimating": "Esperando presupuesto",
       "estimated": "Para confirmar"
     }
+  },
+  "payment": {
+    "select": "Seleccionar"
   }
 }

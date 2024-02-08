@@ -44,7 +44,6 @@ import {
   CategoryService,
   CustomerService,
   DeliveryCarrierService,
-  PaymentModeService,
   ProductService,
   SaleService,
   SettingService
@@ -65,6 +64,5 @@ export interface ShopinvaderServiceList {
   sales: SaleService | null
   customer: CustomerService | null
   deliveryCarriers: DeliveryCarrierService | null
-  paymentModes: PaymentModeService | null
   payment: PaymentService | null
 }

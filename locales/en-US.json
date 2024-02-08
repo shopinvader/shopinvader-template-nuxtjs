@@ -142,18 +142,6 @@
       "success": "Promo code applied!"
     }
   },
-  "payment": {
-    "manual": {
-      "title": "Wire transfer",
-      "intro": "Please wire the amount to the following bank account",
-      "cta": "Validate my order"
-    },
-    "sips": {
-      "title": "Credit card",
-      "intro": "Please enter your credit card information",
-      "cta": "Pay by credit card"
-    }
-  },
   "account": {
     "loading": "Loading...",
     "title": "My account",
@@ -329,5 +317,8 @@
       "estimating": "Waiting for estimate",
       "estimated": "To confirm"
     }
+  },
+  "payment": {
+    "select": "Select"
   }
 }

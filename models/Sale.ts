@@ -48,7 +48,7 @@ export class Sale extends Model {
         this.stateProgress = 0
         break
     }
-    this.date = data && data.date_order ? new Date(data.date_order) : null
+    this.date = data && data?.date_order ? new Date(data.date_order) : null
     this.note = data?.note
     this.invoicing = data?.invoicing ? new SaleInvoicing(data.invoicing) : []
     this.invoices = []

@@ -1771,7 +1771,7 @@
 
 "@shopinvader/cart@https://github.com/shopinvader/shopinvader-js-cart#options":
   version "0.2.3"
-  resolved "https://github.com/shopinvader/shopinvader-js-cart#0d7f10f2e952029ce0068f9f4891aebad21590f6"
+  resolved "https://github.com/shopinvader/shopinvader-js-cart#4fda0d5f8bfb334e6539130013d2da2954ded3f8"
   dependencies:
     uuid "^8.3.2"
 
@@ -1868,6 +1868,11 @@
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/merge-streams/-/merge-streams-1.0.0.tgz#9cd84cc15bc865a5ca35fcaae198eb899f7b5c90"
   integrity sha512-rUV5WyJrJLoloD4NDN1V1+LDMDWOa4OTsT4yYJwQNpTU6FWxkxHpL7eu4w+DmiH8x/EAM1otkPE1+LaspIbplw==
+
+"@stripe/stripe-js@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-3.0.0.tgz#1d0243227df0c710dfadc75927bc3b5f46383b54"
+  integrity sha512-xcuFxWP4jl3dN40+UbOr/SW7SeNrb8ZE+h5vLmKiOo0HUcW9gvz4Ny9SsfWWD2NI6CZmxi+oQw7KkZX8NmSxAA==
 
 "@tailwindcss/typography@^0.5.9":
   version "0.5.10"
