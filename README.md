@@ -51,8 +51,15 @@ Locally preview production build:
 ```bash
 yarn preview
 ```
-
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
+
+## Add App Basic Auth
+
+You can add basic auth to your app by adding the following environment variables:
+
+```bash
+NUXT_BASIC_AUTH="user1:pass1;user2:pass2"
+```
 
 ## Shopinvader Services
 
@@ -116,6 +123,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const up = () => service.up()
 </script>
 ```
+
 ## License
 
 This project is open source under the terms of the [MIT License](./LICENSE)
