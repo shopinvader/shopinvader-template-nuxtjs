@@ -68,7 +68,7 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .cart-total {
-  @apply bg-gray-100 px-6 py-10;
+  @apply card card-body bg-gray-100;
   &__title {
     @apply font-heading text-xl;
   }
