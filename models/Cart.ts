@@ -1,4 +1,5 @@
 import {
+  CartReward,
   CartLine,
   CartAmount,
   CartLinesAmount,
@@ -24,6 +25,7 @@ export class Cart extends Model {
   delivery: CartDelivery
   note: string
   orderRef: string = ''
+  promoCodes: string[] = []
   hasPendingTransactions = false
   hasSyncError = false
   syncing = false
@@ -53,6 +55,7 @@ export class Cart extends Model {
     this.invoicing = new CartInvoicing({address: data?.invoicing?.address} || {})
     this.note = data?.note
     this.orderRef = data?.client_order_ref || ''
+    this.promoCodes = data?.promo_codes || []
   }
 
   private static getLinesAmount(lines: CartLine[]): CartLinesAmount {

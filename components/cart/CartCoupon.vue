@@ -33,6 +33,9 @@
         <span v-else-if="success" class="label-text text-success">
           {{ $t('cart.coupon.success') }}
         </span>
+        <span v-if="cart?.promoCodes?.length > 0" class="label-text">
+          {{ $t('cart.coupon.applied', {codes: cart?.promoCodes.join(', ')}) }}
+        </span>
       </div>
     </label>
   </div>
@@ -44,6 +47,7 @@ const cartService = useShopinvaderService("cart")
 const couponCode = ref("")
 const success = ref(false)
 const error = ref(null) as Ref<string | null>
+const cart = cartService.getCart()
 const applyCoupon = async () => {
   error.value = null
   try {
