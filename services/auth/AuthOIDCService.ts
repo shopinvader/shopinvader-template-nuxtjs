@@ -65,6 +65,9 @@ export class AuthOIDCService extends AuthService {
         } else if(this.getSession()) {
           await this.fetchUser()
         }
+      } catch(e) {
+        await this.userUnloaded()
+        console.error(e)
       } finally {
         // Use replaceState to redirect the user away and remove the querystring parameters
         if (loginReturn) {
@@ -86,12 +89,17 @@ export class AuthOIDCService extends AuthService {
       const user = await this.fetchUser()
     } catch (e) {
       console.error(e)
+      await this.userUnloaded()
       await this.client.signoutSilentCallback()
     }
 
   }
   async userUnloaded() {
+    try {
       await this.provider?.post("signout", [], {}, '')
+    } catch (e) {
+      console.error(e)
+    }
   }
   async loginRedirect(url?:string): Promise<any> {
     const user = this.getSession() ? await this.fetchUser() : false
