@@ -1,4 +1,9 @@
 <template>
+  <code>
+    <pre>
+      {{ cart?.reward }}
+    </pre>
+  </code>
   <div v-if="cart" class="cart-total">
     <div class="cart-total__title">
       <!-- @slot Title display in the cart total -->
@@ -48,12 +53,12 @@
           {{ cart.delivery.method?.name }}
         </div>
       </div>
-      <div v-if="cart?.discount?.value > 0" class="cart-total__discount">
+      <div v-if="cart?.discount?.value != 0" class="cart-total__discount">
         <div class="label">
           {{ $t('cart.discount.title') }}
         </div>
         <div class="value">
-          {{ $filter.currency(cart?.discount?.value) }}
+          {{ $filter.currency(cart?.discount?.taxIncluded) }}
         </div>
       </div>
       <div class="cart-total__total">
@@ -103,10 +108,10 @@
   &__discount {
     @apply border-t pt-2 text-info;
     .label {
-      @apply p-0 text-lg font-bold text-gray-900;
+      @apply p-0  text-accent-600;
     }
     .value {
-      @apply text-lg text-gray-900;
+      @apply text-lg  text-accent-600;
     }
   }
   &__total {

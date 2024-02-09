@@ -62,7 +62,7 @@
           @slot Quantity selector content
           @binding {CartLine} line - cart line
         -->
-        <slot name="qty" :line="line">
+        <slot name="qty" :line="line" v-if="amount.total >= 0">
           <div class="label">
             {{ $t('cart.line.quantity') }}
             <span v-if="readonly">{{ line?.qty }}</span>
