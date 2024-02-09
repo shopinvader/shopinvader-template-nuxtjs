@@ -1,9 +1,11 @@
 <template>
-  <RobotMeta />
   <div>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
+    <RobotMeta />
+    <div>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </div>
   </div>
 </template>
 <script setup lang="ts">

@@ -30,8 +30,11 @@
           </template>
         </slot>
       </div>
-      <div class="main__content">
-        <slot name="content" :items="items"></slot>
+      <div v-if="!loading" class="main__content">
+        <slot  name="content" :items="items"></slot>
+      </div>
+      <div v-else="loading" class="main__loading">
+        <spinner/>
       </div>
     </div>
   </div>
@@ -53,15 +56,24 @@ export default defineNuxtComponent({
     }
   },
   setup() {
+    const loading = ref(false)
     const auth = useShopinvaderService('auth')
     const user = auth.getUser()
     const localePath = useLocalePath()
     const logout = () => {
-      auth.logoutRedirect()
+      loading.value = true
+      try {
+        auth.logoutRedirect()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        loading.value = false
+      }
     }
     return {
       localePath,
       logout,
+      loading,
       user
     }
   },
@@ -120,6 +132,9 @@ export default defineNuxtComponent({
       }
       &__content {
         @apply container mx-auto min-h-screen p-3;
+      }
+      &__loading {
+        @apply flex justify-center items-center min-h-36 pt-10;
       }
     }
   }
