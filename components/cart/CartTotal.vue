@@ -33,7 +33,7 @@
           {{ $filter.currency(cart.delivery.fees?.total) }}
         </div>
         <div v-if="cart.delivery.method?.name" class="mention">
-          {{ $t('cart.delivery.method.title') }}
+          <icon name="carrier" />
           {{ cart.delivery.method?.name }}
         </div>
       </div>

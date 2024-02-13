@@ -41,6 +41,7 @@ export default defineAppConfig({
       location: "ic:sharp-location-on",
       menu: "solar:hamburger-menu-outline",
       download: "material-symbols:download-for-offline-outline",
+      carrier: "solar:box-line-duotone",
     },
   },
   animations: {
