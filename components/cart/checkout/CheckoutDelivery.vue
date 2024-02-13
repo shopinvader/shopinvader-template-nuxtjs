@@ -49,7 +49,7 @@
         <slot name="total" :error="error">
           <cart-total></cart-total>
           <div
-            v-if="!selectedCarrier"
+            v-if="!loading && !selectedCarrier"
             class="flex items-center gap-2 font-bold"
           >
             <icon name="info" />
@@ -58,9 +58,6 @@
           <button
             type="button"
             class="btn-secondary btn-block btn"
-            :class="{
-              loading: loading
-            }"
             @click="next"
             :disabled="!selectedCarrier || loading"
           >
@@ -79,7 +76,7 @@
     <div v-else class="checkout-delivery__summary">
       <div class="method">
         <div class="method__icon">
-          <icon name="solar:box-line-duotone" />
+          <icon name="carrier" />
         </div>
         <div class="method__title">
           {{ $t('cart.delivery.method.title') }} :
@@ -168,9 +165,9 @@ export default defineNuxtComponent({
         this.loading = true
         this.error = null
         this.carriers = []
-        if (carrierService) {
-          const { carriers = [] } = await carrierService.getAll()
-
+        if (carrierService && cart?.value) {
+          const carriers = await carrierService.getAll(cart?.value?.uuid) || []
+          console.log('carriers', carriers)
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
               const name =
@@ -185,9 +182,10 @@ export default defineNuxtComponent({
         }
 
         const selectedCarrier = cart?.value?.delivery?.method || null
+        console.log('selectedCarrier', selectedCarrier)
         if (selectedCarrier) {
           this.selectedCarrier =
-            this.carriers?.find((carrier) => carrier.id == selectedCarrier.id)
+            this.carriers?.find(({carrier}) => carrier.id == selectedCarrier.id)
               ?.carrier || null
         }
       } catch (e: any) {

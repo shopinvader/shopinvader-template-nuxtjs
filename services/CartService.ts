@@ -259,17 +259,17 @@ export class CartService extends Service {
   async setDeliveryCarrier(carrierId: number) {
     const cart = this.getCart()?.value || null
     if (!cart?.uuid) return Promise.reject('No cart uuid')
-    const data: any = await this.erp.post('/cart/set_delivery_method', {
-      method_id: carrierId,
-      uuid: cart.uuid
+    const data: any = await this.erp.post('cart/current/set_carrier', {
+      carrier_id: carrierId
     })
     if (data?.id) {
-      this.setCart(new CartModel(cart))
+      console.log('CartModel', data?.delivery)
+      this.setCart(new CartModel(data))
     }
   }
 
   async update(cart: CartModel) {
-    const data: any = await this.erp.post('carts/update', {
+    const data: any = await this.erp.post('cart/current/update', {
       client_order_ref: cart.orderRef || '',
       delivery: {
         address_id: cart?.delivery?.address?.id || null
@@ -304,7 +304,7 @@ export class CartService extends Service {
    */
   async applyCoupon(code: string) {
     if(!code) return null
-    const cart:any = await this.erp.post('cart/coupon', {
+    const cart:any = await this.erp.post('cart/current/coupon', {
       code
     })
 

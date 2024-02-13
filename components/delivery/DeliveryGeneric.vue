@@ -18,8 +18,14 @@
       </div>
     </div>
     <div class="method__price">
-      {{ $filter.currency(deliveryCarrier.price) }}
+      <template v-if="deliveryCarrier?.price > 0">
+        {{ $filter.currency(deliveryCarrier.price) }}
+      </template>
+      <template v-else>
+        {{ $t('cart.delivery.method.free') }}
+      </template>
     </div>
+
   </div>
 </template>
 <script lang="ts">
@@ -62,7 +68,7 @@ export default {
     }
   }
   &__price {
-    @apply flex  justify-end font-bold text-primary;
+    @apply flex text-right justify-end font-bold text-primary;
   }
 }
 </style>

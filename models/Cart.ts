@@ -1,5 +1,4 @@
 import {
-  CartReward,
   CartLine,
   CartAmount,
   CartLinesAmount,
@@ -30,6 +29,7 @@ export class Cart extends Model {
   hasSyncError = false
   syncing = false
   syncError = false
+
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
     super(data)
@@ -43,15 +43,19 @@ export class Cart extends Model {
     }
     this.lines = lines
     this.linesCount = Cart.getLinesCount(lines)
-    if(data?.amount_without_delivery) {
-      this.linesAmount = new CartLinesAmount(data?.amount_without_delivery || {})
+    if(data?.amount?.total_without_shipping_without_discount) {
+      this.linesAmount = new CartLinesAmount({
+        total: data?.amount?.total_without_shipping_without_discount,
+        untaxed: data?.amount?.untaxed_without_shipping,
+        tax: data?.amount?.tax_without_shipping
+      })
     } else {
       this.linesAmount = Cart.getLinesAmount(lines)
     }
     this.loaded = false
     this.amount = new CartAmount(data?.amount || {})
     this.discount = new CartDiscount(data || {})
-    this.delivery = new CartDelivery({address: data?.delivery?.address} || {})
+    this.delivery = new CartDelivery(data?.delivery || {})
     this.invoicing = new CartInvoicing({address: data?.invoicing?.address} || {})
     this.note = data?.note
     this.orderRef = data?.client_order_ref || ''
