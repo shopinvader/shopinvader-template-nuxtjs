@@ -111,6 +111,7 @@
         "intro": "Sélectionnez une méthode de livraison",
         "select": "Sélectionner",
         "continue": "Continuer",
+        "free": "Livraison gratuite",
         "no-method": "Aucune méthode de livraison Sélectionnée"
       }
     },
