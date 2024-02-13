@@ -6,7 +6,7 @@ export class User  {
   constructor(data: any) {
     this.name = data?.name || null
     this.login = data?.login || data?.email || null
-    this.role = data?.role || 'default'
+    this.role = data?.role || data?.pricelist_id || 'default'
   }
   getJSONData() {
     return {
