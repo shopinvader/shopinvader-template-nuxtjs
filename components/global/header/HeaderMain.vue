@@ -1,11 +1,15 @@
 <template>
   <header :class="{ scrolled: scrolled }">
+
     <aside-menu
       name="header"
       class="header"
       class-content="header-navbar"
       :sideMenu="scrolled"
     >
+      <template #top>
+        <slot name="top"></slot>
+      </template>
       <template #button>
         <div class="menu">
           <icon
@@ -22,6 +26,7 @@
           <logo></logo>
         </nuxt-link>
       </template>
+
       <template #content>
         <slot name="content">
           <div class="content__search">
