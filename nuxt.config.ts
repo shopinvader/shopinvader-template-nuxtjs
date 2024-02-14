@@ -9,7 +9,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
-  css: [join(dir, './assets/css/main.scss')],
+  css: ["~/assets/css/main.scss"],
   runtimeConfig: {
     basicAuth: process.env.NUXT_BASIC_AUTH || "",
     shopinvader: {

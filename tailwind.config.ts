@@ -6,9 +6,6 @@ export default {
   plugins: [daisyui],
   theme: {
     extend: {
-      fontFamily: {
-        heading: "Josefin Sans",
-      },
       colors: {
         slate: colors.slate,
         base: colors.neutral,
