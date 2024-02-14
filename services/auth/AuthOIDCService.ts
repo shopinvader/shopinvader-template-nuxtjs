@@ -108,7 +108,7 @@ export class AuthOIDCService extends AuthService {
         await this.client.signinRedirect({ redirect_uri: url })
       }
     } else {
-      navigateTo(this.config.redirectUri)
+      navigateTo(url)
     }
   }
   async logoutRedirect(): Promise<any> {
