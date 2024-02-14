@@ -2,6 +2,7 @@
   <div class="aside-menu drawer" :class="{ 'side-menu': sideMenu }">
     <input :id="name" type="checkbox" class="drawer-toggle" v-model="isOpen" />
     <div class="drawer-content flex flex-col">
+      <slot name="top"></slot>
       <div class="content" :class="classContent">
         <div class="content__button">
           <label :for="name" class="btn-ghost btn-square btn">
