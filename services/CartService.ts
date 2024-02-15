@@ -263,7 +263,6 @@ export class CartService extends Service {
       carrier_id: carrierId
     })
     if (data?.id) {
-      console.log('CartModel', data?.delivery)
       this.setCart(new CartModel(data))
     }
   }

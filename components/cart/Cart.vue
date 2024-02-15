@@ -132,6 +132,7 @@ export default defineNuxtComponent({
 <style lang="scss">
 .cart {
   @apply grid h-full grid-cols-3 gap-4 py-5;
+  grid-template-rows: auto auto 1fr;
   &__loading {
     @apply col-span-3 flex h-64 items-center justify-center;
   }

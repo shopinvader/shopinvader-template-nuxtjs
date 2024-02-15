@@ -1,9 +1,4 @@
 <template>
-  <code>
-    <pre>
-      {{ cart?.reward }}
-    </pre>
-  </code>
   <div v-if="cart" class="cart-total">
     <div class="cart-total__title">
       <!-- @slot Title display in the cart total -->
