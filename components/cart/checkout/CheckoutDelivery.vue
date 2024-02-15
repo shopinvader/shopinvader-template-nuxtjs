@@ -167,7 +167,6 @@ export default defineNuxtComponent({
         this.carriers = []
         if (carrierService && cart?.value) {
           const carriers = await carrierService.getAll(cart?.value?.uuid) || []
-          console.log('carriers', carriers)
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
               const name =
@@ -182,7 +181,6 @@ export default defineNuxtComponent({
         }
 
         const selectedCarrier = cart?.value?.delivery?.method || null
-        console.log('selectedCarrier', selectedCarrier)
         if (selectedCarrier) {
           this.selectedCarrier =
             this.carriers?.find(({carrier}) => carrier.id == selectedCarrier.id)

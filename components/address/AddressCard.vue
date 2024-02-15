@@ -90,7 +90,7 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .address-card {
-  @apply card card-body;
+  @apply card card-body card-bordered;
 
   &__header {
     @apply flex items-center justify-between gap-4 text-2xl font-bold;
