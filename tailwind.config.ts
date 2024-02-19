@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-const colors = require("tailwindcss/colors")
+
 import daisyui from 'daisyui'
 export default {
   content: [],
