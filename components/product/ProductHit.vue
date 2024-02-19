@@ -51,11 +51,11 @@
           </slot>
         </div>
         <div class="body__price">
-          <product-price v-if="price !== null" :price="price">
-            <template #price>
-              <slot name="price" :price="price"></slot>
-            </template>
-          </product-price>
+          <slot name="price" :price="price">
+            <product-price v-if="price !== null" :price="price">
+
+            </product-price>
+          </slot>
         </div>
 
         <div v-if="!readonly" class="body__actions">
