@@ -2,7 +2,7 @@
   <div v-if="variant !== null" class="product-detail">
     <div class="product-detail__header">
       <!-- @slot Breadcrumbs content -->
-      <slot name="breadcrumbs">
+      <slot name="breadcrumbs" :variant="variant">
         <div class="breadcrumbs text-sm">
           <ul>
             <li v-for="category in variant.categories" :key="category.id">
@@ -15,13 +15,13 @@
       </slot>
     </div>
     <div class="product-detail__tag">
-      <slot name="tags">
+      <slot name="tags" :variant="variant">
         <product-tags v-if="variant" :product="variant" />
       </slot>
     </div>
     <div class="product-detail__image">
       <!-- @slot Image content -->
-      <slot name="image">
+      <slot name="image" :images="variant.images || []">
         <image-list :images="variant.images || []" :slider="true" />
       </slot>
     </div>
@@ -29,7 +29,7 @@
       <div class="content">
         <div class="content__header">
           <!-- @slot Header content -->
-          <slot name="header">
+          <slot name="header" :variant="variant">
             <div class="header">
               <h1 class="header__title">
                 {{ variant?.model?.name || variant?.name }}
@@ -42,7 +42,7 @@
         </div>
         <div class="content__ref">
           <!-- @slot Ref content -->
-          <slot name="ref">
+          <slot name="ref" :variant="variant">
             {{ variant.sku }}
           </slot>
         </div>
@@ -57,7 +57,7 @@
         </div>
         <div class="content__variants">
           <!-- @slot Variants content -->
-          <slot name="variants">
+          <slot name="variants" :variant="variant" variants="variants" :change-variant="changeVariant">
             <product-variants-selector
               v-if="variant.variantCount > 5 || variants === null"
               :product="variant"
@@ -73,7 +73,7 @@
         </div>
         <div class="content__stock">
           <!-- @slot Sxtock content -->
-          <slot name="stock">
+          <slot name="stock" :variant="variant">
             <product-stock v-if="variant.stock !== null" :stock="variant.stock">
             </product-stock>
           </slot>
@@ -116,7 +116,7 @@
     </div>
     <div class="product-detail__links">
       <!-- @slot Links content -->
-      <slot name="links">
+      <slot name="links" :variant="variant">
         <product-links v-if="variant" :links="variant.links?.crossLink || []">
           <template #head>
             <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
@@ -131,7 +131,7 @@
     </div>
     <div class="product-detail__history">
       <!-- @slot History content -->
-      <slot name="history">
+      <slot name="history" :variant="variant">
         <client-only>
           <product-history :excluded-id="ids"></product-history>
         </client-only>
