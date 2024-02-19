@@ -79,6 +79,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   }
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   services.cart.productService = services.products
+  for (const key in services) {
+    if (services[key] && services[key].init) {
+      await services[key].init(services)
+    }
+  }
   if(services?.auth && services?.cart) {
     /** Retrieve cart content on user login */
     auth?.onUserLoaded((user) => {
