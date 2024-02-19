@@ -108,7 +108,17 @@ export class AuthOIDCService extends AuthService {
         await this.client.signinRedirect({ redirect_uri: url })
       }
     } else {
-      navigateTo(url)
+      let options = {external: true}
+      try {
+        const { host, protocol } = useRequestURL()
+        const domaine = `${protocol}//${host}`
+        if(url?.includes(domaine)) {
+          options = {external: false}
+          url = url.replace(domaine, '')
+        }
+      } finally {
+        navigateTo(url, options)
+      }
     }
   }
   async logoutRedirect(): Promise<any> {
