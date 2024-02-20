@@ -121,8 +121,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         }
       }
       const routes = router.getRoutes()
+
       if (!routes.some((route) => route.path === to.path)) {
-        const path: string = to.params?.slug?.join('/') || to.path.substr(1)
+        const path: string = to.params?.handle?.join('/') || to.path.substr(1)
         const { data } = await useAsyncData('entity', async () => {
           if(storedRoutes?.[path]) {
             return storedRoutes[path]
