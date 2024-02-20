@@ -339,7 +339,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .checkout {
-  @apply p-4 md:p-0;
+  @apply p-4;
   &__header {
     @apply hidden w-full pt-6 md:block;
     .checkout-stepper {

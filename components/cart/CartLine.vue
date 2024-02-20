@@ -252,15 +252,18 @@ export default defineNuxtComponent({
       &__qty {
         @apply col-span-3 flex flex-col text-sm sm:col-span-2  md:col-span-1 md:row-span-2;
         .cart-line-qty {
-          @apply h-10 w-32 p-0;
-          .input-group {
-            @apply h-full items-center;
-            .cartline-qty {
-              &__btn {
-                @apply h-full w-8 text-base;
-              }
-              &__input {
-                @apply h-full  text-center text-base font-normal;
+          @apply h-10 w-full p-0;
+          .input-qty {
+            @apply max-w-full;
+            .input-group {
+              @apply h-full items-center;
+              .cartline-qty {
+                &__btn {
+                  @apply h-full w-8 text-base;
+                }
+                &__input {
+                  @apply h-full  text-center text-base font-normal;
+                }
               }
             }
           }
