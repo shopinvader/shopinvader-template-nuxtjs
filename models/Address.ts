@@ -70,8 +70,8 @@ export class Address extends Model {
       zip: this.zip || '',
       city: this.city || '',
       phone: this.phone || '',
-      email: this.email
-
+      email: this.email,
+      vat: this.vat || '',
     }
     if(this.country?.id) {
       data = {
