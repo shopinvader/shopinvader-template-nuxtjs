@@ -68,17 +68,16 @@
       <div class="cart-confirmation__footer">
         <slot name="addedtocart-footer" :line="line">
           <button
-            :to="localePath('cart')"
             type="button"
             class="btn-back"
             @click="closeDrawer"
           >
             {{ $t('cart.continue') }}
           </button>
-          <nuxt-link :to="localePath('cart')" class="btn-checkout">
+          <button @click="gotToCart" class="btn-checkout">
             <icon name="cart"></icon>
             {{ $t('cart.checkout') }}
-          </nuxt-link>
+          </button>
         </slot>
       </div>
     </template>
@@ -163,6 +162,12 @@ export default {
         if (!this.line) {
         }
       }
+    },
+    gotToCart() {
+      this.closeDrawer()
+      const router = useRouter()
+      const localePath = useLocalePath()
+      router.push(localePath('cart'))
     },
     closeDrawer(): void {
       this.cartDrowerOpened = false
