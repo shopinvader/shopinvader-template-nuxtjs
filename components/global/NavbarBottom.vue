@@ -20,10 +20,10 @@
           </div>
         </nuxt-link>
         <div class="iconlink">
-          <cart-icon class="cart-icon"></cart-icon>
+          <lazy-cart-icon class="cart-icon"></lazy-cart-icon>
         </div>
         <div class="iconlink">
-          <header-user class="user-icon"></header-user>
+          <lazy-header-user class="user-icon"></lazy-header-user>
         </div>
       </div>
     </slot>
@@ -31,15 +31,8 @@
   </div>
 </template>
 <script lang="ts">
-import CartIconVue from '~/components/cart/CartIcon.vue'
-import HeaderUser from '~/components/global/header/HeaderUser.vue'
-
 export default {
-  name: 'NavbarBottom',
-  components: {
-    'cart-icon': CartIconVue,
-    'header-user': HeaderUser
-  }
+  name: 'NavbarBottom'
 }
 </script>
 <style lang="scss">
