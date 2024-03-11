@@ -78,12 +78,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     customer: new CustomerService(erp)
   }
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
-  services.cart.productService = services.products
-  for (const key in services) {
-    if (services[key] && services[key].init) {
-      await services[key].init(services)
+  nuxtApp.hook('app:mounted', async (context) => {
+    services.cart.productService = services.products
+    for (const key in services) {
+      if (services[key] && services[key].init) {
+        await services[key].init(services)
+      }
     }
-  }
+  })
   if(services?.auth && services?.cart) {
     /** Retrieve cart content on user login */
     auth?.onUserLoaded((user) => {

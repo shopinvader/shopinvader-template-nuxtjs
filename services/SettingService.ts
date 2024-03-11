@@ -15,10 +15,16 @@ export class SettingService {
   }
 
   async getAll(): Promise<Settings | null> {
+    let data = {}
     if (this.provider == null) {
       throw new Error('No provider found for products')
     }
-    const data = await this.provider?.get('settings/all', [], null)
-    return new Settings(data)
+    try {
+      data = await this.provider?.get('settings/all', [], null) || {}
+    } catch (e) {
+      console.error('Error while fetching settings', e)
+    } finally {
+      return new Settings(data)
+    }
   }
 }
