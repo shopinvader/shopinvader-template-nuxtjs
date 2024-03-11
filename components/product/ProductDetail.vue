@@ -22,7 +22,7 @@
     <div class="product-detail__image">
       <!-- @slot Image content -->
       <slot name="image" :images="variant.images || []"  :variant="variant">
-        <image-list :images="variant.images || []" :slider="true" />
+        <product-image-list :images="variant.images || []" :slider="true" />
       </slot>
     </div>
     <div class="product-detail__content">
@@ -74,15 +74,15 @@
         <div class="content__stock">
           <!-- @slot Sxtock content -->
           <slot name="stock" :variant="variant">
-            <product-stock v-if="variant.stock !== null" :stock="variant.stock">
-            </product-stock>
+            <lazy-product-stock v-if="variant.stock !== null" :stock="variant.stock">
+            </lazy-product-stock>
           </slot>
         </div>
         <div class="content__price">
           <!-- @slot Price content -->
           <slot name="price" :variant="variant">
             <client-only>
-              <product-price
+              <lazy-product-price
                 v-if="price !== null"
                 :price="price"
                 class="py-4 text-right"
@@ -90,7 +90,7 @@
                 <template #price>
                   <slot name="price" :price="price" ></slot>
                 </template>
-              </product-price>
+              </lazy-product-price>
             </client-only>
           </slot>
           <!-- @slot Price content -->
@@ -133,40 +133,19 @@
       <!-- @slot History content -->
       <slot name="history" :variant="variant">
         <client-only>
-          <product-history :excluded-id="ids"></product-history>
+          <lazy-product-history :excluded-id="ids"></lazy-product-history>
         </client-only>
       </slot>
     </div>
   </div>
-  <json-viewer :data="variant"></json-viewer>
+  <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
 import { Product, ProductPrice } from '#models'
-import ProductPriceVue from '~/components/product/ProductPrice.vue'
-import ProductStock from '~/components/product/ProductStock.vue'
-import ProductVariants from '~~/components/product/ProductVariants.vue'
-import ProductVariantsSelector from '~~/components/product/ProductVariantsSelector.vue'
-
-import ProductCartVue from '~~/components/product/ProductCart.vue'
-import JsonViewer from '~/components/debug/JsonViewer.vue'
-import ProductLinksVue from './ProductLinks.vue'
-import ImageListVue from './ImageList.vue'
 import { useHistoryStore } from '~/stores/history'
-import ProductHistory from './ProductHistory.vue'
 
 export default {
-  components: {
-    'image-list': ImageListVue,
-    'product-price': ProductPriceVue,
-    'json-viewer': JsonViewer,
-    'product-variants': ProductVariants,
-    'product-variants-selector': ProductVariantsSelector,
-    'product-cart': ProductCartVue,
-    'product-links': ProductLinksVue,
-    'product-history': ProductHistory,
-    'product-stock': ProductStock
-  },
   props: {
     product: {
       type: Object as PropType<Product>,

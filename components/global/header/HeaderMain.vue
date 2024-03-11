@@ -28,9 +28,9 @@
             <search-autocomplete></search-autocomplete>
           </div>
           <div class="content__icons">
-            <cart-icon></cart-icon>
-            <header-user></header-user>
-            <local-switcher></local-switcher>
+            <lazy-cart-icon />
+            <lazy-header-user />
+            <lazy-local-switcher />
           </div>
         </slot>
       </template>
@@ -43,24 +43,8 @@
   </header>
 </template>
 <script lang="ts">
-import Logo from '~/components/global/Logo.vue'
-import HeaderNavVue from '~/components/global/header/HeaderNav.vue'
-import HeaderUser from '~/components/global/header/HeaderUser.vue'
-import LocalSwitcher from '~/components/global/LocalSwitcher.vue'
-import CartIconVue from '~/components/cart/CartIcon.vue'
-import AsideMenu from '~/components/global/AsideMenu.vue'
-import SearchAutocomplete from '~/components/search/autocomplete/SearchAutocomplete.vue'
 export default defineNuxtComponent({
   name: 'GlobalHeader',
-  components: {
-    'local-switcher': LocalSwitcher,
-    'header-nav': HeaderNavVue,
-    'aside-menu': AsideMenu,
-    'cart-icon': CartIconVue,
-    'header-user': HeaderUser,
-    'search-autocomplete': SearchAutocomplete,
-    logo: Logo
-  },
   data() {
     return {
       scrolled: false
