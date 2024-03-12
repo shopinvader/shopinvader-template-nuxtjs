@@ -48,7 +48,7 @@ export default defineAppConfig({
           opacity: 0,
           y: 100,
         },
-        visibleOnce: {
+        enter: {
           opacity: 1,
           y: 0,
           transition: {
@@ -65,7 +65,7 @@ export default defineAppConfig({
         initial:{
           opacity: 0,
         },
-        visibleOnce: {
+        enter: {
           opacity: 1,
           transition: {
             duration: 300,
@@ -82,7 +82,7 @@ export default defineAppConfig({
           opacity: 0,
           y: -100,
         },
-        visibleOnce: {
+        enter: {
           y: 0,
           opacity: 1,
           transition: {
