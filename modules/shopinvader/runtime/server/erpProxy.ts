@@ -1,5 +1,9 @@
 import { createError, proxyRequest } from 'h3';
-
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 export default defineEventHandler(async (event) => {
 
   const runtimeConfig = useRuntimeConfig()?.shopinvader || {}
@@ -22,6 +26,7 @@ export default defineEventHandler(async (event) => {
     if(config?.auth) {
       headers['Authorization'] = config.auth
     }
+    await sleep(1000)
     return await proxyRequest(event, `${config?.url}${url}`, {
       headers,
     })
