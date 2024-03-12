@@ -121,19 +121,8 @@ const selectVariant = async (name:string, value:any) => {
   changeVariant(value)
 }
 
-// watch(() => props.product, async (p) => {
-//   console.log('props.product', p)
-//   for(let [key, value] of Object.entries(p.variantAttributes)) {
-//     if(selectValues.value?.[key] !== value) {
-//       selectValues.value = {...p.variantAttributes}
-//       continue
-//     }
-//   }
-// })
-
 try {
-  console.log('---------------------------')
-  console.log('props.product', props.product)
+
   const productService = useShopinvaderService('products')
   if(props.product && props.product?.urlKey) {
     const { urlKey, variantAttributes } = props.product

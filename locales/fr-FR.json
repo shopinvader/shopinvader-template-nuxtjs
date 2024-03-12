@@ -253,6 +253,7 @@
     "update": "Actualiser",
     "create": "Créer " ,
     "validate": "Valider",
+    "delete": "Supprimer",
     "close": "Fermer"
   },
   "address": {

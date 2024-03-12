@@ -30,37 +30,20 @@
     </account-layout>
   </div>
 </template>
-<script lang="ts">
-import AccountLayout from '~/components/account/AccountLayout.vue'
-export default defineNuxtComponent({
-  name: 'account',
-  components: {
-    'account-layout': AccountLayout
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const { t } = useI18n()
-    const auth = useShopinvaderService('auth')
-    const user = auth.getUser().value
-    definePageMeta({
-      auth: true,
-      pageTransition: false,
-    })
-    const logout = () => {
-      auth.logoutRedirect()
-    }
-    useSeoMeta({
-      title: t(`account.title`)
-    })
-    return {
-      localePath,
-      logout,
-      user
-    }
-  },
-  meta: {
-    title: 'Account'
-  }
+<script lang="ts" setup>
+const localePath = useLocalePath()
+const { t } = useI18n()
+const auth = useShopinvaderService('auth')
+const user = auth.getUser().value
+definePageMeta({
+  auth: true,
+  pageTransition: false,
+})
+const logout = () => {
+  auth.logoutRedirect()
+}
+useSeoMeta({
+  title: t(`account.title`)
 })
 </script>
 

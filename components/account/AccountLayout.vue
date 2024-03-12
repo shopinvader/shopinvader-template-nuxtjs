@@ -50,7 +50,7 @@ export default defineNuxtComponent({
     },
     navbar: {
       required: false,
-      type: Array,
+      type: Boolean,
       default: true
     }
   },
