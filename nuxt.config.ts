@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-import tailwindcssConfig from "./tailwind.config"
 const dir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
@@ -10,10 +9,6 @@ export default defineNuxtConfig({
     }
   },
   css: [join(dir, './assets/css/main.scss')],
-  tailwindcss: {
-    viewer: true,
-    config: tailwindcssConfig,
-  },
   runtimeConfig: {
     basicAuth: process.env.NUXT_BASIC_AUTH || "",
     shopinvader: {
