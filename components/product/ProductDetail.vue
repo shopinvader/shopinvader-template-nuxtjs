@@ -196,7 +196,7 @@ export default {
 .product-detail {
   @apply flex flex-wrap p-3 max-md:flex-col md:p-5 relative;
   &__tag {
-    @apply absolute left-10 top-16;
+    @apply absolute left-10 top-16 z-10;
   }
   &__header {
     @apply w-full flex-grow;
