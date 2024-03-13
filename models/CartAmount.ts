@@ -10,6 +10,7 @@ export class CartAmount extends Model {
 
   constructor(data: any) {
     super(data)
+    this.discount_total = data?.discount_total || 0
     this.tax = data?.tax || 0
     this.total = data?.total || 0
     this.untaxed = data?.untaxed || 0

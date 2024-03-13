@@ -12,6 +12,22 @@
     </div>
     <!-- @slot Body display after the cart total block -->
     <slot name="body">
+      <div v-if="cart?.amount?.discount_total !== 0" class="cart-total__withoutdiscount">
+        <div class="label">
+          {{ $t('cart.total.before-discount') }}
+        </div>
+        <div class="value">
+          {{ $filter.currency(cart?.amount?.totalWithoutDiscount) }}
+        </div>
+      </div>
+      <div v-if="cart?.amount?.discount_total !== 0" class="cart-total__discount">
+        <div class="label">
+          {{ $t('cart.total.discount') }}
+        </div>
+        <div class="value">
+          - {{ $filter.currency(cart?.amount?.discount_total) }}
+        </div>
+      </div>
       <div class="cart-total__subtotal">
         <div class="label">
           {{ $t('cart.total.subtotal') }}
@@ -84,6 +100,9 @@ export default defineNuxtComponent({
     }
   }
 
+  &__discount {
+    @apply text-info;
+  }
   &__total {
     @apply border-t pt-2 text-gray-900;
     .label {
