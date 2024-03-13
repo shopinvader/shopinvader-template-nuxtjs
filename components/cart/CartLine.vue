@@ -103,7 +103,7 @@
           </div>
           <div class="value">
             <div
-              v-if="line.amount.totalWithoutDiscount !== line.amount.total"
+              v-if="line.amount.discountTotal !== 0"
               class="price__original"
             >
               {{ $filter.currency(line.amount.totalWithoutDiscount) }}

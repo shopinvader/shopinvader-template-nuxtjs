@@ -96,9 +96,11 @@
 
     "total": {
       "title": "Total",
+      "before-discount": "Total avant remise",
       "subtotal": "Sous-total",
       "shipping": "Livraison",
-      "tax": "Taxes"
+      "tax": "Taxes",
+      "discount": "Remise"
     },
     "delivery": {
       "method": {
