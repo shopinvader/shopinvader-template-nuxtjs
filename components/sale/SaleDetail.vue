@@ -104,6 +104,14 @@
       <div class="footer__total">
         <slot name="total" :sale="sale">
           <div class="mb-10">
+            <div v-if="sale?.amount?.discount_total !== 0" class="total__item">
+              <span class="font-medium">
+               {{ $t('sale.amount.discount') }}
+              </span>
+              <span class="font-bold font-heading">
+               - {{ $filter.currency(sale?.amount?.discount_total || 0) }}
+              </span>
+            </div>
             <div class="total__item">
               <span class="font-medium">
                 {{ $t('sale.amount.untaxed') }}

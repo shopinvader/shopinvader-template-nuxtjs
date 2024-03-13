@@ -41,7 +41,17 @@
       </div>
       <div class="content__price">
         <slot name="price" :line="line">
-          {{ $t('sale.price', { price: $filter.currency(line.amount.price)}) }}
+          <div class="value">
+            <div
+              v-if="line.amount.discount_total !== 0"
+              class="price__original"
+            >
+              {{ $filter.currency(line.amount.totalWithoutDiscount) }}
+            </div>
+            <div class="price__value">
+              {{ $filter.currency(line.amount.total) }}
+            </div>
+          </div>
         </slot>
       </div>
       <div class="content__actions">
@@ -104,7 +114,7 @@ export default defineNuxtComponent({
         @apply flex flex-row p-2;
         .price {
           &__value {
-            @apply text-2xl font-bold text-success;
+            @apply text-sm font-normal text-gray-900;
           }
           &__tax {
             @apply text-xs font-normal text-gray-500;
