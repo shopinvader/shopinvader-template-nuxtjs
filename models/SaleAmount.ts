@@ -5,7 +5,7 @@ export class SaleAmount extends Model {
   tax: number
   untaxed: number
   total: number
-  discount_total: number
+  discountTotal: number
   totalWithoutDiscount: number
   constructor(data: any) {
     super(data)
@@ -13,7 +13,7 @@ export class SaleAmount extends Model {
     this.tax = data?.tax
     this.untaxed = data?.untaxed
     this.total = data?.total
-    this.discount_total = data?.discount_total
+    this.discountTotal = data?.discount_total
     this.totalWithoutDiscount = data?.total_without_discount
   }
 }

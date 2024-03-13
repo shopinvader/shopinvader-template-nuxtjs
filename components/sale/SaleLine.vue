@@ -43,7 +43,7 @@
         <slot name="price" :line="line">
           <div class="value">
             <div
-              v-if="line.amount.discount_total !== 0"
+              v-if="line.amount.discountTotal !== 0"
               class="price__original"
             >
               {{ $filter.currency(line.amount.totalWithoutDiscount) }}
