@@ -42,44 +42,50 @@
     </aside-menu>
   </header>
 </template>
-<script lang="ts">
-export default defineNuxtComponent({
-  name: 'GlobalHeader',
-  data() {
-    return {
-      scrolled: false
-    }
-  },
-  async setup() {
-    const localePath = useLocalePath()
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    return {
-      localePath,
-      cart
-    }
-  },
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  methods: {
-    handleScroll() {
-      this.scrolled = window.scrollY > 200
+<script lang="ts" setup>
+  const localePath = useLocalePath()
+  let interval:any | null = null
+  let scrolled = ref(false)
+  let headerHeight: Number = 0
+  let previsousScrollState = false
+  const handleScroll = () => {
+    let isScrolled = window.scrollY > 200
+    if(isScrolled !== previsousScrollState) {
+      scrolled.value = isScrolled
+      previsousScrollState = isScrolled
+      if(isScrolled) {
+        headerHeight = document.querySelector('header')?.clientHeight || 0
+        if(interval) clearTimeout(interval)
+        interval = setTimeout(() => {
+          scrolled.value = true
+        }, 100)
+      } else {
+        headerHeight = 0
+        scrolled.value = false
+      }
+      document.querySelector('body')?.style.setProperty('--header-height', `${headerHeight}px`)
     }
   }
-})
+  onMounted(() => {
+    previsousScrollState = window.scrollY > 200
+    window.addEventListener('scroll', handleScroll)
+  })
 </script>
 <style lang="scss">
+body {
+  --header-height: 0;
+  padding-top: var(--header-height);
+}
 header {
-  @apply top-0 z-40 border-b bg-white pb-2;
+  @apply  top-0 z-40 border-b bg-white pb-2;
   &.scrolled {
     opacity: 0;
     animation-name: header-slide;
     animation-duration: 0.3s;
     animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
+    animation-fill-mode: both;
     animation-delay: .5s;
-    @apply sticky shadow-xl;
+    @apply fixed shadow-xl;
     .header-navbar {
       .menu {
         @apply text-primary;
