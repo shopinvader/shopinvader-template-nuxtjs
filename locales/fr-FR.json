@@ -328,6 +328,7 @@
       "address": "Adresse de livraison"
     },
     "amount": {
+      "discount": "Remise",
       "total": "Total",
       "shipping": "Frais de port",
       "untaxed": "Total HT",
