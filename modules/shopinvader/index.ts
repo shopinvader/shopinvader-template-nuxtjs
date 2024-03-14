@@ -1,9 +1,23 @@
-import { defineNuxtModule, createResolver, useLogger, addPlugin, addImportsDir, resolveFiles, extendPages, addServerHandler } from '@nuxt/kit'
 import { addCustomTab } from '@nuxt/devtools-kit'
-import { ShopinvaderConfig, ShopinvaderProvidersList } from './runtime/types/ShopinvaderConfig'
-import { Router } from 'vue-router'
-import { configMerge } from './runtime/utils'
+import { defineNuxtModule,
+  createResolver,
+  useLogger,
+  addPlugin,
+  addRouteMiddleware,
+  addImportsDir,
+  resolveFiles,
+  extendPages,
+  addServerHandler
+} from '@nuxt/kit'
+
 import {
+  type ShopinvaderConfig,
+  type ShopinvaderProvidersList
+} from './runtime/types/ShopinvaderConfig'
+import { type Router } from 'vue-router'
+
+import {
+  configMerge,
   addModelsServicesTemplates,
   addI18n,
   addOriginalComponents

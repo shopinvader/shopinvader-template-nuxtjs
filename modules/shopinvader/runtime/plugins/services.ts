@@ -47,7 +47,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     throw new Error('No shopinvader config found')
   }
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
-
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
 
   const erp = providers?.erp as ErpFetch
@@ -104,62 +103,90 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const storedRoutes:any = {}
   addRouteMiddleware(
     async (to, from) => {
-      const ext = to.path.split('.').pop() || ''
-      if(ext == 'js') {
-        return null
-      }
-      if(to?.meta?.auth) {
-        const auth = useShopinvaderService('auth')
-        const user = auth.getUser()
-        const localePath = useLocalePath();
-        if (!user.value) {
-          return nuxtApp.runWithContext(() =>
-            navigateTo(localePath({ path: '/account/login' }))
-          )
+      try {
+
+        const ext = to.path.split('.').pop() || ''
+        if(ext == 'js' || ext == 'scss' || ext == 'css') {
+          return null
         }
-      }
-      const routes = router.getRoutes()
-      if (!routes.some((route) => route.path === to.path)) {
-        const path: string = to.params?.slug?.join('/') || to.path.substr(1)
-        const { data } = await useAsyncData('entity', async () => {
-          if(storedRoutes?.[path]) {
-            return storedRoutes[path]
-          }
-          const catalog = useShopinvaderService('catalog')
-
-          const sku = to?.query?.sku || null as string | null
-          const entity = await catalog.getEntityByURLKey(path, sku)
-
-          storedRoutes[path] = entity
-          return entity
-        })
-        const entity = data.value
-        if (entity) {
-          if(entity?.urlKey === path) {
-            /** Render page */
-            let component = null
-            if (entity instanceof Product) {
-              component = TemplateProductPage
-            } else if (entity instanceof Category) {
-              component = TemplateCategoryPage
-            }
-            if (component) {
-              to.matched[0].components = {
-                default: component
+        if(to?.meta?.auth) {
+          const auth = useShopinvaderService('auth')
+          const user = auth.getUser()
+          const localePath = useLocalePath();
+          if (!user.value) {
+            return nuxtApp.runWithContext(() => {
+              if(to.path !== '/account/login') {
+                navigateTo(localePath({ path: '/account/login' }))
               }
-            }
-            await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
-          } else if (entity?.redirectUrlKey?.length) {
-            /** Redirection */
-            return nuxtApp.runWithContext(() =>
-              navigateTo(`/${entity.urlKey}`, {
-                redirectCode: 301
-              })
-            )
+            })
           }
         }
-      }
+        const routes = router.getRoutes()
+        const route = routes.find((route) => route.path === to.path)
+        if (!route || route.meta?.entity) {
+          /** Get path without locale Prefix */
+          let localeRoute:string = nuxtApp?.$localePath?.('/') || ''
+          if(localeRoute == '/') {
+            localeRoute = ''
+          }
+          const path =  to?.path?.replace?.(localeRoute, '').substring(1) || ''
+          /** Get entity model on Catalog */
+          const { data } = await useAsyncData('entity', async () => {
+            if(storedRoutes?.[path]) {
+              return storedRoutes[path]
+            }
+            const catalog = useShopinvaderService('catalog')
+            const sku = to?.query?.sku || null as string | null
+            const entity = await catalog.getEntityByURLKey(path, sku)
+            storedRoutes[path] = entity
+            return entity
+          })
+          const entity = data.value
+          if (entity) {
+            if(entity?.urlKey === path) {
 
+              /** Render page */
+              let component = null
+              if (entity instanceof Product) {
+                component = TemplateProductPage
+              } else if (entity instanceof Category) {
+                component = TemplateCategoryPage
+              }
+              if (component) {
+                /** Create dynamic route */
+                const removeRoute = router.addRoute({
+                  component,
+                  path: to.path,
+                  name: entity.urlKey,
+                  meta: {
+                    entity: entity,
+                    auth: entity.auth
+                  }
+                })
+                /** Overwritte current route and remove it */
+                const {matched} = router.resolve(to.path)
+                if(matched?.length) {
+                  to.matched = matched
+                  removeRoute()
+                  await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
+                }
+              }
+            } else if (entity?.redirectUrlKey?.length) {
+              /** Redirection */
+              return nuxtApp.runWithContext(() =>
+                navigateTo(`/${entity.urlKey}`, {
+                  redirectCode: 301
+                })
+              )
+            }
+          }
+        }
+      } catch (e:any) {
+        throw createError({
+          statusCode: 500,
+          statusMessage: e?.message || 'Internal Server Error'
+        });
+      }
     },
     { global: true }
   )
