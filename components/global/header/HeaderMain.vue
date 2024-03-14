@@ -85,7 +85,7 @@ header {
     animation-timing-function: ease-in-out;
     animation-fill-mode: both;
     animation-delay: .5s;
-    @apply fixed shadow-xl;
+    @apply fixed shadow-xl w-full;
     .header-navbar {
       .menu {
         @apply text-primary;
