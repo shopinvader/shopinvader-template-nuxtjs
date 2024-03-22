@@ -1,9 +1,7 @@
 import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
-import { Product, Category } from '~/models'
 import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
-import {TemplateProductPage, TemplateCategoryPage} from '#components'
 import {
   AddressService,
   AuthService,
@@ -76,6 +74,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     auth,
     customer: new CustomerService(erp)
   }
+
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   nuxtApp.hook('app:mounted', async (context) => {
     services.cart.productService = services.products
@@ -85,6 +84,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       }
     }
   })
+
   if(services?.auth && services?.cart) {
     /** Retrieve cart content on user login */
     auth?.onUserLoaded((user) => {
@@ -95,101 +95,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       services.cart.clear()
     })
   }
-  /**
-   * Add route middleware to add dynamic routes for products and categories
-   * Add a middleware to check if the user is logged in
-   */
-  const router = useRouter()
-  const storedRoutes:any = {}
-  addRouteMiddleware(
-    async (to, from) => {
-      try {
 
-        const ext = to.path.split('.').pop() || ''
-        if(ext == 'js' || ext == 'scss' || ext == 'css') {
-          return null
-        }
-        if(to?.meta?.auth) {
-          const auth = useShopinvaderService('auth')
-          const user = auth.getUser()
-          const localePath = useLocalePath();
-          if (!user.value) {
-            return nuxtApp.runWithContext(() => {
-              if(to.path !== '/account/login') {
-                navigateTo(localePath({ path: '/account/login' }))
-              }
-            })
-          }
-        }
-        const routes = router.getRoutes()
-        const route = routes.find((route) => route.path === to.path)
-        if (!route || route.meta?.entity) {
-          /** Get path without locale Prefix */
-          let localeRoute:string = nuxtApp?.$localePath?.('/') || ''
-          if(localeRoute == '/') {
-            localeRoute = ''
-          }
-          const path =  to?.path?.replace?.(localeRoute, '').substring(1) || ''
-          /** Get entity model on Catalog */
-          const { data } = await useAsyncData('entity', async () => {
-            if(storedRoutes?.[path]) {
-              return storedRoutes[path]
-            }
-            const catalog = useShopinvaderService('catalog')
-            const sku = to?.query?.sku || null as string | null
-            const entity = await catalog.getEntityByURLKey(path, sku)
-            storedRoutes[path] = entity
-            return entity
-          })
-          const entity = data.value
-          if (entity) {
-            if(entity?.urlKey === path) {
-
-              /** Render page */
-              let component = null
-              if (entity instanceof Product) {
-                component = TemplateProductPage
-              } else if (entity instanceof Category) {
-                component = TemplateCategoryPage
-              }
-              if (component) {
-                /** Create dynamic route */
-                const removeRoute = router.addRoute({
-                  component,
-                  path: to.path,
-                  name: entity.urlKey,
-                  meta: {
-                    entity: entity,
-                    auth: entity.auth
-                  }
-                })
-                /** Overwritte current route and remove it */
-                const {matched} = router.resolve(to.path)
-                if(matched?.length) {
-                  to.matched = matched
-                  removeRoute()
-                  await nuxtApp.callHook('shopinvader:router', router, component, nuxtApp)
-                }
-              }
-            } else if (entity?.redirectUrlKey?.length) {
-              /** Redirection */
-              return nuxtApp.runWithContext(() =>
-                navigateTo(`/${entity.urlKey}`, {
-                  redirectCode: 301
-                })
-              )
-            }
-          }
-        }
-      } catch (e:any) {
-        throw createError({
-          statusCode: 500,
-          statusMessage: e?.message || 'Internal Server Error'
-        });
-      }
-    },
-    { global: true }
-  )
   return {
     provide: {
       shopinvader: {

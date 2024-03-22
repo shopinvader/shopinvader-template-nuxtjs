@@ -7,7 +7,7 @@ import { defineNuxtModule,
   addImportsDir,
   resolveFiles,
   extendPages,
-  addServerHandler
+  addServerHandler,
 } from '@nuxt/kit'
 
 import {
@@ -129,6 +129,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
         },
       })
     }
+
     if(nuxt.options.dev) {
       console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.url, config.elasticsearch.url)
     }
