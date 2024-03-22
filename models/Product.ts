@@ -122,11 +122,12 @@ export class Product extends Model {
     }
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
-    const priceLists = Object.keys(data?.prices || {})
+    const prices = data?.prices || data?.price || {}
+    const priceLists = Object.keys(prices)
     if(priceLists?.length > 0) {
       this.pricesList = {}
       for(let priceList of priceLists) {
-        this.pricesList[priceList] = new ProductPrice(data?.prices?.[priceList])
+        this.pricesList[priceList] = new ProductPrice(prices?.[priceList])
       }
 
       if(this.pricesList?.['default']) {
