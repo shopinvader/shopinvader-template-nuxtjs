@@ -1,6 +1,5 @@
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-
 const dir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
@@ -9,7 +8,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
-  css: [join(dir, './assets/css/main.scss')],
+  css: ["~/assets/css/main.scss"],
   runtimeConfig: {
     basicAuth: process.env.NUXT_BASIC_AUTH || "",
     shopinvader: {
@@ -54,24 +53,17 @@ export default defineNuxtConfig({
       },
     },
   },
-  googleFonts: {
-    families: {
-      Montserrat: [300,400,600,700],
-      'Josefin+Sans': [700],
-    },
-    download: true,
-    stylePath: 'css/fonts.css'
-  },
   modules: [
+    "nuxt-delay-hydration",
     "nuxt-icon",
-    '@nuxtjs/google-fonts',
     '@nuxtjs/tailwindcss',
     'nuxt-simple-sitemap',
     'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
-    '@vueuse/motion/nuxt'
+    '@vueuse/motion/nuxt',
+    '@nuxt/image',
   ],
   piniaPersistedstate: {
     cookieOptions: {
@@ -79,7 +71,10 @@ export default defineNuxtConfig({
     },
     storage: 'localStorage'
   },
+  delayHydration: {
+    mode: "mount",
 
+  },
   pages: true,
   sitemap: {
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']

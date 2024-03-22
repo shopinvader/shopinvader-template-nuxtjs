@@ -117,7 +117,7 @@ export default {
     linkPath() {
       const urlKey = this.product?.urlKey || null
       const sku = this.product?.sku || null
-      if(sku && urlKey) {
+      if(urlKey) {
         const localePath = useLocalePath()
         return localePath({
           path: '/' + urlKey,

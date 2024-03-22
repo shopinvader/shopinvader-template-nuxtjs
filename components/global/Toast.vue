@@ -1,8 +1,8 @@
 <template>
   <div v-show="show" class="alert shadow-lg" :class="className">
-    <div class="flex items-start">
+    <div class="flex items-start gap-1">
       <icon :name="icon" class="cursor-pointer text-xl"></icon>
-      <div>
+      <div class="pt-1">
         <h3 class="font-bold">{{ title }}</h3>
         <div class="text-xs">{{ message }}</div>
       </div>

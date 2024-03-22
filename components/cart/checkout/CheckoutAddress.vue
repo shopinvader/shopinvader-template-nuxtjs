@@ -108,20 +108,27 @@ export default defineNuxtComponent({
   @apply flex flex-col gap-6;
   &__items {
     @apply flex w-full flex-row flex-wrap gap-6;
-    .address {
-      @apply flex-grow rounded-lg bg-slate-50 p-4 text-slate-900 shadow-none;
-      .title {
-        @apply m-0 flex items-center gap-4 text-xl font-bold uppercase leading-none text-inherit;
+    .address-card {
+      @apply shadow-none;
+      &__header {
+        .title {
+          @apply m-0 flex items-center gap-3 text-xl font-bold uppercase leading-none text-inherit;
+        }
+        .subtitle {
+          @apply text-lg pb-0 ml-8 pt-3;
+        }
       }
-      .subtitle {
-        @apply ml-4 pt-3;
+
+      &__content {
+        @apply ml-8 p-0;
       }
+
     }
   }
   &--active {
     .checkout-address__items {
       .address {
-        @apply card shadow-lg rounded-md;
+        @apply border bg-gray-100 ;
       }
     }
   }

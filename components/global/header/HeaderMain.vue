@@ -1,11 +1,15 @@
 <template>
   <header :class="{ scrolled: scrolled }">
+
     <aside-menu
       name="header"
       class="header"
       class-content="header-navbar"
       :sideMenu="scrolled"
     >
+      <template #top>
+        <slot name="top"></slot>
+      </template>
       <template #button>
         <div class="menu">
           <icon
@@ -22,15 +26,16 @@
           <logo></logo>
         </nuxt-link>
       </template>
+
       <template #content>
         <slot name="content">
           <div class="content__search">
             <search-autocomplete></search-autocomplete>
           </div>
           <div class="content__icons">
-            <cart-icon></cart-icon>
-            <header-user></header-user>
-            <local-switcher></local-switcher>
+            <lazy-cart-icon />
+            <lazy-header-user />
+            <lazy-local-switcher />
           </div>
         </slot>
       </template>
@@ -42,60 +47,50 @@
     </aside-menu>
   </header>
 </template>
-<script lang="ts">
-import Logo from '~/components/global/Logo.vue'
-import HeaderNavVue from '~/components/global/header/HeaderNav.vue'
-import HeaderUser from '~/components/global/header/HeaderUser.vue'
-import LocalSwitcher from '~/components/global/LocalSwitcher.vue'
-import CartIconVue from '~/components/cart/CartIcon.vue'
-import AsideMenu from '~/components/global/AsideMenu.vue'
-import SearchAutocomplete from '~/components/search/autocomplete/SearchAutocomplete.vue'
-export default defineNuxtComponent({
-  name: 'GlobalHeader',
-  components: {
-    'local-switcher': LocalSwitcher,
-    'header-nav': HeaderNavVue,
-    'aside-menu': AsideMenu,
-    'cart-icon': CartIconVue,
-    'header-user': HeaderUser,
-    'search-autocomplete': SearchAutocomplete,
-    logo: Logo
-  },
-  data() {
-    return {
-      scrolled: false
-    }
-  },
-  async setup() {
-    const localePath = useLocalePath()
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    return {
-      localePath,
-      cart
-    }
-  },
-  mounted() {
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  methods: {
-    handleScroll() {
-      this.scrolled = window.scrollY > 200
+<script lang="ts" setup>
+  const localePath = useLocalePath()
+  let interval:any | null = null
+  let scrolled = ref(false)
+  let headerHeight: Number = 0
+  let previsousScrollState = false
+  const handleScroll = () => {
+    let isScrolled = window.scrollY > 200
+    if(isScrolled !== previsousScrollState) {
+      scrolled.value = isScrolled
+      previsousScrollState = isScrolled
+      if(isScrolled) {
+        headerHeight = document.querySelector('header')?.clientHeight || 0
+        if(interval) clearTimeout(interval)
+        interval = setTimeout(() => {
+          scrolled.value = true
+        }, 100)
+      } else {
+        headerHeight = 0
+        scrolled.value = false
+      }
+      document.querySelector('body')?.style.setProperty('--header-height', `${headerHeight}px`)
     }
   }
-})
+  onMounted(() => {
+    previsousScrollState = window.scrollY > 200
+    window.addEventListener('scroll', handleScroll)
+  })
 </script>
 <style lang="scss">
+body {
+  --header-height: 0;
+  padding-top: var(--header-height);
+}
 header {
-  @apply top-0 z-40 border-b bg-white pb-2;
+  @apply  top-0 z-40 border-b bg-white pb-2;
   &.scrolled {
     opacity: 0;
     animation-name: header-slide;
     animation-duration: 0.3s;
     animation-timing-function: ease-in-out;
-    animation-fill-mode: forwards;
+    animation-fill-mode: both;
     animation-delay: .5s;
-    @apply sticky shadow-xl;
+    @apply fixed shadow-xl w-full;
     .header-navbar {
       .menu {
         @apply text-primary;

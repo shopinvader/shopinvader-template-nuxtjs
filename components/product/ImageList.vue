@@ -8,19 +8,34 @@
         class="image-slider__item"
         :key="'img-' + index"
       >
-        <img :src="image.large?.src" class="item-image" />
+        <nuxt-img
+          :src="image.large?.src"
+          class="item-image"
+          :alt="image.large?.alt"
+          :title="image.large?.alt"
+          height="548"
+          quality="80"
+          :placeholder="img(image.large?.src, { h: 548, f: 'webp', blur: 2, q: 10 })"
+          format="webp"
+        />
       </div>
     </div>
     <div class="slider-indicators">
       <a
         v-for="(image, index) in images"
         :key="'img-indicator' + index"
+        :href="'#item' + index"
         class="slider-indicators__items"
         :class="'w-1/' + images.length"
         @mouseover="slideCarousel(index + 1)"
         @click="slideCarousel(index + 1)"
       >
-        <img :src="image.medium?.src" class="items-image" />
+        <nuxt-img
+          :src="image.medium?.src"
+          class="items-image"
+          :alt="image.medium?.alt"
+          :title="image.medium?.alt"
+        />
       </a>
     </div>
     <div class="slider-indicators-mobile">
@@ -44,9 +59,12 @@
         class="w-full bg-gray-100"
         :key="'img-' + index"
       >
-        <img
+        <nuxt-img
           :src="image.large?.src"
-          class="w-ful mx-auto max-h-full min-h-max p-6"
+          :alt="image.large?.alt"
+          :title="image.large?.alt"
+          class="w-full mx-auto max-h-full min-h-max p-6"
+
         />
       </div>
     </div>
@@ -69,6 +87,12 @@ export default {
     },
     slider: {
       type: Boolean
+    }
+  },
+  setup() {
+    const img = useImage()
+    return {
+      img
     }
   },
   mounted() {

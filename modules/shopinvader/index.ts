@@ -1,9 +1,23 @@
-import { defineNuxtModule, createResolver, useLogger, addPlugin, addImportsDir, resolveFiles, extendPages, addServerHandler } from '@nuxt/kit'
 import { addCustomTab } from '@nuxt/devtools-kit'
-import { ShopinvaderConfig, ShopinvaderProvidersList } from './runtime/types/ShopinvaderConfig'
-import { Router } from 'vue-router'
-import { configMerge } from './runtime/utils'
+import { defineNuxtModule,
+  createResolver,
+  useLogger,
+  addPlugin,
+  addRouteMiddleware,
+  addImportsDir,
+  resolveFiles,
+  extendPages,
+  addServerHandler,
+} from '@nuxt/kit'
+
 import {
+  type ShopinvaderConfig,
+  type ShopinvaderProvidersList
+} from './runtime/types/ShopinvaderConfig'
+import { type Router } from 'vue-router'
+
+import {
+  configMerge,
   addModelsServicesTemplates,
   addI18n,
   addOriginalComponents
@@ -28,7 +42,7 @@ declare module '#app' {
     ) => MaybePromise<void>
   }
 }
-
+export { ErpFetchObservable } from './runtime/plugins/providers/ErpFetchObservale'
 export default defineNuxtModule<ShopinvaderConfig>({
   meta: {
     name: 'shopinvader',
@@ -115,6 +129,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
         },
       })
     }
+
     if(nuxt.options.dev) {
       console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.url, config.elasticsearch.url)
     }

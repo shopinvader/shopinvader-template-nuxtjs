@@ -3,6 +3,10 @@
     class="product-variant-selector"
     :class="{'product-variant-selector--loading': loading}"
   >
+    <div v-if="error" class="product-variant-selector__error">
+      <icon name="error" class="text-error"/>
+      {{ error }}
+    </div>
     <div class="product-variant-selector__axis">
       <div
         v-for="(axis, name) of variantAxes"
@@ -18,22 +22,24 @@
                 type="button"
                 class="values__btn"
                 :class="{
-                  'values__btn--selected': value == product.variantAttributes[name],
-                  'values__btn--unselected':  value != product.variantAttributes[name]
+                  'values__btn--selected': value?.toLowerCase() == selectValues[name]?.toLowerCase(),
+                  'values__btn--unselected':  value?.toLowerCase() != selectValues[name]?.toLowerCase()
                 }"
-                @click="select(name, value)"
+                @click="selectVariant(name, value)"
               >
                 {{ value }}
               </button>
             </div>
           </template>
-          <select v-else class="values__select">
+          <select v-else
+            class="values__select"
+            v-model="selectValues[name]"
+            @change="changeVariant"
+          >
             <option
               v-for="value of axis"
               :key="value"
               :value="value"
-              :selected="value == product.variantAttributes[name]"
-              @click="select(name, value)"
             >
               {{ value }}
             </option>
@@ -43,66 +49,97 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { Product, type VariantAttributes } from '~/models'
 
-export default defineNuxtComponent({
-  emits: ['selectVariant'],
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: true
-    }
-  },
-  async setup(props) {
-    const loading = ref(true)
-    const productService = useShopinvaderService('products')
-    const { product } = props
-    let variantAxes = []
-    if(product && product?.urlKey) {
-      const { urlKey, variantAttributes } = product
-      const result = await productService.getVariantsAggregation(urlKey, variantAttributes)
-      variantAxes = result.axes
-    }
-    loading.value = false
-    return {
-      variantAxes,
-      loading
-    }
-  },
-  methods: {
-    async select(name:string, axis: string) {
-      const variantAttributes = {...this.product.variantAttributes}
-      variantAttributes[name] = axis
-      this.findProduct(variantAttributes)
-    },
-    async findProduct(variantAttributes: VariantAttributes) {
-      this.loading = true
-      const productService = useShopinvaderService('products')
-      const { product, axes } = await productService.getVariantsAggregation(this.product.urlKey || '', variantAttributes)
-      this.variantAxes = axes
-      if (product) {
-        this.$emit('selectVariant', product)
-      } else {
-        /* if the current selection does not exists */
-        let haschange = false
-        for(let [key, value] of Object.entries(variantAttributes)) {
-          if(!axes?.[key]?.includes(value)) {
-            variantAttributes[key] = axes[key][0]
-            haschange = true
-          }
-        }
-        if(haschange) {
-          this.findProduct(variantAttributes)
-        }
-      }
-      this.loading = false
-    }
+const props = defineProps({
+  product: {
+    type: Object as PropType<Product>,
+    required: true
   }
 })
+const { t } = useI18n()
+const loading = ref(true)
+const error = ref(null) as Ref<string | null>
+
+let variantAxes = ref({}) as Ref<VariantAttributes>
+let selectValues = reactive({...props.product.variantAttributes})
+const emit = defineEmits(['selectVariant'])
+const findProduct = async (variantAttributes: VariantAttributes):Promise<{
+  axes: any;
+  product: Product | null;
+}> => {
+  let axes = []
+  let product = null
+  let data = null
+  try {
+    loading.value = true
+    const productService = useShopinvaderService('products')
+    data = await productService.getVariantsAggregation(
+      props.product.urlKey || '', variantAttributes
+    )
+    axes = data?.axes
+    product = data?.product
+    if (!product) {
+      /* if the current selection does not exists */
+      let haschange = false
+      for(let [key, value] of Object.entries(variantAttributes)) {
+        if(!axes?.[key]?.includes(value)) {
+          variantAttributes[key] = axes[key][0]
+          haschange = true
+        }
+      }
+      if(haschange) {
+        data = await findProduct(variantAttributes)
+        axes = data?.axes
+        product = data?.product
+      }
+    }
+  } catch (err) {
+    console.error('Error while fetching variant axes', err)
+    error.value = t('error.generic')
+    variantAxes.value = {}
+  } finally {
+    loading.value = false
+    return {
+      axes,
+      product
+    }
+  }
+}
+
+const changeVariant = async (value:any) => {
+  const { product, axes } = await findProduct(selectValues)
+  variantAxes.value = axes
+  if (product) {
+    emit('selectVariant', product)
+  }
+}
+
+const selectVariant = async (name:string, value:any) => {
+  selectValues[name] = value
+  changeVariant(value)
+}
+
+try {
+
+  const productService = useShopinvaderService('products')
+  if(props.product && props.product?.urlKey) {
+    const { urlKey, variantAttributes } = props.product
+    const result = await productService.getVariantsAggregation(urlKey, variantAttributes)
+    variantAxes.value = result.axes
+  }
+} catch (err) {
+  console.error('Error while fetching variant axes', err)
+  error.value = t('error.generic')
+} finally {
+  loading.value = false
+}
+
 </script>
 <style lang="scss">
 .product-variant-selector {
+  @apply min-h-16 transition-all duration-300 ease-in-out;
   &--loading {
     @apply opacity-50;
   }
@@ -130,6 +167,9 @@ export default defineNuxtComponent({
         }
       }
     }
+  }
+  &__error {
+    @apply flex gap-1 alert;
   }
 }
 </style>

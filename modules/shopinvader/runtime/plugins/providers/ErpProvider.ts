@@ -1,5 +1,7 @@
-import { ErpFetch } from '@shopinvader/fetch'
+
 import { ShopinvaderErpConfig, ShopinvaderProvidersList } from '../../types/ShopinvaderConfig'
+import { ErpFetchObservable } from './ErpFetchObservale'
+
 
 export const fetchAPI = async (url: string, options: any) => {
   const auth = useShopinvaderService('auth')
@@ -20,6 +22,6 @@ export const initErpProvider = (
   const erpKey = options?.key || ''
 
   return {
-    erp: new ErpFetch(erpUrl, erpKey, fetchAPI)
+    erp: new ErpFetchObservable(erpUrl, erpKey, fetchAPI)
   }
 }

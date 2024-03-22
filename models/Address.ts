@@ -36,7 +36,7 @@ export class Address extends Model {
     this.title = data?.title ? new Title(data.title) : null
     this.addressType = data?.address_type || null
     this.city = data?.city || null
-    this.country = data?.country ? new Country(data.country) : null
+    this.country = data?.country ? new Country(data.country) :  new Country({id: data.country_id})
     this.displayName = data?.display_name || null
     this.isCompany = data?.is_company || null
     this.mobile = data?.mobile || null
@@ -70,8 +70,8 @@ export class Address extends Model {
       zip: this.zip || '',
       city: this.city || '',
       phone: this.phone || '',
-      email: this.email
-
+      email: this.email,
+      vat: this.vat || '',
     }
     if(this.country?.id) {
       data = {

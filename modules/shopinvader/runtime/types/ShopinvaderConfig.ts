@@ -1,4 +1,4 @@
-import type { AuthAPIConfig, AuthOIDCConfig } from '#services'
+import type { AuthAPIConfig, AuthOIDCConfig, PaymentService } from '#services'
 
 export interface ShopinvaderProxyConfig {
   url: string
@@ -44,7 +44,6 @@ import {
   CategoryService,
   CustomerService,
   DeliveryCarrierService,
-  PaymentModeService,
   ProductService,
   SaleService,
   SettingService
@@ -65,5 +64,5 @@ export interface ShopinvaderServiceList {
   sales: SaleService | null
   customer: CustomerService | null
   deliveryCarriers: DeliveryCarrierService | null
-  paymentModes: PaymentModeService | null
+  payment: PaymentService | null
 }

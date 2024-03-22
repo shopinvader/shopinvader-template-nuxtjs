@@ -5,12 +5,18 @@
 </template>
 <script lang="ts" setup>
 import { Product } from '~/models'
+const props = defineProps({
+  product: {
+    type: Object as PropType<Product>,
+    required: true
+  }
 
+})
+const product = props.product
 /**
  * Get Category from payload set on the route middleware
  * in the shopinvader plugin
  * */
-const product: Product | null = useNuxtApp().payload?.data?.entity || null
 if (!product) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
 }

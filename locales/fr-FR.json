@@ -71,6 +71,9 @@
       "checkout": "Votre panier est hors ligne, certaines transactions sont en attente, ce qui empêche toute action ultérieure pour le moment.",
       "back": "Retour"
     },
+    "discount": {
+      "title": "Réduction"
+    },
     "confirmation": "Votre panier a été mis à jour",
     "checkout": "Commander",
     "back": "Retour",
@@ -96,9 +99,11 @@
 
     "total": {
       "title": "Total",
+      "before-discount": "Total avant remise",
       "subtotal": "Sous-total",
       "shipping": "Livraison",
-      "tax": "Taxes"
+      "tax": "Taxes",
+      "discount": "Remise"
     },
     "delivery": {
       "method": {
@@ -106,6 +111,7 @@
         "intro": "Sélectionnez une méthode de livraison",
         "select": "Sélectionner",
         "continue": "Continuer",
+        "free": "Livraison gratuite",
         "no-method": "Aucune méthode de livraison Sélectionnée"
       }
     },
@@ -134,6 +140,13 @@
       "intro": "Votre commande a bien été validée.",
       "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
       "link":"Voir mes commandes"
+    },
+    "coupon": {
+      "title": "Un code promo ?",
+      "apply": "Valider",
+      "error": "Code invalide ou expiré",
+      "success": "Code promo appliqué !",
+      "applied": "Code promo déjà appliqué : {codes}"
     }
   },
   "account": {
@@ -253,6 +266,7 @@
     "update": "Actualiser",
     "create": "Créer " ,
     "validate": "Valider",
+    "delete": "Supprimer",
     "close": "Fermer"
   },
   "address": {
@@ -325,6 +339,7 @@
       "address": "Adresse de livraison"
     },
     "amount": {
+      "discount": "Remise",
       "total": "Total",
       "shipping": "Frais de port",
       "untaxed": "Total HT",
@@ -341,5 +356,8 @@
       "estimating": "En attente d'estimation",
       "estimated": "À confirmer"
     }
+  },
+  "payment": {
+    "select": "Sélectionner"
   }
 }

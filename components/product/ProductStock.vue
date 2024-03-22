@@ -32,7 +32,7 @@ export default {
   props: {
     stock: {
       type: Object as PropType<ProductStock>,
-      required: true,
+      required: false,
       default: () => {
         return null
       }

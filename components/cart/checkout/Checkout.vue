@@ -90,7 +90,7 @@
               <div
                 v-for="(step, index) in checkoutSteps"
                 :key="step.name"
-                :id="'step-' + index"
+                :id="'step-' + (step.position)"
                 :class="[
                   'checkout-step',
                   {
@@ -126,6 +126,7 @@
                   :class="`step-${step.name}`"
                 >
                   <slot :name="`step-${step.name}`">
+
                     <component
                       :is="step.component"
                       v-if="index <= currentStepIndex"
@@ -211,6 +212,8 @@ export default defineNuxtComponent({
     const cart = cartService?.getCart() || ref(null)
     const i18n = useI18n()
     const displayCart = ref(false)
+    const elSteps = ref(null)
+
     /** Default steps of the checkout funnel */
     let defaultSteps: checkoutStep[] = [
       {
@@ -274,7 +277,7 @@ export default defineNuxtComponent({
       const step = this.checkoutSteps[currentStepIndex] || null
       const title = this.$t('cart.title')
       if (step) {
-        this.scrollToStep(currentStepIndex)
+        this.scrollToStep(step.position)
         useHead({
           title: `${step.title} - ${title}`
         })
@@ -319,12 +322,13 @@ export default defineNuxtComponent({
       this.currentStepIndex = step
     },
     scrollToStep(step: number) {
-      const top = document
-        .querySelector(`#step-${step}`)
-        ?.getBoundingClientRect().top
-      setTimeout(() => {
-        window.scrollTo({ top, behavior: 'smooth' })
-      }, 100)
+      const el = document
+      .querySelector(`#step-${step}`)
+      if(el) {
+        setTimeout(() => {
+          el.scrollIntoView({behavior: 'smooth', block:'start'})
+        }, 900)
+      }
     },
     change() {
       this.$emit('change')
@@ -335,7 +339,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .checkout {
-  @apply p-4 md:p-0;
+  @apply p-4;
   &__header {
     @apply hidden w-full pt-6 md:block;
     .checkout-stepper {

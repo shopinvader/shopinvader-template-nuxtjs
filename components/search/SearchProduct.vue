@@ -29,7 +29,7 @@
           :key="item.id"
           :product="item"
           :inline="false"
-          v-motion="motion(index)"
+          v-animate="{name: 'searchProduct', index}"
         >
           <template #variants>
 
@@ -93,6 +93,7 @@ export default {
     }
   },
   setup() {
+
     const { t } = useI18n()
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
@@ -101,6 +102,7 @@ export default {
       cart,
       $t: t
     }
+
   },
   methods: {
     transformResult(result: any) {

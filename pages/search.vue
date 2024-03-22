@@ -6,7 +6,7 @@
     :query="query"
   >
     <template #header>
-      <div class="text-2xl font-heading">
+      <div v-if="queryString" class="text-2xl font-heading">
         {{ $t('search.autocomplete.product', { query: queryString }) }}
       </div>
     </template>
@@ -27,9 +27,11 @@ export default {
     const $route = useRoute()
     const refresh = ref(false)
     const queryString = computed(() => $route.query.q)
-    useSeoMeta({
-      title: t('search.autocomplete.product', { query: queryString?.value || '' })
-    })
+    if(queryString?.value) {
+      useSeoMeta({
+        title: t('search.autocomplete.product', { query: queryString?.value || '' })
+      })
+    }
     watch(queryString, () => {
       refresh.value = true
       setTimeout(() => {
