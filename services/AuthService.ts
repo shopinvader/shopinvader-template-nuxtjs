@@ -18,29 +18,63 @@ export abstract class AuthService extends Service {
     this.provider = provider
     this.storage = nuxtStorage?.localStorage
   }
+  abstract init(services:ShopinvaderServiceList): Promise<any>
   getUser(): Ref<User | boolean | null> {
     const store = this.store()
     const { user } = storeToRefs(store)
     return user
   }
-
-  setUser(data: any) {
+  async fetchUser(): Promise<any> {
+    let user = null
+    try {
+      const profile = await this.provider?.get("customer", [], null)
+      if(profile) {
+        user = this.setUser(profile)
+      }
+    } catch (e) {
+      this.setUser(null)
+    } finally {
+      return user
+    }
+  }
+  async saveUser(profile:User):Promise<User | null> {
+    let user = null
+    try {
+      const json = profile.getJSONData()
+      user = await this.provider?.post("customer", json)
+    } catch (e) {
+      console.error(e)
+      user = null
+      throw e
+    } finally {
+      user = await this.setUser(user)
+      return user
+    }
+  }
+  async setUser(data: any): Promise<User | null> {
     const store = this.store()
-    const user: User | null = data ? new User(data) : null
-    store.setUser(user)
-    this.setSession(user !== null)
-    if (user !== null) {
-      for (const callback of this.callbacksUserLoaded) {
-        if (typeof callback == 'function') {
-          callback(user)
+    if(data) {
+      const user: User | null = data ? new User(data) : null
+      store.setUser(user)
+      this.setSession(user !== null)
+      if (user !== null) {
+        for (const callback of this.callbacksUserLoaded) {
+          if (typeof callback == 'function') {
+            await callback(user)
+          }
+        }
+      } else {
+        for (const callback of this.callbacksUserUnLoaded) {
+          if (typeof callback == 'function') {
+            await callback(user)
+          }
         }
       }
+      return user || null
     } else {
-      for (const callback of this.callbacksUserUnLoaded) {
-        if (typeof callback == 'function') {
-          callback(user)
-        }
-      }
+      store.setUser(null)
+      this.setSession(null)
+      return null
     }
   }
   /**

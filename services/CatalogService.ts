@@ -43,27 +43,41 @@ export class CatalogService extends Service {
     return { hits, total, aggregations, rawsHits }
   }
   getByURLKey(urlKey: string, sku: string | null): Promise<CatalogResult> {
-    if(sku) {
-      return this.find('sku.keyword', [sku])
+
+    const bool: any = {
+      should: [
+        {
+          terms: {
+            url_key: [urlKey]
+          }
+        },
+        {
+          terms: {
+            redirect_url_key: [urlKey]
+          }
+        }
+      ]
     }
-    return this.search({
-      query: {
+    let query: any = { bool}
+    if(sku) {
+      /** Boost product with specific SKU */
+      query = {
         bool: {
+          must: [
+            {bool}
+          ],
           should: [
             {
               terms: {
-                url_key: [urlKey]
-              }
-            },
-            {
-              terms: {
-                redirect_url_key: [urlKey]
+                'sku.keyword': [sku]
               }
             }
           ]
         }
       }
-    })
+    }
+    console.log('query', query)
+    return this.search({ query })
   }
   async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {
     const result = await this.getByURLKey(urlKey, sku)

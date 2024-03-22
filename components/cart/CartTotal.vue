@@ -44,8 +44,16 @@
           {{ $filter.currency(cart.delivery.fees?.total) }}
         </div>
         <div v-if="cart.delivery.method?.name" class="mention">
-          {{ $t('cart.delivery.method.title') }}
+          <icon name="carrier" />
           {{ cart.delivery.method?.name }}
+        </div>
+      </div>
+      <div v-if="cart?.discount?.value != 0" class="cart-total__discount">
+        <div class="label">
+          {{ $t('cart.discount.title') }}
+        </div>
+        <div class="value">
+          {{ $filter.currency(cart?.discount?.taxIncluded) }}
         </div>
       </div>
       <div class="cart-total__total">
@@ -66,25 +74,18 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-/**
- * Display the cart's total
- * This component is used in the component Cart and in sereral checkout steps.
- * This component retrieve the cart from the store.
- */
-
-export default defineNuxtComponent({
-  name: 'CartTotal',
-  setup() {
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    return { cart }
-  }
-})
+<script lang="ts" setup>
+  /**
+   * Display the cart's total
+   * This component is used in the component Cart and in sereral checkout steps.
+   * This component retrieve the cart from the store.
+   */
+  const cartService = useShopinvaderService('cart')
+  const cart = cartService.getCart()
 </script>
 <style lang="scss">
 .cart-total {
-  @apply bg-gray-100 px-6 py-10;
+  @apply card card-body bg-gray-100;
   &__title {
     @apply font-heading text-xl;
   }
@@ -99,9 +100,14 @@ export default defineNuxtComponent({
       @apply w-full flex-grow text-sm text-gray-600;
     }
   }
-
   &__discount {
-    @apply text-info;
+    @apply border-t pt-2 text-info;
+    .label {
+      @apply p-0  text-accent-600;
+    }
+    .value {
+      @apply text-lg  text-accent-600;
+    }
   }
   &__total {
     @apply border-t pt-2 text-gray-900;

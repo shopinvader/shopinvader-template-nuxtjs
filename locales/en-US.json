@@ -134,18 +134,12 @@
       "intro": "Your order has been validated",
       "message": "You will receive an email with the details of your order. You can also find it in your account.",
       "link":"View my orders",
-    }
-  },
-  "payment": {
-    "manual": {
-      "title": "Wire transfer",
-      "intro": "Please wire the amount to the following bank account",
-      "cta": "Validate my order"
     },
-    "sips": {
-      "title": "Credit card",
-      "intro": "Please enter your credit card information",
-      "cta": "Pay by credit card"
+    "coupon": {
+      "title": "A promo code?",
+      "apply": "Apply",
+      "error": "Invalid or expired code",
+      "success": "Promo code applied!"
     }
   },
   "account": {
@@ -323,5 +317,8 @@
       "estimating": "Waiting for estimate",
       "estimated": "To confirm"
     }
+  },
+  "payment": {
+    "select": "Select"
   }
 }

@@ -1,12 +1,7 @@
 <template>
-  <NuxtLayout name="default">
-    <template #header>
-      <header-lite> </header-lite>
-    </template>
-    <main>
-      <cart-checkout @next="next"></cart-checkout>
-    </main>
-  </NuxtLayout>
+  <div>
+    <cart-checkout @next="next"></cart-checkout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,12 +14,13 @@ export default defineNuxtComponent({
       title: i18n.t('cart.title')
     })
     definePageMeta({
-      layout: false
+      layout: 'checkout'
     })
   },
   methods: {
     next() {
-      this.$router.push('/checkout/validated')
+      const router = useRouter()
+      router.push('/checkout/validated')
     }
   }
 })

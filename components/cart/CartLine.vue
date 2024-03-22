@@ -62,7 +62,7 @@
           @slot Quantity selector content
           @binding {CartLine} line - cart line
         -->
-        <slot name="qty" :line="line">
+        <slot name="qty" :line="line" v-if="amount.total >= 0">
           <div class="label">
             {{ $t('cart.line.quantity') }}
             <span v-if="readonly">{{ line?.qty }}</span>
@@ -106,10 +106,10 @@
               v-if="line.amount.discountTotal !== 0"
               class="price__original"
             >
-              {{ $filter.currency(line.amount.totalWithoutDiscount) }}
+              {{ $filter.currency(amount.totalWithoutDiscount) }}
             </div>
             <div class="price__value">
-              {{ $filter.currency(line.amount.total) }}
+              {{ $filter.currency(amount.total) }}
             </div>
           </div>
         </slot>
@@ -126,7 +126,7 @@
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { CartLine } from '~/models'
+import { CartLineAmount, CartLine } from '~/models'
 import CartLineQtyVue from './CartLineQty.vue'
 import ProductImageVue from '../product/ProductImage.vue'
 
@@ -176,6 +176,9 @@ export default defineNuxtComponent({
     }
   },
   computed: {
+    amount(): CartLineAmount {
+      return this.line?.amount || new CartLineAmount({})
+    },
     product() {
       return this.line?.product || false
     },
@@ -249,15 +252,18 @@ export default defineNuxtComponent({
       &__qty {
         @apply col-span-3 flex flex-col text-sm sm:col-span-2  md:col-span-1 md:row-span-2;
         .cart-line-qty {
-          @apply h-10 w-32 p-0;
-          .input-group {
-            @apply h-full items-center;
-            .cartline-qty {
-              &__btn {
-                @apply h-full w-8 text-base;
-              }
-              &__input {
-                @apply h-full  text-center text-base font-normal;
+          @apply h-10 w-full p-0;
+          .input-qty {
+            @apply max-w-full;
+            .input-group {
+              @apply h-full items-center;
+              .cartline-qty {
+                &__btn {
+                  @apply h-full w-8 text-base;
+                }
+                &__input {
+                  @apply h-full  text-center text-base font-normal;
+                }
               }
             }
           }

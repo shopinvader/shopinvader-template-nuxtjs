@@ -1,91 +1,135 @@
 <template>
-  <div v-if="service" class="payment-manual">
-    <div class="payment-manual__icon">
-      <slot name="icon">
-        <icon name="solar:card-transfer-bold-duotone" />
+  <form class="payment-generic" ref="formPayment" @submit.prevent="select">
+    <div class="payment-generic__name">
+      <slot name="name" :method="method">
+        {{ method.name }}
+        <div v-if="method.state == 'test'" class="badge badge-accent">
+          {{ method.state }}
+        </div>
       </slot>
     </div>
-    <div class="payment-manual__body">
-      <div class="body__title">
-        <slot name="title">
-          {{ paymentMode?.name || $t('payment.manual.title') }}
-        </slot>
-      </div>
-      <div class="body__message">
-        <slot name="body">
-          {{ paymentMode?.description || $t('payment.manual.intro') }}
-        </slot>
-      </div>
-    </div>
-    <div class="payment-manual__cta">
-      <slot name="body">
-        <button
-          type="button"
-          class="btn-primary btn"
-          :disabled="loading"
-          :class="{ loading: loading }"
-          @click="submit"
-        >
-          {{ $t('payment.manual.cta') }}
-        </button>
+    <div class="payment-generic__desc">
+      <slot name="desc" :method="method">
+        {{ method.payableReference }}
       </slot>
     </div>
-  </div>
+    <div v-if="error" class="payment-generic__error">{{ error }}</div>
+    <div class="payment-generic__form">
+      <slot name="form" :method="method">
+        <div v-if="method.expressCheckoutFormViewRendered" v-html="method.expressCheckoutFormViewRendered"></div>
+        <div v-if="method.inlineFormViewRendered" v-html="method.inlineFormViewRendered"></div>
+      </slot>
+    </div>
+    <div v-if="transaction" class="payment-generic__transaction">
+      <slot name="transaction" :transaction="transaction">
+      </slot>
+    </div>
+    <div class="payment-generic__icons">
+      <img
+        v-for="icon in method.icons"
+        :src="`data:image/png;base64,${decodeImage(icon.image)}`"
+        :alt="icon.name"
+        class="icons__img"
+      />
+    </div>
+    <div class="payment-generic__action">
+      <button type="submit" class="action__submit" :disabled="loading">
+        <span v-if="loading" class="loading loading-spinner"></span>
+        {{ $t('payment.select', {amount: paymentData.amountFormatted}) }}
+        <icon name="right" />
+      </button>
+    </div>
+  </form>
 </template>
-<script lang="ts">
-import { ErpFetch } from '@shopinvader/fetch'
-import { PaymentMode } from '#models'
-import { PaymentManualService } from '~/services'
-
-export default defineNuxtComponent({
-  name: 'PaymentGeneric',
-  emits: ['success', 'error'],
-  props: {
-    paymentMode: {
-      type: Object as PropType<PaymentMode>,
+<script setup lang="ts">
+  import { PaymentMethod, PaymentData, PaymentTransaction } from '#models'
+  const emit = defineEmits(['select', 'transaction'])
+  const inputs:any[] = []
+  const loading = ref(false)
+  const paymentService = useShopinvaderService('payment')
+  const formPayment  = ref<HTMLFormElement | null>(null)
+  const transaction = ref(null) as Ref<PaymentTransaction | null>
+  const error = ref(null)
+  const props = defineProps({
+    method: {
+      type: Object as PropType<PaymentMethod>,
+      required: true
+    },
+    paymentData: {
+      type: Object as PropType<PaymentData>,
       required: true
     }
-  },
-  data() {
-    return {
-      loading: false,
-      service: null as PaymentManualService | null
-    }
-  },
-  setup() {
-    const erp = useShopinvaderProviders('erp') || null
-    if (!erp) throw new Error('No erp provider found')
-    let service = new PaymentManualService(erp as ErpFetch)
-    return { service }
-  },
-  methods: {
-    async submit() {
-      try {
-        this.loading = true
-        this.$emit('submit', 'manual')
-        await this.service.addPayment(this.paymentMode.id)
-        this.$emit('success')
-      } catch (e) {
-        this.$emit('error', e)
-      } finally {
-        this.loading = false
+  })
+  const req = useRequestURL()
+  const localePath = useLocalePath()
+  const url = `${req.origin}${localePath({ path:`/checkout/validated`})}`
+
+  const select = async (e:Event) => {
+    try {
+      loading.value = true
+      if(formPayment.value) {
+        const formData = new FormData(formPayment.value)
+        for (const [key, value] of formData.entries()) {
+          inputs.push({ key, value })
+        }
       }
+      if(!paymentService) {
+        throw new Error('Payment service not available')
+      }
+      emit('select', inputs)
+      error.value = null
+      transaction.value = await paymentService.createTransaction(
+        props.paymentData,
+        props.method,
+        inputs,
+        url
+      )
+
+      if(transaction.value.redirectFormHtml) {
+        const formDiv = document.createElement('div')
+        formDiv.innerHTML = transaction.value.redirectFormHtml
+        var form = formDiv.querySelector('form')
+        document.body.appendChild(formDiv)
+        if(form) {
+          form.submit()
+        }
+      }
+      emit('transaction', transaction.value)
+    } catch (e: any) {
+      console.error('error', e)
+      error.value = e?.message || e
+    } finally {
+      loading.value = false
     }
   }
-})
+
+  const decodeImage = (base64:string) => {
+    if(!import.meta.env.SSR && atob) {
+      return atob(base64)
+    }
+    return base64
+  }
 </script>
 <style lang="scss">
-.payment-manual {
-  @apply flex items-center justify-between  gap-4 p-4;
-  &__icon {
-    @apply text-6xl;
+.payment-generic {
+  @apply card card-body card-bordered flex gap-1;
+  &__name {
+    @apply text-lg font-semibold;
   }
-  &__body {
-    @apply flex-grow;
-    .body {
-      @apply text-sm;
-      &__title {
-        @apply text-lg font-bold;
+  &__icons {
+    @apply flex gap-1 flex-wrap;
+    .icons__img {
+      @apply w-auto h-7 border;
+    }
+  }
+  &__error {
+    @apply alert alert-error;
+  }
+  &__action {
+    @apply flex justify-end;
+    .action {
+      &__submit {
+        @apply btn btn-primary btn-sm;
       }
     }
   }

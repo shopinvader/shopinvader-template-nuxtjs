@@ -11,8 +11,8 @@ export class CartDelivery extends Model {
   address: Address | null
   constructor(data: any) {
     super(data)
-    this.fees = new CartAmount(data?.fees || {})
-    this.method = new DeliveryCarrier(data?.method || {})
+    this.fees = new CartAmount(data?.amount || {})
+    this.method = new DeliveryCarrier(data?.selected_carrier || {})
     this.address = data?.address ? new Address(data?.address ) : null
   }
 }

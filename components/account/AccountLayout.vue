@@ -1,42 +1,43 @@
 <template>
-  <ClientOnly>
-    <div v-if="user !== null" class="account-layout">
-      <slot v-if="navbar" name="navbar">
-        <account-navbar
-          v-if="items && items?.length > 0"
-          :items="items"
-          :selected="slug"
-          class="account-layout__navbar"
-        ></account-navbar>
-      </slot>
-      <div class="account-layout__main">
-        <div class="main__head">
-          <slot name="title">
-            <div class="head__back">
-              <nuxt-link :to="localePath('account')">
-                <icon name="left"></icon>
-              </nuxt-link>
+  <div v-if="user" class="account-layout">
+    <slot v-if="navbar" name="navbar">
+      <account-navbar
+        v-if="items && items?.length > 0"
+        :items="items"
+        :selected="slug"
+        class="account-layout__navbar"
+      ></account-navbar>
+    </slot>
+    <div class="account-layout__main">
+      <div class="main__head">
+        <slot name="title">
+          <div class="head__back">
+            <nuxt-link :to="localePath('account')">
+              <icon name="left"></icon>
+            </nuxt-link>
+          </div>
+          <template v-if="currentPage">
+            <div class="head">
+              <icon class="head__icon" :name="currentPage.icon"></icon>
+              <h1 class="head__title">
+                {{ currentPage?.title }}
+              </h1>
+              <button class="btn btn-primary" @click="logout">
+                <icon name="logout" class="" />
+                {{ $t('account.logout') }}
+              </button>
             </div>
-            <template v-if="currentPage">
-              <div class="head">
-                <icon class="head__icon" :name="currentPage.icon"></icon>
-                <h1 class="head__title">
-                  {{ currentPage?.title }}
-                </h1>
-                <button class="btn btn-primary" @click="logout">
-                  <icon name="logout" class="" />
-                  {{ $t('account.logout') }}
-                </button>
-              </div>
-            </template>
-          </slot>
-        </div>
-        <div class="main__content">
-          <slot name="content" :items="items"></slot>
-        </div>
+          </template>
+        </slot>
+      </div>
+      <div v-if="!loading" class="main__content">
+        <slot  name="content" :items="items"></slot>
+      </div>
+      <div v-else="loading" class="main__loading">
+        <spinner/>
       </div>
     </div>
-  </ClientOnly>
+  </div>
 </template>
 
 <script lang="ts">
@@ -55,15 +56,24 @@ export default defineNuxtComponent({
     }
   },
   setup() {
+    const loading = ref(false)
     const auth = useShopinvaderService('auth')
     const user = auth.getUser()
     const localePath = useLocalePath()
     const logout = () => {
-      auth.logoutRedirect()
+      loading.value = true
+      try {
+        auth.logoutRedirect()
+      } catch (error) {
+        console.error(error)
+      } finally {
+        loading.value = false
+      }
     }
     return {
       localePath,
       logout,
+      loading,
       user
     }
   },
@@ -84,16 +94,6 @@ export default defineNuxtComponent({
           title: this.$t('account.sales.title'),
           icon: 'sales',
           slug: 'account-sales'
-        },
-        {
-          title: this.$t('account.quotations'),
-          icon: 'quotations',
-          slug: 'account-quotations'
-        },
-        {
-          title: this.$t('account.invoices'),
-          icon: 'invoices',
-          slug: 'account-invoices'
         }
       ]
     }
@@ -132,6 +132,9 @@ export default defineNuxtComponent({
       }
       &__content {
         @apply container mx-auto min-h-screen p-3;
+      }
+      &__loading {
+        @apply flex justify-center items-center min-h-36 pt-10;
       }
     }
   }

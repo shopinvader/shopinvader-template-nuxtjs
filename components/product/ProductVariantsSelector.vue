@@ -22,8 +22,8 @@
                 type="button"
                 class="values__btn"
                 :class="{
-                  'values__btn--selected': value == selectValues[name],
-                  'values__btn--unselected':  value != selectValues[name]
+                  'values__btn--selected': value?.toLowerCase() == selectValues[name]?.toLowerCase(),
+                  'values__btn--unselected':  value?.toLowerCase() != selectValues[name]?.toLowerCase()
                 }"
                 @click="selectVariant(name, value)"
               >

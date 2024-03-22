@@ -4,18 +4,20 @@
       <slot name="head"></slot>
     </div>
     <div class="product-links__items">
-      <div
-        v-for="(product, index) in productLinks"
-        :key="product?.id || 0"
-        class="items__product"
-        v-motion="motion(index)"
-      >
-        <product-hit :product="product" :inline="false">
-          <template #actions>
-            <span></span>
-          </template>
-        </product-hit>
-      </div>
+      <slot name="products" :products="productLinks">
+        <div
+          v-for="(product, index) in productLinks"
+          :key="product?.id || 0"
+          class="items__product"
+          v-animate="{name: 'productLinks', index}"
+        >
+          <product-hit :product="product" :inline="false">
+            <template #actions>
+              <span></span>
+            </template>
+          </product-hit>
+        </div>
+      </slot>
     </div>
   </div>
 </template>
@@ -54,17 +56,6 @@ export default defineNuxtComponent({
       this.productLinks = (await productService?.getByIds(this.ids))?.hits || []
     }
   },
-  methods: {
-    motion(index: number) {
-      const { animations } = useAppConfig() as any
-      if(!animations) return false
-      let motion = animations?.productLinks || false
-      if(typeof motion === 'function') {
-        motion = motion(index)
-      }
-      return motion || false
-    }
-  }
 })
 </script>
 

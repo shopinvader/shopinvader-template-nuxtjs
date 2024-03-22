@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: ["Montserrat"],
+        heading: "Montserrat",
       },
       colors: {
         slate: colors.slate,
@@ -39,6 +39,20 @@ export default {
           '800': '#7a4619',
           '900': '#693a1a',
           '950': '#3d1e0b',
+        },
+        accent: {
+          DEFAULT: "#74253f",
+          '50': '#fcf3f7',
+          '100': '#f9eaf2',
+          '200': '#f5d5e5',
+          '300': '#efb2cf',
+          '400': '#e482ae',
+          '500': '#d75d90',
+          '600': '#c43e70',
+          '700': '#a92d58',
+          '800': '#8c2849',
+          '900': '#74253f',
+          '950': '#471022',
         },
       },
     },

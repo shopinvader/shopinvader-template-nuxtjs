@@ -4,9 +4,11 @@ import {
   Product,
   CartLine as CartLineModel,
   Address,
-  Sale
+  Sale,
+  PaymentData
 } from '#models'
-import { Service, ProductService } from '#services'
+
+import { Service } from '#services'
 import { storeToRefs } from 'pinia'
 import isEqual from 'lodash.isequal'
 
@@ -18,7 +20,7 @@ class CartObserver {
   }
 
   onCartUpdated(data: any) {
-    let cartData = {}
+    let cartData:any = {}
     if(typeof data?.getData == 'function') {
       cartData = {...data.getData()}
     }
@@ -38,7 +40,7 @@ class CartObserver {
             id: line?.erpCartLine?.id,
             qty,
             product_id: productId,
-            options: line?.options || { contact_id: 1},
+            options: line?.options || {},
             hasPendingTransactions
           }
         }
@@ -53,35 +55,63 @@ class CartObserver {
 }
 
 export class CartService extends Service {
+  services: ShopinvaderServiceList | null = null
   serviceName = 'cart'
+  syncUrl:string = 'carts/sync'
   erp: any // ErpFetch
   cart: any | null
   id: number | null = null // Cart ID
   products: Product[] = []
-  productService: ProductService | null = null
   debug = false
-  constructor(erp: any, productService: ProductService) {
+  constructor(erp: any) {
     super()
     this.erp = erp
-    this.productService = productService
     this.setCart = this.setCart.bind(this)
     this.transformCart = this.transformCart.bind(this)
+  }
+  init(services: ShopinvaderServiceList): void {
+    super.init(services)
     if (!import.meta.env.SSR) {
       const observer = new CartObserver(this.setCart)
       this.cart = new Cart(
         this.erp,
         new WebStorageCartStorage(window.localStorage), {
-          syncUrl: 'carts/sync',
+          syncUrl: this.syncUrl,
           debug: true
         }
       )
       this.cart.registerObserver(observer)
+
       /** Get last stored cart before fetching API with syncWithRetry */
       if (window?.localStorage?.getItem('cart')) {
-        this.setCart(JSON.parse(window.localStorage.getItem('cart') || '{}'))
+        let data = JSON.parse(window.localStorage.getItem('cart') || '{}')
+
+        const urlParams = new URLSearchParams(window.location.search)
+        const status = urlParams.get('status') || null
+        const reference = urlParams.get('reference') || null
+        if(status == 'success' && reference) {
+          this.store().setLastSale(data)
+          this.cart?.clearPendingTransactions()
+          data = {}
+        }
+        this.setCart(new CartModel(data))
         this.sync()
       }
+
+
     }
+    if(services?.auth && services?.cart) {
+      const { auth } = services
+      /** Retrieve cart content on user login */
+      auth?.onUserLoaded((user) => {
+        services.cart.sync()
+      })
+      /** Clear cart after user logout */
+      auth?.onUserUnLoaded(() => {
+        services.cart.clear()
+      })
+    }
+
   }
   sync() {
     this.cart?.syncWithRetry()
@@ -118,9 +148,9 @@ export class CartService extends Service {
   }
   async transformCart(cart: CartModel): Promise<CartModel> {
     /** Fetch cart product to product index */
-    if (cart?.lines?.length > 0 && this.productService !== null) {
+    if (cart?.lines?.length > 0 && this.services?.products !== null) {
       const ids: number[] =
-      cart.lines
+        cart.lines
           .map((l: CartLineModel) => l.productId || 0)
           .filter(
             (i: number | null) =>
@@ -128,7 +158,7 @@ export class CartService extends Service {
           ) || []
 
       if (ids.length > 0) {
-        const {hits} = (await this.productService.getByIds(ids)) || []
+        const { hits } = (await this.services?.products.getByIds(ids)) || { hits:[] }
         const products = hits.reduce((acc: any, product: Product) => {
           return [...acc, ...product.variants || []]
         }, [])
@@ -143,6 +173,19 @@ export class CartService extends Service {
 
         if (product !== null) {
           line.product = product
+        }
+      }
+    }
+    if(this.services?.settings) {
+      const countries = await this.services?.settings?.get('countries') || []
+      if(countries?.length > 0) {
+        if(cart.delivery.address) {
+          let address = cart.delivery.address
+          cart.delivery.address.country = countries.find((c: any) => c.id === address?.country?.id) || null
+        }
+        if(cart.invoicing.address) {
+          let address = cart.delivery.address
+          cart.invoicing.address.country = countries.find((c: any) => c.id === address?.country?.id) || null
         }
       }
     }
@@ -216,17 +259,16 @@ export class CartService extends Service {
   async setDeliveryCarrier(carrierId: number) {
     const cart = this.getCart()?.value || null
     if (!cart?.uuid) return Promise.reject('No cart uuid')
-    const data: any = await this.erp.post('/cart/set_delivery_method', {
-      method_id: carrierId,
-      uuid: cart.uuid
+    const data: any = await this.erp.post('cart/current/set_carrier', {
+      carrier_id: carrierId
     })
     if (data?.id) {
-      this.setCart(new CartModel(cart))
+      this.setCart(new CartModel(data))
     }
   }
 
   async update(cart: CartModel) {
-    const data: any = await this.erp.post('carts/update', {
+    const data: any = await this.erp.post('cart/current/update', {
       client_order_ref: cart.orderRef || '',
       delivery: {
         address_id: cart?.delivery?.address?.id || null
@@ -253,6 +295,28 @@ export class CartService extends Service {
   clear() {
     this.cart?.clearPendingTransactions()
     this.setCart(new CartModel({}))
+  }
 
+  /**
+   * Apply a coupon to the cart
+   * @param couponCode The coupon code to apply
+   */
+  async applyCoupon(code: string) {
+    if(!code) return null
+    const cart:any = await this.erp.post('cart/current/coupon', {
+      code
+    })
+
+    if (cart?.id) {
+      this.setCart(new CartModel(cart));
+    }
+  }
+
+  async getPayable(): Promise<PaymentData | null> {
+    const data = await this.erp.get('cart/current/payable', {})
+    if(data) {
+      return new PaymentData(data)
+    }
+    return null
   }
 }

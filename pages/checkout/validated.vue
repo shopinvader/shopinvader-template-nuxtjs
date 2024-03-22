@@ -20,7 +20,7 @@
       </nuxt-link>
     </div>
     <div class="checkout-validated__sale">
-      <sale-detail v-if="lastSale" :sale=lastSale></sale-detail>
+      <sale-detail v-if="lastSale?.id" :sale=lastSale></sale-detail>
     </div>
   </div>
 </template>

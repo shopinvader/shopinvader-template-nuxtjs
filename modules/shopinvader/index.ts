@@ -42,7 +42,7 @@ declare module '#app' {
     ) => MaybePromise<void>
   }
 }
-
+export { ErpFetchObservable } from './runtime/plugins/providers/ErpFetchObservale'
 export default defineNuxtModule<ShopinvaderConfig>({
   meta: {
     name: 'shopinvader',

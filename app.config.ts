@@ -4,6 +4,7 @@ export default defineAppConfig({
   nuxtIcon: {
     aliases: {
       addresses:"ph:address-book-light",
+      profile:"ph:person-light",
       sales:"ph:list-dashes",
       check: "ph:check",
       left: "ph:arrow-left",
@@ -28,6 +29,7 @@ export default defineAppConfig({
       cart: "clarity:shopping-bag-line",
       shipping: "ph:package",
       billing: "ph:receipt",
+      email:"ph:envelope",
       warning: "ph:warning",
       attention: "iconamoon:attention-circle-thin",
       down: "ph:caret-down-light",
@@ -39,6 +41,7 @@ export default defineAppConfig({
       location: "ic:sharp-location-on",
       menu: "solar:hamburger-menu-outline",
       download: "material-symbols:download-for-offline-outline",
+      carrier: "solar:box-line-duotone",
     },
   },
   animations: {

@@ -5,13 +5,13 @@ export class DeliveryCarrier extends Model {
   code: string
   name: string
   description: string
-  price: number
+  price: number | null = null
   constructor(data: any) {
     super(data)
     this.id = data?.id
     this.code = data?.code
     this.name = data?.name
     this.description = data?.description
-    this.price = data?.price
+    this.price = data?.price_applied_to_cart || null
   }
 }

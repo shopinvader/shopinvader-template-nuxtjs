@@ -1,6 +1,8 @@
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
-import { ErpFetch } from '@shopinvader/fetch'
 import { AuthService } from '../AuthService'
+import type { ErpFetchObservable } from '~/modules/shopinvader'
+
+
 export interface AuthOIDCConfig {
   authority: string
   clientId: string
@@ -14,67 +16,117 @@ export class AuthOIDCService extends AuthService {
   public type: string = 'oidc'
   config: AuthOIDCConfig
   client: UserManager
-  constructor(provider: ErpFetch, config: AuthOIDCConfig) {
+  redirectUri: string
+  services: ShopinvaderServiceList
+  constructor(provider: ErpFetchObservable, config: AuthOIDCConfig) {
+
     super(provider)
     this.config = config
-    if (!import.meta.env.SSR) {
-      const baseUrl = window.location.origin || ''
+    if(!import.meta.env.SSR && provider) {
+      provider.onError((res:any) => {
+        /** Logout if get 401 API RESPONSE */
+        const user = this.getUser()?.value
+        if(user && res?.status == 401) {
+          this.logoutRedirect()
+        }
+      })
+    }
 
+  }
+  public async init(services:ShopinvaderServiceList) {
+    this.services = services
+    if (!import.meta.env.SSR) {
+
+      const { origin } = useRequestURL()
+      this.redirectUri =  new URL(this.config.redirectUri, origin).href
       this.client = new UserManager({
-        authority: config.authority,
-        client_id: config.clientId,
-        redirect_uri: new URL(config.redirectUri, baseUrl).href,
-        response_type: config.responseType,
-        scope: config.scope,
-        post_logout_redirect_uri: new URL(config.postLogoutRedirectUri, baseUrl)
+        authority: this.config.authority,
+        client_id: this.config.clientId,
+        redirect_uri: this.redirectUri,
+        response_type: this.config.responseType,
+        scope: this.config.scope,
+        post_logout_redirect_uri: new URL(this.config.postLogoutRedirectUri, origin)
           .href,
-        userStore: new WebStorageStateStore({ store: window.localStorage })
+        userStore: new WebStorageStateStore({ store: window.localStorage }),
+        automaticSilentRenew: true,
       })
       this.userLoaded = this.userLoaded.bind(this)
-      this.refresh = this.refresh.bind(this)
-      this.client.events.addAccessTokenExpiring(this.refresh)
+      this.userUnloaded = this.userUnloaded.bind(this)
+
       this.client.events.addUserLoaded(this.userLoaded)
+      this.client.events.addUserUnloaded(this.userUnloaded)
       const query = window.location.search
-      if (query.includes('code=') && query.includes('state=')) {
-        // Process the redirect callback from the identity provider
-        this.client.signinCallback()
+
+      let oidcUser = null
+      let loginReturn = query.includes('code=') && query.includes('state=')
+      try {
+        if(loginReturn) {
+          oidcUser = await this.client.signinCallback()
+        } else if(this.getSession()) {
+          await this.fetchUser()
+        }
+      } catch(e) {
+        await this.userUnloaded()
+        console.error(e)
+      } finally {
         // Use replaceState to redirect the user away and remove the querystring parameters
-        window.history.replaceState({}, document.title, '/')
+        if (loginReturn) {
+          setTimeout(() => {
+            window.history.replaceState({}, document.title, window.location.pathname);
+          }, 300)
+        }
       }
+
     }
   }
   async userLoaded() {
-    const $fetch = this.provider?._fetch
-    if ($fetch && this.provider) {
-      this.provider._fetch = async (url: string, options: any) => {
-        const user = await this.client.getUser()
-        options = {
-          ...options,
-          ...(user && { Authorization: `Bearer ${user?.access_token}` })
+    try {
+      let oidcUser = await this.client.getUser()
+      const headers = {
+        Authorization: `Bearer ${oidcUser?.access_token}`
+      }
+      await this.provider?.post("signin", [], { headers }, '')
+      const user = await this.fetchUser()
+    } catch (e) {
+      console.error(e)
+      await this.userUnloaded()
+      await this.client.signoutSilentCallback()
+    }
+
+  }
+  async userUnloaded() {
+    try {
+      await this.provider?.post("signout", [], {}, '')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+  async loginRedirect(url?:string): Promise<any> {
+    const user = this.getSession() ? await this.fetchUser() : false
+    if(!user) {
+      if (this.client) {
+        await this.client.signinRedirect({ redirect_uri: url })
+      }
+    } else {
+      let options = {external: true}
+      try {
+        const { host, protocol } = useRequestURL()
+        const domaine = `${protocol}//${host}`
+        if(url?.includes(domaine)) {
+          options = {external: false}
+          url = url.replace(domaine, '')
         }
-        return $fetch(url, options)
+      } finally {
+        navigateTo(url, options)
       }
     }
   }
-  async refresh() {
-    if (this.client) {
-      this.client.startSilentRenew()
-    }
-  }
-  async loginRedirect(): Promise<any> {
-    if (this.client) {
-      await this.client.signinRedirect()
-    }
-  }
   async logoutRedirect(): Promise<any> {
-    if (this.client) {
+    const user = await this.client.getUser()
+    if (this.client && user) {
+      await this.setUser(false)
       await this.client.signoutRedirect()
     }
   }
-  async getUser(): Ref<User | null> {
-    if (this.client) {
-      return await this.client.getUser()
-    }
-    return ref(null)
-  }
+
 }
