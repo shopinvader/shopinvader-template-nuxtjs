@@ -49,7 +49,11 @@ export class AuthCredentialService extends AuthService {
    */
   loginRedirect(target: string): Promise<any> {
     return new Promise(() => {
-      navigateTo(target || this.config.loginPage)
+      if(!this.getUser()?.value) {
+        navigateTo(this.config.loginPage)
+      } else {
+        navigateTo(target || this.config.logoutPage)
+      }
     })
   }
 
