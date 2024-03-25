@@ -6,7 +6,7 @@
       <div class="cart-empty__title">
         {{ $t('cart.empty') }}
       </div>
-      <nuxt-link :to="{ path: '/' }" class="btn-primary btn">
+      <nuxt-link :to="localePath({ path: '/' })" class="btn-primary btn">
         {{ $t('cart.continue') }}
       </nuxt-link>
     </slot>
@@ -25,10 +25,12 @@ export default defineNuxtComponent({
     spinner: Spinner
   },
   setup() {
+    const localePath = useLocalePath()
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
     return {
-      cart
+      cart,
+      localePath
     }
   },
   computed: {

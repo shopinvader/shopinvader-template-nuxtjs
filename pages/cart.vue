@@ -33,7 +33,8 @@ export default defineNuxtComponent({
   },
   methods: {
     submit() {
-      this.$router.push('/checkout')
+      const localePath = useLocalePath()
+      this.$router.push(localePath('/checkout'))
     }
   }
 })

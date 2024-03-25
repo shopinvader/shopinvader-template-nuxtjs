@@ -34,7 +34,7 @@
             <label class="label">
               <span class="label-text-alt"></span>
               <span class="label-text-alt">
-                <nuxt-link :to="{ path: '/account/password-reset', query: { email: profile?.login } }" class="btn btn-link btn-xs">
+                <nuxt-link :to="localePath({ path: '/account/password-reset', query: { email: profile?.login } })" class="btn btn-link btn-xs">
                   {{ $t('account.login.forgot_password') }}
                 </nuxt-link>
               </span>
@@ -59,6 +59,11 @@ export default defineNuxtComponent({
   },
   setup() {
     const { t } = useI18n()
+    const localePath = useLocalePath()
+    return {
+      $t: t,
+      localePath
+    }
   }
 })
 </script>
