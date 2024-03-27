@@ -122,11 +122,11 @@ export class Product extends Model {
     }
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
-    const priceLists = Object.keys(data?.prices || {})
+    const priceLists = Object.keys(data?.price_by_pricelist || {})
     if(priceLists?.length > 0) {
       this.pricesList = {}
       for(let priceList of priceLists) {
-        this.pricesList[priceList] = new ProductPrice(data?.prices?.[priceList])
+        this.pricesList[priceList] = new ProductPrice(data?.price_by_pricelist?.[priceList])
       }
 
       if(this.pricesList?.['default']) {
@@ -134,9 +134,8 @@ export class Product extends Model {
         this.price = this.pricesList['default']
       }
     }
-    let price = data?.price?.[priceLists?.[0]] || null
-    if(price) {
-      this.price = new ProductPrice(price) || null
+    if(data?.price ) {
+      this.price = new ProductPrice(data?.price) || null
     }
 
     this.images = [] as ProductImageSet[]
