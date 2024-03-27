@@ -320,5 +320,10 @@
   },
   "payment": {
     "select": "Select"
+  },
+  "table": {
+    "noresult": "No result found",
+    "size": "Page size",
+    "count":"{count} result(s)"
   }
 }

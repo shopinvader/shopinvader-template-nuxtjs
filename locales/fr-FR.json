@@ -359,5 +359,10 @@
   },
   "payment": {
     "select": "Sélectionner"
+  },
+  "table": {
+    "noresult": "Aucun résultat",
+    "size": "Nombre de résultats par page",
+    "count":"{count} resultat(s)"
   }
 }
