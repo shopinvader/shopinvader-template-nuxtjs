@@ -12,6 +12,7 @@ const notification = defineStore('notification', {
 
   actions: {
     addMessage(message: string, title?: string) {
+      console.log('addMessage', message, title)
       this.messages.push({
         message,
         type: 'success',
