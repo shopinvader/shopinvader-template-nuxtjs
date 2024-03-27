@@ -1,46 +1,55 @@
 <template>
-  <div v-if="user" class="account-layout">
-    <slot v-if="navbar" name="navbar">
-      <account-navbar
-        v-if="items && items?.length > 0"
-        :items="items"
-        :selected="slug"
-        class="account-layout__navbar"
-      ></account-navbar>
-    </slot>
-    <div class="account-layout__main">
-      <div class="main__head">
-        <slot name="title">
-          <div class="head__back">
-            <nuxt-link :to="localePath('account')">
-              <icon name="left"></icon>
-            </nuxt-link>
-          </div>
-          <template v-if="currentPage">
-            <div class="head">
-              <icon class="head__icon" :name="currentPage.icon"></icon>
-              <h1 class="head__title">
-                {{ currentPage?.title }}
-              </h1>
-              <button class="btn btn-primary" @click="logout">
-                <icon name="logout" class="" />
-                {{ $t('account.logout') }}
-              </button>
+  <client-only fallbackTag="div">
+    <template #fallback>
+      <div class="account-layout__loading">
+        <spinner />
+      </div>
+    </template>
+    <div v-if="user" class="account-layout">
+      <slot v-if="navbar" name="navbar">
+        <account-navbar
+          v-if="items && items?.length > 0"
+          :items="items"
+          :selected="slug"
+          class="account-layout__navbar"
+        ></account-navbar>
+      </slot>
+      <div class="account-layout__main">
+        <div class="main__head">
+          <slot name="title">
+            <div class="head__back">
+              <nuxt-link :to="localePath('account')">
+                <icon name="left"></icon>
+              </nuxt-link>
             </div>
-          </template>
-        </slot>
-      </div>
-      <div v-if="!loading" class="main__content">
-        <slot  name="content" :items="items"></slot>
-      </div>
-      <div v-else="loading" class="main__loading">
-        <spinner/>
+            <template v-if="currentPage">
+              <div class="head">
+                <icon class="head__icon" :name="currentPage.icon"></icon>
+                <h1 class="head__title">
+                  {{ currentPage?.title }}
+                </h1>
+                <button class="btn btn-primary" @click="logout">
+                  <icon name="logout" class="" />
+                  {{ $t('account.logout') }}
+                </button>
+              </div>
+            </template>
+          </slot>
+        </div>
+        <div v-if="!loading" class="main__content">
+          <slot  name="content" :items="items"></slot>
+        </div>
+        <div v-else="loading" class="main__loading">
+          <spinner/>
+        </div>
       </div>
     </div>
-  </div>
+  </client-only>
 </template>
 
 <script lang="ts">
+import type { User } from '#models'
+
 export default defineNuxtComponent({
   name: 'AccountLayout',
   props: {
@@ -57,8 +66,8 @@ export default defineNuxtComponent({
   },
   setup() {
     const loading = ref(false)
+    const user = ref(null) as Ref<User | boolean | null>
     const auth = useShopinvaderService('auth')
-    const user = auth.getUser()
     const localePath = useLocalePath()
     const logout = () => {
       loading.value = true
@@ -70,6 +79,9 @@ export default defineNuxtComponent({
         loading.value = false
       }
     }
+    onMounted(() => {
+      user.value = auth.getUser()?.value || null
+    })
     return {
       localePath,
       logout,
@@ -109,6 +121,9 @@ export default defineNuxtComponent({
 <style lang="scss">
 .account-layout {
   @apply w-full gap-1 lg:flex;
+  &__loading {
+    @apply flex justify-center items-center h-32;
+  }
   &__navbar {
     @apply lg:w-1/3 lg:p-3 xl:w-1/4;
   }
