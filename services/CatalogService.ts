@@ -76,7 +76,6 @@ export class CatalogService extends Service {
         }
       }
     }
-    console.log('query', query)
     return this.search({ query })
   }
   async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {

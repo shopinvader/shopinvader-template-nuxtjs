@@ -14,7 +14,7 @@
         <slot name="pending">
           <h1>{{ $t('cart.pending.title') }}</h1>
           <p>{{ $t('cart.pending.checkout') }}</p>
-          <nuxt-link :to="{ path: '/cart' }" class="btn-primary btn">
+          <nuxt-link :to="localePath({ path: '/cart' })" class="btn-primary btn">
             {{ $t('cart.pending.back') }}
           </nuxt-link>
         </slot>
@@ -47,7 +47,7 @@
               <icon name="solar:cart-3-bold-duotone" />
             </div>
             <div class="cart__body">
-              <nuxt-link class="body__title" :to="{ path: '/cart' }">
+              <nuxt-link class="body__title" :to="localePath({ path: '/cart' })">
                 {{ $t('cart.title') }}
               </nuxt-link>
               <span class="body__count">
@@ -208,6 +208,7 @@ export default defineNuxtComponent({
     }
   },
   setup(props) {
+    const localePath = useLocalePath()
     const cartService = useShopinvaderService('cart')
     const cart = cartService?.getCart() || ref(null)
     const i18n = useI18n()
@@ -260,7 +261,8 @@ export default defineNuxtComponent({
       currentStepIndex,
       checkoutSteps,
       cart,
-      displayCart
+      displayCart,
+      localePath,
     }
   },
   computed: {

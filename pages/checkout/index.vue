@@ -19,8 +19,9 @@ export default defineNuxtComponent({
   },
   methods: {
     next() {
+      const localePath = useLocalePath()
       const router = useRouter()
-      router.push('/checkout/validated')
+      router.push(localePath('/checkout/validated'))
     }
   }
 })
