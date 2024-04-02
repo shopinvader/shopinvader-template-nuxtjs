@@ -62,7 +62,7 @@ export default {
       {
         mytheme: {
           fontFamily: 'Montserrat,"sanssecondaryerif"',
-          primary: '#13263d',
+          primary: colors.primary.DEFAULT,
           secondary: '#dca11d',
           accent: '#def2ff',
           neutral: '#42536d',
