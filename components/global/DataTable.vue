@@ -25,7 +25,7 @@
               </div>
             </td>
           </tr>
-          <tr v-else-if="lines.length === 0">
+          <tr v-else-if="lines.length === 0 && !loading">
             <td :colspan="columns.length" class="text-center">
               {{ $t('table.noresult') }}
             </td>
@@ -114,7 +114,10 @@ const size = ref(props.sizeList[0])
 const page = ref(1)
 const lines = ref([]) as Ref<any[]>
 const totalCount = ref(props.count)
-const notification = useNotification()
+const { start, finish } = useLoadingIndicator({
+  duration: 2000,
+  throttle: 200,
+})
 const changePage = (p: number) => {
   page.value = p
 }
@@ -134,6 +137,14 @@ const search = async () => {
     }
   }
 }
+watch(loading, (loading) => {
+
+  if (loading) {
+    start()
+  } else {
+    finish()
+  }
+})
 watch(() => props.rows, (rows) => {
   lines.value = rows
 }, { immediate: true })
@@ -151,17 +162,23 @@ watch([page], () => {
   search()
 })
 
+const autoRefresh = async () => {
+  await search()
+  timer = setTimeout(async () => {
+    await autoRefresh()
+  }, 10000)
+}
+
 onMounted(() => {
   search()
   if(props.autoRefresh) {
-    timer = setInterval(() => {
-      search()
-    }, 10000)
+    autoRefresh()
   }
 })
+
 onUnmounted(() => {
   if(timer) {
-    clearInterval(timer)
+    clearTimeout(timer)
   }
 })
 </script>
@@ -175,6 +192,9 @@ onUnmounted(() => {
       }
       &__loading {
         @apply progress w-full p-0 absolute h-1;
+      }
+      tr {
+        @apply hover:bg-gray-50;
       }
     }
   }
