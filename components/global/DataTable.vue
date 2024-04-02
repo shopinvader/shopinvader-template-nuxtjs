@@ -30,11 +30,18 @@
               {{ $t('table.noresult') }}
             </td>
           </tr>
-          <tr v-else v-for="row in lines" :key="row.id">
-            <td v-for="col in columns" :class="col.class">
-              <slot :name="`${col.key}-data`" :row="row" :count="count" :search="search">
-                {{ row[col.key] }}
-              </slot>
+          <tr v-else v-for="row in lines" :key="row.id" class="data-line" @click="onClickRow(row)">
+            <td v-for="col in columns" class="data-line__cell" :class="col.class">
+              <span class="cell__label">
+                <slot :name="`${col.key}-header`" :column="col" :search="search">
+                  {{ col?.label || '' }}
+                </slot>
+              </span>
+              <span class="cell__value">
+                <slot :name="`${col.key}-data`" :row="row" :count="count" :search="search">
+                  {{ row[col.key] }}
+                </slot>
+              </span>
             </td>
           </tr>
         </tbody>
@@ -71,7 +78,7 @@ interface TableColumn {
   key: string;
   class?: string;
 }
-const emit = defineEmits(['change-pagination'])
+const emit = defineEmits(['change-pagination', 'click'])
 const props = defineProps({
   classTable: {
     type: String,
@@ -137,6 +144,9 @@ const search = async () => {
     }
   }
 }
+const onClickRow = (row: any) => {
+  emit('click', row)
+}
 watch(loading, (loading) => {
 
   if (loading) {
@@ -187,15 +197,31 @@ onUnmounted(() => {
   @apply overflow-x-auto w-full flex flex-col gap-2;
   &__content {
     .table {
+
       thead {
-        @apply relative
+        @apply max-lg:hidden relative;
+      }
+      tbody {
+        @apply max-lg:flex max-lg:flex-col gap-3 max-lg:w-full;
+        tr.data-line {
+          @apply max-lg:grid max-lg:grid-cols-2 gap-1  max-lg:card max-lg:card-bordered w-full hover:bg-gray-50;
+          .data-line__cell {
+            @apply max-lg:flex flex-col max-lg:py-1 ;
+            .cell {
+              &__label {
+                @apply text-xs text-gray-600 lg:hidden;
+              }
+              &__value {
+
+              }
+            }
+          }
+        }
       }
       &__loading {
         @apply progress w-full p-0 absolute h-1;
       }
-      tr {
-        @apply hover:bg-gray-50;
-      }
+
     }
   }
   &__loading {
