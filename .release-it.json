@@ -4,10 +4,5 @@
   },
   "npm": {
     "publish": false
-  },
-  "plugins": {
-    "@release-it/bumper": {
-      "out": ["assets/version.json"]
-    }
   }
 }
