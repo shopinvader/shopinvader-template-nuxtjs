@@ -214,7 +214,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .cartline {
-  @apply mb-2 flex flex-wrap justify-center border p-3 sm:flex-nowrap;
+  @apply card card-bordered card-side  mb-2 flex justify-center  p-3 sm:flex-nowrap;
   &--pending {
     .cartline__content {
       .content__price .value {

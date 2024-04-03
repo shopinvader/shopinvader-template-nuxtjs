@@ -155,6 +155,7 @@ export default {
   setup(props) {
     const localePath = useLocalePath()
     let variant = ref(props.product)
+    const router = useRouter()
     useHistoryStore().addProduct(props.product)
     const changeVariant = (item: Product) => {
       item = {
@@ -162,6 +163,11 @@ export default {
         variants: props.product.variants
       }
       variant.value = item
+      console.log('changeVariant', item.sku)
+      if(item?.sku) {
+        const route = useRoute()
+        router.push(localePath({ path: route.fullPath, query: { sku: item.sku }}))
+      }
     }
     return {
       variant,
