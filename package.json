@@ -12,7 +12,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "lint": "eslint --ext \".ts,.js,.vue\" --ignore-path .gitignore .",
-    "lintfix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .gitignore ."
+    "lintfix": "eslint --fix --ext \".ts,.js,.vue\" --ignore-path .gitignore .",
   },
 
   "devDependencies": {
@@ -36,6 +36,7 @@
     "nuxt-simple-robots": "^3.1.1",
     "prettier": "^2.8.1",
     "prettier-plugin-tailwindcss": "^0.2.1",
+    "release-it": "^17.1.1",
     "sass": "^1.55.0",
     "sass-loader": "^13.1.0",
     "typescript": "^4.9.4",
