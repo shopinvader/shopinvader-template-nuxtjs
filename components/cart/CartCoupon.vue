@@ -66,7 +66,7 @@ const applyCoupon = async () => {
 
 <style lang="scss">
 .cart-coupon {
-  @apply px-6 py-3 bg-gray-100;
+  @apply card card-body bg-gray-100;
 }
 
 </style>

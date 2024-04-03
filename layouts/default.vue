@@ -10,7 +10,9 @@
     </main>
     <footer-main></footer-main>
     <navbar-bottom class="md:hidden"></navbar-bottom>
-    <notifications-vue></notifications-vue>
+    <client-only>
+      <notifications></notifications>
+    </client-only>
   </div>
 </template>
 <script lang="ts">

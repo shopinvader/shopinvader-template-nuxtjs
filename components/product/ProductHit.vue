@@ -166,7 +166,7 @@ export default {
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card flex h-full flex-col border-b p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3 relative;
+  @apply card flex h-full flex-col border p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3 relative;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;

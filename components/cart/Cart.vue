@@ -6,6 +6,7 @@
           <!-- @slot Pending state and warning message content  -->
           <slot name="message" :cart="cart">
             <div v-if="hasPendingTransactions" class="message">
+              <icon name="info" class="icon"></icon>
               {{ $t('cart.pending.checkout') }}
             </div>
           </slot>
@@ -139,7 +140,10 @@ export default defineNuxtComponent({
   &__message {
     @apply col-span-3 py-3;
     .message {
-      @apply w-full bg-error p-2 text-white;
+      @apply alert;
+      .icon {
+        @apply text-xl text-info;
+      }
     }
   }
   &__lines {

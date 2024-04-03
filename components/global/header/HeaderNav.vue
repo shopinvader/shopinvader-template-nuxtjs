@@ -107,7 +107,7 @@ export default defineNuxtComponent({
       .level1__item {
         @apply transition duration-150 ease-out hover:ease-in;
         & > .item__link {
-          @apply m-1 text-sm font-semibold uppercase px-1 py-3;
+          @apply m-1 text-sm font-semibold  px-2 py-3;
           .btn {
             @apply hidden;
           }
@@ -117,13 +117,16 @@ export default defineNuxtComponent({
         }
         &--active {
           & > .item__link {
-            @apply bg-primary text-white;
+            @apply bg-primary rounded-t-xl shadow-2xl text-white;
           }
           & > .item__level2 {
-            @apply flex flex-row flex-wrap absolute bg-primary -mt-1 text-white z-[1] m-auto menu p-2 shadow rounded-box w-full -left-1/2 -right-1/2 min-h-[20vw];
+            @apply flex flex-row flex-wrap absolute card card-body bg-primary -mt-2 text-white  z-[1] m-auto menu p-2 lg:p-4 xl:p-8 shadow-2xl  w-full -left-1/2 -right-1/2 min-h-[20vw];
+            a {
+              @apply hover:text-white hover:underline;
+            }
             .level2__item {
               & > .item__link {
-                @apply font-bold;
+                @apply font-bold hover:text-white hover:underline;;
               }
             }
             .item__level3 {

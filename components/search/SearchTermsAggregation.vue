@@ -330,7 +330,7 @@ export default {
 </script>
 <style lang="scss">
 .searchfilter {
-  @apply mb-3 bg-gray-50 hover:bg-gray-100 p-5;
+  @apply mb-3 card bg-gray-50 hover:bg-gray-100 p-5;
   &__header {
     @apply flex flex-nowrap justify-between items-center mb-2 cursor-pointer;
     .header {

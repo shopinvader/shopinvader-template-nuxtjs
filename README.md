@@ -30,6 +30,16 @@ yarn install
 
 ```
 
+Node version >= 18 is required.
+You can use NVM to manage your node versions.
+
+```bash
+nvm use
+or
+nvm install 18
+nvm use 18
+
+```
 ## Development Server
 
 Start the development server on http://localhost:3000

@@ -1,0 +1,13 @@
+{
+  "git": {
+    "commitMessage": "Release v${version}"
+  },
+  "npm": {
+    "publish": false
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": ["assets/version.json"]
+    }
+  }
+}
