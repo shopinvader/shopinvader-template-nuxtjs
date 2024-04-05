@@ -10,7 +10,7 @@
         <thead>
           <tr>
             <th v-for="col in columns">
-              <slot :name="`${col.key}-header`" :column="col" :search="search">
+              <slot :name="`${col.key}-header`" :column="col" :lines="lines" :search="search">
                 {{ col?.label || '' }}
               </slot>
             </th>

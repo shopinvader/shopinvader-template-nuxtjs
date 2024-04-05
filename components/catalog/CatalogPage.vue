@@ -23,9 +23,10 @@
     const catalog = useShopinvaderService('catalog')
     const sku = route?.query?.sku || null as string | null
     const entity = await catalog.getEntityByURLKey(path, sku)
+
     return entity
   })
-  const entity = data.value
+  const entity = data?.value || null
   const slots = useSlots()
   /** Create error if no fallback slot is set */
   if(!entity && !slots?.fallback) {

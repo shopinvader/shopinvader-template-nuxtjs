@@ -23,10 +23,12 @@
           :key="page.to"
           :class="{ active: page.active }"
         >
-          <NuxtLink :to="localePath(page.slug)">
-            <icon :name="page.icon" />
-            {{ page.title }}
-          </NuxtLink>
+          <slot :name="`${page?.slug}-item`" :page="page">
+            <NuxtLink :to="localePath(page.slug)">
+              <icon :name="page.icon" />
+              {{ page.title }}
+            </NuxtLink>
+          </slot>
         </li>
       </ul>
     </div>

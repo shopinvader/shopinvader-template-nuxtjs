@@ -18,7 +18,12 @@
     <div class="line__content">
       <div class="content__text">
         <div class="content__header">
-          <slot name="header" :line="line"> {{ line.name }}</slot>
+          <slot name="header" :line="line">
+            {{ line?.product?.model?.name || line.name }}
+            <div v-if="line?.product?.name" class="header__subtitle">
+              {{ line?.product?.shortName }}
+            </div>
+          </slot>
         </div>
         <div class="content__content">
           <slot name="content" :line="line">
@@ -98,6 +103,9 @@ export default defineNuxtComponent({
       }
       &__header {
         @apply  font-heading;
+        .header__subtitle {
+          @apply text-gray-500 text-xs italic;
+        }
       }
       &__title {
         .title {
@@ -108,7 +116,7 @@ export default defineNuxtComponent({
         @apply pb-3;
       }
       &__qty {
-        @apply text-gray-500;
+        @apply text-gray-500 text-xs;
       }
       &__price {
         @apply flex flex-row p-2;

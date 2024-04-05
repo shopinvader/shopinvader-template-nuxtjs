@@ -1,5 +1,5 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { Sale } from '#models'
+import { Sale, SaleLine } from '#models'
 import { Service, ProductService } from "#services"
 
 // Service to fetch Sales
@@ -38,7 +38,7 @@ export class SaleService extends Service {
     if (!json) return null
     const model = this.jsonToModel(json)
 
-    return await this.fetchProductToQuotation(model)
+    return await this.fetchProductToSale(model)
   }
 
   download(id: number): Promise<Blob | null> {
@@ -53,14 +53,26 @@ export class SaleService extends Service {
     )
   }
 
-  async fetchProductToQuotation(sale: Sale): Promise<Sale> {
+  async fetchProductToSale(sale: Sale): Promise<Sale> {
     const ids = sale?.lines
       .map((line: any) => line.productId)
       .filter((id: any) => id)
     const res = (await this.productService?.getByIds(ids)) || {hits: []}
 
     if (res?.hits?.length > 0) {
-      sale.lines = sale.lines.map((line: any) => {
+      sale.lines = await this.fetchProductToSaleLine(sale.lines)
+    }
+    return sale
+  }
+
+  async fetchProductToSaleLine(lines: SaleLine[]): Promise<SaleLine[]> {
+    const ids = lines
+      .map((line: any) => line.productId)
+      .filter((id: any) => id)
+    const res = (await this.productService?.getByIds(ids)) || {hits: []}
+
+    if (res?.hits?.length > 0) {
+      lines = lines.map((line: any) => {
         const product =
           res.hits.find((product: any) => product.id === line.productId) ||
           null
@@ -70,7 +82,26 @@ export class SaleService extends Service {
         return line
       })
     }
-    return sale
+    return lines
+  }
+
+  /**
+   * getSaleLines fetch last sales lines
+   * @param page
+   * @param perPage
+   * @returns
+   */
+  async getSaleLines(
+    page: number = 1,
+    perPage: number = 10
+  ): Promise<{ count: number; items: SaleLine[] }> {
+    const params: { [k: string]: any } = { page_size: perPage, page }
+    const res = await this.provider?.get('sale_lines', params, null)
+    const items = res.items?.map((item: any) => new SaleLine(item)) || []
+    return {
+      count: res?.count || 0,
+      items: await this.fetchProductToSaleLine(items)
+    }
   }
 
   jsonToModel(json: any): Sale {
