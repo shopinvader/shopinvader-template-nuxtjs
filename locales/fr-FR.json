@@ -240,6 +240,7 @@
       "zip": "Code postal",
       "city": "Ville",
       "phone": "Téléphone",
+      "company": "Société",
       "country": "Pays",
       "noresult": "Aucune adresse",
       "count": "{count} resultat(s)",
@@ -378,7 +379,7 @@
   "contact":{
     "title":"Contact",
     "message":"Contactez-nous via le formulaire ci-dessous",
-    "subject":"Choisissez un service",
+    "subject":"Sujet",
     "first_option":"SAV",
     "second_option":"Commercial",
     "description":"Votre message...",

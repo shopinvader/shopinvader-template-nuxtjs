@@ -10,6 +10,7 @@ export class Settings extends Model {
   titles: Title[] | []
   states: State[] | []
   currencies: Currency[] | []
+  leadSubjects: Title[] | []
   constructor(data: any) {
     super(data)
     this.countries = data?.countries?.map(
@@ -19,6 +20,9 @@ export class Settings extends Model {
     this.states = data?.states?.map((state: any) => new State(state)) || []
     this.currencies = data?.currencies?.map(
       (currency: any) => new Currency(currency)
+    ) || []
+    this.leadSubjects  = data?.lead_subjects?.map(
+      (a: any) => new Title(a)
     ) || []
   }
 }
