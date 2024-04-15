@@ -58,7 +58,8 @@
     }
   ]
   const navigateToSale = (order: Sale) => {
-    navigateTo({ path: `/account/sales/${order?.id}` })
+    const localePath = useLocalePath()
+    navigateTo(localePath({ path: `/account/sales/${order?.id}` }))
   }
 </script>
 <style lang="scss">

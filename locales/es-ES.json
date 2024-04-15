@@ -137,7 +137,13 @@
       "title": "¡Gracias por su pedido!",
       "intro": "Su pedido ha sido validado.",
       "message": "Recibirá un correo electrónico de confirmación en breve. Puede seguir el estado de su pedido en la sección \"Mi cuenta\".",
-      "link": "Ver mis pedidos"
+      "link": "Ver mis pedidos",
+      "pending": "Su pedido está pendiente de pago",
+      "cancelled": {
+        "title": "Pago fallido",
+        "message": "El pago de su pedido no se ha realizado correctamente, su pedido no está validado. Puede intentarlo de nuevo utilizando otro método de pago.",
+        "retry": "Inténtalo de nuevo"
+      }
     },
     "coupon": {
       "title": "¿Tienes un código promocional?",
@@ -210,6 +216,9 @@
         "confirm": "Esta seguro que desea eliminar la dirección?",
         "error": "Ha ocurrido un error eliminando la dirección",
         "success": "Dirección eliminada"
+      },
+      "main": {
+        "title": "Dirección principal"
       }
     },
     "quotations": "Mis presupuestos",
@@ -227,9 +236,42 @@
     "validate": "Validar",
     "close": "Cerrar"
   },
+  "address": {
+    "title": "Mis direcciones",
+    "name": "Nombre y Apellido",
+    "email": "Email",
+    "street": "Postal Address",
+    "street2": "Dirección 2",
+    "zip": "Códgo postal",
+    "city": "Ciudad",
+    "phone": "Teléfno",
+    "country": "País",
+    "noresult": "No se ha encontrado direcciones",
+    "count": "{count} resultado(s)",
+    "edit": "Actualizar dirección",
+    "fetch": {
+      "error": "Ha ocurrido un error al consultar las direcciones"
+    },
+    "type": {
+      "contact": "Dirección de contacto",
+      "delivery": "Dirección de entraga",
+      "invoice": "Dirección de facturación"
+    },
+    "save": {
+      "success": "Dirección guardada exitosamente"
+    },
+    "delete": {
+      "confirm": "Esta seguro que desea eliminar la dirección?",
+      "error": "Ha ocurrido un error eliminando la dirección",
+      "success": "Dirección eliminada"
+    },
+    "main": {
+      "title": "Dirección principal"
+    }
+  },
   "error": {
     "generic": "Ocurrio un error inesperado, por favor intenta lo más tarde.",
-    "404": "La página que estás buscando no existe.",
+    "404": "La página que estás buscando no existe."
   },
   "btn": {
     "view_more": "Ver más"

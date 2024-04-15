@@ -48,6 +48,12 @@
   </header>
 </template>
 <script lang="ts" setup>
+  const props = defineProps({
+    scrolledEffect: {
+      type: Boolean,
+      default: true
+    }
+  })
   const localePath = useLocalePath()
   let interval:any | null = null
   let scrolled = ref(false)
@@ -72,6 +78,7 @@
     }
   }
   onMounted(() => {
+    if(!props.scrolledEffect) return
     previsousScrollState = window.scrollY > 200
     window.addEventListener('scroll', handleScroll)
   })

@@ -88,8 +88,7 @@ export class CartService extends Service {
 
         const urlParams = new URLSearchParams(window.location.search)
         const status = urlParams.get('status') || null
-        const reference = urlParams.get('reference') || null
-        if(status == 'success' && reference) {
+        if((status == 'success' || status == 'pending')) {
           this.store().setLastSale(data)
           this.cart?.clearPendingTransactions()
           data = {}
@@ -282,15 +281,23 @@ export class CartService extends Service {
   }
 
   /**
-   * Get last confirmed cart
+   * Get last confirmed cart from the pinia store
+   * and retrieve products from the sales service
    * @returns Sale | null
    */
-  getLastSale():Sale | null  {
-    const data = this.store()?.lastSale || null
+  async getLastSale():Promise<Sale | null>  {
+    let sale: Sale | null = null
+    const data = this.store()?.lastSale ||  {}
+    console.log('lastSale', data)
     if(data) {
-      return new Sale(data)
+      const saleService = this.services?.sales
+      sale = new Sale(data)
+      console.log('getLastSale', sale)
+      if(saleService) {
+        sale = await saleService.fetchProductToSale(sale)
+      }
     }
-    return null
+    return sale
   }
   clear() {
     this.cart?.clearPendingTransactions()
