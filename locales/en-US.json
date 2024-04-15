@@ -134,6 +134,12 @@
       "intro": "Your order has been validated",
       "message": "You will receive an email with the details of your order. You can also find it in your account.",
       "link":"View my orders",
+      "pending": "Your order is pending payment",
+      "cancelled": {
+        "title": "Payment failed",
+        "message": "The payment of your order was not successful, your order is not validated. You can try again using another payment method.",
+        "retry": "Retry"
+      }
     },
     "coupon": {
       "title": "A promo code?",
@@ -255,6 +261,31 @@
     "create": "Create",
     "validate": "validate",
     "close": "close"
+  },
+  "address": {
+    "name": "Name",
+    "street": "Street",
+    "zip": "Zip code",
+    "city": "City",
+    "phone": "Phone number",
+    "country": "Country",
+    "noresult": "No address found",
+    "type" : {
+      "delivery": "Delivery address",
+      "invoice": "Invoice address",
+      "contact": "Contact address"
+    },
+    "fetch": {
+      "error": "An error occured while fetching your addresses"
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete this address ?",
+      "error": "An error occured while deleting this address",
+      "success": "Address deleted"
+    },
+    "main": {
+      "title": "Main address"
+    }
   },
   "error": {
     "generic": "An error occured, please try again later",

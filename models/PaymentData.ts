@@ -1,7 +1,7 @@
 import { Model } from '#models'
 
 export class PaymentData extends Model {
-  payable: number | null
+  payable: string | null
   payableReference: string | null
   amount: number | null = 0
   currencyCode: string | null

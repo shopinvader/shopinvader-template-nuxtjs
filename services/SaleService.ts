@@ -38,7 +38,7 @@ export class SaleService extends Service {
     if (!json) return null
     const model = this.jsonToModel(json)
 
-    return await this.fetchProductToQuotation(model)
+    return await this.fetchProductToSale(model)
   }
 
   download(id: number): Promise<Blob | null> {
@@ -53,7 +53,12 @@ export class SaleService extends Service {
     )
   }
 
-  async fetchProductToQuotation(sale: Sale): Promise<Sale> {
+  /**
+   * fetch product data from catalog for each line of a sale
+   * @param sale without product data
+   * @returns sale with product data
+   */
+  async fetchProductToSale(sale: Sale): Promise<Sale> {
     const ids = sale?.lines
       .map((line: any) => line.productId)
       .filter((id: any) => id)

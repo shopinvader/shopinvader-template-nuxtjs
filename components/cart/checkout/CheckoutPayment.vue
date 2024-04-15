@@ -8,12 +8,9 @@
       <div></div>
     </div>
     <div class="checkout-payment__items">
-      <template v-if="!loading">
-        <!-- @slot Payment modes list -->
-        <slot name="items" :cart="cart">
-          <template v-for="{method, component} in methods">
-            <component :is="component" :method="method" :paymentData="paymentData" />
-          </template>
+      <template v-if="!loading && paymentData">
+        <slot name="items" :cart="cart" :paymentData="paymentData">
+          <payment-method-list :paymentData="paymentData"></payment-method-list>
         </slot>
       </template>
       <template v-else>
@@ -112,16 +109,7 @@ export default defineNuxtComponent({
         throw new Error('Payment service not available')
       }
       paymentData.value = await cartService.getPayable()
-      if(paymentData) {
-        const modes = await paymentService.getPaymentMethods(paymentData.value?.payable)
-        methods.value = modes.map((method: PaymentMethod) => {
-          const component = importPaymentComponent(method.code)
-          return {
-            method,
-            component: component || 'payment-generic'
-          }
-        })
-      }
+
     } catch (e: any) {
       console.error(e)
       error.value = e
