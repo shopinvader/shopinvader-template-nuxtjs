@@ -1,141 +1,285 @@
 <template>
   <section class="component-section">
     <div class="component-section__container ">
-      <div class="outer-wrapper ">
+      <div v-if="!done" class="outer-wrapper ">
         <slot name="head">
           <div class="outer-wrapper__text">
-            <span class="section-title t">{{$t('contact.title')}}</span>
+            <span class="section-title">{{$t('contact.title')}}</span>
             <h2 class="section-message ">{{$t('contact.message')}}</h2>
           </div>
         </slot>
         <div>
           <form v-if="lead" @submit="save">
             <slot name="body">
-              <div class="form-fieldset-full">
-                <div class="form-fieldset-full__field">
-                  <label class="">
+              <div class="form-fieldset--full">
+                <div class="form-fieldset--full__field">
+                  <label class="label required">
                     <span class="label-text">{{$t('contact.subject')}}</span>
-                    <span class="text-error">*</span>
                   </label>
-                  <select class="" v-model="lead.name" required > 
-                    <option :value="$t('contact.first_option')">{{$t('contact.first_option')}} </option>
-                    <option :value="$t('contact.second_option')">{{$t('contact.second_option')}}</option>
+                  <select  v-if="subjects.length > 0"  class="" v-model="lead.subject" required :disabled="loading">
+                    <option v-for="subjet in subjects" :value="subjects.id">{{subjects.name}} </option>
                   </select>
+                  <input
+                    v-else
+                    type="text"
+                    class="form-fieldset__input"
+                    :placeholder="$t('contact.subject')"
+                    v-model="lead.subject"
+                    :disabled="loading"
+                    required
+                  />
                 </div>
+              </div>
+              <div class="form-fieldset">
+                <div class="form-fieldset__field">
+                  <label class="label required">
+                    <span class="label-text">{{$t('account.address.name')}}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    :placeholder="$t('account.address.name')"
+                    v-model="lead.name"
+                    :disabled="loading"
+                    required
+                  />
+                </div>
+                <div class="form-fieldset__field">
+                  <label class="label ">
+                    <span class="label-text">{{$t('account.address.company')}}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    :placeholder="$t('account.address.company')"
+                    v-model="lead.company"
+                    :disabled="loading"
+
+                  />
+                </div>
+
               </div>
               <div class="form-fieldset ">
                 <div class="form-fieldset__field ">
-                  <label class="label">
-                    <span class="label-text">{{$t('account.address.name')}}</span>
-                    <span class="text-error">*</span>
-                  </label>
-                  <input type="text" class="form-fieldset__input" :placeholder="$t('account.address.name')"  v-model="lead.contact_name" required/>
-                </div>
-                <div class="form-fieldset__field ">
-                  <label class="label">
+                  <label class="label required">
                     <span class="label-text">{{$t('account.address.email')}}</span>
-                    <span class="text-error">*</span>
                   </label>
-                  <input type="email" class=" form-fieldset__input"  placeholder="name@example.com"  v-model="lead.email" required />
+                  <input
+                    type="email" class="form-fieldset__input"
+                    placeholder="name@example.com"
+                    v-model="lead.email"
+                    :disabled="loading"
+                    required
+                  />
+                </div>
+                <div class="form-fieldset__field  ">
+                  <label class="label required">
+                    <span class="label-text">{{$t('account.address.phone')}}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    v-model="lead.phone"
+                    :disabled="loading"
+                    :placeholder="$t('account.address.phone')"
+                    required
+                  />
                 </div>
               </div>
-              <div class=" form-fieldset ">
-                <div class="form-fieldset__field  ">
-                  <label class="label">
-                    <span class="label-text">{{$t('account.address.phone')}}</span>
-                    <span class="text-error">*</span>
-                  </label>
-                  <input type="text" class="  form-fieldset__input" v-model="lead.phone" :placeholder="$t('account.address.phone')" required/>
-                </div>
-                <div class="form-fieldset__field ">
-                  <label class="label">
+              <div class="form-fieldset--full">
+                <div class="form-fieldset--full__field ">
+                  <label class="label required">
                     <span class="label-text">{{$t('account.address.street')}}</span>
                   </label>
-                  <input type="text" class=" form-fieldset__input"  v-model="lead.street" :placeholder="$t('account.address.street')" required />
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    v-model="lead.street"
+                    :placeholder="$t('account.address.street')"
+                    :disabled="loading"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-fieldset--full">
+                <div class="form-fieldset--full__field ">
+                  <label class="label">
+                    <span class="label-text">{{$t('account.address.street2')}}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    v-model="lead.street2"
+                    :placeholder="$t('account.address.street2')"
+                    :disabled="loading"
+                  />
                 </div>
               </div>
               <div class="form-fieldset ">
                 <div class="form-fieldset__field ">
+                  <label class="label required">
+                    <span class="label-text">{{$t('account.address.zip')}}</span>
+                  </label>
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    v-model="lead.zip"
+                    :placeholder="$t('account.address.zip')"
+                    :disabled="loading"
+                    required
+                  />
+                </div>
+                <div class="form-fieldset__field required">
                   <label class="label">
                     <span class="label-text">{{$t('account.address.city')}}</span>
                   </label>
-                  <input type="text" class="  form-fieldset__input" v-model="lead.city" :placeholder="$t('account.address.city')" required />
+                  <input
+                    type="text"
+                    class="form-fieldset__input"
+                    v-model="lead.city"
+                    :placeholder="$t('account.address.city')"
+                    :disabled="loading"
+                    required
+                  />
                 </div>
-                <div class="form-fieldset__field ">
-                  <label class="label">
-                    <span class="label-text">{{$t('account.address.zip')}}</span>
+              </div>
+              <div  v-if="countries.length > 0" class="form-fieldset--full">
+                <div class="form-fieldset--full__field">
+                  <label class="label required">
+                    <span class="label-text">{{$t('account.address.country')}}</span>
                   </label>
-                  <input type="text" class=" form-fieldset__input" v-model="lead.zip" :placeholder="$t('account.address.zip')" required />
+                  <select class="" v-model="lead.country" required :disabled="loading">
+                    <option v-for="country in countries" :value="country">{{country.name}} </option>
+                  </select>
+
                 </div>
               </div>
               <div class="form-fieldset ">
                 <div class="form-fieldset__messagearea">
-                  <label class="label">
+                  <label class="label required">
                     <span class="label-text">{{$t('contact.description')}}</span>
-                    <span class="text-error">*</span>
                   </label>
-                  <textarea class="textarea " v-model="lead.description" :placeholder="$t('contact.description')" required></textarea>
+                  <textarea
+                    class="textarea"
+                    v-model="lead.description"
+                    :placeholder="$t('contact.description')"
+                    :disabled="loading"
+                    required
+                  >
+                  </textarea>
                 </div>
-                
                </div>
+            </slot>
+            <slot name="error">
+              <div v-if="error" class="alert my-5">
+                <icon name="error" class="text-error" />
+                <span>{{$t('error.generic')}}</span>
+              </div>
             </slot>
             <slot name="action">
               <div class="form-fieldset-last ">
-                <label>
-                  <input  type="checkbox" name="terms" value="1" required>
-                  <span >{{$t('contact.data_protection')}}</span> 
-                  <nuxt-link :to="localePath(dataPolicyPage )">
+                <label class="pr-4">
+                  <input type="checkbox" name="terms" value="1" required>
+                  <span>{{$t('contact.data_protection')}}</span>
+                  <nuxt-link :to="privacyPolicylink" target="_blank">
                     <span class="pointer">{{$t('contact.data_policy')}}</span>
                   </nuxt-link>
-                 
                 </label>
-                <button class="form-fieldset-last__submit" type="submit">{{$t('contact.send')}}</button>
+                <button
+                  class="form-fieldset-last__submit"
+                  type="submit"
+                  :disabled="loading"
+                >
+                  {{$t('contact.send')}}
+                </button>
               </div>
             </slot>
           </form>
         </div>
       </div>
+      <div v-else>
+        <div class="message__container">
+          <div class="icon-wrapper">
+            <icon name="ic:outline-email" class="icon-wrapper__icon" />
+          </div>
+          <div class="text-content">
+            {{ $t('contact.form_sent.thankyou_title') }}
+            <div>
+            {{ $t('contact.form_sent.thankyou_description') }}
+            </div>
+          </div>
+          <nuxt-link :to="localePath({path:'/'})" class="btn-outline btn-primary btn">
+            {{ $t('btn.back') }}
+          </nuxt-link>
+        </div>
+      </div>
     </div>
 </section>
 </template>
-<script lang="ts">
-import { Lead } from '~/models/Lead'
-export default defineNuxtComponent({
-  name: 'ContactForm',
-  setup() {
-    const settings = useShopinvaderService('settings')?.init()
-    const countries = settings?.countries || []
-    return {
-      countries
-    }
-  },
-  data() {
-    return {
-      lead: new Lead({}),
-      countries: [],
-    }
-  },
-  props: {
-   dataPolicyPage :{
-      required: false,
+<script lang="ts" setup>
+  import { Country, Lead } from '#models'
+  const props = defineProps({
+    dataPolicyPage: {
       type: String,
-      default: ''
-    },
-  },
-  methods: {
-    save(e: Event) {
-      e.preventDefault()
-      let lead = this.lead
-      this.$emit('lead',lead)
+      required: false
     }
-  },
-})
+  })
+  const emit = defineEmits(['submit'])
+  const localePath = useLocalePath()
+  const privacyPolicylink = props.dataPolicyPage || localePath({ path:'/privacy-policy'})
+  const countries = ref([]) as Ref<Country[]>
+  const subjects = ref([])
+  const loading = ref(false)
+  const error = ref(null)
+  const done = ref(false)
+  const lead = ref(new Lead({}))
+  const { t } = useI18n()
+  onMounted(() => {
+    const settingsService = useShopinvaderService('settings')
+    countries.value = settingsService?.options?.countries || []
+    subjects.value = settingsService?.options?.leadSubjects || []
+    lead.value.country = countries.value[0]
+  })
+  const save = async (e: Event) => {
+    e.preventDefault()
+    const leadsService = useShopinvaderService('leads')
+    const notifications = useNotification()
+    try {
+      error.value = null
+      loading.value = true
+      await leadsService?.create(lead.value)
+      done.value = true
+    } catch (e) {
+      console.error(e)
+      error.value = e
+      notifications.addError(t('contact.error'))
+
+    } finally {
+      loading.value = false
+    }
+  }
 </script>
 <style lang="scss">
 .component-section {
   @apply py-20;
   &__container {
-    @apply container px-4 mx-auto;
+    @apply container flex  justify-center px-4 mx-auto w-full;
+    .message {
+
+      &__container {
+        @apply w-full max-w-2xl rounded-3xl bg-base-100 px-8 py-20 text-center lg:px-20;
+        .icon-wrapper {
+          @apply pb-6 text-center;
+
+          &__icon {
+            @apply inline rounded-full bg-success p-3 text-6xl text-white;
+          }
+        }
+        .text-content {
+          @apply text-lg font-bold mb-8;
+        }
+      }
+    }
     .outer-wrapper {
       @apply max-w-3xl mx-auto text-center;
       &__text {
@@ -147,15 +291,15 @@ export default defineNuxtComponent({
           @apply mt-2 text-4xl font-bold font-heading;
         }
       }
-      .form-fieldset-full{
+      .form-fieldset--full{
         &__field {
           @apply form-control w-full flex justify-center;
          label {
           @apply label justify-start;
          }
          select {
-          @apply  select bg-gray-100 rounded outline-none mr-2; 
-          
+          @apply  select bg-gray-100 rounded outline-none mr-2;
+
          }
         }
       }
@@ -164,7 +308,7 @@ export default defineNuxtComponent({
         .form-fieldset__field  {
           @apply flex flex-col w-full md:w-1/2;
         }
-        textarea {  
+        textarea {
           @apply w-full h-24 p-4 text-xs font-semibold leading-none resize-none bg-gray-50 rounded outline-none;
         }
         &__input {
@@ -175,7 +319,7 @@ export default defineNuxtComponent({
         }
         &__messagearea {
           @apply w-full;
-          
+
           label {
             @apply justify-start;
           }
@@ -193,6 +337,17 @@ export default defineNuxtComponent({
         }
         &__submit {
           @apply  py-4 px-8 text-sm text-white font-semibold leading-none bg-primary hover:bg-blue-900 rounded;
+        }
+      }
+      .form-fieldset, .form-fieldset--full {
+        .required {
+          .label-text {
+            &:after {
+              @apply text-error inline pr-1;
+              content: "*";
+
+            }
+          }
         }
       }
     }

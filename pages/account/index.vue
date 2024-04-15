@@ -1,6 +1,6 @@
 <template>
   <div class="account-dashboard">
-    <account-layout :slug="account" :navbar="false">
+    <account-layout slug="account" :navbar="false">
       <template #title>
         <div class="dashboard__title">
           <div>
@@ -34,7 +34,6 @@
 const localePath = useLocalePath()
 const { t } = useI18n()
 const auth = useShopinvaderService('auth')
-const user = auth.getUser().value
 definePageMeta({
   auth: true,
   pageTransition: false,

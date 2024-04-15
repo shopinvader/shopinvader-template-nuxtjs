@@ -1,59 +1,61 @@
 <template>
-  <client-only fallbackTag="div">
-    <template #fallback>
-      <div class="account-layout__loading">
-        <spinner />
-      </div>
-    </template>
-    <div v-if="user" class="account-layout">
-      <slot v-if="navbar" name="navbar">
-        <account-navbar
-          v-if="items && items?.length > 0"
-          :items="items"
-          :selected="slug"
-          class="account-layout__navbar"
-        >
-          <template #extra="{ pages }">
-            <li v-if="pages.length > 0" class="extra">
-              <nuxt-link :to="localePath('account-logout')">
-                <icon name="logout" />
-                {{ $t('account.logout') }}
-              </nuxt-link>
-            </li>
-          </template>
-        </account-navbar>
-      </slot>
-      <div class="account-layout__main">
-        <div class="main__head">
-          <slot name="title">
-            <div class="head__back">
-              <nuxt-link :to="localePath('account')">
-                <icon name="left"></icon>
-              </nuxt-link>
-            </div>
-            <template v-if="currentPage">
-              <div class="head">
-                <icon class="head__icon" :name="currentPage.icon"></icon>
-                <h1 class="head__title">
-                  {{ currentPage?.title }}
-                </h1>
-                <button @click="logout" class="head__logout">
-                  <icon name="logout" class="" />
+  <div>
+    <client-only fallbackTag="div">
+      <template #fallback>
+        <div class="account-layout__loading">
+          <spinner />
+        </div>
+      </template>
+      <div v-if="auth.getUser()" class="account-layout">
+        <slot v-if="navbar" name="navbar">
+          <account-navbar
+            v-if="items && items?.length > 0"
+            :items="items"
+            :selected="slug"
+            class="account-layout__navbar"
+          >
+            <template #extra="{ pages }">
+              <li v-if="pages.length > 0" class="extra">
+                <nuxt-link :to="localePath('account-logout')">
+                  <icon name="logout" />
                   {{ $t('account.logout') }}
-                </button>
-              </div>
+                </nuxt-link>
+              </li>
             </template>
-          </slot>
-        </div>
-        <div v-if="!loading" class="main__content">
-          <slot name="content" :items="items"></slot>
-        </div>
-        <div v-else="loading" class="main__loading">
-          <spinner/>
+          </account-navbar>
+        </slot>
+        <div class="account-layout__main">
+          <div class="main__head">
+            <slot name="title">
+              <div class="head__back">
+                <nuxt-link :to="localePath('account')">
+                  <icon name="left"></icon>
+                </nuxt-link>
+              </div>
+              <template v-if="currentPage">
+                <div class="head">
+                  <icon class="head__icon" :name="currentPage.icon"></icon>
+                  <h1 class="head__title">
+                    {{ currentPage?.title }}
+                  </h1>
+                  <button class="head__logout" @click="logout">
+                    <icon name="logout" class="" />
+                    {{ $t('account.logout') }}
+                  </button>
+                </div>
+              </template>
+            </slot>
+          </div>
+          <div v-if="!loading" class="main__content">
+            <slot  name="content" :items="items"></slot>
+          </div>
+          <div v-else="loading" class="main__loading">
+            <spinner/>
+          </div>
         </div>
       </div>
-    </div>
-  </client-only>
+    </client-only>
+  </div>
 </template>
 
 <script lang="ts">
@@ -75,7 +77,6 @@ export default defineNuxtComponent({
   },
   setup() {
     const loading = ref(false)
-    const user = ref(null) as Ref<User | boolean | null>
     const auth = useShopinvaderService('auth')
     const localePath = useLocalePath()
     const logout = () => {
@@ -88,14 +89,12 @@ export default defineNuxtComponent({
         loading.value = false
       }
     }
-    onMounted(() => {
-      user.value = auth.getUser()?.value || null
-    })
+
     return {
       localePath,
       logout,
       loading,
-      user
+      auth
     }
   },
   data() {

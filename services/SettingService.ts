@@ -5,7 +5,7 @@ import { Service } from '#services'
 export class SettingService extends Service {
   name = 'settings'
   provider: ErpFetch | null = null
-  options: any = null
+  options: Settings | null = null
 
   constructor(provider: ErpFetch) {
     super()

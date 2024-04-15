@@ -231,6 +231,7 @@
       "name": "First and last name",
       "firstname": "Firstname",
       "lastname": "Lastname",
+      "company": "Company",
       "email": "Email",
       "street": "Postal Address",
       "street2": "Street 2",
@@ -378,7 +379,7 @@
   "contact":{
     "title":"Contact",
     "message":"We will be glad to hear from you!",
-    "subject":"Select a Departament",
+    "subject":"Subject",
     "first_option":"Support",
     "second_option":"Sales",
     "description":"Your message...",
