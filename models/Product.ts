@@ -122,29 +122,31 @@ export class Product extends Model {
     }
     this.sku = data?.sku || null
     this.variantAttributes = data?.variant_attributes || {}
-    const priceLists = Object.keys(data?.prices || {})
+
+    /** Product prices */
+    const priceLists = Object.entries(data?.price_by_pricelist || data?.prices || data?.price || {})
     if(priceLists?.length > 0) {
       this.pricesList = {}
-      for(let priceList of priceLists) {
-        this.pricesList[priceList] = new ProductPrice(data?.prices?.[priceList])
-      }
-
-      if(this.pricesList?.['default']) {
-
-        this.price = this.pricesList['default']
+      for(let [key, value] of priceLists) {
+        this.pricesList[key] = new ProductPrice(value)
       }
     }
-    let price = data?.price?.[priceLists?.[0]] || null
-    if(price) {
-      this.price = new ProductPrice(price) || null
+    if(data?.price) {
+      this.price = new ProductPrice(data?.price) || null
+    } else if(this.pricesList?.[this.role]) {
+      /* fallback to default price */
+      this.price = this.pricesList[this.role]
     }
 
+    /** Product images */
     this.images = [] as ProductImageSet[]
     if (Array.isArray(data?.images)) {
       this.images = data?.images.map((image: any) => {
         return new ProductImageSet(image)
       })
     }
+
+    /** Product links */
     this.links = new ProductLinks(data?.links)
     this.variants = []
     if (Array.isArray(data?.variants)) {
@@ -152,6 +154,8 @@ export class Product extends Model {
         return new ProductVariant(variant, this.role)
       })
     }
+
+    /** Product variant selector */
     if (Array.isArray(data?.variant_selector)) {
       this.variantSelector = data?.variant_selector.map(
         (variantSelector: any) => {
