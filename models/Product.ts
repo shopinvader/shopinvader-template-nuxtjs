@@ -137,6 +137,8 @@ export class Product extends Model {
     let price = data?.price?.[priceLists?.[0]] || null
     if(price) {
       this.price = new ProductPrice(price) || null
+    } else {
+      this.price = data?.price?.default || null
     }
 
     this.images = [] as ProductImageSet[]
