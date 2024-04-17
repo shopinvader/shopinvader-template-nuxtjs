@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="link" class="account-link">
+  <nuxt-link :to="localePath({ path: link })"  class="account-link">
     <div class="account-link__icon">
       <icon :name="icon" />
     </div>
@@ -8,28 +8,28 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'AccountIcon',
+  name: "AccountIcon",
   props: {
     icon: {
       required: true,
-      type: String
+      type: String,
     },
     label: {
       required: false,
       type: String,
-      default: ''
+      default: "",
     },
     link: {
       required: false,
       type: String,
-      default: ''
-    }
-  }
-}
+      default: "",
+    },
+  },
+};
 </script>
 <style lang="scss">
 .account-link {
-  @apply flex w-auto cursor-pointer flex-col items-center justify-center card card-body bg-base-100 p-5 ;
+  @apply flex w-auto cursor-pointer flex-col items-center justify-center card card-body bg-base-100 p-5;
   &__icon {
     @apply my-5 rounded-full bg-primary p-4 text-4xl text-white;
   }
