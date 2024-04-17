@@ -16,7 +16,7 @@ const auth = useShopinvaderService('auth')
 const user = auth?.getUser()
 const next = () => {
   const localePath = useLocalePath()
-  auth?.loginRedirect(localePath({name: 'account'}))
+  auth?.loginRedirect(localePath({name: 'login'}))
 }
 </script>
 <style lang="scss">
