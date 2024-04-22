@@ -90,7 +90,12 @@ export default {
         query = esb
           .nestedQuery()
           .path('categories')
-          .query(esb.boolQuery().must([esb.matchQuery('categories.id', id)]))
+          .query(
+            esb.boolQuery()
+            .must([esb.matchQuery('categories.id', id)])
+            .should(esb.termQuery('main', true))
+          )
+
       }
       return query
     }
