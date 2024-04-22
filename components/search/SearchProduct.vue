@@ -72,7 +72,9 @@ export default {
       type: Function,
       required: false,
       default: () => {
-        return esb.matchAllQuery()
+        return esb.boolQuery()
+          .must(esb.matchAllQuery())
+          .should(esb.termQuery('main', true))
       }
     },
     sortOptions: {
