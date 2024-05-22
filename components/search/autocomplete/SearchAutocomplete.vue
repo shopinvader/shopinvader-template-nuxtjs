@@ -2,7 +2,8 @@
   <div
     class="search-autocomplete"
     :class="{
-      'search-autocomplete--focused': focused
+      'search-autocomplete--focused': focused,
+      'search-autocomplete--active': active
     }"
   >
     <form @submit="submit" class="search-autocomplete__form">
@@ -27,9 +28,11 @@
               name="search"
               class="text-lg md:text-xl"
             />
-            <icon v-else name="close-circle" class="text-lg md:text-xl" />
           </span>
         </label>
+         <span v-show="focused" class="form__close" @click="resetSearch">
+          <icon name="close-circle" class="text-2xl" />
+        </span>
       </div>
       <ClientOnly>
         <Transition>
@@ -39,7 +42,7 @@
                 <div class="side__suggestions">
                   <autocomplete-suggestions
                     :suggestions="suggestions"
-                    @click="onSuggestionClick"
+                    @select="onSuggestionClick"
                   ></autocomplete-suggestions>
                 </div>
                 <div class="side__queries">
@@ -121,7 +124,11 @@ export default {
       }
     }
   },
-
+  computed: {
+    active() {
+      return this.focused && this.query?.length > 0
+    }
+  },
   methods: {
     setSuggestions(suggestions: any) {
       this.suggestions = suggestions
@@ -205,11 +212,14 @@ export default {
           }
         }
       }
+      &__close {
+        @apply btn btn-circle ml-3;
+      }
     }
   }
   &--focused {
     .search-autocomplete__form {
-      @apply fixed top-0 -left-1/2 -right-1/2 z-40 lg:top-5 mx-auto h-screen max-h-screen lg:h-[90vh] overflow-hidden lg:container  max-lg:w-screen max-lg:overflow-auto bg-white lg:rounded-2xl lg:p-2;
+      @apply fixed top-0 -left-1/2 -right-1/2 z-40 lg:top-5 mx-auto overflow-hidden lg:container lg:max-w-screen-lg max-lg:w-screen max-lg:overflow-auto bg-white lg:rounded-2xl lg:p-2;
       .form {
         @apply flex w-full items-center  max-lg:shadow z-50 transition-all ;
         &__back {
@@ -223,6 +233,12 @@ export default {
           }
         }
       }
+
+    }
+  }
+  &--active {
+    .search-autocomplete__form {
+      @apply h-screen max-h-screen lg:h-[90vh];
       .form__dropdown {
         @apply overflow-auto h-full mb-10 -z-10 flex max-lg:justify-center;
         .results__products {
