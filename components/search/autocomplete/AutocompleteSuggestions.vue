@@ -23,7 +23,7 @@
 import type { PropType } from 'vue'
 export default {
   name: 'AutocompleteSuggestions',
-  events: ['click'],
+  events: ['select'],
   props: {
     suggestions: {
       type: Object as PropType<any[]>,
@@ -39,7 +39,7 @@ export default {
   },
   methods: {
     onSuggestionClick(text: string) {
-      this.$emit('click', text)
+      this.$emit('select', text)
     }
   }
 }

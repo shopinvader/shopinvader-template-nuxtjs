@@ -45,19 +45,6 @@
           </div>
         </div>
       </template>
-      <template v-if="searchResults.hits.length < 3">
-        <product-history
-          :excluded-id="searchResults.hits.map((i) => i && i.id)"
-        >
-          <template #header>
-            <div class="header">
-              <div class="title">
-                {{ $t('search.autocomplete.products_history') }}
-              </div>
-            </div>
-          </template>
-        </product-history>
-      </template>
     </template>
   </div>
 </template>
@@ -99,14 +86,21 @@ export default {
         loading.value = true
 
         if (productService) {
-          const { hits, suggestions, total } =
+          let res =
             (await productService.autocompleteSearch(query, 6)) || null
+          searchResults.suggestions = res?.suggestions || []
+          emit('setSuggestions', res?.suggestions)
 
-          searchResults.hits = hits
-          searchResults.suggestions = suggestions
-          searchResults.total = total
-          emit('setTotal', total)
-          emit('setSuggestions', suggestions)
+          /** Search for suggestions */
+          if(res?.total === 0 && res?.suggestions?.[0]?.options?.length > 0) {
+            const querySuggestion =  res?.suggestions[0]?.options?.map((option: any) => option.text).join(' ')
+            if(querySuggestion && querySuggestion !== query) {
+              res = (await productService.autocompleteSearch(querySuggestion, 6)) || null
+            }
+          }
+          searchResults.hits = res?.hits || []
+          searchResults.total = res?.total || 0
+          emit('setTotal', res?.total)
         }
       } catch (e) {
         searchResults.hits = []
