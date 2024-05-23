@@ -1,6 +1,6 @@
 <template>
   <div class="checkout-validated">
-    <template v-if="status == 'cancelled'">
+    <template v-if="status == 'cancelled' || status == 'unknown'">
       <div class="checkout-validated__title">
         <icon name="error" class="mr-2 text-6xl text-error" />
         <span class="text-black">

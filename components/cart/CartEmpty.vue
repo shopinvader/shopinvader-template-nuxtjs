@@ -10,20 +10,16 @@
         {{ $t('cart.continue') }}
       </nuxt-link>
     </slot>
-    <spinner-vue v-else></spinner-vue>
+    <spinner v-else></spinner>
   </div>
 </template>
 <script lang="ts">
-import Spinner from '~/components/global/Spinner.vue'
 import { Cart } from '~/models'
 /**
  * Message display when the cart is empty.
  * This component retrieve the cart from the store.
  */
 export default defineNuxtComponent({
-  components: {
-    spinner: Spinner
-  },
   setup() {
     const localePath = useLocalePath()
     const cartService = useShopinvaderService('cart')

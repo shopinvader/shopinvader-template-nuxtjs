@@ -30,7 +30,16 @@
     try {
       loading.value = true
       if(formPayment.value) {
-        const form = formPayment.value?.querySelector('form')
+        const el = formPayment.value
+        let form = el?.querySelector('form')
+        if (!form && el.querySelector('input[data-action-url]')) {
+          const url = el.querySelector('input[data-action-url]')?.dataset?.actionUrl || ''
+          form = document.createElement('form')
+          form.method = 'POST'
+          form.action = url
+          form.innerHTML = el.innerHTML
+          document.body.appendChild(form)
+        }
         if(form?.submit) {
           form.submit()
         } else {

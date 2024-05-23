@@ -84,7 +84,8 @@
       "title": "Paiement",
       "intro": "Sélectionnez un mode de paiement",
       "submit": "Payer",
-      "loading": "Chargement..."
+      "loading": "Chargement...",
+      "retry": "Réessayer"
     },
     "line": {
       "quantity": "Quantité",

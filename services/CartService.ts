@@ -57,6 +57,7 @@ class CartObserver {
 export class CartService extends Service {
   services: ShopinvaderServiceList | null = null
   serviceName = 'cart'
+  endpoint:string = 'carts'
   syncUrl:string = 'carts/sync'
   erp: any // ErpFetch
   cart: any | null
@@ -258,7 +259,7 @@ export class CartService extends Service {
   async setDeliveryCarrier(carrierId: number) {
     const cart = this.getCart()?.value || null
     if (!cart?.uuid) return Promise.reject('No cart uuid')
-    const data: any = await this.erp.post('cart/current/set_carrier', {
+    const data: any = await this.erp.post(`${this.endpoint}/current/set_carrier`, {
       carrier_id: carrierId
     })
     if (data?.id) {
@@ -267,7 +268,7 @@ export class CartService extends Service {
   }
 
   async update(cart: CartModel) {
-    const data: any = await this.erp.post('cart/current/update', {
+    const data: any = await this.erp.post(`${this.endpoint}/current/update`, {
       client_order_ref: cart.orderRef || '',
       delivery: {
         address_id: cart?.delivery?.address?.id || null
@@ -310,7 +311,7 @@ export class CartService extends Service {
    */
   async applyCoupon(code: string) {
     if(!code) return null
-    const cart:any = await this.erp.post('cart/current/coupon', {
+    const cart:any = await this.erp.post(`${this.endpoint}/current/coupon`, {
       code
     })
 
@@ -320,7 +321,7 @@ export class CartService extends Service {
   }
 
   async getPayable(): Promise<PaymentData | null> {
-    const data = await this.erp.get('cart/current/payable', {})
+    const data = await this.erp.get(`${this.endpoint}/current/payable`, {})
     if(data) {
       return new PaymentData(data)
     }

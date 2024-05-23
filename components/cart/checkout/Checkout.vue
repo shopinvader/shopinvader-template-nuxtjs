@@ -28,10 +28,16 @@
                 v-for="(step, index) in displayedSteps"
                 :key="step.name"
                 class="step"
-                :class="{ 'step--active': step.position == currentStepIndex }"
+                :class="{
+                  'step--done': index + 1 < currentStepIndex,
+                  'step--active': index + 1 == currentStepIndex
+                }"
                 @click="goToStep(index)"
               >
-                <span class="step__index"> {{ index + 1 }} </span>
+                <span class="step__index">
+                  <icon name="check" v-if="index + 1 < currentStepIndex" />
+                  <template v-else>{{ index + 1 }}</template>
+                </span>
                 <span class="step__title"> {{ step.title }} </span>
               </li>
             </ul>
@@ -103,7 +109,8 @@
                   <div class="header" @click="goToStep(index)">
                     <div class="header__name">
                       <span class="name__index">
-                        {{ step.index + 1 }}
+                        <icon name="check" v-if="index < currentStepIndex" />
+                        <template v-else>{{ index + 1 }}</template>
                       </span>
                       <span class="name__title">
                         {{ step.title }}
@@ -145,7 +152,7 @@
       <div v-else class="checkout__empty">
         <!-- @slot Empty cart content  -->
         <slot name="empty">
-          <cart-empty></cart-empty>
+          <CartEmpty></CartEmpty>
         </slot>
       </div>
       <div class="checkout__footer">
@@ -168,7 +175,7 @@ import {
   CartCheckoutDelivery,
   CartCheckoutPayment,
   CartEmpty,
-  Spinner
+  Spinner,
 } from '#components'
 
 
@@ -184,7 +191,7 @@ export default defineNuxtComponent({
   emits: ['change', 'next', 'back'],
   components: {
     'checkout-login': CartCheckoutLogin,
-    'cart-empty': CartEmpty,
+    'CartEmpty': CartEmpty,
     'spinner': Spinner
   },
   props: {
@@ -237,7 +244,7 @@ export default defineNuxtComponent({
       },
       {
         name: 'payment',
-        title: 'Payment',
+        title: i18n.t('cart.payment.title'),
         component: CartCheckoutPayment,
         position: 300
       }
@@ -328,7 +335,7 @@ export default defineNuxtComponent({
       .querySelector(`#step-${step}`)
       if(el) {
         setTimeout(() => {
-          el.scrollIntoView({behavior: 'smooth', block:'start'})
+          el.scrollIntoView({behavior: 'smooth', block:'center'})
         }, 900)
       }
     },
@@ -343,18 +350,32 @@ export default defineNuxtComponent({
 .checkout {
   @apply p-4;
   &__header {
-    @apply hidden w-full pt-6 md:block;
+    @apply hidden w-full border-b py-4 md:block sticky top-0 left-0  bg-white z-10;
     .checkout-stepper {
-      @apply flex w-full flex-row justify-center md:gap-8;
+      @apply  flex w-full flex-row justify-center md:gap-8;
 
       .step {
-        @apply flex gap-2 text-center font-light uppercase text-gray-400;
-
+        @apply flex gap-2 justify-center items-center font-light uppercase text-gray-400;
+        &--done, &--active {
+          .step__index {
+            @apply flex justify-center items-center text-xs border-2 border-primary rounded-full text-primary w-5 h-5 font-bold;
+          }
+          .step__title {
+            @apply text-primary;
+          }
+        }
+        &--done {
+          .step__index {
+            @apply bg-primary text-white;
+          }
+        }
         &--active {
-          @apply font-bold text-primary;
+          .step__title {
+            @apply text-primary font-bold;
+          }
         }
         &:not(:last-child)::after {
-          content: '-';
+          content: '〉';
           @apply pl-4 font-light text-gray-400;
         }
       }
