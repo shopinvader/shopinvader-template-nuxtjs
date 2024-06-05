@@ -253,7 +253,7 @@ export default {
     @apply w-full py-4;
   }
   &__history {
-    @apply py-4;
+    @apply w-full py-4;
   }
 }
 </style>

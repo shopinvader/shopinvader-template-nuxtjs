@@ -11,6 +11,7 @@
         <nuxt-img
           :src="image.large?.src"
           class="item-image"
+          :class="zoom ? 'image-zoom' : ''"
           :alt="image.large?.alt"
           :title="image.large?.alt"
           height="548"
@@ -63,6 +64,7 @@
           :src="image.large?.src"
           :alt="image.large?.alt"
           :title="image.large?.alt"
+          :class="zoom ? 'product-image-zoom' : ''"
           class="w-full mx-auto max-h-full min-h-max p-6"
 
         />
@@ -87,6 +89,10 @@ export default {
     },
     slider: {
       type: Boolean
+    },
+    zoom: {
+      type: Boolean,
+      default: true
     }
   },
   setup() {
@@ -140,20 +146,20 @@ export default {
 </script>
 <style lang="scss">
 .image-slider {
-  @apply carousel w-full items-center rounded bg-gray-100 max-md:h-full;
+  @apply carousel w-full items-center rounded  max-md:h-full;
   &__item {
-    @apply carousel-item h-full w-full items-center justify-center bg-gray-100 max-md:max-h-96;
+    @apply carousel-item h-full w-full items-center justify-center max-md:max-h-96;
   }
   .item-image {
-    @apply mx-auto max-h-96 min-h-max p-6 max-md:object-contain max-sm:w-full lg:max-h-full;
+    @apply  mx-auto max-h-96 min-h-max p-6 max-md:object-contain max-sm:w-full lg:max-h-full;
   }
 }
 .slider-indicators {
-  @apply hidden w-full justify-start gap-2 py-2 lg:flex;
+  @apply hidden w-full justify-start items-center gap-2 py-2 lg:flex;
   &__items {
-    @apply h-36 w-1/6 rounded bg-gray-50 cursor-pointer hover:bg-gray-200;
+    @apply   bg-gray-100 w-1/6 rounded cursor-pointer hover:bg-gray-200;
     .items-image {
-      @apply mx-auto h-36 object-fill p-2;
+      @apply mx-auto  object-fill p-2;
     }
   }
 }
