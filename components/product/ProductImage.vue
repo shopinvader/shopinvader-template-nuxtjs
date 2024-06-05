@@ -67,7 +67,7 @@ export default {
     @apply h-full w-full object-contain;
   }
   &:not(.product-image--loaded) {
-    @apply bg-gray-100 rounded-full animate-pulse rounded-lg;
+    @apply bg-gray-100 animate-pulse rounded-lg;
     img {
       @apply opacity-0;
     }
