@@ -80,6 +80,7 @@
     "payment": {
       "title": "Payment",
       "intro": "Select a payment method",
+      "empty": "No payment method is available for your cart, we're sorry for the inconvenience. Please contact us to finalize your purchase",
       "submit": "Pay",
       "loading": "Loading..."
     },
@@ -103,6 +104,7 @@
     "delivery": {
       "method": {
         "title": "Delivery method",
+        "free": "Free",
         "intro": "Select a delivery method",
         "select": "pick this method",
         "continue": "Continue",
