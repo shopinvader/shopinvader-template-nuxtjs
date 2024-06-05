@@ -83,6 +83,7 @@
     "payment": {
       "title": "Paiement",
       "intro": "Sélectionnez un mode de paiement",
+      "empty": "Aucune méthode de paiement n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat",
       "submit": "Payer",
       "loading": "Chargement...",
       "retry": "Réessayer"

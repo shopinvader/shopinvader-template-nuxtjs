@@ -85,6 +85,7 @@
     "payment": {
       "title": "Pagar",
       "intro": "Seleccione un modo de pago",
+      "empty": "No hay modo de pago disponible para su carrito, sentimos las molestias. Póngase en contacto con nosotros para finalizar su compra",
       "submit": "Pagar",
       "loading": "Cargando..."
     },
