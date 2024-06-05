@@ -26,12 +26,11 @@ export default defineNuxtComponent({
   },
   setup(props, { emit }) {
     const auth = useShopinvaderService('auth')
-    const user = ref(null)
+    const user = computed(() => auth?.getUser().value)
     const success = () => {
       emit('next')
     }
     onMounted(() => {
-      user.value = auth?.getUser()
       if (user?.value) {
         success()
       }

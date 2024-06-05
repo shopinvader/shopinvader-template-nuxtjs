@@ -137,10 +137,10 @@
       "message": "You will receive an email with the details of your order. You can also find it in your account.",
       "link":"View my orders",
       "pending": "Your order is pending payment",
+      "retry": "Retry",
       "cancelled": {
         "title": "Payment failed",
         "message": "The payment of your order was not successful, your order is not validated. You can try again using another payment method.",
-        "retry": "Retry"
       }
     },
     "coupon": {

@@ -257,8 +257,6 @@ export class CartService extends Service {
    * @param carrierId selected carrier ID
    */
   async setDeliveryCarrier(carrierId: number) {
-    const cart = this.getCart()?.value || null
-    if (!cart?.uuid) return Promise.reject('No cart uuid')
     const data: any = await this.erp.post(`${this.endpoint}/current/set_carrier`, {
       carrier_id: carrierId
     })
@@ -289,11 +287,9 @@ export class CartService extends Service {
   async getLastSale():Promise<Sale | null>  {
     let sale: Sale | null = null
     const data = this.store()?.lastSale ||  {}
-    console.log('lastSale', data)
     if(data) {
       const saleService = this.services?.sales
       sale = new Sale(data)
-      console.log('getLastSale', sale)
       if(saleService) {
         sale = await saleService.fetchProductToSale(sale)
       }

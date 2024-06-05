@@ -140,10 +140,11 @@
       "message": "Recibirá un correo electrónico de confirmación en breve. Puede seguir el estado de su pedido en la sección \"Mi cuenta\".",
       "link": "Ver mis pedidos",
       "pending": "Su pedido está pendiente de pago",
+      "retry": "Inténtalo de nuevo",
       "cancelled": {
         "title": "Pago fallido",
         "message": "El pago de su pedido no se ha realizado correctamente, su pedido no está validado. Puede intentarlo de nuevo utilizando otro método de pago.",
-        "retry": "Inténtalo de nuevo"
+
       }
     },
     "coupon": {

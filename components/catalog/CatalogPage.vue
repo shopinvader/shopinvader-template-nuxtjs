@@ -29,7 +29,7 @@
   const slots = useSlots()
   /** Create error if no fallback slot is set */
   if(!entity && !slots?.fallback) {
-    throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
+    throw showError({ statusCode: 404,  fatal: true, statusMessage: 'Page Not Found' })
   }
   if(entity) {
     if(entity?.redirectUrlKey?.includes(path)) {

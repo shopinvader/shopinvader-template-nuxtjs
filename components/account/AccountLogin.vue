@@ -102,6 +102,11 @@
       </div>
     </form>
   </div>
+  <div v-else>
+    <div v-if="loading" class="">
+      <spinner :size="40"></spinner>
+    </div>
+  </div>
 </template>
 <script lang="ts">
 import { AuthCredentialService } from '#services'
@@ -121,13 +126,20 @@ export default defineNuxtComponent({
       error: {
         auth: null as string | null,
         login: null as string | null,
-        password: null as string | null
+        password: null as string | null,
+        message: null as string | null
       }
     }
   },
   setup() {
     const localePath = useLocalePath()
     const auth = useShopinvaderService('auth') as AuthCredentialService
+    onMounted(async () => {
+      if(!auth?.getUser()?.value && auth?.type == 'oidc') {
+        const url = useRequestURL()
+        await auth?.loginRedirect(url?.href)
+      }
+    })
     return {
       localePath,
       auth

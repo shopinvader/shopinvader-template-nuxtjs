@@ -86,11 +86,12 @@ export class AuthOIDCService extends AuthService {
         Authorization: `Bearer ${oidcUser?.access_token}`
       }
       await this.provider?.post("signin", [], { headers }, '')
-      const user = await this.fetchUser()
+      await this.fetchUser()
     } catch (e) {
-      console.error(e)
+      console.log(e)
       await this.userUnloaded()
       await this.client.signoutSilentCallback()
+      throw showError({ statusCode: 500, fatal: true})
     }
 
   }
@@ -102,21 +103,29 @@ export class AuthOIDCService extends AuthService {
     }
   }
   async loginRedirect(url?:string): Promise<any> {
-    const user = this.getSession() ? await this.fetchUser() : false
-    if(!user) {
-      if (this.client) {
-        await this.client.signinRedirect({ redirect_uri: url })
+    const query = window.location.search
+
+    const { host, protocol } = useRequestURL()
+    const redirectURI = new URL(url || '', `${protocol}//${host}`).href
+    let user = false
+    try {
+      user = this.getSession() ? await this.fetchUser() : false
+      if(!user) {
+        let loginReturn = query.includes('code=') && query.includes('state=')
+        if (this.client && !loginReturn) {
+          await this.client.signinRedirect({ redirect_uri: redirectURI })
+        } else {
+          throw new Error('User not loaded')
+        }
       }
-    } else {
-      let options = {external: true}
-      try {
-        const { host, protocol } = useRequestURL()
+    } finally {
+      if(user) {
         const domaine = `${protocol}//${host}`
+        let options = {external: true}
         if(url?.includes(domaine)) {
           options = {external: false}
           url = url.replace(domaine, '')
         }
-      } finally {
         navigateTo(url, options)
       }
     }

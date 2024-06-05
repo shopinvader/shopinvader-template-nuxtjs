@@ -143,6 +143,7 @@
       "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
       "link":"Voir mes commandes",
       "pending": "Votre commande est en attente de paiement",
+      "retry": "Réessayer",
       "cancelled": {
         "title": "Le paiement a échoué",
         "message": "Le paiement de votre commande n'a pas abouti, votre commande n'est pas validée. Vous pouvez essayer de nouveau en utilisant un autre moyen de paiement.",

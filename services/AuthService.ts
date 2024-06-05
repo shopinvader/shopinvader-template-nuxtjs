@@ -33,6 +33,7 @@ export abstract class AuthService extends Service {
       }
     } catch (e) {
       this.setUser(null)
+      throw e
     } finally {
       return user
     }
