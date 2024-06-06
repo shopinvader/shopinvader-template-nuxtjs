@@ -71,7 +71,7 @@ export default {
           success: '#3EE581',
           warning: '#fde047',
           error: '#db2777',
-          "--rounded-box": "1rem"
+          "--rounded-box": ".5rem"
         }
       }
     ],

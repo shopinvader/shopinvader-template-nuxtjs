@@ -108,7 +108,8 @@
         "intro": "Select a delivery method",
         "select": "pick this method",
         "continue": "Continue",
-        "no-method": "No delivery method selected"
+        "no-method": "No delivery method selected",
+        "empty":"No delivery method is available for your basket, we are sorry for this inconvenience. Please contact us to finalize your purchase"
       }
     },
     "summary": {

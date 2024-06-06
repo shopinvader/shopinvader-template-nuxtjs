@@ -5,7 +5,8 @@ import {
   CartLine as CartLineModel,
   Address,
   Sale,
-  PaymentData
+  PaymentData,
+  DeliveryCarrier
 } from '#models'
 
 import { Service } from '#services'
@@ -296,6 +297,20 @@ export class CartService extends Service {
     }
     return sale
   }
+
+  /**
+   * Retrieves all delivery carriers of the cart
+   * @returns A promise that resolves to an array of DeliveryCarrier objects.
+   */
+  async getDeliveryCarrier(): Promise<DeliveryCarrier[]> {
+    const url = `${this.endpoint}/current/delivery_carriers`
+    const data = await this.erp?.get(url, [], null)
+    if (Array.isArray(data)) {
+      return data.map((item: any) => new DeliveryCarrier(item))
+    }
+    return []
+  }
+
   clear() {
     this.cart?.clearPendingTransactions()
     this.setCart(new CartModel({}))

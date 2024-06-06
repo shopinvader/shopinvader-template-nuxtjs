@@ -80,7 +80,9 @@
   const status = ref('') as Ref<string>
   const pendingMessage = ref('') as Ref<string>
   const cartService = useShopinvaderService('cart')
-
+  useHead({
+    title: t('cart.validated.title')
+  })
   onMounted(async () => {
     try {
       loading.value = true
@@ -115,7 +117,7 @@
     @apply text-lg lg:text-2xl text-center items-center flex gap-2;
   }
   &__message {
-    @apply prose text-center;
+    @apply prose text-center card card-body card-bordered;
   }
   &__sale {
     @apply w-full px-5 border-t;

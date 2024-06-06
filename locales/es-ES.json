@@ -111,7 +111,8 @@
         "intro": "Seleccione un modo de pago",
         "select": "Elegir este método",
         "continue": "Continuar",
-        "no-method": "No se ha seleccionado ningún método de envío"
+        "no-method": "No se ha seleccionado ningún método de envío",
+        "empty":"No hay ningún método de entrega disponible para su carrito, sentimos las molestias. Póngase en contacto con nosotros para finalizar su compra"
       }
     },
     "summary": {

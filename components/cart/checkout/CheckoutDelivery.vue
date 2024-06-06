@@ -1,17 +1,5 @@
 <template>
   <div class="checkout-delivery">
-    <div v-if="error" class="checkout-delivery__error">
-      <!--
-        @slot Checkout Delivery error content
-        @binding {Error} error
-      -->
-      <slot name="error" :error="error">
-        <div v-if="error" class="alert alert-error">
-          {{ $t('error.generic') }}
-        </div>
-      </slot>
-    </div>
-
     <template v-if="active">
       <div class="checkout-delivery__header">
         <!-- @slot Header content -->
@@ -22,21 +10,41 @@
         </slot>
       </div>
       <div class="checkout-delivery__items">
-        <!--
-          @slot Delivery carriers list
-          @binding {Error} error
-        -->
-        <slot name="items" :carriers="carriers" :select-carrier="selectCarrier">
-          <component
-            :is="component"
-            v-for="{ carrier, component } of carriers"
-            :key="carrier.id"
-            :delivery-carrier="carrier"
-            :selected="selectedCarrier?.id == carrier.id"
-            @select="selectCarrier"
-          >
-          </component>
-        </slot>
+        <div v-if="error" class="items__error">
+          <!--
+            @slot Checkout Delivery error content
+            @binding {Error} error
+          -->
+          <slot name="error" :error="error">
+            <div v-if="error" class="alert">
+              <icon name="error" class="text-error" />
+              {{ $t('error.generic') }}
+            </div>
+          </slot>
+        </div>
+        <div v-else-if="!loading && carriers.length == 0" class="checkout-delivery__empty">
+          <div class="empty">
+            <icon name="error" />
+            {{ $t('cart.delivery.method.empty') }}
+          </div>
+        </div>
+        <template v-else>
+           <!--
+            @slot Delivery carriers list
+            @binding {Error} error
+          -->
+          <slot name="items" :carriers="carriers" :select-carrier="selectCarrier">
+            <component
+              :is="component"
+              v-for="{ carrier, component } of carriers"
+              :key="carrier.id"
+              :delivery-carrier="carrier"
+              :selected="selectedCarrier?.id == carrier.id"
+              @select="selectCarrier"
+            >
+            </component>
+          </slot>
+        </template>
       </div>
       <!-- @slot Fetch Loading content -->
       <slot v-if="loading && (carriers == null || carriers?.length == 0)">
@@ -47,22 +55,28 @@
       <div class="checkout-delivery__total">
         <!-- @slot Cart Total content -->
         <slot name="total" :error="error">
-          <cart-total></cart-total>
-          <div
-            v-if="!loading && !selectedCarrier"
-            class="flex items-center gap-2 font-bold"
-          >
-            <icon name="info" />
-            {{ $t('cart.delivery.method.no-method') }}
-          </div>
-          <button
-            type="button"
-            class="btn-secondary btn-block btn"
-            @click="next"
-            :disabled="!selectedCarrier || loading"
-          >
-            {{ $t('cart.delivery.method.continue') }}
-          </button>
+          <cart-total>
+            <template #footer>
+              <div
+                v-if="!loading && !selectedCarrier"
+                class="flex items-center gap-2 font-bold"
+              >
+                <icon name="info" />
+                {{ $t('cart.delivery.method.no-method') }}
+              </div>
+              <button
+                type="button"
+                class="btn-secondary btn-block btn"
+                @click="next"
+                :disabled="!selectedCarrier || loading"
+              >
+                {{ $t('cart.delivery.method.continue') }}
+                <icon name="right" />
+              </button>
+            </template>
+          </cart-total>
+
+
         </slot>
       </div>
 
@@ -158,15 +172,16 @@ export default defineNuxtComponent({
      * Get the list of shipping mode available for the current cart.
      */
     async fetchCarriers() {
-      const carrierService = useShopinvaderService('deliveryCarriers')
       const cartService = useShopinvaderService('cart')
       const cart = cartService.getCart()
       try {
+        console.log('fetch carrier', cart?.value)
         this.loading = true
         this.error = null
         this.carriers = []
-        if (carrierService && cart?.value) {
-          const carriers = await carrierService.getAll(cart?.value?.uuid) || []
+        if (cart?.value) {
+          const carriers = await cartService.getDeliveryCarrier() || []
+          console.log('getDeliveryCarrier', carriers)
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
               const name =
@@ -178,6 +193,8 @@ export default defineNuxtComponent({
                 carrier
               } as CarrierWithComponent
             }) || []
+        } else {
+          throw new Error(this.i18n.t('error.generic'))
         }
 
         const selectedCarrier = cart?.value?.delivery?.method || null
@@ -188,6 +205,7 @@ export default defineNuxtComponent({
         }
       } catch (e: any) {
         this.error = e?.message || e
+        console.error(e)
       } finally {
         this.loading = false
         if (this.carriers.length == 1) {
@@ -224,6 +242,15 @@ export default defineNuxtComponent({
   @apply grid grid-cols-3 gap-6;
   &__items {
     @apply col-span-3 flex flex-col justify-start gap-4 md:col-span-2;
+  }
+  &__empty {
+    @apply col-span-3 md:col-span-2;
+    .empty {
+      @apply flex flex-col items-center gap-4 max-w-md mx-auto text-center;
+      .icon {
+        @apply text-error text-6xl;
+      }
+    }
   }
   &__total {
     @apply col-span-3 flex flex-col justify-start gap-4 md:col-span-1;

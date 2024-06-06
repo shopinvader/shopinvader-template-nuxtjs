@@ -19,7 +19,7 @@
                   {{ mode.state }}
                 </div>
               </div>
-              <div class="item__icons">
+              <div v-if="mode.icons?.length > 0" class="item__icons">
                 <img
                   v-for="icon in mode.icons"
                   :src="`data:image/png;base64,${decodeImage(icon.image)}`"
@@ -168,9 +168,9 @@
       @apply flex flex-col gap-2;
       .form {
         &__item {
-          @apply card card-body card-compact border flex cursor-pointer;
+          @apply card card-body p-4 card-compact border flex cursor-pointer;
           &--selected {
-            @apply border-primary-500;
+            @apply border-2 shadow-sm shadow-primary-400 border-primary-500;
             .radio {
               @apply bg-primary-500;
             }

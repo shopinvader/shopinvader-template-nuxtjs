@@ -114,7 +114,8 @@
         "select": "Sélectionner",
         "continue": "Continuer",
         "free": "Livraison gratuite",
-        "no-method": "Aucune méthode de livraison Sélectionnée"
+        "no-method": "Aucune méthode de livraison Sélectionnée",
+        "empty":"Aucune méthode de livraison n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat"
       }
     },
     "summary": {

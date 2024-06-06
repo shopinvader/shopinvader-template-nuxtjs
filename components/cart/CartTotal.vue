@@ -85,9 +85,9 @@
 </script>
 <style lang="scss">
 .cart-total {
-  @apply card card-body bg-gray-100;
+  @apply card card-body card-bordered bg-gray-100;
   &__title {
-    @apply font-heading text-xl;
+    @apply font-heading text-xl border-b;
   }
   & > div {
     @apply flex flex-wrap items-center justify-between pb-2;
@@ -115,7 +115,7 @@
       @apply p-0 text-lg font-bold text-gray-900;
     }
     .value {
-      @apply text-lg text-gray-900;
+      @apply text-lg font-bold text-gray-900;
     }
   }
 }
