@@ -58,10 +58,7 @@ export default defineNuxtComponent({
     }
   },
   setup() {
-    const { t } = useI18n()
-    const localePath = useLocalePath()
     return {
-      $t: t,
       localePath
     }
   }

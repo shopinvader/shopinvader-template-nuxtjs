@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia'
-import { Product } from '~/models'
+import { Product, Category } from '~/models'
 
 export const useHistoryStore = defineStore('history', {
-  state: () => ({ queries: [] as string[], products: [] as Product[] }),
+  state: () => ({ queries: [] as string[], products: [] as Product[], lastCategory: null as Category | null}),
 
   persist: {
     storage: persistedState.localStorage,
@@ -19,9 +19,15 @@ export const useHistoryStore = defineStore('history', {
     },
     getProducts(): Product[] {
       return this.products
+    },
+    getLastCategory(): Category | null {
+      return this.lastCategory || null
     }
   },
   actions: {
+    setLastCategory(category: Category) {
+      this.lastCategory = category
+    },
     addProduct(product: Product) {
       const index = this.products.findIndex((p) => p.id === product.id)
       if (index > -1) {

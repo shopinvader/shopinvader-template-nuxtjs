@@ -5,10 +5,18 @@
       <slot name="breadcrumbs" :variant="variant">
         <div class="breadcrumbs text-sm">
           <ul>
-            <li v-for="category in variant.categories" :key="category.id">
+            <li>
+              <nuxt-link :to="localePath({ path: '/'})">
+                {{ $t('navbar.home') }}
+              </nuxt-link>
+            </li>
+            <li v-for="category in breadcrumbs" :key="category.id">
               <nuxt-link :to="localePath({ path: '/' + category.urlKey })">
                 {{ category.name }}
               </nuxt-link>
+            </li>
+            <li>
+              {{ variant?.model?.name || variant?.name }}
             </li>
           </ul>
         </div>
@@ -142,7 +150,7 @@
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { Product, ProductPrice } from '#models'
+import { Product, ProductCategory, ProductPrice } from '#models'
 import { useHistoryStore } from '~/stores/history'
 
 export default {
@@ -156,6 +164,7 @@ export default {
     const localePath = useLocalePath()
     let variant = ref(props.product)
     const router = useRouter()
+
     useHistoryStore().addProduct(props.product)
     const changeVariant = (item: Product) => {
       item = {
@@ -168,8 +177,20 @@ export default {
         router.push(localePath({ path: route.fullPath, query: { sku: item.sku }}))
       }
     }
+    const breadcrumbs = computed(() => {
+      const lastCategoryId:number | null = useHistoryStore()?.lastCategory?.id|| null
+      const categories =  variant.value.categories || []
+      let category: ProductCategory | null = categories.find((c) => c.findCategory(lastCategoryId))  || categories[0] || null
+      let items = []
+      while (category) {
+        items.unshift(category)
+        category = category?.childs?.[0] || null
+      }
+      return items
+    })
     return {
       variant,
+      breadcrumbs,
       changeVariant,
       localePath
     }

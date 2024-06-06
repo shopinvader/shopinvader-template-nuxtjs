@@ -15,6 +15,7 @@
         <slot name="breadcrumb" :category="category">
           <div class="breadcrumbs text-sm">
             <ul>
+
               <li v-for="item in breadcrumb" :key="item.id">
                 <nuxt-link :to="localePath({ path: '/' + item.urlKey })">
                   {{ item.name }}
@@ -34,10 +35,11 @@
 </template>
 <script lang="ts">
 import SearchProduct from '~/components/search/SearchProduct.vue'
-import { Category } from '#models'
+import { Category, CategoryParent } from '#models'
 import esb from 'elastic-builder'
 import type { PropType } from 'vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
+import { useHistoryStore } from '~/stores/history'
 export default {
   name: 'CategoryPage',
   components: {
@@ -51,20 +53,27 @@ export default {
       required: true
     }
   },
-  setup() {
+  setup(props) {
     const localePath = useLocalePath()
+    useHistoryStore()?.setLastCategory(props.category)
     return {
       localePath
     }
   },
   computed: {
     breadcrumb() {
-      const items = []
-      let current = this.category
-      while (current !== null) {
-        items.push(current)
-        current = current?.parent
+      const localePath = useLocalePath()
+      const t = useI18n().t
+      let current:Category | CategoryParent | null = this.category
+      const items = [current]
+      while (current?.parent !== null) {
+        console.log(current?.parent)
+        current = current?.parent || null
+        if(current?.name) {
+          items.push(current)
+        }
       }
+      items.push(new Category({ name: t('navbar.home'), url_key: localePath({ path: '/'}) }) )
       items.reverse()
       return items
     }
