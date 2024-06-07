@@ -68,10 +68,7 @@ export default {
 <style lang="scss">
 .product-history {
   &__list {
-    @apply flex flex-wrap py-3;
-    .product-history__item {
-      @apply grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
-    }
+    @apply grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
   }
   &__footer {
     @apply flex justify-end;

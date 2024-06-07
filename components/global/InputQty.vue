@@ -70,6 +70,9 @@ export default {
     }
   },
   methods: {
+    inputValue(value: number) {
+      this.value = value
+    },
     selectContent() {
       const ref = this?.$refs?.input as any
       if (ref.select !== undefined) {
