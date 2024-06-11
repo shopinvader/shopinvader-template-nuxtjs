@@ -49,80 +49,95 @@
         <div class="register__form-wrapper">
           <form class="" @submit.prevent="createAccount">
             <div class="input-container">
-              <div class="input-container__wrapper">
-                <label class="" for="firstname">{{
-                  $t('account.address.name')
-                }}</label>
-                <input
-                  class=""
-                  id="firstname"
-                  v-model="name"
-                  name="firstname"
-                  type="text"
-                  required
-                  :disabled="loading"
-                  :placeholder="$t('account.address.name')"
-                />
-              </div>
-              <div class="input-container__wrapper">
-                <label class="" for="email">{{
-                  $t('account.address.email')
-                }}</label>
-                <input
-                  v-model="email"
-                  class=""
-                  id="email"
-                  type="email"
-                  required
-                  :disabled="loading"
-                  :placeholder="$t('account.address.email')"
-                />
-              </div>
-              <div class="input-container__wrapper">
-                <label class="" for="password">{{
-                  $t('account.login.password')
-                }}</label>
-                <input
-                  v-model="password"
-                  class=""
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  :disabled="loading"
-                  placeholder="***************"
-                />
-              </div>
-              <div class="input-container__wrapper">
-                <div class="checkbox-container">
-                  <div class="checkbox-container__outer">
-                    <div class="checkbox-content">
-                      <input type="checkbox" class="" :disabled="loading" />
-                      <label
-                        class="font-bold text-gray-500"
-                        for="signUpLightReverseCheckbox1-1"
-                        ><span> {{ $t('account.register.accept_terms') }} </span
-                        ><a class="content-link" href="#">
-                          {{ $t('account.register.terms_conditions') }}</a
-                        ></label
-                      >
+              <slot name="first-name">
+                <div class="input-container__wrapper">
+                  <label class="" for="firstname">{{
+                    $t('account.address.name')
+                  }}</label>
+                  <input
+                    class=""
+                    id="firstname"
+                    v-model="name"
+                    name="firstname"
+                    type="text"
+                    required
+                    :disabled="loading"
+                    :placeholder="$t('account.address.name')"
+                  />
+                </div>
+              </slot>
+              <slot name="email-address">
+                <div class="input-container__wrapper">
+                  <label class="" for="email">{{
+                    $t('account.address.email')
+                  }}</label>
+                  <input
+                    v-model="email"
+                    class=""
+                    id="email"
+                    type="email"
+                    required
+                    :disabled="loading"
+                    :placeholder="$t('account.address.email')"
+                  />
+                </div>
+              </slot>
+              <slot name="password">
+                <div class="input-container__wrapper">
+                  <label class="" for="password">{{
+                    $t('account.login.password')
+                  }}</label>
+                  <input
+                    v-model="password"
+                    class=""
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    :disabled="loading"
+                    placeholder="***************"
+                  />
+                </div>
+              </slot>
+              <slot name ="custom-fields">
+                
+              </slot>
+              <slot name="terms-conditions">
+                <div class="input-container__wrapper">
+                  <div class="checkbox-container">
+                    <div class="checkbox-container__outer">
+                      <div class="checkbox-content">
+                        <input type="checkbox" class="" :disabled="loading" />
+                        <label
+                          class="font-bold text-gray-500"
+                          for="signUpLightReverseCheckbox1-1"
+                          ><span> {{ $t('account.register.accept_terms') }} </span
+                          ><a class="content-link" href="#">
+                            {{ $t('account.register.terms_conditions') }}</a
+                          ></label
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="w-full p-3">
-                <div class="-m-2 flex flex-wrap md:justify-end">
-                  <div class="w-full p-2">
-                    <button type="submit" class="btn-primary btn w-full" :disabled="loading">
-                      <span v-if="loading" class="loading loading-spinner"></span>
-                      {{ $t('account.register.sign_up') }}
-                    </button>
+              </slot>
+              <slot name=submit-btn>
+                <div class="w-full p-3">
+                  <div class="-m-2 flex flex-wrap md:justify-end">
+                    <div class="w-full p-2">
+                      <button type="submit" class="btn-primary btn w-full" :disabled="loading">
+                        <span v-if="loading" class="loading loading-spinner"></span>
+                        {{ $t('account.register.sign_up') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div v-if="error" class="text-error">
-                {{ error }}
-              </div>
+              </slot>
+              <slot name="error">
+                <div v-if="error" class="text-error">
+                  {{ error }}
+                </div>
+              </slot>
             </div>
           </form>
         </div>
