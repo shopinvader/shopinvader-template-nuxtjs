@@ -1,5 +1,8 @@
 import { ElasticFetch } from '@shopinvader/fetch'
-import { ShopinvaderElasticConfig, ShopinvaderProvidersList } from '../../types/ShopinvaderConfig'
+import type {
+  ShopinvaderElasticConfig,
+  ShopinvaderProvidersList
+} from '../../types/ShopinvaderConfig'
 
 export const fetchElastic = async (url: string, options: any) => {
   const response = await fetch(url, options)
@@ -26,17 +29,9 @@ export const initElasticProvider = (
   for (const name in indices) {
     const indexName = `${indices[name]}_${isoLocale}`
 
-    providers[name] = new ElasticFetch(
-      config.url,
-      indexName,
-      fetchElastic
-    )
+    providers[name] = new ElasticFetch(config.url, indexName, fetchElastic)
     allIndex.push(indexName)
   }
-  providers['elasticsearch'] = new ElasticFetch(
-    config.url,
-    allIndex.join(','),
-    fetchElastic
-  )
+  providers['elasticsearch'] = new ElasticFetch(config.url, allIndex.join(','), fetchElastic)
   return providers
 }

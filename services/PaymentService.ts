@@ -1,10 +1,6 @@
-import type { ErpFetch } from '@shopinvader/fetch';
-import { Service } from '#services';
-import {
-  PaymentMethod,
-  PaymentData,
-  PaymentTransaction
-} from '#models';
+import { PaymentData, PaymentMethod, PaymentTransaction } from '#models'
+import { Service } from '#services'
+import type { ErpFetch } from '@shopinvader/fetch'
 
 /**
  * PaymentService
@@ -12,11 +8,11 @@ import {
  * @description This service is used to manage the payment methods and transactions.
  */
 export class PaymentService extends Service {
-  paymentProvider: any;
-  provider: ErpFetch | null = null;
+  paymentProvider: any
+  provider: ErpFetch | null = null
   constructor(provider: ErpFetch) {
-    super();
-    this.provider = provider;
+    super()
+    this.provider = provider
   }
 
   /**
@@ -25,11 +21,11 @@ export class PaymentService extends Service {
    * @returns PaymentMethod[]
    */
   async getPaymentMethods(payable: string): Promise<PaymentMethod[]> {
-    const data = await this.provider?.get('payment/methods', { payable }, null);
+    const data = await this.provider?.get('payment/methods', { payable }, null)
     if (data?.providers?.length > 0) {
-      return data.providers.map((provider: any) => new PaymentMethod(provider));
+      return data.providers.map((provider: any) => new PaymentMethod(provider))
     }
-    return [];
+    return []
   }
 
   /**
@@ -52,7 +48,7 @@ export class PaymentService extends Service {
       provider_id: paymentMethod.id,
       frontend_redirect_url: redirectUrl,
       provider_input: inputs || {}
-    });
-    return new PaymentTransaction(data);
+    })
+    return new PaymentTransaction(data)
   }
 }

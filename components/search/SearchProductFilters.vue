@@ -21,6 +21,7 @@
     url-param="price"
   ></search-range-price>
 </template>
+
 <script lang="ts">
 import { BoolQuery, TermQuery } from 'elastic-builder'
 export default defineNuxtComponent({

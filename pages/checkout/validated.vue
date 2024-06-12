@@ -11,11 +11,7 @@
         {{ $t('cart.validated.cancelled.message') }}
       </div>
       <div class="checkout-validated__link">
-        <nuxt-link
-          type="button"
-          class="btn"
-          :to="localePath({path:`/checkout`})"
-        >
+        <nuxt-link type="button" class="btn" :to="localePath('/checkout')">
           {{ $t('cart.validated.retry') }}
         </nuxt-link>
       </div>
@@ -34,99 +30,87 @@
         </template>
       </div>
       <div class="checkout-validated__message">
-        <div
-          v-if="status == 'pending'"
-          v-html="pendingMessage"
-          class="prose text-center"
-        ></div>
+        <div v-if="status == 'pending'" v-html="pendingMessage" class="prose text-center"></div>
         <template v-else-if="status == 'success'">
           {{ $t('cart.validated.message') }}
         </template>
       </div>
       <div class="checkout-validated__link">
-        <nuxt-link
-          type="button"
-          class="btn btn-primary"
-          :to="localePath({path:`/account`})"
-        >
+        <nuxt-link type="button" class="btn btn-primary" :to="localePath('/account')">
           {{ $t('cart.validated.link') }}
         </nuxt-link>
       </div>
       <div class="checkout-validated__sale">
-        <sale-detail v-if="lastSale?.id" :sale=lastSale></sale-detail>
+        <sale-detail v-if="lastSale?.id" :sale="lastSale"></sale-detail>
       </div>
     </template>
     <div v-else-if="loading" class="checkout-validated__loading">
       <spinner></spinner>
     </div>
     <template v-else>
-      <nuxt-link
-        type="button"
-        class="btn btn-primary"
-        :to="localePath({path:`/checkout`})"
-      >
+      <nuxt-link type="button" class="btn btn-primary" :to="localePath('/checkout')">
         {{ $t('btn.back') }}
       </nuxt-link>
     </template>
   </div>
 </template>
 <script lang="ts" setup>
-  import type { Sale } from '#models';
-  const notification = useNotification()
-  const { t } = useI18n()
-  const localePath = useLocalePath()
-  const loading = ref(true)
-  const lastSale = ref(null) as Ref<Sale | null>
-  const status = ref('') as Ref<string>
-  const pendingMessage = ref('') as Ref<string>
-  const cartService = useShopinvaderService('cart')
-  useHead({
-    title: t('cart.validated.title')
-  })
-  onMounted(async () => {
-    try {
-      loading.value = true
-      lastSale.value = await cartService?.getLastSale() || null
-      const route = useRoute()
-      if(route.query?.status) {
-        status.value = route.query.status as string
-      } else {
-        if(!lastSale.value?.id) {
-          const router = useRouter()
-          router.push(localePath({path: '/cart'}))
-        }
+import type { Sale } from '#models'
+const notification = useNotification()
+const { t } = useI18n()
+const localePath = useLocalePath()
+const loading = ref(true)
+const lastSale = ref(null) as Ref<Sale | null>
+const status = ref('') as Ref<string>
+const pendingMessage = ref('') as Ref<string>
+const cartService = useShopinvaderService('cart')
+useHead({
+  title: t('cart.validated.title')
+})
+onMounted(async () => {
+  try {
+    loading.value = true
+    lastSale.value = (await cartService?.getLastSale()) || null
+    const route = useRoute()
+    if (route.query?.status) {
+      status.value = route.query.status as string
+    } else {
+      if (!lastSale.value?.id) {
+        const router = useRouter()
+        router.push(localePath('/cart'))
       }
-      if(route.query?.pending_message) {
-        pendingMessage.value = route?.query.pending_message as string
-      }
-    } catch (e) {
-      console.error(e)
-      notification.addError(e?.message || t('error.generic'))
-    } finally {
-      loading.value = false
     }
-  })
+    if (route.query?.pending_message) {
+      pendingMessage.value = route?.query.pending_message as string
+    }
+  } catch (e: any) {
+    console.error(e)
+    notification.addError(e?.message || t('error.generic'))
+  } finally {
+    loading.value = false
+  }
+})
 </script>
 <style lang="scss">
 .checkout-validated {
-  @apply flex flex-col gap-6 justify-center items-center py-16 my-10;
+  @apply my-10 flex flex-col items-center justify-center gap-6 py-16;
   &__title {
-    @apply text-2xl lg:text-6xl font-heading text-primary;
+    @apply font-heading text-2xl text-primary lg:text-6xl;
   }
   &__intro {
-    @apply text-lg lg:text-2xl text-center items-center flex gap-2;
+    @apply flex items-center gap-2 text-center text-lg lg:text-2xl;
   }
   &__message {
-    @apply prose text-center card card-body card-bordered;
+    @apply card card-body card-bordered prose text-center;
   }
   &__sale {
-    @apply w-full px-5 border-t;
+    @apply w-full border-t px-5;
     .sale {
       @apply w-full border-0;
     }
   }
   &__loading {
-    @apply flex justify-center items-center min-h-20;
+    @apply flex min-h-20 items-center justify-center;
   }
 }
 </style>

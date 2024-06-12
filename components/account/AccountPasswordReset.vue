@@ -1,5 +1,5 @@
 <template>
-  <div v-if="auth?.type=='credentials'">
+  <div v-if="auth?.type == 'credentials'">
     <template v-if="!successMessage">
       <slot name="head">
         <div class="reset-heading">
@@ -39,7 +39,6 @@
           </div>
           <div class="w-full p-3">
             <slot name="footer">
-
               <div class="footer-error" v-if="error.auth">
                 {{ error.auth }}
               </div>
@@ -48,17 +47,14 @@
         </div>
       </form>
     </template>
-    <div v-else class="reset-success" v-if="successMessage">
+    <div v-else class="reset-success">
       <slot name="success">
         <h2 class="reset-success__title">
           {{ $t('account.reset.reset_pswd') }}
         </h2>
         {{ $t('account.reset.reset_success') }}
         <div>
-          <nuxt-link
-            :to="localePath('account')"
-            class="btn btn-primary"
-          >
+          <nuxt-link :to="localePath('account')" class="btn btn-primary">
             <icon name="left" />
             {{ $t('btn.back') }}
           </nuxt-link>
@@ -68,6 +64,7 @@
   </div>
 </template>
 <script lang="ts">
+import type { AuthCredentialService } from '#services'
 import LogoVue from '../global/Logo.vue'
 
 export default defineNuxtComponent({
@@ -79,7 +76,7 @@ export default defineNuxtComponent({
     const route = useRoute()
 
     return {
-      login: route?.query?.email || '' as string | null,
+      login: (route?.query?.email as string) || ('' as string | null),
       successMessage: false as boolean,
       error: {
         auth: null as string | null,
@@ -98,7 +95,8 @@ export default defineNuxtComponent({
   methods: {
     checkValidity(input: string, e: Event) {
       this.error.login = null
-      if (e.target?.validity?.valid == false) {
+      const target = e.target as HTMLInputElement
+      if (target?.validity?.valid == false) {
         if (input == 'login') {
           this.error.login = this.$t('error.login.email')
         }
@@ -107,19 +105,17 @@ export default defineNuxtComponent({
       }
     },
     async submit(e: Event) {
-      const auth = useShopinvaderService('auth')
+      const auth = useShopinvaderService('auth') as AuthCredentialService
       if (this?.login) {
         try {
-          const resetPasswordSent = (await auth?.resetPassword(
-            this.login
-          )) as boolean
+          const resetPasswordSent = (await auth?.resetPassword(this.login)) as boolean
           if (resetPasswordSent) {
             this.successMessage = true
           }
           this.login = ''
-        } catch (e) {
+        } catch (e: any) {
           console.error(e)
-          this.error.auth = e?.message || this.t$('error.login.unable_to_login')
+          this.error.auth = e?.message || this.$t('error.login.unable_to_login')
         }
       }
     }
@@ -165,6 +161,6 @@ export default defineNuxtComponent({
   }
 }
 .reset-success {
-  @apply flex flex-col gap-4 justify-center text-gray-600;
+  @apply flex flex-col justify-center gap-4 text-gray-600;
 }
 </style>

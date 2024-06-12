@@ -1,5 +1,5 @@
 <template>
-  <div v-if="auth?.type=='credentials'">
+  <div v-if="auth?.type == 'credentials'">
     <slot name="head">
       <div class="login-heading">
         <h2 class="login-heading__title">
@@ -49,27 +49,22 @@
               </div>
               <div class="pswd-view">
                 <button type="button" @click="passwordView = !passwordView" class="btn btn-link">
-                  <icon
-                    class="view-icon"
-                    :name="passwordView ? 'view': 'hide'"
-                  />
+                  <icon class="view-icon" :name="passwordView ? 'view' : 'hide'" />
                 </button>
               </div>
             </div>
           </div>
           <div class="pswd-forgot">
-            <NuxtLink
-              class="pswd-forgot__link"
-              :to="localePath('/account/password-reset')"
+            <NuxtLink class="pswd-forgot__link" :to="localePath('/account/password-reset')"
               >{{ $t('account.login.forgot_password') }}
             </NuxtLink>
           </div>
         </div>
-        <div v-if="error.password" class="subscription-form__error" >
+        <div v-if="error.password" class="subscription-form__error">
           {{ error.password }}
         </div>
         <div class="w-full p-3">
-          <div class="subscription-form__error" >
+          <div class="subscription-form__error">
             <template v-if="error.auth">
               <icon class="text-xl" name="error" />
               {{ error.auth }}
@@ -90,10 +85,7 @@
               <span class="footer-content__text">
                 {{ $t('account.login.not_yet_account') }}
               </span>
-              <nuxt-link
-                class="footer-content__link"
-                :to="localePath('/account/register')"
-              >
+              <nuxt-link class="footer-content__link" :to="localePath('/account/register')">
                 {{ $t('account.login.create_account') }}
               </nuxt-link>
             </p>
@@ -109,7 +101,7 @@
   </div>
 </template>
 <script lang="ts">
-import { AuthCredentialService } from '#services'
+import type { AuthCredentialService } from '#services'
 import LogoVue from '../global/Logo.vue'
 
 export default defineNuxtComponent({
@@ -135,7 +127,7 @@ export default defineNuxtComponent({
     const localePath = useLocalePath()
     const auth = useShopinvaderService('auth') as AuthCredentialService
     onMounted(async () => {
-      if(!auth?.getUser()?.value && auth?.type == 'oidc') {
+      if (!auth?.getUser()?.value && auth?.type == 'oidc') {
         const url = useRequestURL()
         await auth?.loginRedirect(url?.href)
       }
@@ -149,7 +141,8 @@ export default defineNuxtComponent({
     checkValidity(input: string, e: Event) {
       this.error.login = null
       this.error.password = null
-      if (e.target?.validity?.valid == false) {
+      const target = e.target as HTMLInputElement
+      if (target?.validity?.valid == false) {
         if (input == 'login') {
           this.error.login = this.$t('error.login.email')
         } else if (input == 'password') {
@@ -200,7 +193,7 @@ export default defineNuxtComponent({
     .pswd-container {
       @apply overflow-hidden rounded-full border border-gray-200 focus-within:ring-4 focus-within:ring-secondary;
       &__wrapper {
-        @apply flex flex-wrap ;
+        @apply flex flex-wrap;
         .pswd-input {
           @apply flex-1 bg-gray-100;
           input {
@@ -208,12 +201,11 @@ export default defineNuxtComponent({
           }
         }
         .pswd-view {
-          @apply bg-gray-100 flex justify-center items-center;
+          @apply flex items-center justify-center bg-gray-100;
           .view-icon {
-            @apply  text-2xl text-gray-500;
+            @apply text-2xl text-gray-500;
           }
         }
-
       }
     }
     .pswd-forgot {
@@ -223,7 +215,7 @@ export default defineNuxtComponent({
     }
   }
   &__error {
-    @apply text-error mb-3 min-h-6 flex gap-1 items-center;
+    @apply min-h-6 mb-3 flex items-center gap-1 text-error;
   }
 
   .subscription-btn {

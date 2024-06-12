@@ -5,11 +5,13 @@
     :query="query"
     :pagination="true"
     cardinality-field="url_key"
-    :sort-options="sortOptions || [
-      { label: $t('search.sort.relevance'), value: '_score', order: 'desc'  },
-      { label: $t('search.sort.name_asc'), value: 'name.sortable' },
-      { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
-    ]"
+    :sort-options="
+      sortOptions || [
+        { label: $t('search.sort.relevance'), value: '_score', order: 'desc' },
+        { label: $t('search.sort.name_asc'), value: 'name.sortable' },
+        { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
+      ]
+    "
   >
     <template #filters>
       <slot name="filters">
@@ -29,11 +31,9 @@
           :key="item.id"
           :product="item"
           :inline="false"
-          v-animate="{name: 'searchProduct', index}"
+          v-animate="{ name: 'searchProduct', index }"
         >
-          <template #variants>
-
-          </template>
+          <template #variants> </template>
         </ProductHit>
       </div>
     </template>
@@ -44,11 +44,11 @@
 </template>
 <script lang="ts">
 import { Product } from '#models'
-import ProductHit from '~/components/product/ProductHit.vue'
-import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
-import SearchBaseVue from '~~/components/search/SearchBase.vue'
-import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
 import esb from 'elastic-builder'
+import ProductHit from '~/components/product/ProductHit.vue'
+import SearchBaseVue from '~~/components/search/SearchBase.vue'
+import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
+import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
 
 export interface SortItem {
   label: string
@@ -93,7 +93,6 @@ export default {
     }
   },
   setup() {
-
     const { t } = useI18n()
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
@@ -102,23 +101,22 @@ export default {
       cart,
       $t: t
     }
-
   },
   methods: {
     transformResult(result: any) {
       const authService = useShopinvaderService('auth')
       let role: string | null = null
       const user = authService.getUser()
-      if(user?.value && user?.value?.role) {
-        role = authService.getUser()?.role as string
+      if (user && user.value && user.value?.role) {
+        role = user.value.role
       }
-      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
+      return result?.hits?.hits?.map((data: any) => new Product(data._source, role || undefined))
     },
-    motion(index:number) {
+    motion(index: number) {
       const { animations } = useAppConfig() as any
-      if(!animations) return false
+      if (!animations) return false
       let motion = animations?.searchProduct || false
-      if(typeof motion === 'function') {
+      if (typeof motion === 'function') {
         motion = motion(index)
       }
       return motion || false

@@ -12,10 +12,12 @@ export class ProductCategory extends Model {
     this.urlKey = data?.url_key
     this.name = data?.name
     this.level = data?.level
-    this.childs = Array.isArray(data?.childs) ? data.childs.map((item: any) => new ProductCategory(item)) : []
+    this.childs = Array.isArray(data?.childs)
+      ? data.childs.map((item: any) => new ProductCategory(item))
+      : []
   }
   findCategory(id: number | null): ProductCategory | null {
-    if(id) {
+    if (id) {
       if (this.id === id) {
         return this
       }
@@ -30,5 +32,4 @@ export class ProductCategory extends Model {
     }
     return null
   }
-
 }

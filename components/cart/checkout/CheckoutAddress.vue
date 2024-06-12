@@ -1,10 +1,5 @@
 <template>
-  <div
-    v-if="cart && user"
-    class="checkout-address"
-    :class="{ 'checkout-address--active': active }"
-  >
-
+  <div v-if="cart && user" class="checkout-address" :class="{ 'checkout-address--active': active }">
     <div v-if="error" class="alert alert-error mb-6 flex gap-1">
       <icon name="error" class="text-xl"></icon>
       <span>{{ error }}</span>
@@ -15,7 +10,7 @@
     </div>
     <div v-if="active" class="checkout-address__submit">
       <button
-        class="btn-secondary btn px-10"
+        class="btn btn-secondary px-10"
         :class="{ loading: loading }"
         type="submit"
         @click="submit"
@@ -28,8 +23,7 @@
   </div>
 </template>
 <script lang="ts">
-import { CartAddressDelivery, CartAddressInvoicing, AddressCard } from '#components'
-import { Address } from '#models'
+import { AddressCard, CartAddressDelivery, CartAddressInvoicing } from '#components'
 
 /**
  * Checkout Address step.
@@ -63,7 +57,7 @@ export default defineNuxtComponent({
       const cartService = useShopinvaderService('cart')
       const cart = cartService.getCart()
       return cart.value?.delivery?.address
-    },
+    }
   },
   async setup(props, { emit }) {
     const i18n = useI18n()
@@ -115,20 +109,19 @@ export default defineNuxtComponent({
           @apply m-0 flex items-center gap-3 text-xl font-bold uppercase leading-none text-inherit;
         }
         .subtitle {
-          @apply text-lg pb-0 ml-8 pt-3;
+          @apply ml-8 pb-0 pt-3 text-lg;
         }
       }
 
       &__content {
         @apply ml-8 p-0;
       }
-
     }
   }
   &--active {
     .checkout-address__items {
       .address {
-        @apply border bg-gray-100 ;
+        @apply border bg-gray-100;
       }
     }
   }
@@ -137,5 +130,4 @@ export default defineNuxtComponent({
     @apply flex w-full flex-grow justify-end gap-6 py-4;
   }
 }
-
 </style>

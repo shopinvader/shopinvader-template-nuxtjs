@@ -1,21 +1,16 @@
 <template>
-  <search-product
-    v-if="!refresh"
-    ref="searchProduct"
-    :provider="providerFunction"
-    :query="query"
-  >
+  <search-product v-if="!refresh" ref="searchProduct" :provider="providerFunction" :query="query">
     <template #header>
-      <div v-if="queryString" class="text-2xl font-heading">
+      <div v-if="queryString" class="font-heading text-2xl">
         {{ $t('search.autocomplete.product', { query: queryString }) }}
       </div>
     </template>
   </search-product>
 </template>
 <script lang="ts">
-import SearchProduct from '~/components/search/SearchProduct.vue'
 import { Product } from '#models'
 import esb, { BoolQuery, TermQuery } from 'elastic-builder'
+import SearchProduct from '~/components/search/SearchProduct.vue'
 
 export default {
   components: {
@@ -27,7 +22,7 @@ export default {
     const $route = useRoute()
     const refresh = ref(false)
     const queryString = computed(() => $route.query.q)
-    if(queryString?.value) {
+    if (queryString?.value) {
       useSeoMeta({
         title: t('search.autocomplete.product', { query: queryString?.value || '' })
       })
@@ -58,8 +53,9 @@ export default {
     transformResult(result: any) {
       let role: string
       const authService = useShopinvaderService('auth')
-      if(authService?.getUser()?.role) {
-        role = authService.getUser()?.role as string
+      const user = authService?.getUser()
+      if (user && user.value?.role) {
+        role = user.value?.role as string
       }
       return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
     },
@@ -78,7 +74,7 @@ export default {
     },
     query() {
       const route = useRoute()
-      const query: string | null = route.query?.q || null
+      const query: string | null = (route.query?.q as string) || null
       if (query !== null) {
         const productService = useShopinvaderService('products')
         return productService.fullTextQuery(query)

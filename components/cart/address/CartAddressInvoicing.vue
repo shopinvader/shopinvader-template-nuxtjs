@@ -11,41 +11,41 @@
     </template>
     <template v-if="editable" #footer>
       <div class="cart-address-invoicing">
-      <slot v-if="invoicingAddress" name="action" onOpen>
-        <div class="cart-address-invoicing__btn">
-          <button class="btn" @click="onOpen">
-            <icon name="edit"></icon>
-            <span class="pl-1">{{ $t('account.address.edit') }}</span>
-          </button>
-        </div>
-      </slot>
-      <aside-drawer
-        :open="opened"
-        @close="onClose"
-        classContent="cart-address-invoicing__aside"
-      >
-        <template #header>
-          <div class="aside__header">
-            {{ $t('cart.address.billing.title') }}
+        <slot v-if="invoicingAddress" name="action" onOpen>
+          <div class="cart-address-invoicing__btn">
+            <button class="btn" @click="onOpen">
+              <icon name="edit"></icon>
+              <span class="pl-1">{{ $t('account.address.edit') }}</span>
+            </button>
           </div>
-        </template>
-        <template #content>
-          <div v-if="hasSameAddresses" class="alert-same-address">
-            <icon name="warning"></icon>
-            <span>
-              {{ $t('cart.address.billing.warning_same') }}
-            </span>
-          </div>
-          <address-form v-if="value" :address="value" @saved="(e) => onUpdateAddress(e)"></address-form>
-        </template>
-      </aside-drawer>
-    </div>
+        </slot>
+        <aside-drawer :open="opened" @close="onClose" classContent="cart-address-invoicing__aside">
+          <template #header>
+            <div class="aside__header">
+              {{ $t('cart.address.billing.title') }}
+            </div>
+          </template>
+          <template #content>
+            <div v-if="hasSameAddresses" class="alert-same-address">
+              <icon name="warning"></icon>
+              <span>
+                {{ $t('cart.address.billing.warning_same') }}
+              </span>
+            </div>
+            <address-form
+              v-if="value"
+              :address="value"
+              @saved="(e) => onUpdateAddress(e)"
+            ></address-form>
+          </template>
+        </aside-drawer>
+      </div>
     </template>
   </address-card>
 </template>
 <script lang="ts">
-import { Address } from '#models'
 import { AddressForm } from '#components'
+import { Address } from '#models'
 
 export default defineNuxtComponent({
   events: ['close', 'open'],
@@ -57,7 +57,7 @@ export default defineNuxtComponent({
     /**
      * Is the current step of the checkout process
      */
-     editable: {
+    editable: {
       type: Boolean,
       required: false,
       default: true
@@ -74,9 +74,11 @@ export default defineNuxtComponent({
       const cart = cartService.getCart()
       return cart.value?.invoicing?.address || null
     })
-    const hasSameAddresses = computed(() => cart?.value?.delivery?.address?.id == invoicingAddress?.value?.id)
+    const hasSameAddresses = computed(
+      () => cart?.value?.delivery?.address?.id == invoicingAddress?.value?.id
+    )
 
-    return  {
+    return {
       value,
       opened,
       hasSameAddresses,
@@ -84,13 +86,13 @@ export default defineNuxtComponent({
     }
   },
   methods: {
-    async onUpdateAddress(address:Address | null) {
-      if(!address) return null
+    async onUpdateAddress(address: Address | null) {
+      if (!address) return null
 
       const addressService = useShopinvaderService('addresses')
-      const addressSaved = await addressService?.update(address) || null
+      const addressSaved = (await addressService?.update(address)) || null
 
-      if(addressSaved) {
+      if (addressSaved) {
         const cartService = useShopinvaderService('cart')
         await cartService.setAddress('invoicing', addressSaved)
       }
@@ -103,9 +105,9 @@ export default defineNuxtComponent({
     },
     async onOpen() {
       let data = this.invoicingAddress?.data || null
-      if(!data) {
+      if (!data) {
         const addressService = useShopinvaderService('addresses')
-        let main = await addressService?.getMainAddress()
+        const main = await addressService?.getMainAddress()
         data = main?.data || null
       }
       this.value = new Address({
@@ -125,7 +127,7 @@ export default defineNuxtComponent({
 </script>
 <style lang="scss">
 .cart-address-invoicing {
-  @apply w-full flex justify-end;
+  @apply flex w-full justify-end;
   .cart-address-invoicing__btn {
     .btn {
       @apply btn-link;
@@ -136,7 +138,7 @@ export default defineNuxtComponent({
       @apply font-heading text-2xl;
     }
     .alert-same-address {
-      @apply alert alert-warning mb-4 flex gap-4 items-center;
+      @apply alert alert-warning mb-4 flex items-center gap-4;
       .iconify {
         @apply text-6xl;
       }

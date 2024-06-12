@@ -1,7 +1,7 @@
-import { ErpFetch } from "@shopinvader/fetch";
-import { AuthService } from "../AuthService";
-import { localePath, navigateTo } from "#imports";
-import { User } from "~/models";
+import { localePath, navigateTo } from '#imports'
+import { ErpFetch } from '@shopinvader/fetch'
+import { User } from '~/models'
+import { AuthService, type AuthUserCredential } from '../AuthService'
 
 export interface AuthAPIConfig {
   loginPage: string
@@ -15,7 +15,8 @@ export interface AuthAPIConfig {
  */
 export class AuthCredentialService extends AuthService {
   public config: AuthAPIConfig
-  public type: string = "credentials"
+  public type: string = 'credentials'
+
   constructor(provider: ErpFetch, config: AuthAPIConfig) {
     super(provider)
     this.config = config
@@ -24,22 +25,31 @@ export class AuthCredentialService extends AuthService {
       loginPage: localePath(config.loginPage) as string,
       logoutPage: localePath(config.logoutPage) as string
     }
-
   }
-  async init() {
-    if(this.getSession()) {
+
+  init(): Promise<any> {
+    if (this.getSession()) {
       this.profile()
     } else {
       this.setUser(null)
     }
     this.logoutRedirect = this.logoutRedirect.bind(this)
     this.userLoaded()
-    this.store().$onAction(({ name, args, store }) => {
+    this.store().$onAction(async ({ name, args, store }) => {
       const { user } = store
-      if (name == 'setUser' && args[0]?.login !== user?.login && args[0]?.login == null) {
-        navigateTo(this.config.loginPage)
+      if (
+        name == 'setUser' &&
+        args[0]?.login !== (user as User)?.login &&
+        args[0]?.login == null
+      ) {
+        await navigateTo(this.config.loginPage)
       }
     })
+    return Promise.resolve()
+  }
+
+  getConfig(): any {
+    return this.config
   }
 
   /**
@@ -47,14 +57,10 @@ export class AuthCredentialService extends AuthService {
    * @param target
    * @returns
    */
-  loginRedirect(target: string): Promise<any> {
-    return new Promise(() => {
-      if(!this.getUser()?.value) {
-        navigateTo(this.config.loginPage)
-      } else {
-        navigateTo(target || this.config.logoutPage)
-      }
-    })
+  async loginRedirect(target: string) {
+    return !this.getUser()?.value
+      ? navigateTo(this.config.loginPage)
+      : navigateTo(target || this.config.logoutPage)
   }
 
   /**
@@ -71,10 +77,10 @@ export class AuthCredentialService extends AuthService {
    * @param login
    * @param password
    */
-  async login(login: string, password: string): Promise<{ login:string }> {
+  async login(login: string, password: string) {
     try {
-      const data = await this.provider?.post("auth/login", { login, password })
-      if(data?.login) {
+      const data = await this.provider?.post('auth/login', { login, password })
+      if (data?.login) {
         await this.profile()
       }
     } catch (error) {
@@ -88,7 +94,7 @@ export class AuthCredentialService extends AuthService {
    */
   async logout(): Promise<any> {
     await this.setUser(null)
-    await this.provider?.post("auth/logout", {})
+    await this.provider?.post('auth/logout', {})
   }
 
   /**
@@ -102,8 +108,8 @@ export class AuthCredentialService extends AuthService {
     name: string,
     password: string,
     login: string
-  ): Promise<{ login: string } | boolean> {
-    let request = false
+  ): Promise<AuthUserCredential | null> {
+    let request = null
     if (login && password && name) {
       request = await this.provider?.post('auth/register', {
         name,
@@ -111,23 +117,26 @@ export class AuthCredentialService extends AuthService {
         password
       })
     }
-    return request || false
+    return request
   }
 
   /**
    * Reset request password link
    * @param data
    */
-  async resetPassword(login: string): Promise<{login :string}> {
-    return await this.provider?.post("auth/request_reset_password", {login})
+  async resetPassword(login: string): Promise<any> {
+    return await this.provider?.post('auth/request_reset_password', { login })
   }
 
   /**
    * Define a new password
    * @param data
    */
-  async setPassword(token: string, password: string): Promise<{login :string}> {
-    return await this.provider?.post("auth/set_password", { token, password })
+  async setPassword(
+    token: string,
+    password: string
+  ): Promise<AuthUserCredential> {
+    return await this.provider?.post('auth/set_password', { token, password })
   }
 
   /**
@@ -137,22 +146,16 @@ export class AuthCredentialService extends AuthService {
   async profile(): Promise<User | null> {
     let profile = null
     try {
-      profile = await this.provider?.get("auth/profile", [], null)
-      if(profile?.login) {
+      profile = await this.provider?.get('auth/profile', [], null)
+      if (profile?.login) {
         this.setUser(profile)
-
       } else {
         this.setUser(null)
       }
-
-    } catch(error) {
+    } catch (error) {
       this.setUser(null)
     }
     return profile
-  }
-
-  getConfig() {
-    return this.config
   }
 
   userLoaded() {
@@ -160,7 +163,7 @@ export class AuthCredentialService extends AuthService {
     if ($fetch && this.provider && !import.meta.env.SSR) {
       this.provider._fetch = async (url: string, options: any) => {
         const response = await $fetch(url, options)
-        if(response?.status === 401) {
+        if (response?.status === 401) {
           this.logoutRedirect()
         }
         return response

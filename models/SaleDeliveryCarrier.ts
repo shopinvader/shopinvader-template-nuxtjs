@@ -1,4 +1,4 @@
-import { Model } from "./Model"
+import { Model } from './Model'
 
 export class SaleDeliveryCarrier extends Model {
   id: number

@@ -1,4 +1,17 @@
 import type { AuthAPIConfig, AuthOIDCConfig, PaymentService } from '#services'
+import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
+import {
+  AddressService,
+  AuthService,
+  CartService,
+  CatalogService,
+  CategoryService,
+  CustomerService,
+  DeliveryCarrierService,
+  ProductService,
+  SaleService,
+  SettingService
+} from '~/services'
 
 export interface ShopinvaderProxyConfig {
   url: string
@@ -35,26 +48,18 @@ export interface ShopinvaderConfig {
     originalComponents?: boolean
   }
 }
-import { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
-import {
-  AddressService,
-  AuthService,
-  CartService,
-  CatalogService,
-  CategoryService,
-  CustomerService,
-  DeliveryCarrierService,
-  ProductService,
-  SaleService,
-  SettingService
-} from '~/services'
 
 export interface ShopinvaderProvidersList {
-  [key: string]: ErpFetch | ElasticFetch
+  // One erp provider
+  erp: ErpFetch
+  // Many elastic providers
+  elastic: {
+    [key: string]: ElasticFetch
+  }
 }
 
 export interface ShopinvaderServiceList {
-  auth: AuthService
+  auth: AuthService | null
   products: ProductService
   categories: CategoryService
   catalog: CatalogService

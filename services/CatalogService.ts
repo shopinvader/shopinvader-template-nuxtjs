@@ -1,6 +1,6 @@
-import { ElasticFetch } from '@shopinvader/fetch'
-import { type CatalogResult, Product, Category } from '#models'
+import { Category, Product, type CatalogResult } from '#models'
 import { Service } from '#services'
+import { ElasticFetch } from '@shopinvader/fetch'
 
 export class CatalogService extends Service {
   serviceName = 'catalog'
@@ -25,9 +25,7 @@ export class CatalogService extends Service {
     }
     const result = await this.provider?.search(body)
     const rawsHits = result?.hits?.hits?.map((hit: any) => {
-      const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
-        (variant: any) => variant._source
-      )
+      const variants = hit?.inner_hits?.variants?.hits?.hits?.map((variant: any) => variant._source)
       return {
         ...hit._source,
         ...{ variants, _index: hit._index }
@@ -43,7 +41,6 @@ export class CatalogService extends Service {
     return { hits, total, aggregations, rawsHits }
   }
   getByURLKey(urlKey: string, sku: string | null): Promise<CatalogResult> {
-
     const bool: any = {
       should: [
         {
@@ -58,14 +55,12 @@ export class CatalogService extends Service {
         }
       ]
     }
-    let query: any = { bool}
-    if(sku) {
+    let query: any = { bool }
+    if (sku) {
       /** Boost product with specific SKU */
       query = {
         bool: {
-          must: [
-            {bool}
-          ],
+          must: [{ bool }],
           should: [
             {
               terms: {

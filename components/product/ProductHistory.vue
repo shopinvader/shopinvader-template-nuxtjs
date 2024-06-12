@@ -6,22 +6,13 @@
       </slot>
     </div>
     <div class="product-history__list">
-      <div
-        v-for="product in products"
-        class="product-history__item"
-        :key="product.id"
-      >
-        <product-hit :product="product" :readonly="true" :inline="false">
-        </product-hit>
+      <div v-for="product in products" class="product-history__item" :key="product.id || 0">
+        <product-hit :product="product" :readonly="true" :inline="false"> </product-hit>
       </div>
     </div>
     <div class="product-history__footer">
       <slot name="footer">
-        <button
-          type="button"
-          class="btn-link text-left text-black"
-          @click="removeAllProducts"
-        >
+        <button type="button" class="btn-link text-left text-black" @click="removeAllProducts">
           {{ $t('product.history.clear') }}
         </button>
       </slot>
@@ -52,7 +43,7 @@ export default {
     const store = useHistoryStore()
     const products = computed(() => {
       return store.getProducts
-        .filter((p) => p && !props.excludedId.includes(p.id))
+        .filter((p) => p && p.id && !props.excludedId.includes(p.id))
         .slice(0, props.size)
     })
     const removeAllProducts = () => {
@@ -68,7 +59,7 @@ export default {
 <style lang="scss">
 .product-history {
   &__list {
-    @apply grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
+    @apply grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6;
   }
   &__footer {
     @apply flex justify-end;

@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">
           {{ $t('account.address.name') }}
         </span>
@@ -26,11 +26,11 @@
         :disabled="submitted"
         type="text"
         required
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">
           {{ $t('account.address.street') }}
         </span>
@@ -40,7 +40,7 @@
         required
         bled="submitted"
         type="text"
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
     <div class="form-control inline-block w-full">
@@ -51,11 +51,11 @@
         v-model="value.street2"
         :disabled="submitted"
         type="text"
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
     <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">{{ $t('account.address.zip') }}</span>
       </label>
       <input
@@ -63,11 +63,11 @@
         required
         :disabled="submitted"
         type="text"
-        class="input-bordered input w-full md:max-w-xs"
+        class="input input-bordered w-full md:max-w-xs"
       />
     </div>
     <div class="form-control inline-block w-full md:w-2/3">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">{{ $t('account.address.city') }}</span>
       </label>
       <input
@@ -75,26 +75,24 @@
         required
         :disabled="submitted"
         type="text"
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
-    <div v-if="countries.length > 0" class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
-      <label class="label required">
+    <div
+      v-if="countries.length > 0"
+      class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2"
+    >
+      <label class="required label">
         <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select
         v-model="value.country"
-        class="select-bordered select w-full max-w-xs"
+        class="select select-bordered w-full max-w-xs"
         :disabled="submitted"
         required
       >
         <option disabled v-if="countries.length > 1">{{ $t('account.address.country') }}</option>
-        <option
-          v-for="country of countries"
-          :key="country.id"
-          :value="country"
-
-        >
+        <option v-for="country of countries" :key="country.id" :value="country">
           {{ country.name }}
         </option>
       </select>
@@ -110,7 +108,7 @@
         v-model="value.phone"
         :disabled="submitted"
         type="phone"
-        class="input-bordered input w-full md:max-w-xs"
+        class="input input-bordered w-full md:max-w-xs"
       />
     </div>
     <slot name="footer" :address="value">
@@ -118,7 +116,7 @@
         <div class="flex-grow">
           <slot name="actions" :address="value"></slot>
         </div>
-        <button type="submit" :disabled="submitted" class="btn-primary btn">
+        <button type="submit" :disabled="submitted" class="btn btn-primary">
           <icon name="check" class="mr-2 h-5 w-5" />
           {{ $t('actions.validate') }}
         </button>
@@ -127,9 +125,9 @@
   </form>
 </template>
 <script lang="ts">
-import { type PropType, ref } from 'vue'
+import type { Country } from '#models'
+import { type PropType } from 'vue'
 import { Address } from '~/models'
-import { Country } from '#models'
 
 export default defineNuxtComponent({
   emits: ['saved'],
@@ -189,9 +187,7 @@ export default defineNuxtComponent({
   },
   computed: {
     hasValidCountry(): boolean {
-      return this.countries?.some(
-        (i: Country) => i.id == this.value?.country?.id
-      )
+      return this.countries?.some((i: Country) => i.id == this.value?.country?.id)
     }
   }
 })
