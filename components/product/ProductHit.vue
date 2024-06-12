@@ -46,15 +46,12 @@
         </div>
         <div class="body__stock">
           <slot name="product-stock">
-            <product-stock v-if="variant?.stock !== null" :stock="variant?.stock">
-            </product-stock>
+            <product-stock v-if="variant?.stock !== null" :stock="variant?.stock"> </product-stock>
           </slot>
         </div>
         <div class="body__price">
           <slot name="price" :price="price">
-            <product-price v-if="price !== null" :price="price">
-
-            </product-price>
+            <product-price v-if="price !== null" :price="price"> </product-price>
           </slot>
         </div>
 
@@ -69,10 +66,10 @@
   </div>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import { Product, ProductPrice } from '#models'
-import ProductPriceVue from '~/components/product/ProductPrice.vue'
+import type { PropType } from 'vue'
 import ProductImage from '~/components/product/ProductImage.vue'
+import ProductPriceVue from '~/components/product/ProductPrice.vue'
 import ProductVariants from '~/components/product/ProductVariants.vue'
 
 export default {
@@ -91,7 +88,6 @@ export default {
       type: Boolean,
       required: false,
       default: false
-
     },
     readonly: {
       type: Boolean,
@@ -107,17 +103,17 @@ export default {
   },
   data() {
     return {
-      variant: this.product as Product | null || null
+      variant: (this.product as Product | null) || null
     }
   },
   computed: {
     variants() {
-      return this.product?.variants || []
+      return this.product?.variants || []
     },
     linkPath() {
       const urlKey = this.product?.urlKey || null
       const sku = this.product?.sku || null
-      if(urlKey) {
+      if (urlKey) {
         const localePath = useLocalePath()
         return localePath({
           path: '/' + urlKey,
@@ -126,12 +122,12 @@ export default {
       }
       return null
     },
-    price():ProductPrice | null {
+    price(): ProductPrice | null {
       const authService = useShopinvaderService('auth')
       const user = authService.getUser()
-      const role = user?.value?.role as string || null
-      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
-      if(role !== null && this.variant?.pricesList?.[role]) {
+      const role = (user?.value?.role as string) || null
+      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
+      if (role !== null && this.variant?.pricesList?.[role]) {
         price = this.variant?.pricesList?.[role]
       }
       return price
@@ -149,9 +145,8 @@ export default {
 
   methods: {
     linkToProduct() {
-      const $route = useRoute()
       const path = this.linkPath || null
-      if(path) {
+      if (path) {
         this.$router.push({
           path,
           query: { sku: this.variant?.sku }
@@ -166,15 +161,15 @@ export default {
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card flex h-full flex-col border p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3 relative;
+  @apply card relative flex h-full flex-col border p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
   &__tag {
-    @apply absolute top-2 left-1 z-10;
+    @apply absolute left-1 top-2 z-10;
   }
   &__image {
-    @apply aspect-square relative max-h-full cursor-pointer overflow-hidden;
+    @apply relative aspect-square max-h-full cursor-pointer overflow-hidden;
     .product-image {
       @apply h-full w-full rounded-md py-2;
     }
@@ -264,19 +259,19 @@ export default {
     .product-hit {
       &__image {
         .noimage {
-          @apply animate-pulse bg-gray-200 rounded-lg cursor-default;
+          @apply animate-pulse cursor-default rounded-lg bg-gray-200;
         }
       }
       &__body {
         .body {
           &__title {
-            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-2/3;
+            @apply h-3 w-2/3 animate-pulse cursor-default rounded-lg bg-gray-200;
           }
           &__desc {
-            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-full;
+            @apply h-3 w-full animate-pulse cursor-default rounded-lg bg-gray-200;
           }
           &__price {
-            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-1/3 items-end;
+            @apply h-3 w-1/3 animate-pulse cursor-default items-end rounded-lg bg-gray-200;
           }
         }
       }

@@ -18,6 +18,7 @@
     </svg>
   </template>
 </template>
+
 <script lang="ts">
 export default defineNuxtComponent({
   name: 'Logo',

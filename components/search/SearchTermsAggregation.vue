@@ -6,22 +6,15 @@
           {{ title }}
         </div>
         <div class="header__close">
-          <icon :name="opened ? 'up': 'down'" />
+          <icon :name="opened ? 'up' : 'down'" />
         </div>
       </div>
     </slot>
     <slot name="items" :items="data.items" :change="onSelectItem">
       <template v-if="opened">
-        <div
-          v-for="item in data.items"
-          :key="item.key"
-          class="searchfilter__items"
-        >
+        <div v-for="item in data.items" :key="item.key" class="searchfilter__items">
           <slot name="items" :item="item" :change="onSelectItem">
-            <label
-              class="item"
-              :class="{ 'item--active': data.selected.includes(item.key) }"
-            >
+            <label class="item" :class="{ 'item--active': data.selected.includes(item.key) }">
               <input
                 v-model="data.selected"
                 type="checkbox"
@@ -29,13 +22,14 @@
                 :value="item.key"
                 @change="onSelectItem()"
               />
-              <span class="item__label" v-html=" item?.label || item.key"></span>
+              <span class="item__label" v-html="item?.label || item.key"></span>
               <span class="item__count">{{ item.doc_count }}</span>
             </label>
           </slot>
         </div>
       </template>
-      <button v-if="opened && data?.total > size"
+      <button
+        v-if="opened && data?.total > size"
         class="btn btn-link btn-xs pt-3"
         @click="displayAll"
       >
@@ -43,17 +37,12 @@
         <span v-else>{{ $t('search.filters.reduce') }}</span>
       </button>
     </slot>
-    <slot name="footer" :items="data.items" :size="size" :total="data?.total">
-
-    </slot>
+    <slot name="footer" :items="data.items" :size="size" :total="data?.total"> </slot>
   </div>
 </template>
 <script lang="ts">
-import { inject, reactive } from 'vue'
-import isEqual from 'lodash.isequal'
 import {
   Aggregation,
-  BoolQuery,
   CardinalityAggregation,
   FilterAggregation,
   MatchAllQuery,
@@ -64,12 +53,14 @@ import {
   TermsQuery,
   cardinalityAggregation
 } from 'elastic-builder'
+import { inject, reactive } from 'vue'
+import isEqual from '~/utils/IsEqual'
+import { type Filter } from './SearchBase.vue'
 interface FacetItem {
   key: string
   label: string
   doc_count: number
 }
-import { type Filter } from './SearchBase.vue'
 export default {
   props: {
     name: {
@@ -138,47 +129,49 @@ export default {
       items: [] as FacetItem[],
       total: 0
     })
-    const declareFilter: ((params: Filter) => void) | null =
-      inject('declareFilter') || null
+    const declareFilter: ((params: Filter) => void) | null = inject('declareFilter') || null
     const search: (() => void) | null = inject('search') || null
     const response: (() => void) | null = inject('response') || null
+
     const getValuesLabels = () => {
       return data.selected.join(', ')
     }
-    const getFilterAggregation = (query: BoolQuery): Aggregation => {
-      let agg: Aggregation = new TermsAggregation(props.name, props.field)
-        .order('_term', 'asc')
-        .size(sizeQuery.value)
 
+    const getFilterAggregation = (query: Query | null): FilterAggregation => {
+      // Initialize the main aggregation with terms aggregation based on provided props
+      let agg: Aggregation = new TermsAggregation(props.name, props.field)
+        .order('_term', 'asc') // Order the aggregation by term in ascending order
+        .size(sizeQuery.value) // Set the size of the aggregation based on reactive sizeQuery value
+      // If a transformQuery function is provided in props, apply it to modify the query
       if (props.transformQuery !== null) {
         query = props.transformQuery(query, props.name, props.field)
       }
+      // If a cardinalityField is specified, add a cardinality aggregation to the main aggregation
       if (props.cardinalityField !== null) {
-        agg.agg(
-          cardinalityAggregation(
-            props.name + '_cardinality',
-            props.cardinalityField
-          )
-        )
+        agg.agg(cardinalityAggregation(props.name + '_cardinality', props.cardinalityField))
       }
+      // Initialize the aggregations array with the main aggregation
       let aggs: Aggregation[] = [agg]
+      // Create a cardinality aggregation to count unique values in the specified field
       const uniqueAgg = new CardinalityAggregation('unique', props.field)
+      // If a nestedPath is specified, wrap the main and unique aggregations in a nested aggregation
       if (props.nestedPath) {
-        aggs =[ new NestedAggregation(props.name, props.nestedPath)
-          .aggs([agg, uniqueAgg])]
+        aggs = [new NestedAggregation(props.name, props.nestedPath).aggs([agg, uniqueAgg])]
       } else {
+        // If no nestedPath is specified, simply add the unique aggregation to the aggregations array
         aggs.push(uniqueAgg)
       }
-      let aggregation = new FilterAggregation(
-          props.name,
-          query || new MatchAllQuery()
-        ).aggregations(aggs)
-      return aggregation
+      // Wrap the aggregations in a filter aggregation that filters documents based on the provided query
+      // or a match all query if no query is provided
+      let filterAggregation = new FilterAggregation(
+        props.name,
+        query || new MatchAllQuery()
+      ).aggregations(aggs)
+      return filterAggregation
     }
 
     const getQueryAggregation = () => {
       let aggs: Query | null = null
-
       if (data?.selected?.length > 0) {
         aggs = new TermsQuery(props.field, data?.selected || [])
         if (props.nestedPath) {
@@ -230,7 +223,7 @@ export default {
       }
     }
     const displayAll = () => {
-      if(sizeQuery.value == props.size) {
+      if (sizeQuery.value == props.size) {
         sizeQuery.value = data.total
       } else {
         sizeQuery.value = props.size
@@ -251,14 +244,11 @@ export default {
     $route: {
       handler: function () {
         if (!import.meta.env.SSR && this.urlParam) {
-
           const $route = useRoute()
           try {
-            const query: string =
-              ($route.query?.[this.urlParam] as string) || '[]'
+            const query: string = ($route.query?.[this.urlParam] as string) || '[]'
             const values: string[] = JSON.parse(query) || []
-            const isEqualValues:boolean = isEqual(values.sort(), this.data.selected.sort()) || false
-
+            const isEqualValues = isEqual(values.sort(), this.data.selected.sort())
             if (!isEqualValues) {
               this.setValues(values)
             }
@@ -300,8 +290,8 @@ export default {
           }
 
           if (this.cardinalityField) {
-            for(let item of items) {
-              if(this.nestedPath) {
+            for (let item of items) {
+              if (this.nestedPath) {
                 item.doc_count = null
               } else {
                 item.doc_count = item[this.name + '_cardinality']?.value || item.doc_count
@@ -320,25 +310,21 @@ export default {
       deep: true
     },
     close(val, old) {
-      if(val !== old) {
+      if (val !== old) {
         this.opened = val
       }
-
     }
   }
 }
 </script>
 <style lang="scss">
 .searchfilter {
-  @apply mb-3 card bg-gray-50 hover:bg-gray-100 p-5;
+  @apply card mb-3 bg-gray-50 p-5 hover:bg-gray-100;
   &__header {
-    @apply flex flex-nowrap justify-between items-center mb-2 cursor-pointer;
+    @apply mb-2 flex cursor-pointer flex-nowrap items-center justify-between;
     .header {
       &__title {
-        @apply text-lg font-heading;
-      }
-      &__close {
-
+        @apply font-heading text-lg;
       }
     }
   }

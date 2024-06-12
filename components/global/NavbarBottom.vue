@@ -3,7 +3,7 @@
     <slot name="header"></slot>
     <slot name="content">
       <div class="navbar-bottom__icons">
-        <nuxt-link :to="localePath('/')" class="iconlink">
+        <nuxt-link :to="localePath('/') || '/'" class="iconlink">
           <div class="navlink">
             <icon class="home-icon" name="home"></icon>
             <span class="navlink__label">
@@ -11,7 +11,7 @@
             </span>
           </div>
         </nuxt-link>
-        <nuxt-link :to="localePath('/search')" class="iconlink">
+        <nuxt-link :to="localePath('/search') || '/search'" class="iconlink">
           <div class="navlink">
             <icon class="search-icon" name="search" />
             <span class="navlink__label">
@@ -45,12 +45,13 @@ export default {
     }
     .iconlink {
       @apply flex w-1/4 flex-col items-center justify-center;
-      .icon, .search-icon {
-        @apply text-3xl leading-3 mx-auto;
+      .icon,
+      .search-icon {
+        @apply mx-auto text-3xl leading-3;
       }
 
       .navlink {
-        @apply rounded-md border-0 bg-white p-1 text-gray-600 hover:bg-gray-300 flex flex-col items-center justify-center;
+        @apply flex flex-col items-center justify-center rounded-md border-0 bg-white p-1 text-gray-600 hover:bg-gray-300;
         &__label {
           @apply block w-full text-center text-xs normal-case transition-all duration-100 ease-in-out;
         }

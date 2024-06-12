@@ -42,8 +42,7 @@ export default {
         const categoryService = useShopinvaderService('categories')
 
         if (categoryService) {
-          const { hits, total } =
-            (await categoryService.autocompleteSearch(query)) || null
+          const { hits, total } = (await categoryService.autocompleteSearch(query)) || null
 
           searchResults.hits = hits
           searchResults.total = total
@@ -74,7 +73,7 @@ export default {
 .autocomplete-category {
   @apply flex flex-wrap gap-2 p-2;
   &__hit {
-    @apply badge-outline badge my-1;
+    @apply badge badge-outline my-1;
   }
 }
 </style>

@@ -4,6 +4,7 @@ function mapCredentialsToBasicAuthHeaders(multipleCredentials: string): string[]
   return multipleCredentials.split(';').map((credentials) => `Basic ${btoa(credentials)}`);
 }
 
+// Hide the whole site (but the proxy) behind a basic authentication prompt
 export default defineEventHandler((event:any) => {
   const config = useRuntimeConfig() || {};
   const basicAuth:string = config?.basicAuth || '' as string;

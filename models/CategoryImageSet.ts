@@ -1,4 +1,4 @@
-import { Model, CategoryImage } from "#models"
+import { CategoryImage, Model } from '#models'
 
 export class CategoryImageSet extends Model {
   small: CategoryImage | null

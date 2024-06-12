@@ -23,8 +23,6 @@ export default defineNuxtComponent({
 <style lang="scss">
 .footer {
   @apply container mx-auto border-t p-4 py-10;
-  &__logo {
-  }
   &__content {
     @apply flex flex-wrap justify-between;
   }

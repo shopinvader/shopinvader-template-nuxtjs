@@ -59,7 +59,7 @@ export default {
       }
     },
     value(value: number, oldValue: number) {
-      if(value !== oldValue) {
+      if (value !== oldValue) {
         this.$emit('change', value)
       }
     }
@@ -114,7 +114,7 @@ export default {
   .cartline-qty {
     @apply form-control mx-3 w-10 max-w-fit;
     &__btn {
-      @apply btn-circle btn border-4 border-transparent bg-inherit text-3xl text-primary;
+      @apply btn btn-circle border-4 border-transparent bg-inherit text-3xl text-primary;
       &.max {
         @apply text-4xl;
       }

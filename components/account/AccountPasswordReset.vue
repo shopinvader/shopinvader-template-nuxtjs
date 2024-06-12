@@ -1,5 +1,5 @@
 <template>
-  <div v-if="auth?.type=='credentials'">
+  <div v-if="auth?.type == 'credentials'">
     <template v-if="!successMessage">
       <slot name="head">
         <div class="reset-heading">
@@ -39,7 +39,6 @@
           </div>
           <div class="w-full p-3">
             <slot name="footer">
-
               <div class="footer-error" v-if="error.auth">
                 {{ error.auth }}
               </div>
@@ -48,17 +47,14 @@
         </div>
       </form>
     </template>
-    <div v-else class="reset-success" v-if="successMessage">
+    <div v-else class="reset-success">
       <slot name="success">
         <h2 class="reset-success__title">
           {{ $t('account.reset.reset_pswd') }}
         </h2>
         {{ $t('account.reset.reset_success') }}
         <div>
-          <nuxt-link
-            :to="localePath('account')"
-            class="btn btn-primary"
-          >
+          <nuxt-link :to="localePath('account')" class="btn btn-primary">
             <icon name="left" />
             {{ $t('btn.back') }}
           </nuxt-link>
@@ -68,7 +64,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-
+import type { AuthCredentialService } from '#services'
 const login = ref('')
 const successMessage = ref(false)
 const error = reactive({
@@ -76,7 +72,7 @@ const error = reactive({
   login: false
 })
 const localePath = useLocalePath()
-const auth = useShopinvaderService('auth')
+const auth = useShopinvaderService('auth') as AuthCredentialService
 const route = useRoute()
 
 onMounted(() => {
@@ -147,6 +143,6 @@ const submit = async (e: Event) => {
   }
 }
 .reset-success {
-  @apply flex flex-col gap-4 justify-center text-gray-600;
+  @apply flex flex-col justify-center gap-4 text-gray-600;
 }
 </style>

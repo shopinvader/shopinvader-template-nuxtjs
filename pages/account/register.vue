@@ -10,9 +10,9 @@
 <script setup lang="ts">
 // check if a user is currently loggued in and redirect to account page
 const auth = useShopinvaderService('auth')
-if(auth?.type !== 'credentials') {
+if (auth?.type !== 'credentials') {
   /** back to home if is not auth provider credential */
-  navigateTo({ path: '/' })
+  await navigateTo({ path: '/' })
 }
 const { t } = useI18n()
 definePageMeta({
@@ -27,7 +27,7 @@ useSeoMeta({
 try {
   const user = await auth?.me()
   if (user?.value) {
-    navigateTo({ path: `/account` })
+    await navigateTo({ path: `/account` })
   }
 } catch (e) {
   console.error(e)

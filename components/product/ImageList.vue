@@ -9,6 +9,7 @@
         :key="'img-' + index"
       >
         <nuxt-img
+          v-if="image.large?.src"
           :src="image.large?.src"
           class="item-image"
           :class="zoom ? 'image-zoom' : ''"
@@ -65,8 +66,7 @@
           :alt="image.large?.alt"
           :title="image.large?.alt"
           :class="zoom ? 'product-image-zoom' : ''"
-          class="w-full mx-auto max-h-full min-h-max p-6"
-
+          class="mx-auto max-h-full min-h-max w-full p-6"
         />
       </div>
     </div>
@@ -102,20 +102,20 @@ export default {
     }
   },
   mounted() {
-    const items: HTMLElement[] | null = this.$refs.item
-    const indicators: HTMLElement[] | null = this.$refs.indicators
+    const items: HTMLElement[] | null = this.$refs.item as HTMLElement[] | null
+    const indicators: HTMLElement[] | null = this.$refs.indicators as HTMLElement[] | null
     const options = {
       rootMargin: '0px',
       threshold: 0.75
     }
 
-    const callback = (entries: HTMLElement[] | null) => {
+    const callback = (entries: IntersectionObserverEntry[] | null) => {
       entries?.forEach((item) => {
         const { target } = item
-        const selectedIndicator: HTMLElement = indicators?.find(
+        const selectedIndicator: HTMLElement | undefined = indicators?.find(
           (indicatorItem) => indicatorItem.dataset.item == target.id
         )
-        if(selectedIndicator) {
+        if (selectedIndicator) {
           if (item?.intersectionRatio >= 0.75) {
             selectedIndicator.classList.add('text-secondary')
           } else {
@@ -125,20 +125,16 @@ export default {
       })
     }
     const observer = new IntersectionObserver(callback, options)
-
     items?.forEach((item) => {
       observer.observe(item)
     })
   },
   methods: {
     slideCarousel(goToImageNumber: number) {
-      let carouselContainer: HTMLElement | null = this.$refs.slider
+      let carouselContainer: HTMLElement = this.$refs.slider as HTMLElement
       let carouselWidth = carouselContainer?.clientWidth
-
-      let targetImage = goToImageNumber - 1;
-
+      let targetImage = goToImageNumber - 1
       let targetXPixel = carouselWidth * targetImage + 1
-
       carouselContainer?.scrollTo(targetXPixel, 0)
     }
   }
@@ -151,13 +147,13 @@ export default {
     @apply carousel-item h-full w-full items-center justify-center max-md:max-h-96;
   }
   .item-image {
-    @apply  mx-auto max-h-96 min-h-max p-6 max-md:object-contain max-sm:w-full lg:max-h-full;
+    @apply mx-auto max-h-96 min-h-max p-6 max-md:object-contain max-sm:w-full lg:max-h-full;
   }
 }
 .slider-indicators {
-  @apply hidden w-full justify-start items-center gap-2 py-2 lg:flex;
+  @apply hidden w-full items-center justify-start gap-2 py-2 lg:flex;
   &__items {
-    @apply   bg-gray-100 w-1/6 rounded cursor-pointer hover:bg-gray-200;
+    @apply w-1/6 cursor-pointer rounded bg-gray-100 hover:bg-gray-200;
     .items-image {
       @apply mx-auto  object-fill p-2;
     }

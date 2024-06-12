@@ -6,9 +6,7 @@
       </span>
       <icon name="down" class="text-lg" />
     </label>
-    <ul
-      class="dropdown-content menu rounded-box menu-compact bg-base-100 p-2 shadow"
-    >
+    <ul class="menu-compact menu dropdown-content rounded-box bg-base-100 p-2 shadow">
       <li v-for="item in availableLocales" :key="item.code">
         <a :key="item.code" :href="localePath('index', item.code)">
           <icon :name="item.icon" class="text-2xl" />{{ item.name }}

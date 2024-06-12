@@ -6,8 +6,8 @@
   </div>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import { Product } from '#models'
+import type { PropType } from 'vue'
 export default {
   name: 'ProductTags',
   props: {
@@ -27,11 +27,11 @@ export default {
       return this.price.original_value !== this.price.value
     },
     discount(): string {
-      if (!this.price && this.hasDiscount) {
+      if (!this.price) {
         return ''
       }
       const { value, original_value } = this.price
-      const discount = (original_value - value) / original_value * 100
+      const discount = ((original_value - value) / original_value) * 100
       return Math.round(discount).toString()
     }
   }

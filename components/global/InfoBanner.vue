@@ -12,7 +12,6 @@
   </div>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 export default {
   props: {
     infos: {
@@ -27,11 +26,11 @@ export default {
     }
   },
   computed: {
+    // TODO: implement the InfoBanner type
     infosbanners(): InfoBanner[] {
       return (
         this.infos?.filter(
-          (a: InfoBanner) =>
-            a.startDate <= new Date() && a.endDate >= new Date()
+          (a: InfoBanner) => a.startDate <= new Date() && a.endDate >= new Date()
         ) || []
       )
     }

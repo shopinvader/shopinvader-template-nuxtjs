@@ -1,35 +1,34 @@
 import { addCustomTab } from '@nuxt/devtools-kit'
-import { defineNuxtModule,
-  createResolver,
-  useLogger,
-  addPlugin,
-  addRouteMiddleware,
+import {
   addImportsDir,
-  resolveFiles,
-  extendPages,
+  addPlugin,
   addServerHandler,
+  createResolver,
+  defineNuxtModule,
+  extendPages,
+  resolveFiles,
+  useLogger
 } from '@nuxt/kit'
 
+import { type Router } from 'vue-router'
 import {
   type ShopinvaderConfig,
   type ShopinvaderProvidersList
 } from './runtime/types/ShopinvaderConfig'
-import { type Router } from 'vue-router'
 
 import {
-  configMerge,
-  addModelsServicesTemplates,
   addI18n,
-  addOriginalComponents
+  addModelsServicesTemplates,
+  addOriginalComponents,
+  configMerge
 } from './runtime/utils'
 
 type MaybePromise<T> = T | Promise<T>
 
 declare module '#app' {
+  // Define additional runtime hooks
   interface RuntimeNuxtHooks {
-    'shopinvader:loaded': <Context = unknown>(
-      ctx: Context
-    ) => MaybePromise<void>
+    'shopinvader:loaded': <Context = unknown>(ctx: Context) => MaybePromise<void>
     'shopinvader:services': <Context = unknown>(
       services: ShopinvaderServiceList,
       providers: ShopinvaderProvidersList,
@@ -42,7 +41,7 @@ declare module '#app' {
     ) => MaybePromise<void>
   }
 }
-export { ErpFetchObservable } from './runtime/plugins/providers/ErpFetchObservale'
+export { ErpFetchObservable } from './runtime/plugins/providers/ErpFetchObservable'
 export default defineNuxtModule<ShopinvaderConfig>({
   meta: {
     name: 'shopinvader',
@@ -72,7 +71,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
     // Default runtimeConfig
     const runtimeConfig = nuxt.options.runtimeConfig || {}
     let config = configMerge(runtimeConfig?.shopinvader || {}, options)
-    if(runtimeConfig?.public?.shopinvader) {
+    if (runtimeConfig?.public?.shopinvader) {
       config = configMerge(runtimeConfig.public.shopinvader, config)
     }
     runtimeConfig.shopinvader = config
@@ -88,7 +87,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
     await addI18n(nuxt)
 
     /** Components */
-    if(config.layerOptions?.originalComponents) {
+    if (config.layerOptions?.originalComponents) {
       await addOriginalComponents(nuxt)
     }
 
@@ -101,12 +100,12 @@ export default defineNuxtModule<ShopinvaderConfig>({
     /** Plugins */
     const plugins = await resolveFiles(resolve('./runtime/plugins'), '*.ts')
     let order = 1
-    for(let plugin of plugins) {
-      addPlugin({src: plugin, mode: 'all', order})
+    for (let plugin of plugins) {
+      addPlugin({ src: plugin, mode: 'all', order })
       order++
     }
 
-    if(nuxt.options.dev && nuxt.options?.devtools?.enabled) {
+    if (nuxt.options.dev && nuxt.options?.devtools?.enabled) {
       extendPages((pages) => {
         pages.push({
           name: 'shopinvader',
@@ -125,16 +124,18 @@ export default defineNuxtModule<ShopinvaderConfig>({
         // iframe view
         view: {
           type: 'iframe',
-          src: '/_shopinvader',
-        },
+          src: '/_shopinvader'
+        }
       })
     }
 
-    if(nuxt.options.dev) {
-      console.success("Shopinvader config loaded - API %s - Elastic %s", config.erp.url, config.elasticsearch.url)
+    if (nuxt.options.dev) {
+      console.success(
+        'Shopinvader config loaded - API %s - Elastic %s',
+        config.erp.url,
+        config.elasticsearch.url
+      )
     }
     nuxt.callHook('shopinvader:loaded', nuxt)
   }
 })
-
-

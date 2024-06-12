@@ -6,7 +6,7 @@
       <div class="cart-empty__title">
         {{ $t('cart.empty') }}
       </div>
-      <nuxt-link :to="localePath({ path: '/' })" class="btn-primary btn">
+      <nuxt-link :to="localePath('/')" class="btn btn-primary">
         {{ $t('cart.continue') }}
       </nuxt-link>
     </slot>
@@ -14,7 +14,6 @@
   </div>
 </template>
 <script lang="ts">
-import { Cart } from '~/models'
 /**
  * Message display when the cart is empty.
  * This component retrieve the cart from the store.

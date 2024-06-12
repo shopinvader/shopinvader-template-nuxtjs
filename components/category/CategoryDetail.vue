@@ -1,10 +1,6 @@
 <template>
   <json-viewer :data="category"></json-viewer>
-  <search-product
-    v-if="category !== null"
-    :provider="providerFunction"
-    :query="query"
-  >
+  <search-product v-if="category !== null" :provider="providerFunction" :query="query">
     <template #header>
       <div class="border-b">
         <slot name="name" :category="category">
@@ -15,9 +11,8 @@
         <slot name="breadcrumb" :category="category">
           <div class="breadcrumbs text-sm">
             <ul>
-
               <li v-for="item in breadcrumb" :key="item.id">
-                <nuxt-link :to="localePath({ path: '/' + item.urlKey })">
+                <nuxt-link :to="localePath('/' + item.urlKey)">
                   {{ item.name }}
                 </nuxt-link>
               </li>
@@ -34,11 +29,12 @@
   </search-product>
 </template>
 <script lang="ts">
-import SearchProduct from '~/components/search/SearchProduct.vue'
-import { Category, CategoryParent } from '#models'
+import type { CategoryParent } from '#models'
+import { Category } from '#models'
 import esb from 'elastic-builder'
 import type { PropType } from 'vue'
 import JsonViewer from '~/components/debug/JsonViewer.vue'
+import SearchProduct from '~/components/search/SearchProduct.vue'
 import { useHistoryStore } from '~/stores/history'
 export default {
   name: 'CategoryPage',
@@ -64,15 +60,15 @@ export default {
     breadcrumb() {
       const localePath = useLocalePath()
       const t = useI18n().t
-      let current:Category | CategoryParent | null = this.category
+      let current: Category | CategoryParent | null = this.category
       const items = [current]
       while (current?.parent !== null) {
         current = current?.parent || null
-        if(current?.name) {
+        if (current?.name) {
           items.push(current)
         }
       }
-      items.push(new Category({ name: t('navbar.home'), url_key: localePath({ path: '/'}) }) )
+      items.push(new Category({ name: t('navbar.home'), url_key: localePath({ path: '/' }) }))
       items.reverse()
       return items
     }

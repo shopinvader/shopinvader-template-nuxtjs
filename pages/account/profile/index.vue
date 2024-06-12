@@ -1,8 +1,7 @@
 <template>
-
   <account-layout slug="account-profile">
     <template #content>
-      <account-profile  v-if="user" :profile="user"/>
+      <account-profile v-if="user" :profile="user" />
     </template>
   </account-layout>
 </template>
@@ -16,7 +15,7 @@ export default defineNuxtComponent({
     const user = computed(() => auth?.getUser().value)
     definePageMeta({
       auth: true,
-      pageTransition: false,
+      pageTransition: false
     })
     useSeoMeta({
       title: t('account.profile.title')

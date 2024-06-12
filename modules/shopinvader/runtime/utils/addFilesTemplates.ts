@@ -1,7 +1,7 @@
-import { createResolver, resolveFiles, addTemplate, addTypeTemplate } from '@nuxt/kit'
+import { addTemplate, createResolver, resolveFiles } from '@nuxt/kit'
 import { Nuxt } from 'nuxt/schema'
-import * as ts from "typescript";
-const fs = require('fs');
+import * as ts from 'typescript'
+const fs = require('fs')
 interface TSFile {
   name: string
   path: string
@@ -17,32 +17,33 @@ interface ServiceList {
 }
 /**
  * extract serviceName attribute from a service file
- * @param files 
+ * TO BE REFACTORED
+ * @param files
  * @returns ServiceList
  */
-function extractTsServiceName(files: string[]):ServiceList[] {
-  let program = ts.createProgram(files, { allowJs: true });
+function extractTsServiceName(files: string[]): ServiceList[] {
+  let program = ts.createProgram(files, { allowJs: true })
   const result = []
-  for(let file of files) {
-    const sourceFile = program.getSourceFile(file);
-    if(!sourceFile) continue
-    const classes = sourceFile.statements.filter(ts.isClassDeclaration);
-    for(let c of classes) {
+  for (let file of files) {
+    const sourceFile = program.getSourceFile(file)
+    if (!sourceFile) continue
+    const classes = sourceFile.statements.filter(ts.isClassDeclaration)
+    for (let c of classes) {
       const item = c.members?.find(
         (m) => ts.isPropertyDeclaration(m) && m.name?.getText(sourceFile) === 'serviceName'
       )
-      if(item) {
-        const node = item?.getChildren(sourceFile).find((c) => c.kind === ts.SyntaxKind.StringLiteral)
+      if (item) {
+        const node = item
+          ?.getChildren(sourceFile)
+          .find((c) => c.kind === ts.SyntaxKind.StringLiteral)
         const serviceName = node?.getText(sourceFile).replace(/['"]+/g, '').trim() || null
-        if(serviceName) {
+        if (serviceName) {
           let className = c?.name?.text || ''
-          result.push(
-            {
-              serviceName,
-              className,
-              path: file
-            }
-          )
+          result.push({
+            serviceName,
+            className,
+            path: file
+          })
         }
       }
     }
@@ -52,41 +53,44 @@ function extractTsServiceName(files: string[]):ServiceList[] {
 
 /**
  * extract class from a file
- * @param files 
- * @returns 
+ * @param files
+ * @returns
  */
-function extractTsClass(files: string[]):  TSFile[] {
-  let declarations: TSFile[] = [];
-  let program = ts.createProgram(files, { allowJs: true });
-  
-  for(let file of files) {
-    const sourceFile = program.getSourceFile(file);
-    if(!sourceFile) continue
+function extractTsClass(files: string[]): TSFile[] {
+  let declarations: TSFile[] = []
+  let program = ts.createProgram(files, { allowJs: true })
+
+  for (let file of files) {
+    const sourceFile = program.getSourceFile(file)
+    if (!sourceFile) continue
     let imports: string[] = []
-    ts.forEachChild(sourceFile, node => {
-      
-      if (ts.isInterfaceDeclaration(node) || ts.isClassDeclaration(node)){
-        const isExported = ts.getModifiers(node)?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword) || false
-        if(isExported) {
+    ts.forEachChild(sourceFile, (node) => {
+      if (ts.isInterfaceDeclaration(node) || ts.isClassDeclaration(node)) {
+        const isExported =
+          ts.getModifiers(node)?.some((m) => m.kind === ts.SyntaxKind.ExportKeyword) || false
+        if (isExported) {
           let name = node?.name?.text || ''
-          if(node?.heritageClauses) {
-            const heritage = node?.heritageClauses[0].getText(sourceFile).replace('extends', '').trim()
+          if (node?.heritageClauses) {
+            const heritage = node?.heritageClauses[0]
+              .getText(sourceFile)
+              .replace('extends', '')
+              .trim()
             imports.push(heritage)
           }
           let nodeType = ts.isInterfaceDeclaration(node) ? 'interface' : 'class'
-          let tsfile: TSFile | null = declarations.find((f) => f.name === name) || null;
-          if(tsfile && tsfile?.path !== file) {
-            tsfile.name = `${name}Original` 
+          let tsfile: TSFile | null = declarations.find((f) => f.name === name) || null
+          if (tsfile && tsfile?.path !== file) {
+            tsfile.name = `${name}Original`
             tsfile.alias = name
             tsfile = null
           }
-          if(!tsfile) {
-            tsfile = {name, path: file, content: '', nodeType, imports, alias: null}
+          if (!tsfile) {
+            tsfile = { name, path: file, content: '', nodeType, imports, alias: null }
             declarations.push(tsfile)
           }
         }
       }
-    });
+    })
   }
   /** Sort by dependencies (imports) */
   declarations = declarations
@@ -94,73 +98,72 @@ function extractTsClass(files: string[]):  TSFile[] {
       return a.imports.length > b.imports.length ? 1 : -1
     })
     .reduce((acc, file) => {
-      if(file.imports.length > 0) {
-        for(let i of file.imports) {
-          
-          if(!acc.some((f) => f.name === i)) {
+      if (file.imports.length > 0) {
+        for (let i of file.imports) {
+          if (!acc.some((f) => f.name === i)) {
             const dep = declarations.find((f) => f.name === i)
-            if(dep) {
+            if (dep) {
               acc.push(dep)
             }
           }
         }
       }
-      if(!acc.find((f) => f.name === file.name)) {
+      if (!acc.find((f) => f.name === file.name)) {
         acc.push(file)
       }
       return acc
-    }, [] as TSFile[]
-  )
+    }, [] as TSFile[])
   return declarations
 }
 
-
-export const addModelsServicesTemplates  = async (nuxt: Nuxt) => {
+export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
   const layers = [...nuxt.options._layers].reverse()
   const types = ['models', 'services']
-  let templates:any[] = []
+  let templates: any[] = []
   let alias = {}
-  if(layers.length > 0) {
-    for(let type of types) {
+  if (layers.length > 0) {
+    for (let type of types) {
       const { resolve } = createResolver(nuxt.options.buildDir)
-      let filenames:string[] = []
-      for(let layer of layers) {
+      let filenames: string[] = []
+      for (let layer of layers) {
         const { resolve } = createResolver(layer.cwd)
-        const files = await (await resolveFiles(resolve(`./${type}`), '**/*.ts'))
-          .filter((file) => !file.endsWith('index.ts'))
-          filenames = [...filenames, ...files]
-      } 
-      
-      templates.push(addTemplate({
-        filename: `shopinvader/${type}.ts`,
-        write: true,
-        getContents: () => {
-          const files = extractTsClass(filenames)
-          
-          const lines = files.map((f) => {
-            const type = f.nodeType == 'interface' ? 'type ' : ''
-            let name = f.alias ? `${f.alias} as ${f.name}` : f.name
-            return `export ${type} { ${name} } from '${f.path.replace('.ts', '')}'`
-          })
-          return lines.join('\n')
-        },
-      }))
+        const files = await (
+          await resolveFiles(resolve(`./${type}`), '**/*.ts')
+        ).filter((file) => !file.endsWith('index.ts'))
+        filenames = [...filenames, ...files]
+      }
+
+      templates.push(
+        addTemplate({
+          filename: `shopinvader/${type}.ts`,
+          write: true,
+          getContents: () => {
+            const files = extractTsClass(filenames)
+
+            const lines = files.map((f) => {
+              const type = f.nodeType == 'interface' ? 'type ' : ''
+              let name = f.alias ? `${f.alias} as ${f.name}` : f.name
+              return `export ${type} { ${name} } from '${f.path.replace('.ts', '')}'`
+            })
+            return lines.join('\n')
+          }
+        })
+      )
       alias = {
         ...alias,
         [`~/${type}`]: resolve(`./shopinvader/${type}.ts`),
         [type]: resolve(`./shopinvader/${type}.ts`),
-        [`#${type}`]: resolve(`./shopinvader/${type}.ts`),
+        [`#${type}`]: resolve(`./shopinvader/${type}.ts`)
       }
     }
-
   }
 
   nuxt.options.alias = {
     ...alias,
-    ...nuxt.options.alias,
+    ...nuxt.options.alias
   }
   nuxt.hook('prepare:types', ({ references }) => {
-    for(let template of templates) {
+    for (let template of templates) {
       references.push({ path: template.dst })
     }
   })
@@ -168,15 +171,14 @@ export const addModelsServicesTemplates  = async (nuxt: Nuxt) => {
     config.resolve = config.resolve || {}
     config.resolve.alias = {
       ...alias,
-      ...config.resolve.alias,
+      ...config.resolve.alias
     }
   })
   nuxt.hook('vite:extend', (ctx) => {
     ctx.config.resolve = ctx.config.resolve || {}
     ctx.config.resolve.alias = {
       ...alias,
-      ...ctx.config.resolve.alias,
+      ...ctx.config.resolve.alias
     }
   })
-
 }

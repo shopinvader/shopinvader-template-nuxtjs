@@ -1,6 +1,7 @@
-import { ShopinvaderProvidersList } from '../types/ShopinvaderConfig'
+import type { ShopinvaderProvidersList } from '../types/ShopinvaderConfig'
 
 /**
+ * Give access to the shopinvader providers
  * useShopinvaderService
  * @param serviceName string
  */

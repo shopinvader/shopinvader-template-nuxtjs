@@ -8,11 +8,7 @@
       @mouseover="mouseoverVariant(product)"
       @mouseleave="mouseleaveVariant(product)"
     >
-      <product-image
-        v-if="product?.images?.[0]"
-        :image="product.images[0]"
-        class="hit__image"
-      >
+      <product-image v-if="product?.images?.[0]" :image="product.images[0]" class="hit__image">
       </product-image>
       <div class="hit__title">
         {{ product.shortName }}
@@ -21,8 +17,8 @@
   </div>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import { Product } from '#models'
+import type { PropType } from 'vue'
 export default {
   props: {
     variants: {

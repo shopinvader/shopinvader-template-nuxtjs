@@ -1,6 +1,6 @@
-import { ErpFetch } from '@shopinvader/fetch'
 import { Address } from '#models'
 import { Service } from '#services'
+import { ErpFetch } from '@shopinvader/fetch'
 
 export class CustomerService extends Service {
   name = 'customer'
@@ -20,13 +20,10 @@ export class CustomerService extends Service {
     }
     return null
   }
-  async toggleOptOutCustomer(customer: Address, optIn: any): Promise<Address> {
-    const res = await this.provider?.post(
-      'customer/' + customer.id + '/update',
-      {
-        optIn
-      }
-    )
+  async toggleOptOutCustomer(customer: Address, optIn: any): Promise<Address | null> {
+    const res = await this.provider?.post('customer/' + customer.id + '/update', {
+      optIn
+    })
     if (res) {
       return new Address(res.data)
     }

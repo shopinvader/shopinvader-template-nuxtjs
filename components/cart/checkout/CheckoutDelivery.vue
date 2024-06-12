@@ -29,7 +29,7 @@
           </div>
         </div>
         <template v-else>
-           <!--
+          <!--
             @slot Delivery carriers list
             @binding {Error} error
           -->
@@ -57,16 +57,13 @@
         <slot name="total" :error="error">
           <cart-total>
             <template #footer>
-              <div
-                v-if="!loading && !selectedCarrier"
-                class="flex items-center gap-2 font-bold"
-              >
+              <div v-if="!loading && !selectedCarrier" class="flex items-center gap-2 font-bold">
                 <icon name="info" />
                 {{ $t('cart.delivery.method.no-method') }}
               </div>
               <button
                 type="button"
-                class="btn-secondary btn-block btn"
+                class="btn btn-secondary btn-block"
                 @click="next"
                 :disabled="!selectedCarrier || loading"
               >
@@ -75,13 +72,11 @@
               </button>
             </template>
           </cart-total>
-
-
         </slot>
       </div>
 
       <div class="checkout-delivery__footer">
-        <button type="button" class="btn-ghost btn" @click="back">
+        <button type="button" class="btn btn-ghost" @click="back">
           <icon name="left"></icon>
           {{ $t('cart.back') }}
         </button>
@@ -101,7 +96,7 @@
   </div>
 </template>
 <script lang="ts">
-import { DeliveryCarrier } from '#models'
+import type { DeliveryCarrier } from '#models'
 
 import DeliveryGeneric from '~/components/delivery/DeliveryGeneric.vue'
 import Spinner from '~/components/global/Spinner.vue'
@@ -111,8 +106,10 @@ interface CarrierWithComponent extends DeliveryCarrier {
   carrier: DeliveryCarrier
 }
 const importDeliveryComponent = (name: string) => {
+  // Load the delivery component dynamically
   return defineAsyncComponent(() =>
     import(`../../delivery/Delivery${name}.vue`).catch(() => {
+      // Fallback to the generic delivery component
       return DeliveryGeneric
     })
   )
@@ -179,12 +176,11 @@ export default defineNuxtComponent({
         this.error = null
         this.carriers = []
         if (cart?.value) {
-          const carriers = await cartService.getDeliveryCarrier() || []
+          const carriers = (await cartService.getDeliveryCarrier()) || []
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
               const name =
-                carrier.code?.charAt(0).toUpperCase() +
-                carrier.code?.slice(1).toLowerCase()
+                carrier.code?.charAt(0).toUpperCase() + carrier.code?.slice(1).toLowerCase()
               const component = importDeliveryComponent(name)
               return {
                 component,
@@ -198,8 +194,7 @@ export default defineNuxtComponent({
         const selectedCarrier = cart?.value?.delivery?.method || null
         if (selectedCarrier) {
           this.selectedCarrier =
-            this.carriers?.find(({carrier}) => carrier.id == selectedCarrier.id)
-              ?.carrier || null
+            this.carriers?.find(({ carrier }) => carrier.id == selectedCarrier.id)?.carrier || null
         }
       } catch (e: any) {
         this.error = e?.message || e
@@ -244,9 +239,9 @@ export default defineNuxtComponent({
   &__empty {
     @apply col-span-3 md:col-span-2;
     .empty {
-      @apply flex flex-col items-center gap-4 max-w-md mx-auto text-center;
+      @apply mx-auto flex max-w-md flex-col items-center gap-4 text-center;
       .icon {
-        @apply text-error text-6xl;
+        @apply text-6xl text-error;
       }
     }
   }
@@ -254,7 +249,7 @@ export default defineNuxtComponent({
     @apply col-span-3 flex flex-col justify-start gap-4 md:col-span-1;
   }
   &__header {
-    @apply col-span-3 flex flex-col  justify-between;
+    @apply col-span-3 flex flex-col justify-between;
   }
   &__footer {
     @apply col-span-3 flex justify-between;

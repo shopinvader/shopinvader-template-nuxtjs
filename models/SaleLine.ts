@@ -1,4 +1,4 @@
-import { Model, SaleProduct, SaleAmount, SaleDiscount, SaleUnitPrice } from '#models'
+import { Model, SaleAmount, SaleDiscount, SaleProduct, SaleUnitPrice } from '#models'
 
 export class SaleLine extends Model {
   id: number

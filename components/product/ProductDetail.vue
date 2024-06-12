@@ -6,7 +6,7 @@
         <div class="breadcrumbs text-sm">
           <ul>
             <li>
-              <nuxt-link :to="localePath({ path: '/'})">
+              <nuxt-link :to="localePath({ path: '/' })">
                 {{ $t('navbar.home') }}
               </nuxt-link>
             </li>
@@ -29,7 +29,7 @@
     </div>
     <div class="product-detail__image">
       <!-- @slot Image content -->
-      <slot name="image" :images="variant.images || []"  :variant="variant">
+      <slot name="image" :images="variant.images || []" :variant="variant">
         <product-image-list :images="variant.images || []" :slider="true" />
       </slot>
     </div>
@@ -57,15 +57,17 @@
         <div class="content__shortDescription">
           <!-- @slot Intro content -->
           <slot name="intro" :variant="variant">
-            <div
-              v-if="variant.shortDescription"
-              v-html="variant.shortDescription"
-            ></div>
+            <div v-if="variant.shortDescription" v-html="variant.shortDescription"></div>
           </slot>
         </div>
         <div class="content__variants">
           <!-- @slot Variants content -->
-          <slot name="variants" :variant="variant" variants="variants" :change-variant="changeVariant">
+          <slot
+            name="variants"
+            :variant="variant"
+            variants="variants"
+            :change-variant="changeVariant"
+          >
             <product-variants-selector
               v-if="variant.variantCount > 5 || variants === null"
               :product="variant"
@@ -90,13 +92,9 @@
           <!-- @slot Price content -->
           <slot name="price" :variant="variant">
             <client-only>
-              <lazy-product-price
-                v-if="price !== null"
-                :price="price"
-                class="py-4 text-right"
-              >
+              <lazy-product-price v-if="price !== null" :price="price" class="py-4 text-right">
                 <template #price>
-                  <slot name="price" :price="price" ></slot>
+                  <slot name="price" :price="price"></slot>
                 </template>
               </lazy-product-price>
             </client-only>
@@ -104,10 +102,7 @@
           <!-- @slot Price content -->
           <slot name="add-to-cart" :variant="variant">
             <client-only>
-              <product-cart
-                v-if="variant !== null"
-                :product="variant"
-              ></product-cart>
+              <product-cart v-if="variant !== null" :product="variant"></product-cart>
             </client-only>
           </slot>
         </div>
@@ -116,10 +111,7 @@
     <div class="product-detail__description">
       <!-- @slot Description content -->
       <slot name="description" :variant="variant">
-        <div
-          v-html="variant.description"
-          class="prose prose-sm max-w-none"
-        ></div>
+        <div v-html="variant.description" class="prose-sm prose max-w-none"></div>
       </slot>
     </div>
     <div class="product-detail__links">
@@ -149,8 +141,8 @@
   <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import { Product, ProductCategory, ProductPrice } from '#models'
+import type { PropType } from 'vue'
 import { useHistoryStore } from '~/stores/history'
 
 export default {
@@ -166,25 +158,26 @@ export default {
   },
   setup(props) {
     const localePath = useLocalePath()
-    let variant = ref(props.product)
+    let variant = ref<any>(props.product)
     const router = useRouter()
 
     useHistoryStore().addProduct(props.product)
-    const changeVariant = (item: Product) => {
-      item = {
-        ...item,
+    const changeVariant = (product: Product) => {
+      const item = {
+        ...product,
         variants: props.product.variants
       }
       variant.value = item
-      if(item?.sku) {
+      if (item?.sku) {
         const route = useRoute()
-        router.push(localePath({ path: route.fullPath, query: { sku: item.sku }}))
+        router.push(localePath({ path: route.fullPath, query: { sku: item.sku } }))
       }
     }
     const breadcrumbs = computed(() => {
-      const lastCategoryId:number | null = useHistoryStore()?.lastCategory?.id|| null
-      const categories =  variant.value.categories || []
-      let category: ProductCategory | null = categories.find((c) => c.findCategory(lastCategoryId))  || categories[0] || null
+      const lastCategoryId: number | null = useHistoryStore()?.lastCategory?.id || null
+      const categories = variant.value.categories || []
+      let category: ProductCategory | null =
+        categories.find((c: any) => c.findCategory(lastCategoryId)) || categories[0] || null
       let items = []
       while (category) {
         items.unshift(category)
@@ -212,17 +205,26 @@ export default {
       return this.product?.variants || null
     },
     ids() {
-      return [
-        this.product?.id,
-        ...(this.product?.variants || []).map((v) => v.id)
-      ]
+      if (!this.product) return []
+      const idList: number[] = []
+      if (this.product.id) {
+        idList.push(this.product.id)
+      }
+      if (this.product.variants) {
+        this.product.variants.forEach((v) => {
+          if (v.id) {
+            idList.push(v.id)
+          }
+        })
+      }
+      return idList
     },
-    price():ProductPrice | null {
+    price(): ProductPrice | null {
       const authService = useShopinvaderService('auth')
       const user = authService.getUser()
-      const role = user?.value?.role as string || null
-      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
-      if(role !== null && this.variant?.pricesList?.[role]) {
+      const role = (user?.value?.role as string) || null
+      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
+      if (role !== null && this.variant?.pricesList?.[role]) {
         price = this.variant?.pricesList?.[role]
       }
       return price
@@ -232,7 +234,7 @@ export default {
 </script>
 <style lang="scss">
 .product-detail {
-  @apply flex flex-wrap p-3 max-md:flex-col md:p-5 relative;
+  @apply relative flex flex-wrap p-3 max-md:flex-col md:p-5;
   &__tag {
     @apply absolute left-10 top-16 z-10;
   }

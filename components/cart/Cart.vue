@@ -30,17 +30,18 @@
           <slot name="total" :cart="cart">
             <cart-total class="">
               <template #footer>
-                <div class="total__checkout" :class="{'tooltip tooltip-primary ':cart?.hasPendingTransactions}" :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')">
+                <div
+                  class="total__checkout"
+                  :class="{ 'tooltip tooltip-primary': cart?.hasPendingTransactions }"
+                  :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')"
+                >
                   <button
                     type="button"
                     class="checkout__btn"
                     @click="!cart?.hasPendingTransactions && $emit('next')"
                   >
                     {{ $t('cart.summary.checkout') }}
-                    <icon
-                      name="right"
-                      class="text-lg"
-                    ></icon>
+                    <icon name="right" class="text-lg"></icon>
                   </button>
                 </div>
               </template>
@@ -72,12 +73,12 @@
   </div>
 </template>
 <script lang="ts">
+import CartEmpty from '~/components/cart/CartEmpty.vue'
 import CartLines from '~/components/cart/CartLines.vue'
 import CartTotal from '~/components/cart/CartTotal.vue'
-import CartEmpty from '~/components/cart/CartEmpty.vue'
 import Spinner from '~/components/global/Spinner.vue'
-import { Cart } from '~~/models'
-let timer:any = null
+import type { Cart } from '~~/models'
+let timer: any = null
 export default defineNuxtComponent({
   name: 'Cart',
   emits: {
@@ -107,7 +108,7 @@ export default defineNuxtComponent({
     return {
       cart,
       loading,
-      hasPendingTransactions,
+      hasPendingTransactions
     }
   },
   watch: {
@@ -116,18 +117,16 @@ export default defineNuxtComponent({
         const hasPendingTransactions = cart?.hasPendingTransactions || false
         if (!hasPendingTransactions) {
           this.hasPendingTransactions = false
-          if(timer) clearTimeout(timer)
+          if (timer) clearTimeout(timer)
         } else {
           timer = setTimeout(() => {
             this.hasPendingTransactions = true
-          }, 2000);
+          }, 2000)
         }
-
       },
       immediate: true
     }
   }
-
 })
 </script>
 <style lang="scss">
@@ -147,29 +146,29 @@ export default defineNuxtComponent({
     }
   }
   &__lines {
-    @apply col-span-3 xl:col-span-2 row-span-2;
+    @apply col-span-3 row-span-2 xl:col-span-2;
     .cart-lines {
       @apply w-full;
     }
   }
   &__coupon {
-    @apply col-span-3 md:col-start-2 md:col-span-2 lg:col-start-3 lg:col-span-1;
+    @apply col-span-3 md:col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-3;
     .total {
       &__checkout {
         @apply w-full;
         .checkout__btn {
-          @apply btn-secondary btn mt-6 w-full;
+          @apply btn btn-secondary mt-6 w-full;
         }
       }
     }
   }
   &__total {
-    @apply col-span-3 md:col-start-2 md:col-span-2 lg:col-start-3 lg:col-span-1;
+    @apply col-span-3 md:col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-3;
     .total {
       &__checkout {
         @apply w-full;
         .checkout__btn {
-          @apply btn-secondary btn mt-6 w-full;
+          @apply btn btn-secondary mt-6 w-full;
         }
       }
     }

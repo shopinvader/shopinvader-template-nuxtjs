@@ -22,7 +22,7 @@
           <div class="form-control w-full max-w-xs">
             <label class="label">
               <span class="label-text">
-                  {{ $t('account.login.password') }}
+                {{ $t('account.login.password') }}
               </span>
             </label>
             <input
@@ -34,7 +34,13 @@
             <label class="label">
               <span class="label-text-alt"></span>
               <span class="label-text-alt">
-                <nuxt-link :to="localePath({ path: '/account/password-reset', query: { email: profile?.login } })" class="btn btn-link btn-xs">
+                <nuxt-link
+                  :to="{
+                    path: localePath('/account/password-reset'),
+                    query: { email: profile?.login }
+                  }"
+                  class="btn btn-link btn-xs"
+                >
                   {{ $t('account.login.forgot_password') }}
                 </nuxt-link>
               </span>
@@ -43,12 +49,11 @@
         </div>
       </div>
     </slot>
-    <slot name="profile" :profile="profile">
-    </slot>
+    <slot name="profile" :profile="profile"> </slot>
   </div>
 </template>
 <script lang="ts">
-import { User } from '#models'
+import type { User } from '#models'
 export default defineNuxtComponent({
   name: 'account-profile',
   props: {
@@ -65,7 +70,7 @@ export default defineNuxtComponent({
 })
 </script>
 <style lang="scss">
-  .account-profile {
-    @apply border-b pb-4;
-  }
+.account-profile {
+  @apply border-b pb-4;
+}
 </style>

@@ -23,14 +23,10 @@
             :placeholder="$t('search.autocomplete.search')"
           />
           <span class="button" @click="resetSearch">
-            <Icon
-              v-if="!query"
-              name="search"
-              class="text-lg md:text-xl"
-            />
+            <Icon v-if="!query" name="search" class="text-lg md:text-xl" />
           </span>
         </label>
-         <span v-show="focused" class="form__close" @click="resetSearch">
+        <span v-show="focused" class="form__close" @click="resetSearch">
           <icon name="close-circle" class="text-2xl" />
         </span>
       </div>
@@ -46,15 +42,11 @@
                   ></autocomplete-suggestions>
                 </div>
                 <div class="side__queries">
-                  <autocomplete-history
-                    :query="searchedQuery"
-                    @query-click="onSuggestionClick"
-                  >
+                  <autocomplete-history :query="searchedQuery" @query-click="onSuggestionClick">
                   </autocomplete-history>
                 </div>
                 <div class="side__categories">
-                  <autocomplete-categories :query="searchedQuery">
-                  </autocomplete-categories>
+                  <autocomplete-categories :query="searchedQuery"> </autocomplete-categories>
                 </div>
               </div>
               <div class="results__products">
@@ -75,10 +67,10 @@
   </div>
 </template>
 <script lang="ts">
-import AutocompleteProducts from './AutocompleteProducts.vue'
 import AutocompleteCategories from './AutocompleteCategories.vue'
-import AutocompleteSuggestions from './AutocompleteSuggestions.vue'
 import AutocompleteHistory from './AutocompleteHistory.vue'
+import AutocompleteProducts from './AutocompleteProducts.vue'
+import AutocompleteSuggestions from './AutocompleteSuggestions.vue'
 
 export default {
   name: 'SearchAutocomplete',
@@ -141,12 +133,12 @@ export default {
       e?.preventDefault()
       e?.stopPropagation()
       this.goSearchPage()
-
     },
     async onKeySearch(e: KeyboardEvent) {
       this.loading = true
       this.focused = true
-      if (e.keyCode == 27) {
+      // Manage escape key
+      if (e.key === 'Escape') {
         this.focused = false
         return
       }
@@ -156,7 +148,7 @@ export default {
       }, 500)
     },
     onSearch() {
-      this.searchedQuery = this.query || ''
+      this.searchedQuery = (this.query as string) || ''
     },
     goSearchPage() {
       this.focused = false
@@ -197,11 +189,11 @@ export default {
         .header {
           @apply flex items-center justify-between border-0 p-0 sm:p-2;
           .title {
-            @apply font-heading w-full border-b py-2;
+            @apply w-full border-b py-2 font-heading;
           }
         }
         .dropdown__results {
-          @apply relative w-full flex flex-wrap;
+          @apply relative flex w-full flex-wrap;
           .results {
             &__side {
               @apply flex w-full flex-col md:w-1/3 md:border-r;
@@ -219,30 +211,28 @@ export default {
   }
   &--focused {
     .search-autocomplete__form {
-      @apply fixed top-0 -left-1/2 -right-1/2 z-40 lg:top-5 mx-auto overflow-hidden lg:container lg:max-w-screen-lg max-lg:w-screen max-lg:overflow-auto bg-white lg:rounded-2xl lg:p-2;
+      @apply fixed -left-1/2 -right-1/2 top-0 z-40 mx-auto overflow-hidden bg-white lg:container max-lg:w-screen max-lg:overflow-auto lg:top-5 lg:max-w-screen-lg lg:rounded-2xl lg:p-2;
       .form {
-        @apply flex w-full items-center  max-lg:shadow z-50 transition-all ;
+        @apply z-50 flex w-full  items-center transition-all max-lg:shadow;
         &__back {
-          @apply cursor-pointer p-1 lg:hidden text-secondary;
+          @apply cursor-pointer p-1 text-secondary lg:hidden;
         }
         &__input {
           @apply h-10 w-full rounded-2xl border border-secondary bg-transparent transition-all;
           .button {
-            @apply text-secondary bg-transparent flex items-center;
-
+            @apply flex items-center bg-transparent text-secondary;
           }
         }
       }
-
     }
   }
   &--active {
     .search-autocomplete__form {
       @apply h-screen max-h-screen lg:h-[90vh];
       .form__dropdown {
-        @apply overflow-auto h-full mb-10 -z-10 flex max-lg:justify-center;
+        @apply -z-10 mb-10 flex h-full overflow-auto max-lg:justify-center;
         .results__products {
-          @apply max-lg:order-first ;
+          @apply max-lg:order-first;
         }
       }
     }

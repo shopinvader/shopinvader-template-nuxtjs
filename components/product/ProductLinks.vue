@@ -9,7 +9,7 @@
           v-for="(product, index) in productLinks"
           :key="product?.id || 0"
           class="items__product"
-          v-animate="{name: 'productLinks', index}"
+          v-animate="{ name: 'productLinks', index }"
         >
           <product-hit :product="product" :inline="false">
             <template #actions>
@@ -23,8 +23,8 @@
 </template>
 
 <script lang="ts">
-import { Product } from '#models'
 import type { linkId } from '#models'
+import { Product } from '#models'
 import ProductHitVue from './ProductHit.vue'
 
 export default defineNuxtComponent({
@@ -55,7 +55,7 @@ export default defineNuxtComponent({
     if (this.ids?.length > 0) {
       this.productLinks = (await productService?.getByIds(this.ids))?.hits || []
     }
-  },
+  }
 })
 </script>
 
@@ -66,10 +66,10 @@ export default defineNuxtComponent({
   }
 
   &__items {
-    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4  xl:grid-cols-5 gap-4;
+    @apply grid grid-cols-2 gap-4 md:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5;
     .items__product {
       .product-hit {
-        @apply card bg-base-100 border;
+        @apply card border bg-base-100;
       }
     }
   }

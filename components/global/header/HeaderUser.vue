@@ -1,5 +1,5 @@
 <template>
-  <div class="header-user" :class="{'header-user--logged': user}">
+  <div class="header-user" :class="{ 'header-user--logged': user }">
     <button type="button" tabindex="0" class="button" @click="next">
       <icon :name="!user ? 'user' : 'user-logged'" class="button__icon" />
       <span class="button__label">
@@ -14,13 +14,12 @@
 <script lang="ts" setup>
 const auth = useShopinvaderService('auth')
 const user = auth?.getUser()
-const next = () => {
+const next = async () => {
   const localePath = useLocalePath()
-  auth?.loginRedirect(localePath({name: 'account'}))
+  await auth?.loginRedirect(localePath({ name: 'account' }))
 }
 </script>
 <style lang="scss">
-
 .header-user {
   @apply relative flex;
   &--logged {
@@ -31,7 +30,7 @@ const next = () => {
     }
   }
   .button {
-    @apply btn-ghost btn flex flex-col flex-nowrap  max-md:px-1;
+    @apply btn btn-ghost flex flex-col flex-nowrap  max-md:px-1;
     &__icon {
       @apply text-2xl;
     }
