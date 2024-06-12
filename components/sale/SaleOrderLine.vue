@@ -1,5 +1,5 @@
 <template>
-  <SaleLine :line="line" :key="line">
+  <SaleLine :line="line" :key="line.id">
     <template #qty>
       <div class="qty__label">
         {{ $t('cart.line.quantity') }} :
@@ -22,15 +22,16 @@
       </div>
     </template>
     <template #actions>
-      <button class="btn-primary btn-xs btn">
+      <button class="btn btn-primary btn-xs">
         <icon name="right"></icon>
       </button>
     </template>
   </SaleLine>
 </template>
+
 <script lang="ts">
-import type { PropType } from 'vue'
 import { SaleLine } from '#models'
+import type { PropType } from 'vue'
 
 export default defineNuxtComponent({
   name: 'AccountOrderDetails',

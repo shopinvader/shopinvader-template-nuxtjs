@@ -1,14 +1,14 @@
 <template>
   <nuxt-link
     class="category-link"
-    :to="localePath({ name: 'category', params: { slug: category.slug } })"
+    :to="{ name: localePath('category') || 'category', query: { sku: category.urlKey } }"
   >
     {{ category.name }}
   </nuxt-link>
 </template>
 <script lang="ts">
-import { Category } from '~~/models'
 import type { PropType } from 'vue'
+import type { Category } from '~~/models'
 
 export default {
   name: 'CategoryLink',
@@ -28,6 +28,6 @@ export default {
 </script>
 <style lang="scss">
 .category-link {
-  @apply badge-outline badge my-2;
+  @apply badge badge-outline my-2;
 }
 </style>

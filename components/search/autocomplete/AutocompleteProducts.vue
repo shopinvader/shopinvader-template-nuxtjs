@@ -15,26 +15,13 @@
         </div>
         <template v-else-if="searchResults.hits.length">
           <div class="autocomplete-products">
-            <div
-              v-for="product in searchResults.hits"
-              class="hit"
-              :key="product.id"
-            >
-              <product-hit
-                :product="product"
-                :readonly="true"
-                :inline="false"
-                :size="6"
-              >
+            <div v-for="product in searchResults.hits" class="hit" :key="product.id || 0">
+              <product-hit :product="product" :readonly="true" :inline="false" :size="6">
               </product-hit>
             </div>
           </div>
           <div class="flex justify-end">
-            <button
-              type="button"
-              @click="goSearchPage"
-              class="btn-link text-black"
-            >
+            <button type="button" @click="goSearchPage" class="btn-link text-black">
               {{ $t('search.autocomplete.seeall') }}
             </button>
           </div>
@@ -49,11 +36,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Product } from '~/models'
 import { type ProductResult } from '#models'
-import ProductHit from '../../product/ProductHit.vue'
-import ProductHistory from '../../product/ProductHistory.vue'
+import { Product } from '~/models'
 import Spinner from '~~/components/global/Spinner.vue'
+import ProductHistory from '../../product/ProductHistory.vue'
+import ProductHit from '../../product/ProductHit.vue'
 
 export default {
   name: 'AutocompleteProducts',
@@ -86,15 +73,16 @@ export default {
         loading.value = true
 
         if (productService) {
-          let res =
-            (await productService.autocompleteSearch(query, 6)) || null
+          let res = (await productService.autocompleteSearch(query, 6)) || null
           searchResults.suggestions = res?.suggestions || []
           emit('setSuggestions', res?.suggestions)
 
           /** Search for suggestions */
-          if(res?.total === 0 && res?.suggestions?.[0]?.options?.length > 0) {
-            const querySuggestion =  res?.suggestions[0]?.options?.map((option: any) => option.text).join(' ')
-            if(querySuggestion && querySuggestion !== query) {
+          if (res?.total === 0 && res?.suggestions?.[0]?.options?.length > 0) {
+            const querySuggestion = res?.suggestions[0]?.options
+              ?.map((option: any) => option.text)
+              .join(' ')
+            if (querySuggestion && querySuggestion !== query) {
               res = (await productService.autocompleteSearch(querySuggestion, 6)) || null
             }
           }

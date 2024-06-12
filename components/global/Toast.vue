@@ -8,12 +8,8 @@
       </div>
     </div>
     <div class="flex-none">
-      <button class="btn-ghost btn btn-sm">
-        <icon
-          name="close"
-          class="cursor-pointer"
-          @click="show = false"
-        ></icon>
+      <button class="btn btn-ghost btn-sm">
+        <icon name="close" class="cursor-pointer" @click="show = false"></icon>
       </button>
     </div>
   </div>

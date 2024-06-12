@@ -16,21 +16,21 @@
   </div>
 </template>
 <script lang="ts">
-import HeaderMain from '~/components/global/header/HeaderMain.vue'
 import FooterMain from '~/components/global/FooterMain.vue'
-import Notifications from '~/components/global/Notifications.vue'
 import NavbarBottomVue from '~/components/global/NavbarBottom.vue'
+import Notifications from '~/components/global/Notifications.vue'
+import HeaderMain from '~/components/global/header/HeaderMain.vue'
 export default defineNuxtComponent({
   name: 'Default',
   components: {
     'header-main': HeaderMain,
     'footer-main': FooterMain,
     'notifications-vue': Notifications,
-    'navbar-bottom': NavbarBottomVue,
+    'navbar-bottom': NavbarBottomVue
   },
   setup() {
     return {}
-  },
+  }
 })
 </script>
 <style lang="scss">
@@ -40,6 +40,5 @@ main {
 
 #app {
   @apply flex min-h-screen flex-col;
-
 }
 </style>

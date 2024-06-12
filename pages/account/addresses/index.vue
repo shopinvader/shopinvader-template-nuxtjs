@@ -1,16 +1,12 @@
 <template>
   <account-layout slug="account-addresses">
     <template #content>
-      <address-list type='delivery'></address-list>
+      <address-list type="delivery"></address-list>
     </template>
   </account-layout>
 </template>
 <script lang="ts">
-import {
-  AddressForm,
-  AddressList,
-  AccountLayout
-} from '#components'
+import { AccountLayout, AddressForm, AddressList } from '#components'
 export default defineNuxtComponent({
   name: 'PageAccountAddresses',
   components: {
@@ -23,7 +19,7 @@ export default defineNuxtComponent({
     const { t } = useI18n()
     definePageMeta({
       auth: true,
-      pageTransition: false,
+      pageTransition: false
     })
     useSeoMeta({
       title: t('account.address.title')

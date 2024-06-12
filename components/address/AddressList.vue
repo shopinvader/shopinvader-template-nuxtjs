@@ -28,26 +28,15 @@
             {{ $t('account.address.count', { count: addresses.length }) }}
           </template>
         </div>
-        <button
-          type="button"
-          class="btn-primary btn-sm btn"
-          @click="createAddress"
-        >
+        <button type="button" class="btn btn-primary btn-sm" @click="createAddress">
           <icon name="mdi:plus" class="text-lg"></icon>
           {{ $t('actions.create') }}
         </button>
       </slot>
     </div>
     <div class="addresses__list">
-      <div
-        v-if="errors !== null && errors.length > 0"
-        class="w-full max-w-xl text-center"
-      >
-        <div
-          v-for="error of errors"
-          :key="error"
-          class="alert alert-error justify-center"
-        >
+      <div v-if="errors !== null && errors.length > 0" class="w-full max-w-xl text-center">
+        <div v-for="error of errors" :key="error" class="alert alert-error justify-center">
           {{ error }}
         </div>
       </div>
@@ -74,7 +63,7 @@
             <template #actions>
               <button
                 v-if="address.access?.delete"
-                class="btn-primary btn-sm btn-circle btn"
+                class="btn btn-circle btn-primary btn-sm"
                 :title="$t('actions.delete')"
                 @click="deleteAddress(address)"
               >
@@ -82,11 +71,11 @@
               </button>
               <button
                 v-if="address.access?.update"
-                class="btn-primary btn-sm btn-circle btn"
+                class="btn btn-circle btn-primary btn-sm"
                 :title="$t('actions.update')"
                 @click="editedAddress = address"
               >
-              <icon name="edit" class="text-lg"></icon>
+                <icon name="edit" class="text-lg"></icon>
               </button>
             </template>
             <template #footer>
@@ -101,17 +90,9 @@
         <div class="text-2xl">{{ $t('account.address.edit') }}</div>
       </template>
       <template #content>
-        <address-form
-          v-if="editedAddress"
-          :address="editedAddress"
-          @saved="saveAddress"
-        >
+        <address-form v-if="editedAddress" :address="editedAddress" @saved="saveAddress">
           <template #actions>
-            <button
-              type="button"
-              class="btn-outline btn"
-              @click="editedAddress = null"
-            >
+            <button type="button" class="btn btn-outline" @click="editedAddress = null">
               {{ $t('actions.close') }}
             </button>
           </template>
@@ -121,12 +102,8 @@
   </div>
 </template>
 <script lang="ts">
+import { AddressCard, AddressForm, AsideDrawer } from '#components'
 import { Address } from '#models'
-import {
-  AddressCard,
-  AddressForm,
-  AsideDrawer
-} from '#components'
 export default defineNuxtComponent({
   props: {
     type: {
@@ -163,8 +140,7 @@ export default defineNuxtComponent({
         this.count = this.addresses.length
       },
       immediate: true
-    },
-
+    }
   },
   methods: {
     async searchAddress(query?: string | null) {
@@ -183,11 +159,7 @@ export default defineNuxtComponent({
       }
     },
     async deleteAddress(address: Address) {
-      if (
-        confirm(
-          this.$t('account.address.delete.confirm', { name: address.name })
-        )
-      ) {
+      if (confirm(this.$t('account.address.delete.confirm', { name: address.name }))) {
         this.loading = true
         const notifications = useNotification()
         const addressService = useShopinvaderService('addresses')
@@ -220,9 +192,7 @@ export default defineNuxtComponent({
             await addressService.create(address)
           }
           this.searchAddress(this.searchQuery)
-          notifications.addMessage(
-            this.$t('account.address.save.success', { name: address.name })
-          )
+          notifications.addMessage(this.$t('account.address.save.success', { name: address.name }))
         } catch (e) {
           console.error(e)
           notifications.addError(this.$t('account.address.fetch.error'))
@@ -233,7 +203,7 @@ export default defineNuxtComponent({
     },
     createAddress() {
       this.editedAddress = new Address({
-        type: 'delivery',
+        type: 'delivery'
       })
     }
   }
@@ -244,7 +214,7 @@ export default defineNuxtComponent({
   @apply flex flex-col;
 
   &__header {
-    @apply flex flex-wrap gap-4 items-end justify-between pb-2 border-b;
+    @apply flex flex-wrap items-end justify-between gap-4 border-b pb-2;
     .header {
       &__search {
         @apply flex-grow;

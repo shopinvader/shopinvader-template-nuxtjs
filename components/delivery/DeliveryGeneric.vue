@@ -18,19 +18,18 @@
       </div>
     </div>
     <div class="method__price">
-      <template v-if="deliveryCarrier?.price > 0">
+      <template v-if="deliveryCarrier?.price && deliveryCarrier?.price > 0">
         {{ $filter.currency(deliveryCarrier.price) }}
       </template>
       <template v-else>
         {{ $t('cart.delivery.method.free') }}
       </template>
     </div>
-
   </div>
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { DeliveryCarrier } from '~/models'
+import type { DeliveryCarrier } from '~/models'
 
 export default {
   name: 'DeliveryGeneric',
@@ -68,7 +67,7 @@ export default {
     }
   }
   &__price {
-    @apply flex text-right justify-end font-bold text-primary;
+    @apply flex justify-end text-right font-bold text-primary;
   }
 }
 </style>

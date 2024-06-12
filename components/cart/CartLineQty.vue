@@ -12,7 +12,7 @@
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { CartLine } from '~/models'
+import type { CartLine } from '~/models'
 /**
  * Display a selector to update the quantity of a cart's line.
  * This component is used in the component CartLine.
@@ -80,16 +80,15 @@ export default {
     },
 
     async updateQty(qty: number): Promise<void> {
-      const delta = qty - this.qty || 0
+      const delta = qty - (this.qty || 0)
       const cartService = useShopinvaderService('cart')
       if (cartService && this.line?.productId && delta !== 0) {
         const options = this.line?.options || null
         await cartService.applyDeltaOnItem(this.line.productId, delta, options)
       }
-      this.$emit('update', this.qty + delta)
+      this.$emit('update', (this.qty || 0) + delta)
     }
   }
 }
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

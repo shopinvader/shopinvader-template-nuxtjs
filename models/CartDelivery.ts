@@ -1,9 +1,4 @@
-import {
-  CartAmount,
-  DeliveryCarrier,
-  Address,
-  Model
-} from '#models'
+import { Address, CartAmount, DeliveryCarrier, Model } from '#models'
 
 export class CartDelivery extends Model {
   fees: CartAmount
@@ -13,6 +8,6 @@ export class CartDelivery extends Model {
     super(data)
     this.fees = new CartAmount(data?.amount || {})
     this.method = new DeliveryCarrier(data?.selected_carrier || {})
-    this.address = data?.address ? new Address(data?.address ) : null
+    this.address = data?.address ? new Address(data?.address) : null
   }
 }

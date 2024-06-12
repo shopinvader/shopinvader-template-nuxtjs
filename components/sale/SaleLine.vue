@@ -1,11 +1,7 @@
 <template>
   <div class="line">
     <div class="line__image">
-      <slot
-        v-if="line?.product?.images"
-        name="image"
-        :images="line.product?.images || null"
-      >
+      <slot v-if="line?.product?.images" name="image" :images="line.product?.images || null">
         <product-image
           v-if="line?.product?.images?.length > 0"
           :image="line?.product.images[0]"
@@ -24,7 +20,7 @@
           <slot name="content" :line="line">
             <div v-if="line?.product?.urlKey">
               <nuxt-link
-                :to="localePath({path:`/${line.product.urlKey}`})"
+                :to="localePath('/' + line.product.urlKey)"
                 target="_blank"
                 class="underline"
               >
@@ -35,17 +31,14 @@
         </div>
         <div class="content__qty">
           <slot name="qty" :line="line">
-            {{ $t('sale.quantity', {qty:line.qty}) }}
+            {{ $t('sale.quantity', { qty: line.qty }) }}
           </slot>
         </div>
       </div>
       <div class="content__price">
         <slot name="price" :line="line">
           <div class="value">
-            <div
-              v-if="line.amount.discountTotal !== 0"
-              class="price__original"
-            >
+            <div v-if="line.amount.discountTotal !== 0" class="price__original">
               {{ $filter.currency(line.amount.totalWithoutDiscount) }}
             </div>
             <div class="price__value">
@@ -55,15 +48,14 @@
         </slot>
       </div>
       <div class="content__actions">
-        <slot name="actions" :line="line">
-        </slot>
+        <slot name="actions" :line="line"> </slot>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import { SaleLine } from '#models'
+import type { PropType } from 'vue'
 
 export default defineNuxtComponent({
   name: 'SaleLine',
@@ -81,23 +73,28 @@ export default defineNuxtComponent({
       localePath,
       toggle
     }
+  },
+  methods: {
+    linkToProduct() {
+      this.$router.push({ path: `/${this.line.product.urlKey}` })
+    }
   }
 })
 </script>
 <style lang="scss">
 .line {
-  @apply  flex flex-wrap items-start md:items-center rounded-lg border-2 p-3;
+  @apply flex flex-wrap items-start rounded-lg border-2 p-3 md:items-center;
   &__image {
-    @apply px-4 lg:mb-0 w-16 h-16 lg:w-24 lg:h-24 bg-base-100 flex justify-center items-center;
+    @apply flex h-16 w-16 items-center justify-center bg-base-100 px-4 lg:mb-0 lg:h-24 lg:w-24;
   }
   &__content {
-    @apply flex flex-grow w-9/12 justify-between px-4 lg:w-9/12;
+    @apply flex w-9/12 flex-grow justify-between px-4 lg:w-9/12;
     .content {
       &__text {
-        @apply flex flex-col flex-grow;
+        @apply flex flex-grow flex-col;
       }
       &__header {
-        @apply  font-heading;
+        @apply font-heading;
       }
       &__title {
         .title {
@@ -125,7 +122,7 @@ export default defineNuxtComponent({
         }
       }
       &__actions {
-        @apply flex flex-row p-2 items-end justify-between md:items-center;
+        @apply flex flex-row items-end justify-between p-2 md:items-center;
       }
     }
   }

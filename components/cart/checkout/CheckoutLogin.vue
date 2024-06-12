@@ -6,6 +6,7 @@
     </slot>
   </div>
 </template>
+
 <script lang="ts">
 import { AccountLogin } from '#components'
 import { User } from '~/models';

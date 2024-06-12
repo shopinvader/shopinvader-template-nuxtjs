@@ -20,7 +20,7 @@ export default {
     }
   },
   mounted() {
-    const $auth = useNuxtApp()?.$auth || null
+    const { $auth } = useNuxtApp()
     $auth.userManager.signinCallback().finally(() => {
       this.$router.push('/')
     })
@@ -28,7 +28,7 @@ export default {
   setup() {
     const localePath = useLocalePath()
     const auth = useShopinvaderService('auth')
-    if(auth?.type !== 'credentials') {
+    if (auth?.type !== 'credentials') {
       /** back to home if is not auth provider credential */
       navigateTo({ path: '/' })
     }

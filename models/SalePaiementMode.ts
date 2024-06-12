@@ -1,4 +1,4 @@
-import { Model } from "./Model"
+import { Model } from './Model'
 
 export class SalePaiementMode extends Model {
   id: number

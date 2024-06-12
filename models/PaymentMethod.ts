@@ -18,7 +18,7 @@ export class PaymentMethod extends Model {
     this.inlineFormViewRendered = data?.inline_form_view_rendered || ''
     this.expressCheckoutFormViewRendered = data?.express_checkout_form_view_rendered || ''
     this.payableReference = data?.payable_reference || null
-    if(data?.payment_icons?.length > 0) {
+    if (data?.payment_icons?.length > 0) {
       this.icons = data.payment_icons.map((icon: any) => new PaymentIcon(icon))
     }
   }
