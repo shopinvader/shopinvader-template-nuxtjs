@@ -3,7 +3,7 @@
     <div class="search__filters">
       <button
         type="button"
-        class="btn-outline btn lg:hidden"
+        class="btn btn-outline lg:hidden"
         @click="displayfilters = !displayfilters"
       >
         {{ $t('search.filter') }}
@@ -24,12 +24,7 @@
         </template>
         <template v-else-if="items?.length > 0">
           <div class="search__header">
-            <slot
-              name="pagination"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-            >
+            <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
               <div class="search__stats">
                 <div class="total">
                   <span class="text-sm">{{
@@ -42,11 +37,7 @@
               <div class="search__sort">
                 <label class="sort__label">{{ $t('search.sort.label') }}</label>
                 <select v-model="sort" class="sort__select">
-                  <option
-                    v-for="option in sortOptions"
-                    :key="option.value"
-                    :value="option"
-                  >
+                  <option v-for="option in sortOptions" :key="option.value" :value="option">
                     {{ option.label }}
                   </option>
                 </select>
@@ -58,12 +49,7 @@
               <pre>{{ hit }}</pre>
             </div>
           </slot>
-          <slot
-            name="pagination"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-          >
+          <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
             <div v-if="pagination" class="search__pagination">
               <search-pagination
                 :total="page.total"
@@ -87,8 +73,8 @@
   </div>
 </template>
 <script lang="ts">
-import { provide, reactive, type PropType } from 'vue'
 import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
+import { provide, reactive, type PropType } from 'vue'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 
 export interface Filter {
@@ -97,7 +83,7 @@ export interface Filter {
   values: any[]
   setValues: (values: any[]) => void
   getValuesLabels: () => string
-  getFilterAggregation: (query: Query | null) => void
+  getFilterAggregation: (query: Query | null) => FilterAggregation
   getQueryAggregation: () => void
 }
 export interface SortItem {
@@ -165,7 +151,9 @@ export default {
 
     let page = reactive({
       size: props.size,
-      from: route.query.page?.toString() ? ((parseInt(route.query.page.toString())-1)*props.size): 0,
+      from: route.query.page?.toString()
+        ? (parseInt(route.query.page.toString()) - 1) * props.size
+        : 0,
       total: 0
     })
 
@@ -190,10 +178,7 @@ export default {
       const must: any[] =
         filters
           .filter((filter: any) => {
-            return (
-              !excludedFilter.includes(filter.name) &&
-              filter.getQueryAggregation() !== null
-            )
+            return !excludedFilter.includes(filter.name) && filter.getQueryAggregation() !== null
           })
           .map((f) => f.getQueryAggregation()) || []
 
@@ -205,22 +190,23 @@ export default {
      * call getFilterAggregation function on each filter
      */
     const getFiltersAggs = () => {
-      return filters.map((filter: Filter) => {
-        const query: Query | null = getFiltersQuery([filter.name])
-        return filter?.getFilterAggregation(query)
-      })
-      .filter((agg) => agg !== null)
+      return filters
+        .map((filter: Filter) => {
+          const query: Query | null = getFiltersQuery([filter.name])
+          return filter?.getFilterAggregation(query) as unknown as CardinalityAggregation
+        })
+        .filter((agg) => agg !== null)
     }
 
     /**
-     * Search : search function get items from provider
+     * Search: search function get items from provider
      */
     interface SearchResponse {
       aggregations: any
       hits: any
       total: number
     }
-    const fetchSearch = async ():Promise<SearchResponse> => {
+    const fetchSearch = async (): Promise<SearchResponse> => {
       if (typeof props?.provider !== 'function') {
         throw new Error('No provider function found')
       }
@@ -231,15 +217,15 @@ export default {
       }
       let postFilter = getFiltersQuery()
       let aggs: any[] = getFiltersAggs() || null
-      const body = esb
-        .requestBodySearch()
-        .query(props.query())
-        .size(page.size)
-        .from(page.from)
 
-      if(props?.cardinalityField) {
-        let agg = new CardinalityAggregation('total', props.cardinalityField)
-        if(postFilter) {
+      const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
+
+      if (props.cardinalityField) {
+        let agg: CardinalityAggregation | FilterAggregation = new CardinalityAggregation(
+          'total',
+          props.cardinalityField
+        )
+        if (postFilter) {
           agg = new FilterAggregation('total', postFilter).agg(agg)
         }
         aggs.push(agg)
@@ -258,20 +244,16 @@ export default {
       res.aggregations = aggregations || null
       res.hits = hits
 
-      if(props.cardinalityField) {
+      if (props.cardinalityField) {
         res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
       } else {
         res.total = total || 0
       }
       return res
     }
-    const search = async() => {
+    const search = async () => {
       loading.value = true
-      const {
-        aggregations,
-        hits,
-        total
-      } = await fetchSearch()
+      const { aggregations, hits, total } = await fetchSearch()
       response.value.aggregations = aggregations
       response.value.hits = hits
       page.total = total
@@ -284,17 +266,20 @@ export default {
     const changePage = (from: number) => {
       page.from = from
       search()
-      if(window?.scrollTo) {
+      if (window?.scrollTo) {
         window.scrollTo(0, 0)
-        router.push({ query: { page: from/props.size +1 } })
+        router.push({ query: { page: from / props.size + 1 } })
       }
     }
 
     provide('search', search)
     provide('declareFilter', declareFilter)
-    provide('response', computed(() => {
-      return JSON.parse(JSON.stringify(response.value))
-    }))
+    provide(
+      'response',
+      computed(() => {
+        return JSON.parse(JSON.stringify(response.value))
+      })
+    )
     provide(
       'filters',
       computed(() => filters)
@@ -305,7 +290,7 @@ export default {
       return a
     })
 
-    if(data?.value) {
+    if (data?.value) {
       response.value.aggregations = data.value.aggregations
       response.value.hits = data.value.hits
       page.total = data.value.total
@@ -384,7 +369,7 @@ export default {
   &__sort {
     @apply flex flex-row items-center;
     .sort__select {
-      @apply select-bordered select select-sm ml-2;
+      @apply select select-bordered select-sm ml-2;
     }
   }
 }

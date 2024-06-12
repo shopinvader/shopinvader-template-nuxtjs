@@ -1,4 +1,4 @@
-import { Model, CategoryImageSet } from '#models'
+import { CategoryImageSet, Model } from '#models'
 
 export interface CategoryResult {
   hits: Category[]

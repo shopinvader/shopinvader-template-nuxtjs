@@ -1,6 +1,6 @@
-import { ErpFetch } from '@shopinvader/fetch'
 import { Sale } from '#models'
-import { Service, ProductService } from "#services"
+import { ProductService, Service } from '#services'
+import { ErpFetch } from '@shopinvader/fetch'
 
 // Service to fetch Sales
 export class SaleService extends Service {
@@ -21,10 +21,7 @@ export class SaleService extends Service {
   // =============
   /** @return models of sales with less data */
 
-  async getAll(
-    page: number = 1,
-    perPage: number = 10
-  ): Promise<{ count: number; items: Sale[] }> {
+  async getAll(page: number = 1, perPage: number = 10): Promise<{ count: number; items: Sale[] }> {
     const params: { [k: string]: any } = { page_size: perPage, page }
     const res = await this.provider?.get('sales', params, null)
     return {
@@ -41,16 +38,12 @@ export class SaleService extends Service {
     return await this.fetchProductToSale(model)
   }
 
-  download(id: number): Promise<Blob | null> {
-    return (
-      this.provider?.get('sales/' + id + '/download', {}, {}, 'blob') || null
-    )
+  download(id: number): Promise<Blob> | null {
+    return this.provider?.get('sales/' + id + '/download', {}, {}, 'blob') || null
   }
 
-  downloadInvoice(id: number): Promise<Blob | null> {
-    return (
-      this.provider?.get('invoice/' + id + '/download', {}, {}, 'blob') || null
-    )
+  downloadInvoice(id: number): Promise<Blob> | null {
+    return this.provider?.get('invoice/' + id + '/download', {}, {}, 'blob') || null
   }
 
   /**
@@ -59,16 +52,12 @@ export class SaleService extends Service {
    * @returns sale with product data
    */
   async fetchProductToSale(sale: Sale): Promise<Sale> {
-    const ids = sale?.lines
-      .map((line: any) => line.productId)
-      .filter((id: any) => id)
-    const res = (await this.productService?.getByIds(ids)) || {hits: []}
+    const ids = sale?.lines.map((line: any) => line.productId).filter((id: any) => id)
+    const res = (await this.productService?.getByIds(ids)) || { hits: [] }
 
     if (res?.hits?.length > 0) {
       sale.lines = sale.lines.map((line: any) => {
-        const product =
-          res.hits.find((product: any) => product.id === line.productId) ||
-          null
+        const product = res.hits.find((product: any) => product.id === line.productId) || null
         if (product) {
           line.product = product
         }

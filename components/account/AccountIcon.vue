@@ -29,9 +29,9 @@ export default {
 </script>
 <style lang="scss">
 .account-link {
-  @apply flex flex-row w-auto cursor-pointer sm:flex-col items-center  sm:justify-center card card-body bg-base-100 p-5 ;
+  @apply card card-body flex w-auto cursor-pointer flex-row  items-center bg-base-100 p-5 sm:flex-col sm:justify-center;
   &__icon {
-    @apply sm:my-5 rounded-full max-sm:text-primary sm:bg-primary sm:p-4 text-lg sm:text-4xl sm:text-white;
+    @apply rounded-full text-lg max-sm:text-primary sm:my-5 sm:bg-primary sm:p-4 sm:text-4xl sm:text-white;
   }
   &__content {
     @apply pt-2 text-sm sm:text-center sm:text-lg sm:font-semibold;

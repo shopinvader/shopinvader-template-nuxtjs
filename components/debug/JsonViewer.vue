@@ -4,18 +4,13 @@
       <div class="fixed bottom-3 right-3">
         <button
           type="button"
-          class="btn-warning btn-circle btn text-white shadow-xl"
+          class="btn btn-circle btn-warning text-white shadow-xl"
           @click="toggle = !toggle"
         >
           JSON
         </button>
       </div>
-      <input
-        id="my-modal-4"
-        type="checkbox"
-        class="modal-toggle"
-        :checked="toggle"
-      />
+      <input id="my-modal-4" type="checkbox" class="modal-toggle" :checked="toggle" />
       <div class="modal cursor-pointer" @click="toggle = !toggle">
         <div class="modal-box relative w-11/12 max-w-5xl p-0">
           <div v-if="data" class="mockup-code">
@@ -41,9 +36,8 @@ export default {
   },
   setup() {
     const displayed = ref(false)
-    const app = useNuxtApp()
     const toggle = ref(false)
-    if(process?.env?.NODE_ENV === 'development') {
+    if (process?.env?.NODE_ENV === 'development') {
       displayed.value = true
     }
     return { toggle, displayed }

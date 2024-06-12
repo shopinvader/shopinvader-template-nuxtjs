@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link :to="localePath({ path: '/cart' })" class="cart-icon">
+  <nuxt-link :to="localePath('/cart')" class="cart-icon">
     <div class="button">
       <icon name="cart" class="button__icon" />
       <span class="button__label">
@@ -25,16 +25,8 @@ export default defineNuxtComponent({
     const cartService = useShopinvaderService('cart')
     const cart = cartService?.getCart()
     return {
-      linesCount: computed((): string => {
-        if (!cartService) return 0
-
-        let linesCount: boolean | string | number =
-          cart.value?.lines?.length || 0
-        if (linesCount > 100) {
-          return '99+'
-        } else {
-          return linesCount + ''
-        }
+      linesCount: computed((): number => {
+        return cart?.value?.lines?.length || 0
       })
     }
   }
@@ -44,7 +36,7 @@ export default defineNuxtComponent({
 .cart-icon {
   @apply relative flex  px-2;
   .button {
-    @apply btn-ghost btn flex flex-col flex-nowrap  max-md:px-1;
+    @apply btn btn-ghost flex flex-col flex-nowrap  max-md:px-1;
     &__icon {
       @apply text-2xl;
     }
@@ -56,7 +48,7 @@ export default defineNuxtComponent({
     }
   }
   .cart-badge {
-    @apply badge-secondary badge absolute right-1 top-1 text-xs font-semibold text-white shadow-md;
+    @apply badge badge-secondary absolute right-1 top-1 text-xs font-semibold text-white shadow-md;
   }
 }
 </style>

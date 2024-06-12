@@ -18,13 +18,13 @@
       </div>
     </div>
     <div class="method__price">
-      {{ $filter.currency(deliveryCarrier.price) }}
+      {{ $filter.currency(deliveryCarrier.price || 0) }}
     </div>
   </div>
 </template>
 <script lang="ts">
 import type { PropType } from 'vue'
-import { DeliveryCarrier } from '~/models'
+import type { DeliveryCarrier } from '~/models'
 
 export default {
   name: 'DeliveryPost',
@@ -62,7 +62,7 @@ export default {
     }
   }
   &__price {
-    @apply flex  justify-end font-bold text-primary;
+    @apply flex justify-end font-bold text-primary;
   }
 }
 </style>

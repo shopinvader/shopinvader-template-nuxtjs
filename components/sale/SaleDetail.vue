@@ -48,7 +48,11 @@
       </div>
       <div class="header__progess">
         <slot name="progress" :sale="sale">
-          <progress class="progress progress-success" :value="sale.stateProgress" max="100"></progress>
+          <progress
+            class="progress progress-success"
+            :value="sale.stateProgress"
+            max="100"
+          ></progress>
         </slot>
       </div>
     </div>
@@ -58,18 +62,18 @@
           <template #header :address="sale?.delivery?.address">
             <div>
               <icon name="location" />
-              {{$t('sale.delivery.address')}}
+              {{ $t('sale.delivery.address') }}
             </div>
             <div class="">{{ sale?.delivery?.address?.name }}</div>
           </template>
         </address-card>
       </slot>
       <slot name="invoice" :sale="sale">
-        <address-card  v-if="sale?.invoicing?.address" :address="sale.invoicing.address">
+        <address-card v-if="sale?.invoicing?.address" :address="sale.invoicing.address">
           <template #header :address="sale?.invoicing?.address">
             <div>
-              <icon name="billing" ></icon>
-              {{$t('sale.invoicing.address')}}
+              <icon name="billing"></icon>
+              {{ $t('sale.invoicing.address') }}
             </div>
             <div class="">{{ sale?.invoicing?.address?.name }}</div>
           </template>
@@ -79,12 +83,7 @@
     <div class="sale__lines">
       <slot name="lines" :sale="sale">
         <div v-if="sale.lines" class="lines">
-          <sale-line
-            v-for="line in sale.lines"
-            :key="line.id"
-            :line="line"
-          >
-          </sale-line>
+          <sale-line v-for="line in sale.lines" :key="line.id" :line="line"> </sale-line>
         </div>
       </slot>
     </div>
@@ -106,17 +105,17 @@
           <div class="mb-10">
             <div v-if="sale?.amount?.discountTotal !== 0" class="total__item">
               <span class="font-medium">
-               {{ $t('sale.amount.discount') }}
+                {{ $t('sale.amount.discount') }}
               </span>
-              <span class="font-bold font-heading">
-               - {{ $filter.currency(sale?.amount?.discountTotal || 0) }}
+              <span class="font-heading font-bold">
+                - {{ $filter.currency(sale?.amount?.discountTotal || 0) }}
               </span>
             </div>
             <div class="total__item">
               <span class="font-medium">
                 {{ $t('sale.amount.untaxed') }}
               </span>
-              <span class="font-bold font-heading">
+              <span class="font-heading font-bold">
                 {{ $filter.currency(sale?.amount?.untaxed || 0) }}
               </span>
             </div>
@@ -124,7 +123,7 @@
               <span class="font-medium">
                 {{ $t('sale.amount.tax') }}
               </span>
-              <span class="font-bold font-heading">
+              <span class="font-heading font-bold">
                 {{ $filter.currency(sale?.amount?.tax || 0) }}
               </span>
             </div>
@@ -132,7 +131,7 @@
               <span class="font-medium">
                 {{ $t('sale.amount.total') }}
               </span>
-              <span class="font-bold font-heading">
+              <span class="font-heading font-bold">
                 {{ $filter.currency(sale?.amount?.total || 0) }}
               </span>
             </div>
@@ -142,84 +141,85 @@
     </div>
   </div>
 </template>
-<script setup lang="ts" >
-  import type { Sale } from '#models';
-  const props = defineProps({
-    sale: {
-      type: Object as PropType<Sale>,
-      required: true
-    }
-  })
+<script setup lang="ts">
+import type { Sale } from '#models'
+const props = defineProps({
+  sale: {
+    type: Object as PropType<Sale>,
+    required: true
+  }
+})
 </script>
 <style lang="scss">
-  .sale {
-    @apply border p-4;
-    &__header {
-      @apply flex flex-wrap flex-row gap-5  py-5;
+.sale {
+  @apply border p-4;
+  &__header {
+    @apply flex flex-row flex-wrap gap-5  py-5;
+    .header {
+      &__number,
+      &__date,
+      &__customerRef,
+      &__state {
+        @apply text-left;
+        .label {
+          @apply p-0 text-gray-700;
+        }
+        .value {
+          @apply font-bold;
+        }
+      }
+      &__action {
+        @apply flex-grow text-right;
+      }
+      &__state {
+        .value {
+          @apply font-bold;
+        }
+      }
+      &__progess {
+        @apply w-full flex-grow;
+      }
+      &__info {
+        @apply w-full flex-grow;
+      }
+    }
+  }
+  &__addresses {
+    @apply flex flex-row flex-wrap justify-center gap-4 md:justify-start;
+    .address-card {
+      @apply w-full rounded bg-base-100 p-4 md:w-auto lg:w-5/12 xl:w-1/3;
       .header {
-        &__number, &__date, &__customerRef, &__state {
-          @apply text-left;
-          .label {
-            @apply text-gray-700 p-0;
-          }
-          .value {
-            @apply font-bold;
-          }
-        }
-        &__action {
-          @apply flex-grow text-right ;
-        }
-        &__state {
-          .value {
-            @apply font-bold;
-          }
-        }
-        &__progess {
-          @apply w-full flex-grow;
-        }
-        &__info {
-          @apply w-full flex-grow;
+        &__title {
+          @apply text-lg;
         }
       }
-    }
-    &__addresses {
-      @apply flex flex-row flex-wrap justify-center md:justify-start gap-4;
-      .address-card {
-        @apply p-4 bg-base-100 rounded w-full md:w-auto lg:w-5/12 xl:w-1/3;
-        .header {
-          &__title {
-            @apply text-lg;
-          }
-
-        }
-        &__content {
-          @apply text-sm ml-0 pl-1 ;
-        }
+      &__content {
+        @apply ml-0 pl-1 text-sm;
       }
     }
-    &__lines {
-      @apply py-4;
-      .lines {
-        @apply flex flex-col gap-2 w-full;
-      }
+  }
+  &__lines {
+    @apply py-4;
+    .lines {
+      @apply flex w-full flex-col gap-2;
     }
-    &__footer {
-      @apply flex justify-between;
+  }
+  &__footer {
+    @apply flex justify-between;
 
-      .footer {
-        &__note {
-          @apply  md:w-1/2;
-        }
-        &__total {
-          @apply w-full md:w-1/2 flex flex-col gap-2 mb-10;
-          .total {
-            &__item {
-              @apply flex justify-between py-3 px-10 odd:bg-gray-100 rounded-full;
-
-            }
+    .footer {
+      &__note {
+        @apply md:w-1/2;
+      }
+      &__total {
+        @apply mb-10 flex w-full flex-col gap-2 md:w-1/2;
+        .total {
+          &__item {
+            @apply flex justify-between rounded-full px-10 py-3 odd:bg-gray-100;
           }
         }
       }
     }
   }
+}
 </style>

@@ -1,20 +1,20 @@
 import { defineStore } from 'pinia'
-import { User, Cart } from '../models'
+import { Cart, User } from '../models'
 export const useShopinvaderStore = defineStore('shopinvader', {
   // a function that returns a fresh state
 
   state: () => ({
-    user: null as User | boolean | null,
+    user: null as User | null,
 
     lastSale: {},
     cart: new Cart({})
   }),
   getters: {
     getCurrentRole(store) {
-      if(!store?.user) {
+      if (!store?.user) {
         return 'default'
       }
-      return store?.user?.role as string || 'default'
+      return (store?.user?.role as string) || 'default'
     }
   },
   actions: {
@@ -22,7 +22,7 @@ export const useShopinvaderStore = defineStore('shopinvader', {
       this.lastSale = sale
     },
     setUser(data: User | null) {
-      this.user = data == null ? false : data
+      this.user = data == null ? null : data
     },
     setCart(cart: Cart | null) {
       this.cart = cart || new Cart({})

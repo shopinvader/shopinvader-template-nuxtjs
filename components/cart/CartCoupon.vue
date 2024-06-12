@@ -19,7 +19,7 @@
         />
         <button
           type="button"
-          class="btn  btn-outline"
+          class="btn btn-outline"
           @click="applyCoupon"
           :title="$t('cart.coupon.apply')"
         >
@@ -33,8 +33,8 @@
         <span v-else-if="success" class="label-text text-success">
           {{ $t('cart.coupon.success') }}
         </span>
-        <span v-if="cart?.promoCodes?.length > 0" class="label-text">
-          {{ $t('cart.coupon.applied', {codes: cart?.promoCodes.join(', ')}) }}
+        <span v-if="cart?.promoCodes?.length" class="label-text">
+          {{ $t('cart.coupon.applied', { codes: cart?.promoCodes.join(', ') }) }}
         </span>
       </div>
     </label>
@@ -43,15 +43,15 @@
 <script lang="ts" setup>
 const { t } = useI18n()
 const notification = useNotification()
-const cartService = useShopinvaderService("cart")
-const couponCode = ref("")
+const cartService = useShopinvaderService('cart')
+const couponCode = ref('')
 const success = ref(false)
 const error = ref(null) as Ref<string | null>
 const cart = cartService.getCart()
 const applyCoupon = async () => {
   error.value = null
   try {
-    if(!couponCode.value) {
+    if (!couponCode.value) {
       return
     }
     await cartService.applyCoupon(couponCode.value)
@@ -68,5 +68,4 @@ const applyCoupon = async () => {
 .cart-coupon {
   @apply card card-body bg-gray-100;
 }
-
 </style>

@@ -1,4 +1,4 @@
-import { Model, Address, SaleDeliveryAmount, SaleDeliveryCarrier } from "#models"
+import { Address, Model, SaleDeliveryAmount, SaleDeliveryCarrier } from '#models'
 export class SaleDelivery extends Model {
   address: Address | null
   amount: SaleDeliveryAmount | null

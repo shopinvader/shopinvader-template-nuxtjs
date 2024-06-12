@@ -3,13 +3,11 @@
     <button
       v-for="filter in activeFilters"
       :key="filter.name"
-      class="btn-outline btn-primary btn-xs btn"
+      class="btn btn-primary btn-outline btn-xs"
       @click="filter?.setValues([])"
     >
       <slot :filter="filter" :clear-filter="clearFilter">
-        <span class="text-xs pr-2">
-          {{ filter.title }}: {{ filter.getValuesLabels() }}
-        </span>
+        <span class="pr-2 text-xs"> {{ filter.title }}: {{ filter.getValuesLabels() }} </span>
         <span>
           <icon name="close" />
         </span>
@@ -29,15 +27,12 @@ export default {
   },
   computed: {
     activeFilters(): Filter[] {
-      return this.filters.filter(
-        (filter: Filter) => filter?.getValuesLabels() !== ''
-      )
+      return this.filters.filter((filter: Filter) => filter?.getValuesLabels() !== '')
     }
   },
   methods: {
     clearFilter(filter: Filter) {
-      const clearFilter: ((filter: Filter) => void) | null =
-        inject('clearFilter') || null
+      const clearFilter: ((filter: Filter) => void) | null = inject('clearFilter') || null
       if (clearFilter !== null) {
         clearFilter(filter)
       }

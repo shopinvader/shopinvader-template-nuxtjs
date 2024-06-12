@@ -5,12 +5,12 @@
     :class="{ 'product-image--loaded': loaded }"
     @click="$emit('click')"
   >
-    <img :src="imageSized.src" :alt="imageSized.alt" ref="image"/>
+    <img :src="imageSized.src" :alt="imageSized.alt" ref="image" />
   </figure>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import { ProductImage, ProductImageSet } from '#models'
+import type { PropType } from 'vue'
 
 export default {
   name: 'ProductImage',
@@ -37,7 +37,7 @@ export default {
   },
   computed: {
     imageSized(): ProductImage | null {
-      return this.image?.[this?.size] || null
+      return this.image?.[this?.size as keyof ProductImageSet] || null
     }
   },
   mounted() {
@@ -67,7 +67,7 @@ export default {
     @apply h-full w-full object-contain;
   }
   &:not(.product-image--loaded) {
-    @apply bg-gray-100 animate-pulse rounded-lg;
+    @apply animate-pulse rounded-lg bg-gray-100;
     img {
       @apply opacity-0;
     }

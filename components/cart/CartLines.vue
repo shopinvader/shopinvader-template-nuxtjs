@@ -5,14 +5,14 @@
       :key="line.id"
       :line="line"
       :readonly="readonly"
-      v-animate="{name: 'cartLines', index}"
+      v-animate="{ name: 'cartLines', index }"
     >
     </cart-line>
   </div>
 </template>
 <script lang="ts">
 import CartLineVue from '~/components/cart/CartLine.vue'
-import { CartLine } from '~~/models'
+import type { CartLine } from '~~/models'
 /**
  * Display the cart's lines
  * This component is used in the component Cart
@@ -35,7 +35,7 @@ export default defineNuxtComponent({
       type: Boolean,
       default: false
     }
-  },
+  }
 })
 </script>
 <style lang="scss">

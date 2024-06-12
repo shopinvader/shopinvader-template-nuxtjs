@@ -1,11 +1,11 @@
 <template>
-  <div class="toast-end toast-bottom toast">
+  <div class="toast toast-end toast-bottom">
     <toast
       v-for="notification in notifications"
       :key="notification.message"
       :message="notification.message"
       :type="notification.type"
-      :title="notification.title"
+      :title="notification.title || ''"
     >
     </toast>
   </div>

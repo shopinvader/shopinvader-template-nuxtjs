@@ -1,29 +1,19 @@
 <template>
   <div class="pagination">
-    <button v-if="currentPage > 1" class="join-item btn btn-sm" @click="changePage(1)">
-      «
-    </button>
-    <button
-      v-if="currentPage > 1"
-      class="join-item btn btn-sm"
-      @click="changePage(page - 1)"
-    >
+    <button v-if="currentPage > 1" class="btn join-item btn-sm" @click="changePage(1)">«</button>
+    <button v-if="currentPage > 1" class="btn join-item btn-sm" @click="changePage(page - 1)">
       ‹
     </button>
     <button
       v-for="p in pages"
       :key="p"
-      class="join-item btn btn-sm"
+      class="btn join-item btn-sm"
       :class="{ 'btn-active': p === page }"
       @click="changePage(p)"
     >
       {{ p }}
     </button>
-    <button
-      v-if="currentPage < count"
-      class="join-item btn btn-sm"
-      @click="changePage(page + 1)"
-    >
+    <button v-if="currentPage < count" class="btn join-item btn-sm" @click="changePage(page + 1)">
       ›
     </button>
   </div>
@@ -80,7 +70,7 @@ export default {
 .pagination {
   @apply join gap-1;
   .btn-active {
-    @apply text-white bg-primary;
+    @apply bg-primary text-white;
   }
 }
 </style>

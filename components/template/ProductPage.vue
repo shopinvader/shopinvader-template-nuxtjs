@@ -10,7 +10,6 @@ const props = defineProps({
     type: Object as PropType<Product>,
     required: true
   }
-
 })
 const product = props.product
 /**
@@ -20,9 +19,6 @@ const product = props.product
 if (!product) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
 }
-const url = useRequestURL()
-const host = url.host
-const protocol = url.protocol
 useHead(() => ({
   title: product.name,
   meta: [
@@ -35,7 +31,7 @@ useHead(() => ({
       hid: 'keywords',
       name: 'keywords',
       content: product.metaKeywords || ''
-    },
+    }
   ]
 }))
 </script>

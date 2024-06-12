@@ -16,24 +16,18 @@
         </div>
       </div>
     </template>
-
   </account-layout>
 </template>
 
 <script lang="ts" setup>
-  import { Sale } from '#models'
-  import { ref } from 'vue'
-  definePageMeta({
-    auth: true,
-    pageTransition: false,
-  })
-  const router = useRouter()
-  const route = useRoute()
-  const localePath = useLocalePath()
-  const { t } = useI18n()
-  useSeoMeta({
-    title: t('account.sales.title')
-  })
+definePageMeta({
+  auth: true,
+  pageTransition: false
+})
+const { t } = useI18n()
+useSeoMeta({
+  title: t('account.sales.title')
+})
 </script>
 <style lang="scss">
 .account-sales {
