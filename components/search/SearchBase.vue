@@ -73,7 +73,8 @@
   </div>
 </template>
 <script lang="ts">
-import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
+import type { Query } from 'elastic-builder'
+import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 
@@ -141,19 +142,19 @@ export default {
     if (provider === null) {
       throw new Error('No provider found for products')
     }
-    let error = ref(null)
-    let filters = reactive([] as Filter[])
-    let loading = ref(true)
-    let displayfilters = ref(false)
-    let sort = ref(props?.sortOptions[0] || (null as SortItem | null))
+    const error = ref(null)
+    const filters = reactive([] as Filter[])
+    const loading = ref(true)
+    const displayfilters = ref(false)
+    const sort = ref(props?.sortOptions[0] || (null as SortItem | null))
 
-    let page = reactive({
+    const page = reactive({
       size: props.size,
       from: 0,
       total: 0
     })
 
-    let response = ref({
+    const response = ref({
       aggregations: null,
       hits: null,
       total: 0
@@ -202,8 +203,8 @@ export default {
         throw new Error('No provider function found')
       }
       loading.value = true
-      let postFilter = getFiltersQuery()
-      let aggs: any[] = getFiltersAggs() || null
+      const postFilter = getFiltersQuery()
+      const aggs: any[] = getFiltersAggs() || null
 
       const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
 
@@ -226,13 +227,16 @@ export default {
       if (sort.value !== null) {
         body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
       }
-      const { aggregations, hits, total } = await props?.provider(body.toJSON())
-      response.value.aggregations = aggregations || null
-      response.value.hits = hits
-      if (props.cardinalityField) {
-        page.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
-      } else {
-        page.total = total || 0
+      const data = await props?.provider(body.toJSON())
+      if (data) {
+        const { aggregations, hits, total } = data
+        response.value.aggregations = aggregations || null
+        response.value.hits = hits
+        if (props.cardinalityField) {
+          page.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
+        } else {
+          page.total = total || 0
+        }
       }
       loading.value = false
     }
@@ -309,7 +313,7 @@ export default {
     }
   }
   &__loading {
-    @apply flex min-h-screen  w-full items-center justify-center;
+    @apply flex min-h-screen w-full items-center justify-center;
   }
   &__results {
     @apply w-full px-4 lg:w-3/4 xl:w-4/5;

@@ -56,7 +56,7 @@ export class Cart extends Model {
     this.amount = new CartAmount(data?.amount || {})
     this.discount = new CartDiscount(data || {})
     this.delivery = new CartDelivery(data?.delivery || {})
-    this.invoicing = new CartInvoicing({ address: data?.invoicing?.address } || {})
+    this.invoicing = new CartInvoicing({ address: data?.invoicing?.address })
     this.note = data?.note
     this.orderRef = data?.client_order_ref || ''
     this.promoCodes = data?.promo_codes || []

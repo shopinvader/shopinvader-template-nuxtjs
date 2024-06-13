@@ -42,10 +42,7 @@ export class AuthOIDCService extends AuthService {
         redirect_uri: this.redirectUri,
         response_type: this.config.responseType,
         scope: this.config.scope,
-        post_logout_redirect_uri: new URL(
-          this.config.postLogoutRedirectUri,
-          origin
-        ).href,
+        post_logout_redirect_uri: new URL(this.config.postLogoutRedirectUri, origin).href,
         userStore: new WebStorageStateStore({ store: window.localStorage }),
         automaticSilentRenew: true
       })
@@ -55,7 +52,7 @@ export class AuthOIDCService extends AuthService {
       this.client.events.addUserLoaded(this.userLoaded)
       this.client.events.addUserUnloaded(this.userUnloaded)
       const query = window.location.search
-      let loginReturn = query.includes('code=') && query.includes('state=')
+      const loginReturn = query.includes('code=') && query.includes('state=')
       try {
         if (loginReturn) {
           await this.client.signinCallback()
@@ -69,11 +66,7 @@ export class AuthOIDCService extends AuthService {
         // Use replaceState to redirect the user away and remove the querystring parameters
         if (loginReturn) {
           setTimeout(() => {
-            window.history.replaceState(
-              {},
-              document.title,
-              window.location.pathname
-            )
+            window.history.replaceState({}, document.title, window.location.pathname)
           }, 300)
         }
       }
@@ -93,7 +86,7 @@ export class AuthOIDCService extends AuthService {
     try {
       user = this.getSession() ? await this.fetchUser() : false
       if (!user) {
-        let loginReturn = query.includes('code=') && query.includes('state=')
+        const loginReturn = query.includes('code=') && query.includes('state=')
         if (this.client && !loginReturn) {
           await this.client.signinRedirect({ redirect_uri: redirectURI })
         } else {
@@ -129,7 +122,7 @@ export class AuthOIDCService extends AuthService {
       throw new Error('Client not initialized')
     }
     try {
-      let oidcUser = await this.client.getUser()
+      const oidcUser = await this.client.getUser()
       const headers = {
         Authorization: `Bearer ${oidcUser?.access_token}`
       }

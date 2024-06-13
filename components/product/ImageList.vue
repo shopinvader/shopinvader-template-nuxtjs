@@ -74,14 +74,10 @@
 </template>
 
 <script lang="ts">
-import { ProductImageSet } from '#models'
-import ProductImageVue from './ProductImage.vue'
+import type { ProductImageSet } from '#models'
 
 export default {
   name: 'ImageListVue',
-  components: {
-    'product-image': ProductImageVue
-  },
   props: {
     images: {
       type: Array<ProductImageSet>,
@@ -131,10 +127,10 @@ export default {
   },
   methods: {
     slideCarousel(goToImageNumber: number) {
-      let carouselContainer: HTMLElement = this.$refs.slider as HTMLElement
-      let carouselWidth = carouselContainer?.clientWidth
-      let targetImage = goToImageNumber - 1
-      let targetXPixel = carouselWidth * targetImage + 1
+      const carouselContainer: HTMLElement = this.$refs.slider as HTMLElement
+      const carouselWidth = carouselContainer?.clientWidth
+      const targetImage = goToImageNumber - 1
+      const targetXPixel = carouselWidth * targetImage + 1
       carouselContainer?.scrollTo(targetXPixel, 0)
     }
   }
@@ -142,7 +138,7 @@ export default {
 </script>
 <style lang="scss">
 .image-slider {
-  @apply carousel w-full items-center rounded  max-md:h-full;
+  @apply carousel w-full items-center rounded max-md:h-full;
   &__item {
     @apply carousel-item h-full w-full items-center justify-center max-md:max-h-96;
   }
@@ -155,7 +151,7 @@ export default {
   &__items {
     @apply w-1/6 cursor-pointer rounded bg-gray-100 hover:bg-gray-200;
     .items-image {
-      @apply mx-auto  object-fill p-2;
+      @apply mx-auto object-fill p-2;
     }
   }
 }

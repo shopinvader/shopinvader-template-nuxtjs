@@ -2,7 +2,8 @@
 export const localePath = (path: string, locale?: string): string => {
   const { $localePath } = useNuxtApp()
   if ($localePath) {
-    return $localePath(path, locale)
+    const typedFct = $localePath as (path: string, locale?: string) => string
+    return typedFct(path, locale)
   }
   return path
 }

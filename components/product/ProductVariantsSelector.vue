@@ -17,9 +17,11 @@
                 class="values__btn"
                 :class="{
                   'values__btn--selected':
-                    (value as string)?.toLowerCase() == (selectValues[name] as string)?.toLowerCase(),
+                    (value as string)?.toLowerCase() ==
+                    (selectValues[name] as string)?.toLowerCase(),
                   'values__btn--unselected':
-                    (value as string)?.toLowerCase() != (selectValues[name] as string)?.toLowerCase()
+                    (value as string)?.toLowerCase() !=
+                    (selectValues[name] as string)?.toLowerCase()
                 }"
                 @click="selectVariant(name as string, value)"
               >
@@ -43,7 +45,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Product, type VariantAttributes } from '~/models'
+import type { Product, VariantAttributes } from '~/models'
 
 const props = defineProps({
   product: {
@@ -55,8 +57,8 @@ const { t } = useI18n()
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-let variantAxes = ref<VariantAttributes>({})
-let selectValues = reactive({ ...props.product.variantAttributes })
+const variantAxes = ref<VariantAttributes>({})
+const selectValues = reactive({ ...props.product.variantAttributes })
 const emit = defineEmits(['selectVariant'])
 const findProduct = async (
   variantAttributes: VariantAttributes
@@ -79,7 +81,7 @@ const findProduct = async (
     if (!product) {
       /* if the current selection does not exists */
       let haschange = false
-      for (let [key, value] of Object.entries(variantAttributes)) {
+      for (const [key, value] of Object.entries(variantAttributes)) {
         if (!axes?.[key]?.includes(value)) {
           variantAttributes[key] = axes[key][0]
           haschange = true
@@ -97,10 +99,10 @@ const findProduct = async (
     variantAxes.value = {}
   } finally {
     loading.value = false
-    return {
-      axes,
-      product
-    }
+  }
+  return {
+    axes,
+    product
   }
 }
 

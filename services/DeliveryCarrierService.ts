@@ -1,6 +1,6 @@
 import { DeliveryCarrier } from '#models'
 import { Service } from '#services'
-import { ErpFetch } from '@shopinvader/fetch'
+import type { ErpFetch } from '@shopinvader/fetch'
 
 /**
  * Service for managing delivery carriers.

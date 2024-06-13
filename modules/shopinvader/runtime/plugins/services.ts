@@ -6,11 +6,12 @@ import type {
 } from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
 
+import type { AuthAPIConfig, AuthService } from '#services'
+
 import {
   AddressService,
   AuthCredentialService,
   AuthOIDCService,
-  AuthService,
   CartService,
   CatalogService,
   CategoryService,
@@ -19,8 +20,7 @@ import {
   PaymentService,
   ProductService,
   SaleService,
-  SettingService,
-  type AuthAPIConfig
+  SettingService
 } from '#services'
 
 declare global {
@@ -58,9 +58,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   //  ERP and Elastic providers (fetches)
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
   const erp = providers.erp
-  const elasticProducts = providers.elastic.products
-  const elasticCategories = providers.elastic.categories
-  const elasticSearch = providers.elastic.search
+  const elasticProducts = providers.products
+  const elasticCategories = providers.categories
+  const elasticSearch = providers.elasticsearch
 
   let auth: AuthService | null = null
   if (config?.auth?.type) {
@@ -91,9 +91,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // The following hook is defined in the module shopinvader (index.ts)
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   // Init all services when the app is mounted
-  nuxtApp.hook('app:mounted', async (context) => {
+  nuxtApp.hook('app:mounted', async () => {
     if (services) {
-      for (let service of Object.values(services)) {
+      for (const service of Object.values(services)) {
         await service?.init?.(services)
       }
     }
