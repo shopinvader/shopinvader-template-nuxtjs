@@ -4,7 +4,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Product } from '~/models'
+import type { Product } from '~/models'
 const props = defineProps({
   product: {
     type: Object as PropType<Product>,

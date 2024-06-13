@@ -25,8 +25,8 @@ if (auth?.type !== 'credentials') {
   await navigateTo({ path: '/' })
 }
 // check if a user is currently logged in and redirect to account page
-const goToAccount = async (value: boolean | null | User) => {
-  if (value !== null && value !== false) {
+const goToAccount = async (value: undefined | null | User) => {
+  if (value) {
     await navigateTo(localePath({ path: `/account` }))
   }
 }

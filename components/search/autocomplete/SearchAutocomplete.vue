@@ -98,6 +98,11 @@ export default {
       searchedQuery: '' as string
     }
   },
+  computed: {
+    active() {
+      return this.focused && this.query?.length > 0
+    }
+  },
   watch: {
     $route: {
       handler: function (val, old) {
@@ -114,11 +119,6 @@ export default {
       if (val && this.total == null) {
         this.onSearch()
       }
-    }
-  },
-  computed: {
-    active() {
-      return this.focused && this.query?.length > 0
     }
   },
   methods: {
@@ -213,7 +213,7 @@ export default {
     .search-autocomplete__form {
       @apply fixed -left-1/2 -right-1/2 top-0 z-40 mx-auto overflow-hidden bg-white lg:container max-lg:w-screen max-lg:overflow-auto lg:top-5 lg:max-w-screen-lg lg:rounded-2xl lg:p-2;
       .form {
-        @apply z-50 flex w-full  items-center transition-all max-lg:shadow;
+        @apply z-50 flex w-full items-center transition-all max-lg:shadow;
         &__back {
           @apply cursor-pointer p-1 text-secondary lg:hidden;
         }

@@ -1,6 +1,6 @@
 import { User } from '#models'
 import { Service } from '#services'
-import { ErpFetch } from '@shopinvader/fetch'
+import type { ErpFetch } from '@shopinvader/fetch'
 import nuxtStorage from 'nuxt-storage'
 import { storeToRefs } from 'pinia'
 
@@ -48,9 +48,8 @@ export abstract class AuthService extends Service {
     } catch (e) {
       this.setUser(null)
       throw e
-    } finally {
-      return user
     }
+    return user
   }
 
   async saveUser(profile: User): Promise<User | null> {
@@ -64,8 +63,8 @@ export abstract class AuthService extends Service {
       throw e
     } finally {
       user = await this.setUser(user)
-      return user
     }
+    return user
   }
 
   async setUser(data: AuthUserCredential | null): Promise<User | null> {

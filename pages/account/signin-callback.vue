@@ -14,17 +14,6 @@ export default {
     spinner: SpinnerVue
   },
   layout: 'empty',
-  data() {
-    return {
-      test: null
-    }
-  },
-  mounted() {
-    const { $auth } = useNuxtApp()
-    $auth.userManager.signinCallback().finally(() => {
-      this.$router.push('/')
-    })
-  },
   setup() {
     const localePath = useLocalePath()
     const auth = useShopinvaderService('auth')
@@ -36,6 +25,17 @@ export default {
       localePath,
       auth
     }
+  },
+  data() {
+    return {
+      test: null
+    }
+  },
+  mounted() {
+    const $auth = useNuxtApp().$auth
+    $auth.userManager.signinCallback().finally(() => {
+      this.$router.push('/')
+    })
   }
 }
 </script>

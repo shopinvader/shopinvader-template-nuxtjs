@@ -50,13 +50,12 @@
 </template>
 <script lang="ts">
 import Slider from '@vueform/slider'
+import type { Aggregation, Query } from 'elastic-builder'
 import {
-  Aggregation,
   FilterAggregation,
   MatchAllQuery,
   NestedAggregation,
   NestedQuery,
-  Query,
   RangeQuery,
   StatsAggregation
 } from 'elastic-builder'
@@ -70,6 +69,9 @@ interface FacetStat {
   sum: number
 }
 export default {
+  components: {
+    'range-slider': Slider
+  },
   props: {
     name: {
       type: String,
@@ -123,9 +125,6 @@ export default {
       required: false,
       default: null
     }
-  },
-  components: {
-    'range-slider': Slider
   },
   async setup(props) {
     const opened = ref(!props.close)
@@ -213,6 +212,7 @@ export default {
           })
         } else {
           const query = { ...$route.query }
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete query[props.urlParam]
           $router.push({ query })
         }
@@ -259,7 +259,8 @@ export default {
             }
           } catch (e) {
             const $router = useRouter()
-            let query = { ...$route.query }
+            const query = { ...$route.query }
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete query[this.urlParam]
             $router.replace({ path: $route.path, query })
           }
@@ -271,16 +272,16 @@ export default {
     response: {
       handler: function (response) {
         if (response?.aggregations) {
-          let name = this.name
+          const name = this.name
           const aggregations = response?.aggregations || {}
           let stats = aggregations?.[name]?.[name] || {}
 
           if (this.transformData !== null) {
-            let data = this.transformData(aggregations)
+            const data = this.transformData(aggregations)
             stats = data?.stat || []
           }
           if (this.transformItems !== null) {
-            let transformedItems = this.transformItems(stats)
+            const transformedItems = this.transformItems(stats)
             stats = transformedItems?.stats || stats
           }
 
@@ -310,8 +311,6 @@ export default {
       .header {
         &__title {
           @apply font-heading text-lg;
-        }
-        &__close {
         }
       }
     }

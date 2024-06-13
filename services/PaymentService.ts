@@ -1,4 +1,5 @@
-import { PaymentData, PaymentMethod, PaymentTransaction } from '#models'
+import type { PaymentData } from '#models'
+import { PaymentMethod, PaymentTransaction } from '#models'
 import { Service } from '#services'
 import type { ErpFetch } from '@shopinvader/fetch'
 

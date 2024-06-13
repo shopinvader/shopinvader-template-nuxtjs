@@ -56,7 +56,6 @@
     "elastic-builder": "^2.16.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
-    "lodash.isequal": "^4.5.0",
     "markdown-it": "^13.0.1",
     "nuxt-storage": "^1.2.2",
     "oidc-client-ts": "^2.2.4",

@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
     const url: string = event.node.req.url?.replace('/shopinvader', '') || ''
     const reqHeaders = getHeaders(event)
 
-    let headers: HeadersInit = {
+    const headers: HeadersInit = {
       'Content-Type': reqHeaders?.['content-type'] || 'application/json'
     }
 

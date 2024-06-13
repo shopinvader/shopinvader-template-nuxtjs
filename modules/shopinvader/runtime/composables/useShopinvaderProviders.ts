@@ -8,9 +8,10 @@ import type { ShopinvaderProvidersList } from '../types/ShopinvaderConfig'
 export const useShopinvaderProviders = <K extends keyof ShopinvaderProvidersList>(
   serviceName: K
 ): ShopinvaderProvidersList[K] => {
-  if (!useNuxtApp()?.$shopinvader) {
+  const shopinvader: any = useNuxtApp().$shopinvader
+  if (!shopinvader) {
     return {} as ShopinvaderProvidersList[K]
   }
-  const services = useNuxtApp().$shopinvader.providers
+  const services = shopinvader.providers
   return services?.[serviceName]
 }

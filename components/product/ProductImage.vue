@@ -9,7 +9,7 @@
   </figure>
 </template>
 <script lang="ts">
-import { ProductImage, ProductImageSet } from '#models'
+import type { ProductImage, ProductImageSet } from '#models'
 import type { PropType } from 'vue'
 
 export default {

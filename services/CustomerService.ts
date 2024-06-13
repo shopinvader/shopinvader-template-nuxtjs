@@ -1,6 +1,6 @@
 import { Address } from '#models'
 import { Service } from '#services'
-import { ErpFetch } from '@shopinvader/fetch'
+import type { ErpFetch } from '@shopinvader/fetch'
 
 export class CustomerService extends Service {
   name = 'customer'

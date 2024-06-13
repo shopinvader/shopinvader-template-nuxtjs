@@ -8,7 +8,6 @@
 <script lang="ts">
 import CartVue from '~/components/cart/Cart.vue'
 import ProductHistory from '~/components/product/ProductHistory.vue'
-import { Cart } from '~~/models'
 
 export default defineNuxtComponent({
   name: 'Cart',

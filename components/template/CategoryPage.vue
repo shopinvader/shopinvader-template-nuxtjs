@@ -4,7 +4,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Category } from '#models'
+import type { Category } from '#models'
 
 /**
  * Get Category from payload set on the route middleware

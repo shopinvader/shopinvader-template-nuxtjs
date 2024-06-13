@@ -100,7 +100,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
     /** Plugins */
     const plugins = await resolveFiles(resolve('./runtime/plugins'), '*.ts')
     let order = 1
-    for (let plugin of plugins) {
+    for (const plugin of plugins) {
       addPlugin({ src: plugin, mode: 'all', order })
       order++
     }

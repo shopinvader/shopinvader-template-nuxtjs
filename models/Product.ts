@@ -123,12 +123,12 @@ export class Product extends Model {
     const priceLists = Object.entries(data?.price_by_pricelist || data?.prices || data?.price || {})
     if (priceLists?.length > 0) {
       this.pricesList = {}
-      for (let [key, value] of priceLists) {
+      for (const [key, value] of priceLists) {
         this.pricesList[key] = new ProductPrice(value)
       }
     }
     if (data?.price) {
-      this.price = new ProductPrice(data?.price) || null
+      this.price = new ProductPrice(data?.price)
     } else if (this.pricesList?.[this.role]) {
       /* fallback to default price */
       this.price = this.pricesList[this.role]

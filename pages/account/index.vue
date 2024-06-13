@@ -39,7 +39,9 @@ definePageMeta({
   pageTransition: false
 })
 const logout = async () => {
-  await auth.logoutRedirect()
+  if (auth) {
+    await auth.logoutRedirect()
+  }
 }
 useSeoMeta({
   title: t(`account.title`)

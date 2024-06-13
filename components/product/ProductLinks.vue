@@ -23,8 +23,7 @@
 </template>
 
 <script lang="ts">
-import type { linkId } from '#models'
-import { Product } from '#models'
+import type { Product, linkId } from '#models'
 import ProductHitVue from './ProductHit.vue'
 
 export default defineNuxtComponent({
@@ -66,7 +65,7 @@ export default defineNuxtComponent({
   }
 
   &__items {
-    @apply grid grid-cols-2 gap-4 md:grid-cols-3  lg:grid-cols-4 xl:grid-cols-5;
+    @apply grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
     .items__product {
       .product-hit {
         @apply card border bg-base-100;

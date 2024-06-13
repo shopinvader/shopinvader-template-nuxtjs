@@ -11,7 +11,7 @@ export const addI18n = async (nuxt: Nuxt) => {
   const locales = appLayer.config?.i18n?.locales || []
   let config = {}
   if (layers.length > 1) {
-    for (let layer of layers) {
+    for (const layer of layers) {
       const { config } = layer
       if (config?.i18n) {
         config.i18n.locales =

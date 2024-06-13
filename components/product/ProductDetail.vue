@@ -141,7 +141,7 @@
   <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
 </template>
 <script lang="ts">
-import { Product, ProductCategory, ProductPrice } from '#models'
+import type { Product, ProductCategory, ProductPrice } from '#models'
 import type { PropType } from 'vue'
 import { useHistoryStore } from '~/stores/history'
 
@@ -158,7 +158,7 @@ export default {
   },
   setup(props) {
     const localePath = useLocalePath()
-    let variant = ref<any>(props.product)
+    const variant = ref<any>(props.product)
     const router = useRouter()
 
     useHistoryStore().addProduct(props.product)
@@ -178,7 +178,7 @@ export default {
       const categories = variant.value.categories || []
       let category: ProductCategory | null =
         categories.find((c: any) => c.findCategory(lastCategoryId)) || categories[0] || null
-      let items = []
+      const items = []
       while (category) {
         items.unshift(category)
         category = category?.childs?.[0] || null
@@ -190,14 +190,6 @@ export default {
       breadcrumbs,
       changeVariant,
       localePath
-    }
-  },
-  watch: {
-    product: {
-      handler: function (product: Product) {
-        this.variant = product
-      },
-      deep: true
     }
   },
   computed: {
@@ -221,13 +213,21 @@ export default {
     },
     price(): ProductPrice | null {
       const authService = useShopinvaderService('auth')
-      const user = authService.getUser()
+      const user = authService?.getUser()
       const role = (user?.value?.role as string) || null
       let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
       if (role !== null && this.variant?.pricesList?.[role]) {
         price = this.variant?.pricesList?.[role]
       }
       return price
+    }
+  },
+  watch: {
+    product: {
+      handler: function (product: Product) {
+        this.variant = product
+      },
+      deep: true
     }
   }
 }

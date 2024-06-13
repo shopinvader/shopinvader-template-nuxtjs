@@ -28,7 +28,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(name, index) in data?.elasticsearch.indices">
+              <tr v-for="(name, index) in data?.elasticsearch.indices" :key="index">
                 <td>{{ name }}</td>
                 <td>{{ index }}</td>
               </tr>
@@ -46,7 +46,7 @@
 definePageMeta({
   layout: false
 })
-let { data } = await useAsyncData(async () => {
+const { data } = await useAsyncData(async () => {
   const config = await useRuntimeConfig()?.shopinvader
   return config
 })

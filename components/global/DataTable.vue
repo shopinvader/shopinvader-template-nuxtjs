@@ -9,7 +9,7 @@
       <table class="table" :class="classTable">
         <thead>
           <tr>
-            <th v-for="col in columns">
+            <th v-for="col in columns" :key="col.key">
               <slot :name="`${col.key}-header`" :column="col" :search="search">
                 {{ col?.label || '' }}
               </slot>
@@ -31,7 +31,7 @@
             </td>
           </tr>
           <tr v-else v-for="row in lines" :key="row.id" class="data-line" @click="onClickRow(row)">
-            <td v-for="col in columns" class="data-line__cell" :class="col.class">
+            <td v-for="col in columns" :key="col.key" class="data-line__cell" :class="col.class">
               <span class="cell__label">
                 <slot :name="`${col.key}-header`" :column="col" :search="search">
                   {{ col?.label || '' }}
@@ -56,8 +56,8 @@
             </span>
           </div>
           <select v-model="size" class="select select-bordered select-sm">
-            <option v-for="size in sizeList">
-              {{ size }}
+            <option v-for="sizeItem in sizeList" :key="sizeItem">
+              {{ sizeItem }}
             </option>
           </select>
         </label>
@@ -90,7 +90,7 @@ const props = defineProps({
   },
   search: {
     type: Function as PropType<(page: number, size: number) => void>,
-    default: ''
+    default: null
   },
   loading: {
     type: Boolean,
@@ -172,17 +172,17 @@ watch([page], () => {
   search()
 })
 
-const autoRefresh = async () => {
+const doAutoRefresh = async () => {
   await search()
   timer = setTimeout(async () => {
-    await autoRefresh()
+    await doAutoRefresh()
   }, 10000)
 }
 
 onMounted(() => {
   search()
   if (props.autoRefresh) {
-    autoRefresh()
+    doAutoRefresh()
   }
 })
 

@@ -9,11 +9,11 @@ import type { Nuxt } from 'nuxt/schema'
 export const addOriginalComponents = async (nuxt: Nuxt) => {
   const layers = nuxt.options._layers
   if (layers.length > 1) {
-    for (let layer of layers) {
+    for (const layer of layers) {
       if (layer.cwd !== nuxt.options.srcDir) {
         const { resolve } = createResolver(layer.cwd)
         const files = await resolveFiles(resolve('./components'), '**/*.vue')
-        for (let filePath of files) {
+        for (const filePath of files) {
           /* get name from filePath  */
           const name = `Original${filePath
             .replace(/\.vue$/, '')

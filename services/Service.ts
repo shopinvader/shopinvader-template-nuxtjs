@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { Cart, User } from '../models'
+import type { User } from '../models'
+import { Cart } from '../models'
 export const useShopinvaderStore = defineStore('shopinvader', {
   // a function that returns a fresh state
 

@@ -54,7 +54,7 @@
   </div>
 </template>
 <script lang="ts">
-import { SaleLine } from '#models'
+import type { SaleLine } from '#models'
 import type { PropType } from 'vue'
 
 export default defineNuxtComponent({
@@ -98,7 +98,7 @@ export default defineNuxtComponent({
       }
       &__title {
         .title {
-          @apply flex-grow  text-gray-500;
+          @apply flex-grow text-gray-500;
         }
       }
       &__content {

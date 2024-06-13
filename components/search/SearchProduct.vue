@@ -48,7 +48,6 @@ import esb from 'elastic-builder'
 import ProductHit from '~/components/product/ProductHit.vue'
 import SearchBaseVue from '~~/components/search/SearchBase.vue'
 import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
-import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
 
 export interface SortItem {
   label: string
@@ -59,7 +58,6 @@ export default {
   components: {
     ProductHit,
     'search-base': SearchBaseVue,
-    'search-terms-aggregation': SearchTermsAggregation,
     'search-selected-filters': SearchSelectedFilters
   },
   layout: 'default',
@@ -83,15 +81,6 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      layout: 'grid',
-      facets: {
-        name: [],
-        url: []
-      }
-    }
-  },
   setup() {
     const { t } = useI18n()
     const cartService = useShopinvaderService('cart')
@@ -102,11 +91,20 @@ export default {
       $t: t
     }
   },
+  data() {
+    return {
+      layout: 'grid',
+      facets: {
+        name: [],
+        url: []
+      }
+    }
+  },
   methods: {
     transformResult(result: any) {
       const authService = useShopinvaderService('auth')
       let role: string | null = null
-      const user = authService.getUser()
+      const user = authService?.getUser()
       if (user && user.value && user.value?.role) {
         role = user.value.role
       }
