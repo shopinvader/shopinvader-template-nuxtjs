@@ -33,6 +33,7 @@
               <div v-if="mode.icons?.length > 0" class="item__icons">
                 <img
                   v-for="icon in mode.icons"
+                  :key="icon.sequence"
                   :src="`data:image/png;base64,${decodeImage(icon.image)}`"
                   :alt="icon.name"
                   class="icons__img"
@@ -124,7 +125,10 @@ onMounted(async () => {
     if (!paymentService) {
       throw new Error('Payment service not available')
     }
-    const { payable = null } = props?.paymentData
+    let payable = null
+    if (props && props.paymentData) {
+      payable = props.paymentData.payable
+    }
     if (!payable) {
       throw new Error('Payable not available')
     }

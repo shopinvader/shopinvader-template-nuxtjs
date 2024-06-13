@@ -41,14 +41,13 @@
   </div>
 </template>
 <script lang="ts">
+import type { Aggregation, Query } from 'elastic-builder'
 import {
-  Aggregation,
   CardinalityAggregation,
   FilterAggregation,
   MatchAllQuery,
   NestedAggregation,
   NestedQuery,
-  Query,
   TermsAggregation,
   TermsQuery,
   cardinalityAggregation
@@ -139,7 +138,7 @@ export default {
 
     const getFilterAggregation = (query: Query | null): FilterAggregation => {
       // Initialize the main aggregation with terms aggregation based on provided props
-      let agg: Aggregation = new TermsAggregation(props.name, props.field)
+      const agg: Aggregation = new TermsAggregation(props.name, props.field)
         .order('_term', 'asc') // Order the aggregation by term in ascending order
         .size(sizeQuery.value) // Set the size of the aggregation based on reactive sizeQuery value
       // If a transformQuery function is provided in props, apply it to modify the query
@@ -163,7 +162,7 @@ export default {
       }
       // Wrap the aggregations in a filter aggregation that filters documents based on the provided query
       // or a match all query if no query is provided
-      let filterAggregation = new FilterAggregation(
+      const filterAggregation = new FilterAggregation(
         props.name,
         query || new MatchAllQuery()
       ).aggregations(aggs)
@@ -214,6 +213,7 @@ export default {
           })
         } else {
           const query = { ...$route.query }
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete query[props.urlParam]
           $router.push({ query })
         }
@@ -254,7 +254,8 @@ export default {
             }
           } catch (e) {
             const $router = useRouter()
-            let query = { ...$route.query }
+            const query = { ...$route.query }
+            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
             delete query[this.urlParam]
             $router.replace({ path: $route.path, query })
           }
@@ -266,13 +267,13 @@ export default {
     response: {
       handler: function (response) {
         if (response?.aggregations) {
-          let name = this.name
+          const name = this.name
           let items = []
           let total = 0
           const aggregations = response?.aggregations || {}
 
           if (this.transformData !== null) {
-            let data = this.transformData(aggregations)
+            const data = this.transformData(aggregations)
             items = data?.items || []
           } else {
             let values = aggregations
@@ -290,7 +291,7 @@ export default {
           }
 
           if (this.cardinalityField) {
-            for (let item of items) {
+            for (const item of items) {
               if (this.nestedPath) {
                 item.doc_count = null
               } else {
@@ -300,7 +301,7 @@ export default {
           }
 
           if (this.transformItems !== null) {
-            let transformedItems = this.transformItems(items)
+            const transformedItems = this.transformItems(items)
             items = transformedItems?.items || items
           }
           this.data.items = items || []

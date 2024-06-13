@@ -1,6 +1,6 @@
 import { localePath, navigateTo } from '#imports'
-import { ErpFetch } from '@shopinvader/fetch'
-import { User } from '~/models'
+import type { ErpFetch } from '@shopinvader/fetch'
+import type { User } from '~/models'
 import { AuthService, type AuthUserCredential } from '../AuthService'
 
 export interface AuthAPIConfig {
@@ -37,11 +37,7 @@ export class AuthCredentialService extends AuthService {
     this.userLoaded()
     this.store().$onAction(async ({ name, args, store }) => {
       const { user } = store
-      if (
-        name == 'setUser' &&
-        args[0]?.login !== (user as User)?.login &&
-        args[0]?.login == null
-      ) {
+      if (name == 'setUser' && args[0]?.login !== (user as User)?.login && args[0]?.login == null) {
         await navigateTo(this.config.loginPage)
       }
     })
@@ -132,10 +128,7 @@ export class AuthCredentialService extends AuthService {
    * Define a new password
    * @param data
    */
-  async setPassword(
-    token: string,
-    password: string
-  ): Promise<AuthUserCredential> {
+  async setPassword(token: string, password: string): Promise<AuthUserCredential> {
     return await this.provider?.post('auth/set_password', { token, password })
   }
 

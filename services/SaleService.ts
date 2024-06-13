@@ -1,6 +1,7 @@
 import { Sale } from '#models'
-import { ProductService, Service } from '#services'
-import { ErpFetch } from '@shopinvader/fetch'
+import type { ProductService } from '#services'
+import { Service } from '#services'
+import type { ErpFetch } from '@shopinvader/fetch'
 
 // Service to fetch Sales
 export class SaleService extends Service {
