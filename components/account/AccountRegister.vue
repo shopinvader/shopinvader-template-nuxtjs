@@ -100,7 +100,6 @@
                 </div>
               </slot>
               <slot name ="custom-fields">
-                
               </slot>
               <slot name="terms-conditions">
                 <div class="input-container__wrapper">
@@ -121,7 +120,7 @@
                   </div>
                 </div>
               </slot>
-              <slot name=submit-btn>
+              <slot name="submit-btn">
                 <div class="w-full p-3">
                   <div class="-m-2 flex flex-wrap md:justify-end">
                     <div class="w-full p-2">
