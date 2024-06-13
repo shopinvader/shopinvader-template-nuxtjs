@@ -15,7 +15,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { PaymentTransaction } from '#models'
+import type { PaymentTransaction } from '#models'
 import { onMounted } from 'vue'
 const formPayment = ref<HTMLFormElement | null>(null)
 const props = defineProps({

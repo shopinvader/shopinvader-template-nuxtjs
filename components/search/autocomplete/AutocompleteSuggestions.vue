@@ -31,6 +31,7 @@ export default {
       required: true
     }
   },
+  emits: ['select'],
   computed: {
     length() {
       return this.suggestions.reduce((acc, suggestion) => {

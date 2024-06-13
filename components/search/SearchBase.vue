@@ -73,7 +73,8 @@
   </div>
 </template>
 <script lang="ts">
-import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
+import type { Query } from 'elastic-builder'
+import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
 import ProductHistory from '~/components/product/ProductHistory.vue'
 
@@ -143,13 +144,13 @@ export default {
     if (provider === null) {
       throw new Error('No provider found for products')
     }
-    let error = ref(null)
-    let filters = reactive([] as Filter[])
-    let loading = ref(true)
-    let displayfilters = ref(false)
-    let sort = ref(props?.sortOptions[0] || (null as SortItem | null))
+    const error = ref(null)
+    const filters = reactive([] as Filter[])
+    const loading = ref(true)
+    const displayfilters = ref(false)
+    const sort = ref(props?.sortOptions[0] || (null as SortItem | null))
 
-    let page = reactive({
+    const page = reactive({
       size: props.size,
       from: route.query.page?.toString()
         ? (parseInt(route.query.page.toString()) - 1) * props.size
@@ -157,7 +158,7 @@ export default {
       total: 0
     })
 
-    let response = ref({
+    const response = ref({
       aggregations: null,
       hits: null,
       total: 0
@@ -347,7 +348,7 @@ export default {
     }
   }
   &__loading {
-    @apply flex min-h-screen  w-full items-center justify-center;
+    @apply flex min-h-screen w-full items-center justify-center;
   }
   &__results {
     @apply w-full px-4 lg:w-3/4 xl:w-4/5;

@@ -41,7 +41,7 @@ export default {
       return Math.ceil(this.total / this.size)
     },
     pages(): number[] {
-      let pages = []
+      const pages = []
       for (let i = this.currentPage - 2; i < this.currentPage; i++) {
         if (i > 0) {
           pages.push(i)

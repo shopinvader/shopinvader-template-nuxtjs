@@ -66,7 +66,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Product, ProductPrice } from '#models'
+import type { Product, ProductPrice } from '#models'
 import type { PropType } from 'vue'
 import ProductImage from '~/components/product/ProductImage.vue'
 import ProductPriceVue from '~/components/product/ProductPrice.vue'
@@ -82,7 +82,8 @@ export default {
   props: {
     product: {
       type: Object as PropType<Product>,
-      required: false
+      required: false,
+      default: null
     },
     inline: {
       type: Boolean,
@@ -124,7 +125,7 @@ export default {
     },
     price(): ProductPrice | null {
       const authService = useShopinvaderService('auth')
-      const user = authService.getUser()
+      const user = authService?.getUser()
       const role = (user?.value?.role as string) || null
       let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
       if (role !== null && this.variant?.pricesList?.[role]) {

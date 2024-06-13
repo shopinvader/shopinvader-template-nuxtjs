@@ -1,6 +1,6 @@
 <template>
   <div class="search-loader">
-    <product-hit v-for="index in 10"></product-hit>
+    <product-hit v-for="index in 10" :key="index"></product-hit>
   </div>
 </template>
 <script lang="ts" setup></script>

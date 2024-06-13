@@ -37,9 +37,8 @@
 </template>
 <script lang="ts">
 import { type ProductResult } from '#models'
-import { Product } from '~/models'
+import type { Product } from '~/models'
 import Spinner from '~~/components/global/Spinner.vue'
-import ProductHistory from '../../product/ProductHistory.vue'
 import ProductHit from '../../product/ProductHit.vue'
 
 export default {
@@ -47,7 +46,6 @@ export default {
 
   components: {
     'product-hit': ProductHit,
-    'product-history': ProductHistory,
     Spinner
   },
   props: {
@@ -58,10 +56,10 @@ export default {
   },
   emits: ['setTotal', 'setSuggestions', 'go-search'],
   setup(props, { emit }) {
-    let loading = ref(false)
-    let error = ref(false)
+    const loading = ref(false)
+    const error = ref(false)
 
-    let searchResults = reactive({
+    const searchResults = reactive({
       hits: [] as Product[],
       suggestions: [] as any,
       total: null as number | null
