@@ -106,7 +106,7 @@ export class AuthOIDCService extends AuthService {
     }
   }
 
-  async logoutRedirect(page?: string): Promise<any> {
+  async logoutRedirect(_page?: string): Promise<any> {
     if (!this.client) {
       throw new Error('Client not initialized')
     }

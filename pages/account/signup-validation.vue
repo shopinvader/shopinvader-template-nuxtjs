@@ -10,7 +10,7 @@ if (auth?.type !== 'credentials') {
 }
 // check if a user is currently logged in and redirect to account page
 try {
-  const user = await auth.getUser()
+  const user = await auth?.getUser()
   if (user?.value) {
     await navigateTo({ path: '/account/profile' })
   }
@@ -19,6 +19,6 @@ try {
 }
 
 definePageMeta({
-  layout: 'Empty'
+  layout: 'empty'
 })
 </script>

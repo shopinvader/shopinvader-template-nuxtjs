@@ -6,7 +6,7 @@ import type {
 } from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
 
-import type { AuthAPIConfig, AuthService } from '#services'
+import type { AuthAPIConfig, AuthOIDCConfig, AuthService } from '#services'
 
 import {
   AddressService,
@@ -22,6 +22,7 @@ import {
   SaleService,
   SettingService
 } from '#services'
+import type { ErpFetchObservable } from './providers/ErpFetchObservable'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
@@ -54,7 +55,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
   }
 
-  const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
+  const i18nOptions: any = app.$i18n || {}
+  const isoLocale: string = i18nOptions?.localeProperties?.value?.iso || 'fr_fr'
   //  ERP and Elastic providers (fetches)
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
   const erp = providers.erp
@@ -67,8 +69,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     /** Auth Service */
     const profile = config.auth?.profile
     if (config.auth.type === 'oidc') {
-      // Todo: convert the erp:ErpFetch into an ErpFetchObservable
-      auth = new AuthOIDCService(erp, profile)
+      auth = new AuthOIDCService(erp as ErpFetchObservable, profile as AuthOIDCConfig)
     } else {
       auth = new AuthCredentialService(erp, profile as AuthAPIConfig)
     }
@@ -88,7 +89,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     customer: new CustomerService(erp)
   }
 
-  // The following hook is defined in the module shopinvader (index.ts)
+  // The following hook is used to let children add custom services to the app
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
   // Init all services when the app is mounted
   nuxtApp.hook('app:mounted', async () => {

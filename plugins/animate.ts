@@ -11,7 +11,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
       useMotion(el, motion)
     },
-    getSSRProps(binding, vnode) {
+    getSSRProps(_binding, _vnode) {
       // you can provide SSR-specific props here
       return {}
     }

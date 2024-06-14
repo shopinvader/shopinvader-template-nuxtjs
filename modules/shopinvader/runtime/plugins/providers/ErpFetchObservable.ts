@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { ErpFetch } from '@shopinvader/fetch'
 
 export class ErpFetchObservable extends ErpFetch {
@@ -18,11 +19,9 @@ export class ErpFetchObservable extends ErpFetch {
         }
       } catch (e: any) {
         for (const callback of this.errorsCallback) {
-          e = await callback(res, ...args)
+          await callback(res, ...args)
         }
-        if (e) {
-          throw e
-        }
+        throw e
       } finally {
         for (const callback of this.responseCallback) {
           res = await callback(res)
