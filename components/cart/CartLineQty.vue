@@ -29,7 +29,7 @@ export default {
   },
   emits: {
     /**  Emit when the quantity is updated */
-    update: (qty: number) => true
+    update: (_qty: number): boolean => true
   },
   setup(props) {
     const qty = ref(props.line?.qty || null) as Ref<number | null>

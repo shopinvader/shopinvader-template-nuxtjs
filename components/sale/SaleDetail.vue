@@ -59,7 +59,7 @@
     <div class="sale__addresses">
       <slot name="delivery" :sale="sale">
         <address-card v-if="sale?.delivery?.address" :address="sale.delivery.address">
-          <template #header :address="sale?.delivery?.address">
+          <template #header>
             <div>
               <icon name="location" />
               {{ $t('sale.delivery.address') }}
@@ -70,7 +70,7 @@
       </slot>
       <slot name="invoice" :sale="sale">
         <address-card v-if="sale?.invoicing?.address" :address="sale.invoicing.address">
-          <template #header :address="sale?.invoicing?.address">
+          <template #header>
             <div>
               <icon name="billing"></icon>
               {{ $t('sale.invoicing.address') }}
@@ -143,7 +143,7 @@
 </template>
 <script setup lang="ts">
 import type { Sale } from '#models'
-const props = defineProps({
+defineProps({
   sale: {
     type: Object as PropType<Sale>,
     required: true
@@ -154,7 +154,7 @@ const props = defineProps({
 .sale {
   @apply border p-4;
   &__header {
-    @apply flex flex-row flex-wrap gap-5  py-5;
+    @apply flex flex-row flex-wrap gap-5 py-5;
     .header {
       &__number,
       &__date,

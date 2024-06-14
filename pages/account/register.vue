@@ -16,7 +16,7 @@ if (auth?.type !== 'credentials') {
 }
 const { t } = useI18n()
 definePageMeta({
-  layout: 'Empty'
+  layout: 'empty'
 })
 useSeoMeta({
   title: t('account.register.title'),
@@ -24,12 +24,8 @@ useSeoMeta({
   description: t('account.register.title'),
   ogDescription: t('account.register.title')
 })
-try {
-  const user = await auth?.me()
-  if (user?.value) {
-    await navigateTo({ path: `/account` })
-  }
-} catch (e) {
-  console.error(e)
+const user = auth?.getUser()
+if (user?.value) {
+  await navigateTo({ path: `/account` })
 }
 </script>

@@ -63,7 +63,7 @@ export class AuthCredentialService extends AuthService {
    * logout page redirection
    * @param target page relative URI
    */
-  async logoutRedirect(page?: string | undefined): Promise<any> {
+  async logoutRedirect(_page?: string | undefined): Promise<any> {
     await this.logout()
     /** Redirection done via store $subscribe */
   }

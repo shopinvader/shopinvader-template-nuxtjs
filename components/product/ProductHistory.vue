@@ -39,7 +39,7 @@ export default {
       default: 3
     }
   },
-  setup(props, { emit }) {
+  setup(props) {
     const store = useHistoryStore()
     const products = computed(() => {
       return store.getProducts

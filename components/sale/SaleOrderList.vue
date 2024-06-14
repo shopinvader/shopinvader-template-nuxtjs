@@ -1,6 +1,6 @@
 <template>
   <data-table
-    classTable="sale-order-list"
+    class-table="sale-order-list"
     :columns="columns"
     :search="searchSaleOrder"
     @click="navigateToSale"

@@ -5,7 +5,7 @@
 		@binding {number} qty quantity of the cart line
 		@binding {string} onChange callback function to fire quantity change save
 	  -->
-    <slot name="selector" v-bind="{ value }" :onChange="inputValue">
+    <slot name="selector" v-bind="{ value }" :on-change="inputValue">
       <div class="input-group">
         <div class="cartline-qty__btn min" @click="decrQuantity()">-</div>
         <input
@@ -38,7 +38,7 @@ export default {
   },
   emits: {
     /**  Emit when the quantity is updated */
-    change: (qty: number) => true
+    change: (_qty: number) => true
   },
   data() {
     const timer: any = null

@@ -81,7 +81,7 @@
             @binding {CheckoutStep[]} steps - checkout steps
             @binding {number} currentStepIndex - current step index
           -->
-          <slot name="body" :steps="checkoutSteps" :currentStepIndex="currentStepIndex">
+          <slot name="body" :steps="checkoutSteps" :current-step-index="currentStepIndex">
             <div class="checkout-steps">
               <div
                 v-for="(step, index) in checkoutSteps"

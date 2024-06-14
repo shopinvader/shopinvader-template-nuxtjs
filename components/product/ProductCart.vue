@@ -103,9 +103,9 @@ export default {
   },
   emits: {
     /**  Emit when the quantity is updated */
-    update: (qty: number) => true,
+    update: (_qty: number) => true,
     /** Emit when the product is added to the cart */
-    add: (qty: number) => true
+    add: (_qty: number) => true
   },
   data() {
     return {

@@ -56,9 +56,6 @@ export interface ShopinvaderProvidersList {
   products: ElasticFetch
   categories: ElasticFetch
   elasticsearch: ElasticFetch
-  elasticAddons: {
-    [key: string]: ElasticFetch
-  }
 }
 
 export interface ShopinvaderServiceList {

@@ -147,7 +147,7 @@ export abstract class AuthService extends Service {
   /**
    * checkRegisterToken : Check the token for the customer registration
    */
-  async checkRegisterToken(token: string): Promise<boolean> {
+  async checkRegisterToken(_token: string): Promise<boolean> {
     // TODO: implement the checkRegisterToken method
     return false
   }

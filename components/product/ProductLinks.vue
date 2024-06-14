@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import type { Product, linkId } from '#models'
+import type { Product } from '#models'
 import ProductHitVue from './ProductHit.vue'
 
 export default defineNuxtComponent({
@@ -33,7 +33,7 @@ export default defineNuxtComponent({
   name: 'ProductLinks',
   props: {
     links: {
-      type: Array<linkId>,
+      type: Array<{ id: number }>,
       required: true
     }
   },

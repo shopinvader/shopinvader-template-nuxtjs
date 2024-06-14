@@ -1,5 +1,5 @@
 <template>
-  <div v-if="variant !== null" class="product-detail" :class="class">
+  <div v-if="variant !== null" class="product-detail" :class="cssclass">
     <div class="product-detail__header">
       <!-- @slot Breadcrumbs content -->
       <slot name="breadcrumbs" :variant="variant">
@@ -151,7 +151,7 @@ export default {
       type: Object as PropType<Product>,
       required: true
     },
-    class: {
+    cssclass: {
       type: String,
       default: ''
     }

@@ -1,5 +1,5 @@
 <template>
-  <client-only fallbackTag="div">
+  <client-only fallback-tag="div">
     <template #fallback>
       <div class="account-layout__loading">
         <spinner />
