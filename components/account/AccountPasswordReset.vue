@@ -104,7 +104,7 @@ export default defineNuxtComponent({
         this.error.login = null
       }
     },
-    async submit(e: Event) {
+    async submit(_e: Event) {
       const auth = useShopinvaderService('auth') as AuthCredentialService
       if (this?.login) {
         try {

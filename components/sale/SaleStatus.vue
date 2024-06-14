@@ -5,7 +5,7 @@
 </template>
 <script lang="ts" setup>
 import type { Sale } from '#models'
-const props = defineProps({
+defineProps({
   sale: {
     type: Object as PropType<Sale>,
     required: true

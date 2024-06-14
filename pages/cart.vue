@@ -26,9 +26,11 @@ export default defineNuxtComponent({
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
     useHead({
-      title: i18n.t('cart.title'),
-      cart
+      title: i18n.t('cart.title')
     })
+    return {
+      cart
+    }
   },
   methods: {
     submit() {

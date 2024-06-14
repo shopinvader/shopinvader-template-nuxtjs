@@ -153,7 +153,7 @@ export default defineNuxtComponent({
         this.error.password = null
       }
     },
-    async submit(e: Event) {
+    async submit(_e: Event) {
       const auth = this.auth
       this.loading = true
       if (this?.login && this?.password) {

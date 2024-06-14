@@ -17,14 +17,18 @@
     <template v-if="editable" #footer>
       <div class="cart-address-delivery__footer">
         <div class="address-selector">
-          <slot name="action" onOpen>
+          <slot name="action" on-open>
             <button type="button" class="btn btn-primary btn-outline btn-sm" @click="onOpen">
               <span class="pl-1">
                 {{ $t('cart.address.select') }}
               </span>
             </button>
           </slot>
-          <aside-drawer :open="opened" @close="onClose" classContent="cart-address-delivery__aside">
+          <aside-drawer
+            :open="opened"
+            @close="onClose"
+            class-content="cart-address-delivery__aside"
+          >
             <template #header>
               <div class="aside__header">
                 {{ $t('cart.address.shipping.title') }}
@@ -69,7 +73,7 @@ export default defineNuxtComponent({
       default: true
     }
   },
-  setup(props) {
+  setup(_props) {
     const opened = ref(false)
     const cartService = useShopinvaderService('cart')
     const cart = cartService?.getCart()

@@ -11,7 +11,7 @@
     </template>
     <template v-if="editable" #footer>
       <div class="cart-address-invoicing">
-        <slot v-if="invoicingAddress" name="action" onOpen>
+        <slot v-if="invoicingAddress" name="action" on-open>
           <div class="cart-address-invoicing__btn">
             <button class="btn" @click="onOpen">
               <icon name="edit"></icon>
@@ -19,7 +19,7 @@
             </button>
           </div>
         </slot>
-        <aside-drawer :open="opened" @close="onClose" classContent="cart-address-invoicing__aside">
+        <aside-drawer :open="opened" @close="onClose" class-content="cart-address-invoicing__aside">
           <template #header>
             <div class="aside__header">
               {{ $t('cart.address.billing.title') }}
