@@ -66,7 +66,7 @@ export default defineNuxtComponent({
     }
   },
 
-  setup(props) {
+  setup(_props) {
     const toggle = ref(false)
     const localePath = useLocalePath()
     return {

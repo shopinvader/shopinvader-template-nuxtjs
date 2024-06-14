@@ -106,7 +106,7 @@ const findProduct = async (
   }
 }
 
-const changeVariant = async (value: any) => {
+const changeVariant = async (_value: any) => {
   const { product, axes } = await findProduct(selectValues)
   variantAxes.value = axes
   if (product) {

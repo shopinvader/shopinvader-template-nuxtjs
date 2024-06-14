@@ -11,6 +11,7 @@ export default withNuxt({
     'vue/component-definition-name-casing': 'off',
     'vue/singleline-html-element-content-newline': 'off',
     'vue/attributes-order': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn'
+    '@typescript-eslint/no-unused-vars': 'warn',
+    'vue/no-v-html': 'off'
   }
 })

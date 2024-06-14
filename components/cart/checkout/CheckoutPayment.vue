@@ -9,8 +9,8 @@
     </div>
     <div class="checkout-payment__items">
       <template v-if="!loading && paymentData">
-        <slot name="items" :cart="cart" :paymentData="paymentData">
-          <payment-method-list :paymentData="paymentData"></payment-method-list>
+        <slot name="items" :cart="cart" :payment-data="paymentData">
+          <payment-method-list :payment-data="paymentData"></payment-method-list>
         </slot>
       </template>
       <template v-else-if="loading">
