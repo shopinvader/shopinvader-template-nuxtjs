@@ -1,6 +1,5 @@
 /**
  * Give access to the shopinvader services
- * useShopinvaderService
  * @param serviceName string
  */
 export const useShopinvaderService = <K extends keyof ShopinvaderServiceList>(
@@ -8,8 +7,11 @@ export const useShopinvaderService = <K extends keyof ShopinvaderServiceList>(
 ): ShopinvaderServiceList[K] => {
   const shopinvader: any = useNuxtApp().$shopinvader
   if (!shopinvader) {
-    return {} as ShopinvaderServiceList[K]
+    throw new Error('No shopinvader found')
   }
   const services = shopinvader.services
-  return services?.[serviceName]
+  if (!services || !Object.prototype.hasOwnProperty.call(services, serviceName)) {
+    throw new Error(`No services found for ${serviceName}`)
+  }
+  return services[serviceName]
 }
