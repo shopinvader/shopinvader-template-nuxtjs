@@ -3,8 +3,8 @@ import { createError, proxyRequest } from 'h3' // Nitro http framework
 // Proxy request to avoid CORS issues
 export default defineEventHandler(async (event) => {
   const runtimeConfig = useRuntimeConfig()?.shopinvader || {}
-  const config = runtimeConfig?.erp?.proxy || null
-  if (!config) {
+  const erpProxyConfig = runtimeConfig?.erp?.proxy || null
+  if (!erpProxyConfig) {
     return createError({
       statusCode: 500,
       statusMessage: 'No proxy config found'
@@ -12,18 +12,31 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const url: string = event.node.req.url?.replace('/shopinvader', '') || ''
+    const debugMode = erpProxyConfig.debug || false
+    const proxiedUrl: string = erpProxyConfig.url + event.node.req.url?.replace('/shopinvader', '')
     const reqHeaders = getHeaders(event)
-
     const headers: HeadersInit = {
       'Content-Type': reqHeaders?.['content-type'] || 'application/json'
     }
-
-    if (config?.auth) {
-      headers['Authorization'] = config.auth
+    if (erpProxyConfig?.auth) {
+      headers['Authorization'] = erpProxyConfig.auth
     }
-    return await proxyRequest(event, `${config?.url}${url}`, {
-      headers
+    if (debugMode) {
+      console.log('[erpProxy] request:', proxiedUrl)
+    }
+    return await proxyRequest(event, proxiedUrl, {
+      headers,
+      onResponse: (event, response) => {
+        if (debugMode) {
+          console.log(
+            '[erpProxy] response:',
+            event.node.req.url,
+            response.status,
+            response.statusText
+          )
+        }
+        return response
+      }
     })
   } catch (error: any) {
     return createError({
