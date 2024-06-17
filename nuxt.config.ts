@@ -51,14 +51,14 @@ export default defineNuxtConfig({
     'nuxt-delay-hydration',
     'nuxt-icon',
     '@nuxtjs/tailwindcss',
-    'nuxt-simple-sitemap',
+    '@nuxtjs/sitemap',
     'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@vueuse/motion/nuxt',
     '@nuxt/image',
-    '@nuxt/eslint',
+    '@nuxt/eslint'
   ],
   piniaPersistedstate: {
     cookieOptions: {
