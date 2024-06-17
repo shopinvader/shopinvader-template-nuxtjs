@@ -59,8 +59,8 @@ class CartObserver {
 export class CartService extends Service {
   services: ShopinvaderServiceList | null = null
   serviceName = 'cart'
-  endpoint: string = 'carts'
-  syncUrl: string = 'carts/sync'
+  endpoint: string = 'cart'
+  syncUrl: string = 'cart/sync'
   erp: any // ErpFetch
   cart: any | null
   id: number | null = null // Cart ID
