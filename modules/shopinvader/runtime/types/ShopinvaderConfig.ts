@@ -16,6 +16,7 @@ import type {
 export interface ShopinvaderProxyConfig {
   url: string
   auth?: string
+  debug?: boolean
 }
 
 export interface ShopinvaderErpConfig {

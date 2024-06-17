@@ -10,16 +10,19 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.scss'],
   runtimeConfig: {
+    // Serveur-side configuration
     basicAuth: process.env.NUXT_BASIC_AUTH || '',
     shopinvader: {
       erp: {
         proxy: {
           auth: process.env.NUXT_SHOPINVADER_ERP_PROXY_AUTH || '',
-          url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || ''
+          url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || '',
+          debug: process.env.NUXT_SHOPINVADER_ERP_PROXY_DEBUG === 'true'
         }
       }
     },
     public: {
+      // Client-side configuration
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
       },
