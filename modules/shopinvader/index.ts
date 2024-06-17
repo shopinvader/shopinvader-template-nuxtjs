@@ -16,6 +16,7 @@ import {
   type ShopinvaderProvidersList
 } from './runtime/types/ShopinvaderConfig'
 
+import type { HookResult, Nuxt } from 'nuxt/schema'
 import {
   addI18n,
   addModelsServicesTemplates,
@@ -23,25 +24,21 @@ import {
   configMerge
 } from './runtime/utils'
 
-type MaybePromise<T> = T | Promise<T>
-
 declare module '#app' {
   // Define additional runtime hooks
   interface RuntimeNuxtHooks {
-    'shopinvader:loaded': <Context = unknown>(ctx: Context) => MaybePromise<void>
-    'shopinvader:services': <Context = unknown>(
+    'shopinvader:loaded': (nuxt: Nuxt) => HookResult
+    'shopinvader:services': (
       services: ShopinvaderServiceList,
       providers: ShopinvaderProvidersList,
-      ctx: Context
-    ) => MaybePromise<void>
-    'shopinvader:router': <Context = unknown>(
-      router: Router,
-      component: Component,
-      ctx: Context
-    ) => MaybePromise<void>
+      ctx: unknown
+    ) => HookResult
+    'shopinvader:router': (router: Router, component: Component, ctx: unknown) => HookResult
   }
 }
+
 export { ErpFetchObservable } from './runtime/plugins/providers/ErpFetchObservable'
+
 export default defineNuxtModule<ShopinvaderConfig>({
   meta: {
     name: 'shopinvader',
@@ -136,6 +133,6 @@ export default defineNuxtModule<ShopinvaderConfig>({
         config.elasticsearch.url
       )
     }
-    nuxt.callHook('shopinvader:loaded', nuxt)
+    nuxt.callHook('shopinvader:loaded' as any, nuxt)
   }
 })
