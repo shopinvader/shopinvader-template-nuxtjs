@@ -2,12 +2,29 @@ import { ElasticFetch } from '@shopinvader/fetch'
 import type { ShopinvaderElasticConfig } from '../../types/ShopinvaderConfig'
 
 export const fetchElastic = async (url: string, options: any) => {
-  const response = await fetch(url, options)
+  console.log('[fetchElastic] url', url, options)
+  let response = null
+  response = await fetch(url, options)
   if (response.status !== 200) {
-    throw new Error()
+    // Read body to get the error message
+    const body = await response.text()
+    console.error('[fetchElastic] error (bad response status)', url, options, response, body)
+    // Create error with the body
+    const error = new Error(
+      '[fetchElastic] error, bad response status: ' +
+        url +
+        ' ' +
+        response.status +
+        ' ' +
+        response.statusText +
+        ' ' +
+        body
+    )
+    throw error
   }
   return response
 }
+
 /**
  * Init the elasticsearch providers
  * @param options
