@@ -76,7 +76,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
 
     /* Server */
     addServerHandler({
-      // Use proxy for ERP calls if called from the client (happen in dev mode)
+      // Use proxy for ERP calls from the client to avoid CORS problems (useful in dev mode)
       route: '/shopinvader/**',
       handler: resolve('./runtime/server/erpProxy.ts')
     })
