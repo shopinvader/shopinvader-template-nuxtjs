@@ -59,19 +59,21 @@ class CartObserver {
 export class CartService extends Service {
   services: ShopinvaderServiceList | null = null
   serviceName = 'cart'
-  endpoint: string = 'cart'
-  syncUrl: string = 'cart/sync'
+  endpoint: string = 'carts'
+  syncUrl: string = 'carts/sync'
   erp: any // ErpFetch
   cart: any | null
   id: number | null = null // Cart ID
   products: Product[] = []
   debug = false
+
   constructor(erp: ErpFetch) {
     super()
     this.erp = erp
     this.setCart = this.setCart.bind(this)
     this.transformCart = this.transformCart.bind(this)
   }
+
   init(services: ShopinvaderServiceList): void {
     super.init(services)
     if (!import.meta.env.SSR) {
@@ -109,9 +111,11 @@ export class CartService extends Service {
       })
     }
   }
+
   sync() {
     this.cart?.syncWithRetry()
   }
+
   getCart(): Ref<CartModel | null> {
     if (!import.meta.env.SSR) {
       const store = this.store()
@@ -123,7 +127,6 @@ export class CartService extends Service {
 
   async setCart(cart: CartModel | null) {
     /** Store the cart on the localstorage */
-
     if (cart?.toJSON) {
       window.localStorage.setItem('cart', JSON.stringify(cart?.toJSON()))
     }
@@ -142,6 +145,7 @@ export class CartService extends Service {
 
     store.setCart(cart)
   }
+
   async transformCart(cart: CartModel): Promise<CartModel> {
     /** Fetch cart product to product index */
     if (cart?.lines?.length > 0 && this.services?.products !== null) {
@@ -185,6 +189,7 @@ export class CartService extends Service {
     }
     return cart
   }
+
   addTransaction(id: number, qty: number, options?: any) {
     if (id != null && qty != null && !isNaN(qty)) {
       this.cart.addTransaction(new CartTransaction(id, qty, undefined, options || null))
@@ -219,6 +224,7 @@ export class CartService extends Service {
       this.addTransaction(productId, qty, line?.options || null)
     }
   }
+
   /**
    * deleteItem : delete a cart line
    * @param {*} id cart line ID
