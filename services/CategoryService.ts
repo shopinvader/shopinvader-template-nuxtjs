@@ -6,10 +6,12 @@ import esb, { MultiMatchQuery } from 'elastic-builder'
 export class CategoryService extends Service {
   name = 'categories'
   provider: ElasticFetch | null = null
+
   constructor(provider: ElasticFetch) {
     super()
     this.provider = provider
   }
+
   async search(body: any): Promise<CategoryResult> {
     if (this.provider == null) {
       throw new Error('No provider found for categories')
@@ -20,6 +22,7 @@ export class CategoryService extends Service {
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations }
   }
+
   /**
    *
    * @param field
@@ -55,12 +58,14 @@ export class CategoryService extends Service {
     }
     return null
   }
+
   async autocompleteSearch(query: string): Promise<CategoryResult> {
     const body = esb
       .requestBodySearch()
       .query(new MultiMatchQuery(['name', 'description'], query).type('phrase_prefix'))
     return await this.search(body.toJSON())
   }
+
   jsonToModel(json: any): Category {
     return new Category(json)
   }
