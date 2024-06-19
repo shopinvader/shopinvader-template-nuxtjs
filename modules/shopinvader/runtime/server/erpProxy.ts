@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const debugMode = erpProxyConfig.debug || false
+    const logLevel = erpProxyConfig.logLevel || 0
     const proxiedUrl: string = erpProxyConfig.url + event.node.req.url?.replace('/shopinvader', '')
     const reqHeaders = getHeaders(event)
     const headers: HeadersInit = {
@@ -21,19 +21,23 @@ export default defineEventHandler(async (event) => {
     if (erpProxyConfig?.auth) {
       headers['Authorization'] = erpProxyConfig.auth
     }
-    if (debugMode) {
+    if (logLevel > 0) {
       console.log('[erpProxy] request:', proxiedUrl)
     }
     return await proxyRequest(event, proxiedUrl, {
       headers,
-      onResponse: (event, response) => {
-        if (debugMode) {
+      onResponse: async (event, response) => {
+        if (logLevel > 0) {
           console.log(
             '[erpProxy] response:',
             event.node.req.url,
             response.status,
             response.statusText
           )
+          if (logLevel > 1) {
+            const body = await response.text()
+            console.log('[erpProxy] response body:', event.node.req.url, body)
+          }
         }
         return response
       }
