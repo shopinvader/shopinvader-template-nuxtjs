@@ -17,7 +17,7 @@ export default defineNuxtConfig({
         proxy: {
           auth: process.env.NUXT_SHOPINVADER_ERP_PROXY_AUTH || '',
           url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || '',
-          debug: process.env.NUXT_SHOPINVADER_ERP_PROXY_DEBUG === 'true'
+          logLevel: Number(process.env.NUXT_SHOPINVADER_ERP_PROXY_LOGLEVEL) || 0
         }
       }
     },
