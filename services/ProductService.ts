@@ -12,12 +12,14 @@ export class ProductService extends Service {
     this.provider = provider
   }
 
-  hits(hits: any[]) {
+  hits(hits: any[]): Product[] {
     return hits?.map((hit: any) => {
-      const variants = hit?.inner_hits?.variants?.hits?.hits?.map((variant: any) => variant._source)
+      const productVariants = hit?.inner_hits?.variants?.hits?.hits?.map(
+        (variant: any) => variant._source
+      )
       return this.jsonToModel({
         ...hit._source,
-        ...{ variants }
+        ...{ productVariants }
       })
     })
   }
@@ -39,7 +41,6 @@ export class ProductService extends Service {
     const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
-
     return { hits, total, aggregations }
   }
 
