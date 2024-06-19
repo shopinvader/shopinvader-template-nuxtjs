@@ -10,7 +10,7 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.scss'],
   runtimeConfig: {
-    // Serveur-side configuration
+    // Serveur-side only configuration
     basicAuth: process.env.NUXT_BASIC_AUTH || '',
     shopinvader: {
       erp: {
@@ -21,8 +21,8 @@ export default defineNuxtConfig({
         }
       }
     },
+    // Client-side and server-side configuration
     public: {
-      // Client-side configuration
       theme: {
         logo: process.env.VUE_APP_LOGO_URL || ''
       },
