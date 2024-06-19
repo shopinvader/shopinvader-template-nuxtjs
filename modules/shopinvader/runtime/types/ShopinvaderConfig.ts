@@ -18,7 +18,7 @@ import {
 export interface ShopinvaderProxyConfig {
   url: string
   auth?: string
-  debug?: boolean
+  logLevel?: number // 0=off, 1=info, 2=debug
 }
 
 export interface ShopinvaderErpConfig {
