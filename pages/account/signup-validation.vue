@@ -1,8 +1,9 @@
 <template>
-  <AccountTokenValidation> </AccountTokenValidation>
+  <AccountEmailValidation> </AccountEmailValidation>
 </template>
 <script setup lang="ts">
 const auth = useShopinvaderService('auth')
+
 
 if(auth?.type !== 'credentials') {
   /** back to home if is not auth provider credential */
@@ -14,6 +15,7 @@ try {
   if (user?.value) {
     navigateTo({ path: '/account/profile' })
   }
+
   
 } catch (e) {
   console.error(e)

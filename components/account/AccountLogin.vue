@@ -21,7 +21,7 @@
             type="email"
             @keyup="checkValidity('login', $event)"
             required
-            placeholder="Enter email address"
+            :placeholder="$t('account.address.email')"
             :disabled="loading"
           />
         </div>
