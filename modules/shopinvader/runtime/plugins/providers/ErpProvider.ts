@@ -6,6 +6,7 @@ export const fetchAPI = async (url: string, options: any) => {
   const auth = useShopinvaderService('auth')
   if (auth !== null && auth?.getUser !== null) {
     options = {
+      // Credentials are needed to automatically send browser's cookies within the request
       credentials: 'include',
       cache: 'default',
       ...options
