@@ -53,6 +53,7 @@ export const createElasticProviders = (
   }
   // Parse list of providers
   for (const name in indices) {
+    // Create the index name with the current locale
     const indexName = `${indices[name]}_${isoLocale}`
     if (name === 'products' || name === 'categories') {
       // Add products and categories
