@@ -12,6 +12,7 @@
         v-if="product?.images?.[0]"
         :image="product.images[0]"
         class="hit__image"
+        :class="{'hit__image--selected': selected === product.id}"
       >
       </product-image>
       <div class="hit__title">
@@ -36,9 +37,16 @@ export default {
       return this.variants.filter((variant) => variant.id !== null)
     }
   },
+  data() {
+    return {
+      selected: null as number | null
+    }
+  },
   methods: {
     selectVariant(product: Product) {
+      this.selected = product.id
       this.$emit('selectVariant', product)
+
     },
     mouseoverVariant(product: Product) {
       this.$emit('mouseover', product)
@@ -56,6 +64,9 @@ export default {
     @apply w-1/5 pr-2;
     .hit__image {
       @apply cursor-pointer border p-2;
+      &--selected {
+        @apply border-primary;
+      }
     }
     .hit__title {
       @apply text-center text-xs font-bold uppercase;
