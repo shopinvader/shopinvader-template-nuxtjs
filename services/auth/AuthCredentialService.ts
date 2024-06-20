@@ -121,7 +121,17 @@ export class AuthCredentialService extends AuthService {
   async resetPassword(login: string): Promise<{login :string}> {
     return await this.provider?.post("auth/request_reset_password", {login})
   }
-
+  /**
+   * Validate Email after creating an account
+   */
+  async validateEmail(token: string) {
+    try {
+      return await this.provider?.post('auth/validate_email', {token})
+    } catch (e) {
+      console.error(e)
+      throw e
+    } 
+  }
   /**
    * Define a new password
    * @param data

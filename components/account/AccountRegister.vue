@@ -49,80 +49,123 @@
         <div class="register__form-wrapper">
           <form class="" @submit.prevent="createAccount">
             <div class="input-container">
-              <div class="input-container__wrapper">
-                <label class="" for="firstname">{{
-                  $t('account.address.name')
-                }}</label>
-                <input
-                  class=""
-                  id="firstname"
-                  v-model="name"
-                  name="firstname"
-                  type="text"
-                  required
-                  :disabled="loading"
-                  :placeholder="$t('account.address.name')"
-                />
-              </div>
-              <div class="input-container__wrapper">
-                <label class="" for="email">{{
-                  $t('account.address.email')
-                }}</label>
-                <input
-                  v-model="email"
-                  class=""
-                  id="email"
-                  type="email"
-                  required
-                  :disabled="loading"
-                  :placeholder="$t('account.address.email')"
-                />
-              </div>
-              <div class="input-container__wrapper">
-                <label class="" for="password">{{
-                  $t('account.login.password')
-                }}</label>
-                <input
-                  v-model="password"
-                  class=""
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  :disabled="loading"
-                  placeholder="***************"
-                />
-              </div>
-              <div class="input-container__wrapper">
-                <div class="checkbox-container">
-                  <div class="checkbox-container__outer">
-                    <div class="checkbox-content">
-                      <input type="checkbox" class="" :disabled="loading" />
-                      <label
-                        class="font-bold text-gray-500"
-                        for="signUpLightReverseCheckbox1-1"
-                        ><span> {{ $t('account.register.accept_terms') }} </span
-                        ><a class="content-link" href="#">
-                          {{ $t('account.register.terms_conditions') }}</a
-                        ></label
-                      >
+              <slot name="first-name">
+                <div class="input-container__wrapper">
+                  <label class="" for="firstname">{{
+                    $t('account.address.name')
+                  }}</label>
+                  <input
+                    class=""
+                    id="firstname"
+                    v-model="name"
+                    name="firstname"
+                    type="text"
+                    required
+                    :disabled="loading"
+                    :placeholder="$t('account.address.name')"
+                    @keyup="checkValidity('input', $event)"
+                  />
+                  <div class="form-error" v-if="error.login">
+                    {{ error.input }}
+                  </div>
+                </div>
+              </slot>
+              <slot name="email-address">
+                <div class="input-container__wrapper">
+                  <label class="" for="email">{{
+                    $t('account.address.email')
+                  }}</label>
+                  <input
+                    v-model="email"
+                    class=""
+                    id="email"
+                    type="email"
+                    @keyup="checkValidity('login', $event)"
+                    required
+                    :disabled="loading"
+                    :placeholder="$t('account.address.email')"
+                  />
+                  <div class="register-form__error" v-if="error.login">
+                    {{ error.login }}
+                  </div>
+                </div>
+              </slot>
+              <slot name="password">
+                <div class="input-container__wrapper">
+                  <label class="" for="password">
+                    {{ $t('account.login.password') }}
+                  </label>
+                  <div class="pswd-container">
+                    <div class="pswd-container__wrapper">
+                      <div class="pswd-input">
+                        <input
+                          id="password"
+                          v-model="password"
+                          @keyup="checkValidity('password', $event)"
+                          class=""
+                          required
+                          :pattern="regex"
+                          :disabled="loading"
+                          :type="passwordView ? 'text' : 'password'"
+                          :placeholder="passwordView ? '' : '*************'"
+                        />
+                      </div>
+                      <div class="pswd-view">
+                        <button type="button" @click="passwordView = !passwordView" class="btn btn-link">
+                          <icon
+                            class="view-icon"
+                            :name="passwordView ? 'view': 'hide'"
+                          />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="register-form__error " v-if="error.password">
+                      {{ error.password }}
+                    </div>
+                  <div class="label">
+                    <span class="label-text-alt">{{ $t('account.login.rules_password') }}</span>
+                  </div>
+                </div>
+              </slot>
+              <slot name ="custom-fields">
+              </slot>
+              <slot name="terms-conditions">
+                <div class="input-container__wrapper">
+                  <div class="checkbox-container">
+                    <div class="checkbox-container__outer">
+                      <div class="checkbox-content" >
+                        <input  type="checkbox"  v-model="acceptedTerms" :disabled="loading"  />
+                        <label
+                          class="font-bold text-gray-500"
+                          for="signUpLightReverseCheckbox1-1"
+                          ><span> {{ $t('account.register.accept_terms') }} </span
+                          ><NuxtLink class="content-link" :to="$t('account.register.terms_conditions_page')">
+                            {{ $t('account.register.terms_conditions') }}</NUxtLink
+                          ></label
+                        >
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div class="w-full p-3">
-                <div class="-m-2 flex flex-wrap md:justify-end">
-                  <div class="w-full p-2">
-                    <button type="submit" class="btn-primary btn w-full" :disabled="loading">
-                      <span v-if="loading" class="loading loading-spinner"></span>
-                      {{ $t('account.register.sign_up') }}
-                    </button>
+              </slot>
+              <slot name="submit-btn">
+                <div class="w-full p-3">
+                  <div class="-m-2 flex flex-wrap md:justify-end">
+                    <div class="w-full p-2">
+                      <button type="submit" class="btn-primary btn w-full" :disabled="loading || !acceptedTerms">
+                        <span v-if="loading" class="loading loading-spinner"></span>
+                        {{ $t('account.register.sign_up') }}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div v-if="error" class="text-error">
-                {{ error }}
-              </div>
+              </slot>
+              <slot name="error">
+                <div v-if="error.auth" class="text-error">
+                  {{error.auth }}
+                </div>
+              </slot>
             </div>
           </form>
         </div>
@@ -145,7 +188,6 @@
 </template>
 <script lang="ts">
 import LogoVue from '../global/Logo.vue'
-import { User } from '~/models'
 export default {
   name: 'AccountRegister',
   components: {
@@ -162,14 +204,46 @@ export default {
   data() {
     return {
       loading: false as boolean,
-      error: '' as string,
       password: '' as string,
       email: '' as string,
       name: '' as string,
-      accountIsCreated: false as boolean
+      acceptedTerms: false as boolean,
+      accountIsCreated: false as boolean,
+      passwordView: false as boolean,
+      error: {
+        auth: null as string | null,
+        login: null as string | null,
+        password: null as string | null,
+        message: null as string | null,
+        input: null as string | null
+      }
     }
   },
   methods: {
+    checkValidity(input: string, e: Event) {
+      this.error.login = null
+      this.error.password = null
+      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!?])[A-Za-z\d@#$%^&+=!?]{10,}$/
+      
+      if (e.target?.validity?.valid == false) {
+        if (input == 'login') {
+          this.error.login = this.$t('error.login.email')
+        } else if (input == 'password') {
+          this.error.password = this.$t('error.login.password')
+        } else {
+          this.error.input = this.$t('error.login.input')
+        }
+      } else if (input == 'password') {
+        if( !regex.test(this.password)) {
+          this.error.password = this.$t('error.login.password')
+        }
+
+      }
+        else {
+        this.error.login = null
+        this.error.password = null
+      }
+    },
     async createAccount() {
       this.loading = true
       const auth = useShopinvaderService('auth')
@@ -179,9 +253,8 @@ export default {
         // Display success message
         this.accountIsCreated = true
       } catch (e) {
-        console.error(e)
-        this.error = this.$t('error.login.unable_to_login')
-        notifications.addError(this.$t('error.login.unable_to_login'))
+        console.error( )
+        this.error.auth = e?.message || this.t$('error.generic')
       } finally {
         this.loading = false
       }
@@ -240,7 +313,8 @@ export default {
     @apply w-full p-8 md:w-1/2;
     form {
       @apply mx-auto md:max-w-md;
-
+      
+      
       .input-container {
         @apply -m-3 flex flex-wrap;
         &__wrapper {
@@ -251,6 +325,28 @@ export default {
           input {
             @apply w-full appearance-none rounded-full border border-gray-200 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-gray-300;
           }
+          .form-error {
+            @apply text-error mb-3 min-h-6 flex gap-1 items-center;
+          }
+          .pswd-container {
+            @apply overflow-hidden rounded-full border border-gray-200 focus:border-2 focus:outline-0 focus:ring-transparent active:bg-inherit;
+            &__wrapper {
+              @apply flex flex-wrap ;
+              .pswd-input {
+                @apply flex-1 bg-gray-100;
+                input {
+                  @apply w-full border-0 appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:border-0 focus:outline-0 focus:ring-transparent active:bg-inherit;
+                }
+              }
+              .pswd-view {
+                @apply bg-gray-100 flex justify-center items-center;
+                .view-icon {
+                  @apply  text-2xl text-gray-500;
+                }
+              }
+
+            }
+          }
           .checkbox-container {
             @apply -m-3 flex flex-wrap items-center justify-between;
             &__outer {
@@ -258,7 +354,7 @@ export default {
               .checkbox-content {
                 @apply flex items-center;
                 input {
-                  @apply checkbox-success checkbox checkbox-sm mr-4;
+                  @apply checkbox-success checkbox checkbox-xs mr-4;
                 }
                 label {
                   @apply font-bold text-gray-500;
@@ -267,6 +363,11 @@ export default {
                   }
                 }
               }
+            }
+          }
+          .register-form {
+            &__error {
+              @apply pt-2 pl-4 label-text-alt text-error;
             }
           }
         }

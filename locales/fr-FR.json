@@ -183,6 +183,7 @@
       "welcome_back": "Bienvenue",
       "password": "Mot de passe",
       "forgot_password": "Mot de passe oublié ?",
+      "rules_password": "Le mot de passe doit contenir au moins 10 charactère, une minuscule, une majuscule, un chiffre et un charactère spécial parmis la liste suivante : {'@#$%^&+=!?'}",
       "not_yet_account": "Vous n'avez pas encore de compte ?",
       "create_account": "Créer un compte !",
       "sign_in": "Se connecter"
@@ -192,14 +193,16 @@
       "advantages": "Pourquoi créer un compte",
       "advantage_1": "Suivi de vos commandes",
       "advantage_2": "Historique de facture",
-      "accept_terms": "En m'enregistrant j'accepte les",
-      "terms_conditions": "Conditions générales de vente",
+      "accept_terms": "En m'enregistrant j'accepte les ",
+      "terms_conditions": " Conditions générales de vente",
+      "terms_conditions_page": "/conditions-generales-de-vente",
       "sign_up": "S'enregistrer",
       "already_have_account": "Vous avez déjà un compte ?",
       "notification_registration_thankyou": "Merci pour votre inscription !",
       "notification_email_sent": "Un email vous a été envoyé pour confirmer votre inscription.",
       "notification_token_error": "Erreur de token",
-      "notification_token_error_info": "Le token est invalide ou a expiré."
+      "notification_token_error_info": "Le token est invalide ou a expiré.",
+      "notification_token_success_msg": "Votre compte a bien été validé, connectez-vous via le bouton ci-dessous."
     },
     "reset": {
       "reset_pswd": "Réinitialiser mon mot de passe",
@@ -309,7 +312,8 @@
     "retry": "Réessayer",
     "login": {
       "email": "Format d'adresse e-mail invalide.",
-      "password": "Le mot de passe doit contenir au moins 6 caractères.",
+      "input": "Ce champ est requis.",
+      "password": "Le mot de passe doit contenir au moins 10 charactère, une minuscule, une majuscule, un chiffre et un charactère spécial parmis la liste suivante : {'@#$%^&+=!?'}",
       "unable_to_login": "Impossible de se connecter"
     },
     "reset": {

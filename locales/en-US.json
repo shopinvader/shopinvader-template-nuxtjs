@@ -173,6 +173,7 @@
       "description": "",
       "welcome_back": "Welcome back",
       "password": "Password",
+      "rules_password": "The password must contain at least 10 characters, one lowercase letter, one uppercase letter, one digit, and one special character from the following list: {'@#$%^&+=!?'}",
       "forgot_password": "Forgot password",
       "not_yet_account": "You don't have an account ?",
       "create_account": "Create it now !",
