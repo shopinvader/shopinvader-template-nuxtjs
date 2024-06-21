@@ -1,30 +1,25 @@
 import { Sale } from '#models'
 import type { ProductService } from '#services'
-import { Service } from '#services'
-import type { ErpFetch } from '@shopinvader/fetch'
+import { ServiceErp } from './ServiceErp'
 
 // Service to fetch Sales
-export class SaleService extends Service {
-  name = 'sales'
-  provider: ErpFetch | null = null
-  productService: ProductService | null = null
-
-  constructor(provider: ErpFetch) {
-    super()
-    this.provider = provider
-  }
+export class SaleService extends ServiceErp {
+  public endpoint: string = 'sales'
+  public endpointInvoice: string = 'invoice'
+  public urlEndpointInvoice: string = ''
+  public productService: ProductService | null = null
 
   init(services: ShopinvaderServiceList) {
     super.init(services)
     this.productService = services.products
+    this.urlEndpointInvoice = this.buildUrlEndpoint(this.erpBaseUrl, this.endpointInvoice)
   }
   // BACKEND CALLS
   // =============
   /** @return models of sales with less data */
 
   async getAll(page: number = 1, perPage: number = 10): Promise<{ count: number; items: Sale[] }> {
-    const params: { [k: string]: any } = { page_size: perPage, page }
-    const res = await this.provider?.get('sales', params, null)
+    const res = await this.ofetch(this.urlEndpoint, { query: { page_size: perPage, page } })
     return {
       count: res?.count || 0,
       items: res.items?.map((item: any) => new Sale(item)) || []
@@ -32,7 +27,7 @@ export class SaleService extends Service {
   }
 
   async getById(id: number): Promise<Sale | null> {
-    const json = await this.provider?.get('sales/' + id, {}, {})
+    const json = await this.ofetch(this.urlEndpoint + '/' + id)
     if (!json) return null
     const model = this.jsonToModel(json)
 
@@ -40,11 +35,14 @@ export class SaleService extends Service {
   }
 
   download(id: number): Promise<Blob> | null {
-    return this.provider?.get('sales/' + id + '/download', {}, {}, 'blob') || null
+    return this.ofetch(this.urlEndpoint + '/' + id + '/download', { responseType: 'blob' }) || null
   }
 
   downloadInvoice(id: number): Promise<Blob> | null {
-    return this.provider?.get('invoice/' + id + '/download', {}, {}, 'blob') || null
+    return (
+      this.ofetch(this.urlEndpointInvoice + '/' + id + '/download', { responseType: 'blob' }) ||
+      null
+    )
   }
 
   /**
