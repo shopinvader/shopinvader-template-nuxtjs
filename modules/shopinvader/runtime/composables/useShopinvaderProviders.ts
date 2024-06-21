@@ -12,7 +12,7 @@ export const useShopinvaderProviders = <K extends keyof ShopinvaderProvidersList
     throw new Error('No shopinvader found')
   }
   const providers = shopinvader.providers
-  // Throw error if the service is not found
+  // Throw error if the provider is not found
   if (!providers || !Object.prototype.hasOwnProperty.call(providers, providerName)) {
     throw new Error(`No provider found for ${providerName}`)
   }

@@ -138,10 +138,6 @@ export default {
   },
 
   async setup(props) {
-    const provider = useShopinvaderProviders('products')
-    if (provider === null) {
-      throw new Error('No provider found for products')
-    }
     const error = ref(null)
     const filters = reactive([] as Filter[])
     const loading = ref(true)
