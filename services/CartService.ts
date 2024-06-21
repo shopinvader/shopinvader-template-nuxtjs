@@ -339,9 +339,10 @@ export class CartService extends ServiceErp {
 }
 
 // shopinvader-js-cart wants a ErpFetch so we need to wrap our $Fetch
-export class ErpFetchWrapper {
+class ErpFetchWrapper {
   ofetch: $Fetch
   baseUrl: string
+
   constructor(ofetch: $Fetch, baseUrl = '') {
     this.ofetch = ofetch
     this.baseUrl = baseUrl
