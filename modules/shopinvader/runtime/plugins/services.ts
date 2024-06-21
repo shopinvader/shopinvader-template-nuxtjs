@@ -63,7 +63,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   if (!shopinvaderConfig.elasticsearch || !shopinvaderConfig.elasticsearch.url) {
     throw new Error('No shopinvader elasticsearch config found')
   }
-  // Replace the config with a copy of the config to avoid modifying the original
+  // Replace the config with a copy to avoid modifying the original
   shopinvaderConfig = JSON.parse(JSON.stringify(shopinvaderConfig))
   // If the ERP url is not valid, we fix the config with the current URL
   const url = shopinvaderConfig.erp.url || ''
@@ -137,8 +137,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   // Manage the language switch
   // --------------------------
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   nuxtApp.hook('i18n:localeSwitched', ({ oldLocale, newLocale }) => {
-    console.log('onLanguageSwitched', oldLocale, newLocale)
     if (services) {
       for (const service of Object.values(services)) {
         service.changeLocale(newLocale)

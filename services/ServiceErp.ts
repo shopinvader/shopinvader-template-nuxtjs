@@ -3,13 +3,13 @@ import { ServiceLocalized } from './ServiceLocalized'
 
 export class ServiceErp extends ServiceLocalized {
   public ofetch: $Fetch
+  // Base url of the erp API (eg; https://myerp.mycompany.com/shopinvader)
   public erpBaseUrl: string
   // Note: you can change the endpoint to match your API endpoint before the Init
   public endpoint: string = ''
-  // The apiUrl is the baseUrl + the endpoint
+  // The urlEndpoint is the erpBaseUrl + the endpoint
   public urlEndpoint: string = ''
 
-  // baseUrl is the base url of the erp API (eg; https://myerp.mycompany.com/shopinvader)
   constructor(isoLocale: string, ofetch: $Fetch, erpBaseUrl: string) {
     super(isoLocale)
     this.ofetch = ofetch
