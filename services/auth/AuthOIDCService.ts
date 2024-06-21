@@ -1,5 +1,5 @@
+import type { $Fetch } from 'ofetch'
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
-import type { ErpFetchObservable } from '~/modules/shopinvader'
 import { AuthService } from '../AuthService'
 
 export interface AuthOIDCConfig {
@@ -13,30 +13,21 @@ export interface AuthOIDCConfig {
 
 export class AuthOIDCService extends AuthService {
   public type: string = 'oidc'
-  config: AuthOIDCConfig
-  client: UserManager | null = null
-  redirectUri: string | null = null
-  services: ShopinvaderServiceList | null = null
+  private config: AuthOIDCConfig
+  private clientOIDC: UserManager | null = null
+  private redirectUri: string | null = null
 
-  constructor(provider: ErpFetchObservable, config: AuthOIDCConfig) {
-    super(provider)
+  constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthOIDCConfig) {
+    super(isoLocale, ofetch, baseUrl)
     this.config = config
-    if (!import.meta.env.SSR && provider) {
-      provider.onError((res: any) => {
-        /** Logout if get 401 API RESPONSE */
-        const user = this.getUser()?.value
-        if (user && res?.status == 401) {
-          this.logoutRedirect()
-        }
-      })
-    }
   }
+
   async init(services: ShopinvaderServiceList): Promise<any> {
     this.services = services
     if (!import.meta.env.SSR) {
       const { origin } = useRequestURL()
       this.redirectUri = new URL(this.config.redirectUri, origin).href
-      this.client = new UserManager({
+      this.clientOIDC = new UserManager({
         authority: this.config.authority,
         client_id: this.config.clientId,
         redirect_uri: this.redirectUri,
@@ -46,16 +37,17 @@ export class AuthOIDCService extends AuthService {
         userStore: new WebStorageStateStore({ store: window.localStorage }),
         automaticSilentRenew: true
       })
+      // Listen to OIDC events
       this.userLoaded = this.userLoaded.bind(this)
       this.userUnloaded = this.userUnloaded.bind(this)
+      this.clientOIDC.events.addUserLoaded(this.userLoaded)
+      this.clientOIDC.events.addUserUnloaded(this.userUnloaded)
 
-      this.client.events.addUserLoaded(this.userLoaded)
-      this.client.events.addUserUnloaded(this.userUnloaded)
       const query = window.location.search
       const loginReturn = query.includes('code=') && query.includes('state=')
       try {
         if (loginReturn) {
-          await this.client.signinCallback()
+          await this.clientOIDC.signinCallback()
         } else if (this.getSession()) {
           await this.fetchUser()
         }
@@ -87,8 +79,8 @@ export class AuthOIDCService extends AuthService {
       user = this.getSession() ? await this.fetchUser() : false
       if (!user) {
         const loginReturn = query.includes('code=') && query.includes('state=')
-        if (this.client && !loginReturn) {
-          await this.client.signinRedirect({ redirect_uri: redirectURI })
+        if (this.clientOIDC && !loginReturn) {
+          await this.clientOIDC.signinRedirect({ redirect_uri: redirectURI })
         } else {
           throw new Error('User not loaded')
         }
@@ -107,37 +99,38 @@ export class AuthOIDCService extends AuthService {
   }
 
   async logoutRedirect(_page?: string): Promise<any> {
-    if (!this.client) {
+    if (!this.clientOIDC) {
       throw new Error('Client not initialized')
     }
-    const user = await this.client.getUser()
-    if (this.client && user) {
+    const user = await this.clientOIDC.getUser()
+    if (this.clientOIDC && user) {
       await this.setUser(null)
-      await this.client.signoutRedirect()
+      await this.clientOIDC.signoutRedirect()
     }
   }
 
   async userLoaded() {
-    if (!this.client) {
+    if (!this.clientOIDC) {
       throw new Error('Client not initialized')
     }
     try {
-      const oidcUser = await this.client.getUser()
+      const oidcUser = await this.clientOIDC.getUser()
       const headers = {
         Authorization: `Bearer ${oidcUser?.access_token}`
       }
-      await this.provider?.post('signin', [], { headers }, '')
+      await this.ofetch(this.urlEndpointAuth + '/signin', { headers })
       await this.fetchUser()
     } catch (e) {
       console.log(e)
       await this.userUnloaded()
-      await this.client.signoutSilentCallback()
+      await this.clientOIDC.signoutSilentCallback()
       throw showError({ statusCode: 500, fatal: true })
     }
   }
+
   async userUnloaded() {
     try {
-      await this.provider?.post('signout', [], {}, '')
+      await this.ofetch(this.urlEndpointAuth + '/signout')
     } catch (e) {
       console.error(e)
     }

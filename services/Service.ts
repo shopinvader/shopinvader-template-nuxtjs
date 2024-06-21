@@ -1,9 +1,9 @@
 import { defineStore } from 'pinia'
 import type { User } from '../models'
 import { Cart } from '../models'
+
 export const useShopinvaderStore = defineStore('shopinvader', {
   // a function that returns a fresh state
-
   state: () => ({
     user: null as User | null,
 
@@ -32,11 +32,16 @@ export const useShopinvaderStore = defineStore('shopinvader', {
 })
 
 export class Service {
-  serviceName: string = 'Service'
+  // List of all available services
   services: ShopinvaderServiceList | null = null
+
+  // Init is called after custom ShopInvader was allowed to replace or
+  // add services in the global list of services. Use this method to
+  // initialize all stuff you need to use in your service.
   init(services: ShopinvaderServiceList) {
     this.services = services
   }
+
   store() {
     return useShopinvaderStore()
   }

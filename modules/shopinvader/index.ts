@@ -28,16 +28,20 @@ declare module '#app' {
   // Define additional runtime hooks
   interface RuntimeNuxtHooks {
     'shopinvader:loaded': (nuxt: Nuxt) => HookResult
+    'shopinvader:providers': (
+      providers: ShopinvaderProvidersList,
+      shopinvaderConfig: ShopinvaderConfig,
+      ctx: unknown
+    ) => HookResult
     'shopinvader:services': (
       services: ShopinvaderServiceList,
       providers: ShopinvaderProvidersList,
+      shopinvaderConfig: ShopinvaderConfig,
       ctx: unknown
     ) => HookResult
     'shopinvader:router': (router: Router, component: Component, ctx: unknown) => HookResult
   }
 }
-
-export { ErpFetchObservable } from './runtime/plugins/providers/ErpFetchObservable'
 
 export default defineNuxtModule<ShopinvaderConfig>({
   meta: {

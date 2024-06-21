@@ -1,16 +1,9 @@
 import { Settings } from '#models'
-import { Service } from '#services'
-import type { ErpFetch } from '@shopinvader/fetch'
+import { ServiceErp } from './ServiceErp'
 
-export class SettingService extends Service {
-  name = 'settings'
-  provider: ErpFetch | null = null
-  options: any = null
-
-  constructor(provider: ErpFetch) {
-    super()
-    this.provider = provider
-  }
+export class SettingService extends ServiceErp {
+  public endpoint: string = 'settings'
+  public options: any = null
 
   async init(service: ShopinvaderServiceList) {
     super.init(service)
@@ -19,11 +12,8 @@ export class SettingService extends Service {
 
   async getAll(): Promise<Settings | null> {
     let data = {}
-    if (this.provider == null) {
-      throw new Error('No provider found for products')
-    }
     try {
-      data = (await this.provider?.get('settings/all', [], null)) || {}
+      data = (await this.ofetch(this.urlEndpoint + '/all')) || {}
     } catch (e) {
       console.error('Error while fetching settings', e)
     }

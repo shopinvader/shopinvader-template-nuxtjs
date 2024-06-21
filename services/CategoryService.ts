@@ -1,22 +1,10 @@
 import { Category, type CategoryResult } from '#models'
-import { Service } from '#services'
-import type { ElasticFetch } from '@shopinvader/fetch'
 import esb, { MultiMatchQuery } from 'elastic-builder'
+import { ServiceElastic } from './ServiceElastic'
 
-export class CategoryService extends Service {
-  name = 'categories'
-  provider: ElasticFetch | null = null
-
-  constructor(provider: ElasticFetch) {
-    super()
-    this.provider = provider
-  }
-
+export class CategoryService extends ServiceElastic {
   async search(body: any): Promise<CategoryResult> {
-    if (this.provider == null) {
-      throw new Error('No provider found for categories')
-    }
-    const result = await this.provider?.search(body)
+    const result = await this.elasticSearch(body)
     const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null

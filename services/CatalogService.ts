@@ -1,19 +1,8 @@
 import { Category, Product, type CatalogResult } from '#models'
-import { Service } from '#services'
-import type { ElasticFetch } from '@shopinvader/fetch'
+import { ServiceElastic } from './ServiceElastic'
 
-export class CatalogService extends Service {
-  serviceName = 'catalog'
-  provider: ElasticFetch | null = null
-  constructor(provider: ElasticFetch) {
-    super()
-    this.provider = provider
-  }
-
+export class CatalogService extends ServiceElastic {
   async search(body: any): Promise<CatalogResult> {
-    if (this.provider == null) {
-      throw new Error('No provider found for categories')
-    }
     body.collapse = {
       field: 'url_key',
       inner_hits: [
@@ -23,7 +12,7 @@ export class CatalogService extends Service {
         }
       ]
     }
-    const result = await this.provider?.search(body)
+    const result = await this.elasticSearch(body)
     const rawsHits = result?.hits?.hits?.map((hit: any) => {
       const variants = hit?.inner_hits?.variants?.hits?.hits?.map((variant: any) => variant._source)
       return {
@@ -40,6 +29,7 @@ export class CatalogService extends Service {
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations, rawsHits }
   }
+
   getByURLKey(urlKey: string, sku: string | null): Promise<CatalogResult> {
     const bool: any = {
       should: [
@@ -57,7 +47,7 @@ export class CatalogService extends Service {
     }
     let query: any = { bool }
     if (sku) {
-      /** Boost product with specific SKU */
+      // Boost product with specific SKU
       query = {
         bool: {
           must: [{ bool }],
@@ -73,16 +63,19 @@ export class CatalogService extends Service {
     }
     return this.search({ query })
   }
+
   async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {
     const result = await this.getByURLKey(urlKey, sku)
     return result?.hits?.[0] || null
   }
+
   find(field: string, value: string[] | number[]): Promise<CatalogResult> {
     const terms: any = {}
     terms[field] = value
     const body = { query: { terms } }
     return this.search(body)
   }
+
   jsonToModel(hit: any): Product | Category {
     if (hit._index.includes('category')) {
       return new Category(hit)
