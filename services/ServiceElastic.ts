@@ -2,7 +2,6 @@ import type { $Fetch } from 'ofetch'
 import { ServiceLocalized } from './ServiceLocalized'
 
 export class ServiceElastic extends ServiceLocalized {
-  // Api
   ofetch: $Fetch
   elasticBaseUrl: string
   elasticIndex: string[] | string
