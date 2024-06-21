@@ -1,5 +1,5 @@
 import type { AuthAPIConfig, AuthOIDCConfig, PaymentService } from '#services'
-import type { ElasticFetch, ErpFetch } from '@shopinvader/fetch'
+import type { $Fetch } from 'ofetch'
 import type {
   AddressService,
   AuthService,
@@ -51,12 +51,8 @@ export interface ShopinvaderConfig {
 }
 
 export interface ShopinvaderProvidersList {
-  // One erp provider
-  erp: ErpFetch
-  // Elastic providers
-  products: ElasticFetch
-  categories: ElasticFetch
-  elasticsearch: ElasticFetch
+  erpFetch: $Fetch
+  elasticFetch: $Fetch
 }
 
 export interface ShopinvaderServiceList {

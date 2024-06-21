@@ -1,8 +1,8 @@
 import { User } from '#models'
-import { Service } from '#services'
-import type { ErpFetch } from '@shopinvader/fetch'
 import nuxtStorage from 'nuxt-storage'
+import type { $Fetch } from 'ofetch'
 import { storeToRefs } from 'pinia'
+import { ServiceLocalized } from './ServiceLocalized'
 
 export interface AuthUserCredential {
   login: string
@@ -13,23 +13,41 @@ export interface AuthUserCredential {
   has_market: boolean
 }
 
-export abstract class AuthService extends Service {
-  provider: ErpFetch | null = null
-  callbacksUserLoaded: any[] = []
-  callbacksUserUnLoaded: any[] = []
-  type: string = ''
-  loaded: boolean = false
-  storage: any = null
+export abstract class AuthService extends ServiceLocalized {
+  // Api
+  public ofetch: $Fetch
+  public baseUrl: string
+  public authEndpoint: string = 'auth'
+  public userEndpoint: string = 'customer'
+  public urlEndpointAuth: string = ''
+  public urlEndpointUser: string = ''
+  // Local data
+  private callbacksUserLoaded: any[] = []
+  private callbacksUserUnLoaded: any[] = []
+  public type: string = ''
+  public loaded: boolean = false
+  private storage: any = null
 
-  abstract init(services: ShopinvaderServiceList): Promise<any>
   abstract getConfig(): any
   abstract loginRedirect(url?: string): Promise<any>
   abstract logoutRedirect(url?: string): Promise<any>
 
-  constructor(provider: ErpFetch) {
-    super()
-    this.provider = provider
+  constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string) {
+    super(isoLocale)
+    this.ofetch = ofetch
+    this.baseUrl = baseUrl
     this.storage = nuxtStorage?.localStorage
+  }
+
+  init(services: ShopinvaderServiceList): Promise<any> {
+    super.init(services)
+    this.urlEndpointAuth = this.buildUrlEndpoint(this.baseUrl, this.authEndpoint)
+    this.urlEndpointUser = this.buildUrlEndpoint(this.baseUrl, this.userEndpoint)
+    return Promise.resolve()
+  }
+
+  buildUrlEndpoint(baseUrl: string, entrypoint: string): string {
+    return (baseUrl.endsWith('/') ? baseUrl : baseUrl + '/') + entrypoint
   }
 
   getUser(): Ref<User | null> {
@@ -41,7 +59,7 @@ export abstract class AuthService extends Service {
   async fetchUser(): Promise<any> {
     let user = null
     try {
-      const profile = await this.provider?.get('customer', [], null)
+      const profile = await this.ofetch(this.urlEndpointUser)
       if (profile) {
         user = this.setUser(profile)
       }
@@ -56,7 +74,7 @@ export abstract class AuthService extends Service {
     let user = null
     try {
       const json = profile.getJSONData()
-      user = await this.provider?.post('customer', json)
+      user = await this.ofetch(this.urlEndpointUser, { method: 'POST', body: json })
     } catch (e) {
       console.error(e)
       user = null
@@ -131,10 +149,13 @@ export abstract class AuthService extends Service {
   ): Promise<AuthUserCredential | null> {
     let request = null
     if (login && password && name) {
-      request = await this.provider?.post('auth/register', {
-        name,
-        login,
-        password
+      request = await this.ofetch(this.urlEndpointAuth + '/register', {
+        method: 'POST',
+        body: {
+          name,
+          login,
+          password
+        }
       })
     }
     return request
