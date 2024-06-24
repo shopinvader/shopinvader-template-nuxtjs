@@ -78,7 +78,6 @@ export class CartService extends ServiceErp {
         debug: true
       })
       this.cart.registerObserver(observer)
-
       // Get last stored cart before fetching API with syncWithRetry
       if (window?.localStorage?.getItem('cart')) {
         let data = JSON.parse(window.localStorage.getItem('cart') || '{}')
@@ -93,15 +92,14 @@ export class CartService extends ServiceErp {
         this.sync()
       }
     }
+    // Subscribe to auth events
     if (services?.auth && services?.cart) {
-      const { auth } = services
-      // TODO: manage these events with the new Fetch (maybe?)
-      // Retrieve cart content on user login
-      auth?.onUserLoaded((_user) => {
+      services.auth.bus.on('user:loaded', () => {
+        // Retrieve cart content on user login
         services.cart.sync()
       })
-      // Clear cart after user logout
-      auth?.onUserUnLoaded(() => {
+      services.auth.bus.on('user:unloaded', () => {
+        // Clear cart after user logout
         services.cart.clear()
       })
     }

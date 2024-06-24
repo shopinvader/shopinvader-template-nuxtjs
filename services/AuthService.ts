@@ -1,4 +1,5 @@
 import { User } from '#models'
+import mitt from 'mitt'
 import nuxtStorage from 'nuxt-storage'
 import type { $Fetch, FetchContext } from 'ofetch'
 import { storeToRefs } from 'pinia'
@@ -13,6 +14,11 @@ export interface AuthUserCredential {
   has_market: boolean
 }
 
+type AuthEvents = {
+  'user:loaded': User
+  'user:unloaded': User | null
+}
+
 export abstract class AuthService extends ServiceLocalized {
   // Api
   public ofetch: $Fetch
@@ -21,9 +27,9 @@ export abstract class AuthService extends ServiceLocalized {
   public userEndpoint: string = 'customer'
   public urlEndpointAuth: string = ''
   public urlEndpointUser: string = ''
+  // Bus
+  public readonly bus = mitt<AuthEvents>()
   // Local data
-  private callbacksUserLoaded: any[] = []
-  private callbacksUserUnLoaded: any[] = []
   public type: string = ''
   public loaded: boolean = false
   private storage: any = null
@@ -99,46 +105,17 @@ export abstract class AuthService extends ServiceLocalized {
       store.setUser(user)
       this.setSession(user !== null)
       if (user !== null) {
-        for (const callback of this.callbacksUserLoaded) {
-          if (typeof callback == 'function') {
-            await callback(user)
-          }
-        }
+        this.bus.emit('user:loaded', user)
       } else {
-
-        for (const callback of this.callbacksUserUnLoaded) {
-          if (typeof callback == 'function') {
-            await callback(user)
-          }
-        }
+        this.bus.emit('user:unloaded', user)
       }
       return user || null
     } else {
       store.setUser(null)
       this.setSession(null)
-      for (const callback of this.callbacksUserUnLoaded) {
-        if (typeof callback == 'function') {
-          await callback(null)
-        }
-      }
+      this.bus.emit('user:unloaded', null)
       return null
     }
-  }
-
-  /**
-   * Register a callback function to be called when the user is loaded
-   * @param callback function
-   */
-  onUserLoaded(callback: (user: User) => void) {
-    this.callbacksUserLoaded.push(callback)
-  }
-
-  /**
-   * Register a callback function to be called when the user is unloaded
-   * @param callback
-   */
-  onUserUnLoaded(callback: (user: User) => void) {
-    this.callbacksUserUnLoaded.push(callback)
   }
 
   setSession(value: boolean | null) {
