@@ -101,113 +101,100 @@
     </aside-drawer>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { AddressCard, AddressForm, AsideDrawer } from '#components'
 import { Address } from '#models'
-export default defineNuxtComponent({
-  props: {
-    type: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
-  components: {
-    'address-form': AddressForm,
-    'address-card': AddressCard,
-    'aside-drawer': AsideDrawer
-  },
-  data() {
-    return {
-      errors: [] as string[],
-      addresses: [] as Address[],
-      editedAddress: null as Address | null,
-      count: 0,
-      loading: false,
-      searchQuery: ''
-    }
-  },
-  computed: {
-    user() {
-      const auth = useShopinvaderService('auth')
-      return auth?.getUser()
-    }
-  },
-  watch: {
-    user: {
-      handler: async function () {
-        await this.searchAddress()
-        this.count = this.addresses.length
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    async searchAddress(query?: string | null) {
-      const addressService = useShopinvaderService('addresses')
-      if (addressService === null) return
-      const notifications = useNotification()
-      try {
-        this.loading = true
-        this.addresses = await addressService.search(query || '')
-      } catch (e) {
-        console.error(e)
-        this.errors.push(this.$t('account.address.fetch.error'))
-        notifications.addError(this.$t('account.address.fetch.error'))
-      } finally {
-        this.loading = false
-      }
-    },
-    async deleteAddress(address: Address) {
-      if (confirm(this.$t('account.address.delete.confirm', { name: address.name }))) {
-        this.loading = true
-        const notifications = useNotification()
-        const addressService = useShopinvaderService('addresses')
-        if (addressService === null) return
-
-        try {
-          await addressService.delete(address)
-          notifications.addMessage(
-            this.$t('account.address.delete.success', { name: address.name })
-          )
-          this.searchAddress(this.searchQuery)
-        } catch (e) {
-          console.error(e)
-          notifications.addError(this.$t('account.address.delete.error'))
-        } finally {
-          this.loading = false
-        }
-      }
-    },
-    async saveAddress(address: Address) {
-      this.editedAddress = null
-      const addressService = useShopinvaderService('addresses')
-      const notifications = useNotification()
-      if (addressService && address) {
-        try {
-          this.loading = true
-          if (address.id) {
-            await addressService.update(address)
-          } else {
-            await addressService.create(address)
-          }
-          this.searchAddress(this.searchQuery)
-          notifications.addMessage(this.$t('account.address.save.success', { name: address.name }))
-        } catch (e) {
-          console.error(e)
-          notifications.addError(this.$t('account.address.fetch.error'))
-        } finally {
-          this.loading = false
-        }
-      }
-    },
-    createAddress() {
-      this.editedAddress = new Address({
-        type: 'delivery'
-      })
-    }
+const props = defineProps({
+  type: {
+    type: String,
+    required: false,
+    default: null
   }
 })
+const errors = ref([]) as Ref<string[]>
+const addresses = ref([]) as Ref<Address[]>
+const editedAddress = ref(null) as Ref<Address | null>
+const count = ref(0)
+const loading = ref(false)
+const searchQuery = ref('')
+const auth = useShopinvaderService('auth')
+const { t } = useI18n()
+const user = auth?.getUser()
+
+onMounted(async () => {
+  await searchAddress()
+  watch(
+    () => user?.value,
+    async () => {
+      await searchAddress()
+    }
+  )
+})
+const searchAddress = async (query?: string | null) => {
+  const addressService = useShopinvaderService('addresses')
+  if (addressService === null) return
+  const notifications = useNotification()
+
+  try {
+    loading.value = true
+    addresses.value = await addressService.search(query || '')
+    count.value = addresses.value.length
+  } catch (e) {
+    console.error(e)
+    errors.value.push(t('account.address.fetch.error'))
+    notifications.addError(t('account.address.fetch.error'))
+    count.value = 0
+  } finally {
+    loading.value = false
+  }
+}
+const deleteAddress = async (address: Address) => {
+  if (confirm(t('account.address.delete.confirm', { name: address.name }))) {
+    loading.value = true
+    const notifications = useNotification()
+    const addressService = useShopinvaderService('addresses')
+    if (addressService === null) return
+
+    try {
+      await addressService.delete(address)
+      notifications.addMessage(t('account.address.delete.success', { name: address.name }))
+      searchAddress(searchQuery.value)
+    } catch (e) {
+      console.error(e)
+      notifications.addError(t('account.address.delete.error'))
+    } finally {
+      loading.value = false
+    }
+  }
+}
+
+const saveAddress = async (address: Address) => {
+  editedAddress.value = null
+  const addressService = useShopinvaderService('addresses')
+  const notifications = useNotification()
+  if (addressService && address) {
+    try {
+      loading.value = true
+      if (address.id) {
+        await addressService.update(address)
+      } else {
+        await addressService.create(address)
+      }
+      searchAddress(searchQuery.value)
+      notifications.addMessage(t('account.address.save.success', { name: address.name }))
+    } catch (e) {
+      console.error(e)
+      notifications.addError(t('account.address.fetch.error'))
+    } finally {
+      loading.value = false
+    }
+  }
+}
+const createAddress = () => {
+  editedAddress.value = new Address({
+    type: 'delivery'
+  })
+}
 </script>
 <style lang="scss">
 .addresses {
@@ -226,11 +213,11 @@ export default defineNuxtComponent({
   }
 
   &__list {
-    @apply flex flex-grow items-center justify-center  py-2;
+    @apply flex flex-grow items-center justify-center py-2;
 
     .list {
       &__content {
-        @apply w-full flex-grow  py-4;
+        @apply w-full flex-grow py-4;
         .content__items {
           @apply grid gap-4 pb-4 md:grid-cols-2;
         }

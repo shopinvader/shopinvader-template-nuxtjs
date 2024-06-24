@@ -23,6 +23,7 @@ export class AuthOIDCService extends AuthService {
   }
 
   async init(services: ShopinvaderServiceList): Promise<any> {
+    super.init(services)
     this.services = services
     if (!import.meta.env.SSR) {
       const { origin } = useRequestURL()
@@ -134,7 +135,7 @@ export class AuthOIDCService extends AuthService {
       const headers = {
         Authorization: `Bearer ${oidcUser?.access_token}`
       }
-      await this.ofetch(this.urlEndpointAuth + '/signin', { headers })
+      await this.ofetch(this.urlEndpointAuth + '/signin', { method: 'POST', headers })
       await this.fetchUser()
     } catch (e) {
       console.log(e)

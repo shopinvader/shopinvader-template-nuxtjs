@@ -56,79 +56,58 @@
   </client-only>
 </template>
 
-<script lang="ts">
-import type { User } from '#models'
-
-export default defineNuxtComponent({
-  name: 'AccountLayout',
-  props: {
-    slug: {
-      required: false,
-      type: String,
-      default: ''
-    },
-    navbar: {
-      required: false,
-      type: Boolean,
-      default: true
-    }
+<script lang="ts" setup>
+const props = defineProps({
+  slug: {
+    type: String,
+    required: true
   },
-  setup() {
-    const loading = ref(false)
-    const user = ref(null) as Ref<User | boolean | null>
-    const auth = useShopinvaderService('auth')
-    const localePath = useLocalePath()
-    const logout = async () => {
-      if (!auth) return console.error('Auth service not found')
-      loading.value = true
-      try {
-        await auth.logoutRedirect()
-      } catch (error) {
-        console.error(error)
-      } finally {
-        loading.value = false
-      }
-    }
-    onMounted(() => {
-      if (!auth) return console.error('Auth service not found')
-      user.value = auth.getUser()?.value || null
-    })
-    return {
-      localePath,
-      logout,
-      loading,
-      user
-    }
-  },
-  data() {
-    return {
-      items: [
-        {
-          title: this.$t('account.profile.title'),
-          icon: 'profile',
-          slug: 'account-profile'
-        },
-        {
-          title: this.$t('account.address.title'),
-          icon: 'addresses',
-          slug: 'account-addresses'
-        },
-        {
-          title: this.$t('account.sales.title'),
-          icon: 'sales',
-          slug: 'account-sales'
-        }
-      ]
-    }
-  },
-  computed: {
-    currentPage() {
-      return this.items.find((item) => item.slug === this.slug) || null
-    }
+  navbar: {
+    type: Boolean,
+    default: true
   }
 })
-</script>
 
+const auth = useShopinvaderService('auth')
+const localePath = useLocalePath()
+const { t } = useI18n()
+
+const loading = ref(false)
+const user = auth?.getUser()
+
+const items = ref([
+  {
+    title: t('account.profile.title'),
+    icon: 'profile',
+    slug: 'account-profile'
+  },
+  {
+    title: t('account.address.title'),
+    icon: 'addresses',
+    slug: 'account-addresses'
+  },
+  {
+    title: t('account.sales.title'),
+    icon: 'sales',
+    slug: 'account-sales'
+  }
+])
+
+const logout = async () => {
+  if (!auth) return console.error('Auth service not found')
+  loading.value = true
+  try {
+    await auth.logoutRedirect()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
+}
+const currentPage = computed(() => {
+  return items.value.find((item) => item.slug === props.slug) || null
+})
+</script>
 <style lang="scss">
 .account-layout {
   @apply w-full gap-1 lg:flex;
