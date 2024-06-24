@@ -1,5 +1,5 @@
 import { localePath, navigateTo } from '#imports'
-import type { $Fetch } from 'ofetch'
+import type { $Fetch, FetchContext } from 'ofetch'
 import type { User } from '~/models'
 import { AuthService, type AuthUserCredential } from '../AuthService'
 
@@ -45,6 +45,22 @@ export class AuthCredentialService extends AuthService {
 
   getConfig(): any {
     return this.config
+  }
+
+  // Interceptors to be added in the app fetcher
+  interceptorOnRequest({ options }: FetchContext): void | Promise<void> {
+    if (this.getUser()) {
+      // Add credentials to the request
+      options.credentials = 'include'
+    }
+  }
+  interceptorOnResponseError({ response }: FetchContext): void | Promise<void> {
+    if (!import.meta.env.SSR) {
+      if (response?.status === 401) {
+        // The user is not authenticated anymore
+        this.logoutRedirect()
+      }
+    }
   }
 
   /**
