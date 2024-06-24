@@ -50,7 +50,7 @@ export interface ShopinvaderConfig {
   }
 }
 
-export interface ShopinvaderProvidersList {
+export interface ShopinvaderFetchersList {
   erpFetch: $Fetch
   elasticFetch: $Fetch
 }
