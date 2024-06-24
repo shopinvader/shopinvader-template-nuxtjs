@@ -13,7 +13,7 @@ import {
 import { type Router } from 'vue-router'
 import {
   type ShopinvaderConfig,
-  type ShopinvaderProvidersList
+  type ShopinvaderFetchersList
 } from './runtime/types/ShopinvaderConfig'
 
 import type { HookResult, Nuxt } from 'nuxt/schema'
@@ -28,14 +28,14 @@ declare module '#app' {
   // Define additional runtime hooks
   interface RuntimeNuxtHooks {
     'shopinvader:loaded': (nuxt: Nuxt) => HookResult
-    'shopinvader:providers': (
-      providers: ShopinvaderProvidersList,
+    'shopinvader:fetchers': (
+      fetchers: ShopinvaderFetchersList,
       shopinvaderConfig: ShopinvaderConfig,
       ctx: unknown
     ) => HookResult
     'shopinvader:services': (
       services: ShopinvaderServiceList,
-      providers: ShopinvaderProvidersList,
+      fetchers: ShopinvaderFetchersList,
       shopinvaderConfig: ShopinvaderConfig,
       ctx: unknown
     ) => HookResult

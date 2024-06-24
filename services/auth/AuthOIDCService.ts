@@ -1,4 +1,4 @@
-import type { $Fetch } from 'ofetch'
+import type { $Fetch, FetchContext } from 'ofetch'
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import { AuthService } from '../AuthService'
 
@@ -68,6 +68,22 @@ export class AuthOIDCService extends AuthService {
 
   getConfig(): any {
     return this.config
+  }
+
+  // Interceptors to be added in the app fetcher
+  interceptorOnRequest({ options }: FetchContext): void | Promise<void> {
+    if (this.getUser()) {
+      // Add credentials to the request
+      options.credentials = 'include'
+    }
+  }
+  interceptorOnResponseError({ response }: FetchContext): void | Promise<void> {
+    if (!import.meta.env.SSR) {
+      if (response?.status === 401) {
+        // The user is not authenticated anymore
+        this.logoutRedirect()
+      }
+    }
   }
 
   async loginRedirect(url?: string): Promise<any> {
