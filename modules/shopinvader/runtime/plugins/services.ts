@@ -19,13 +19,13 @@ import { ofetch } from 'ofetch'
 import type {
   ShopinvaderServiceList as ServiceList,
   ShopinvaderConfig,
-  ShopinvaderProvidersList
+  ShopinvaderFetchersList
 } from '../types/ShopinvaderConfig'
 
 declare global {
   interface Shopinvader {
     services: ShopinvaderServiceList
-    providers: ShopinvaderProvidersList
+    fetchers: ShopinvaderFetchersList
   }
 }
 
@@ -47,7 +47,7 @@ declare module '@vue/runtime-core' {
 
 /*
  * This plugin is used to initialize all the services used in the app.
- * It also provides the providers to fetch data from the ERP and ElasticSearch.
+ * It also provides the fetchers to fetch data from the ERP and ElasticSearch.
  */
 export default defineNuxtPlugin(async (nuxtApp) => {
   // Get the shopinvader config from the runtime config
@@ -74,26 +74,34 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   // Build services
   // --------------
-  // Services need fetch providers, build default ones
-  const providers: ShopinvaderProvidersList = {
-    erpFetch: ofetch.create({}),
-    elasticFetch: ofetch.create({})
+  let auth: AuthService | null = null
+
+  // Services need fetchers, build default ones
+  const fetchers: ShopinvaderFetchersList = {
+    elasticFetch: ofetch.create({}),
+    erpFetch: ofetch.create({
+      async onRequest({ request, options }) {
+        auth?.interceptorOnRequest({ request, options })
+      },
+      async onResponseError({ request, response, options }) {
+        auth?.interceptorOnResponseError({ request, response, options })
+      }
+    })
   }
-  // Let the child replace the fetch providers with theirs if needed
-  await nuxtApp.callHook('shopinvader:providers', providers, shopinvaderConfig, nuxtApp)
+  // Let the child replace fetchers with theirs if needed
+  await nuxtApp.callHook('shopinvader:fetchers', fetchers, shopinvaderConfig, nuxtApp)
 
   // Shortcuts to data
   const i18nOptions: any = nuxtApp.$i18n || {}
   const isoLocale: string = i18nOptions?.localeProperties?.value?.iso || 'fr_fr'
   const erpBaseUrl = shopinvaderConfig.erp.url
-  const erpFetch = providers.erpFetch
+  const erpFetch = fetchers.erpFetch
   const elasticBaseUrl = shopinvaderConfig.elasticsearch.url
-  const elasticFetch = providers.elasticFetch
+  const elasticFetch = fetchers.elasticFetch
   const elasticIndexes = shopinvaderConfig.elasticsearch.indices
   const elasticAllIndexesNames: string[] = Object.values(elasticIndexes)
 
   // Create the auth service, depending on the config
-  let auth: AuthService | null = null
   if (shopinvaderConfig?.auth?.type) {
     const authConfig = shopinvaderConfig.auth?.profile
     if (shopinvaderConfig.auth.type === 'oidc') {
@@ -125,7 +133,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   }
 
   // Let the child add custom services or replace the default ones
-  await nuxtApp.callHook('shopinvader:services', services, providers, shopinvaderConfig, nuxtApp)
+  await nuxtApp.callHook('shopinvader:services', services, fetchers, shopinvaderConfig, nuxtApp)
 
   // Init all services when the app is mounted
   // -----------------------------------------
@@ -148,12 +156,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
   })
 
-  // Provide the services and providers to the app
+  // Provide the services and fetchers to the app
   return {
     provide: {
       shopinvader: {
-        services,
-        providers
+        fetchers,
+        services
       }
     }
   }
