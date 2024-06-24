@@ -1,6 +1,6 @@
 <template>
   <div class="account-dashboard">
-    <account-layout :slug="account" :navbar="false">
+    <account-layout slug="account" :navbar="false">
       <template #title>
         <div class="dashboard__title">
           <div>
