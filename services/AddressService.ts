@@ -1,7 +1,7 @@
 import { Address } from '#models'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
-export class AddressService extends ServiceErp {
+export class AddressService extends BaseServiceErp {
   public endpoint: string = 'addresses'
   public addresses: Address[] | null = null
 

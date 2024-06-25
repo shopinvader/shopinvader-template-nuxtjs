@@ -1,8 +1,8 @@
 import { Category, type CategoryResult } from '#models'
 import esb, { MultiMatchQuery } from 'elastic-builder'
-import { ServiceElastic } from './ServiceElastic'
+import { BaseServiceElastic } from './BaseServiceElastic'
 
-export class CategoryService extends ServiceElastic {
+export class CategoryService extends BaseServiceElastic {
   async search(body: any): Promise<CategoryResult> {
     const result = await this.elasticSearch(body)
     const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))

@@ -1,9 +1,9 @@
 import { Product, type ProductResult, type VariantAttributes } from '#models'
 import type { Aggregation, Query } from 'elastic-builder'
 import esb, { MultiMatchQuery, TermQuery } from 'elastic-builder'
-import { ServiceElastic } from './ServiceElastic'
+import { BaseServiceElastic } from './BaseServiceElastic'
 
-export class ProductService extends ServiceElastic {
+export class ProductService extends BaseServiceElastic {
   hits(hits: any[]): Product[] {
     return hits?.map((hit: any) => {
       const productVariants = hit?.inner_hits?.variants?.hits?.hits?.map(
