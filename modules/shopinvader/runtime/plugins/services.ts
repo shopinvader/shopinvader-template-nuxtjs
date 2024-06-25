@@ -139,7 +139,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // -----------------------------------------
   if (services) {
     for (const service of Object.values(services)) {
-      console.log('Init service', service.constructor.name)
       await service.init(services)
     }
   }

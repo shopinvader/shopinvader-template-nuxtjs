@@ -84,13 +84,11 @@ export default {
     }
   },
   setup() {
-    const { t } = useI18n()
     const cartService = useShopinvaderService('cart')
     const cart = cartService.getCart()
     return {
       localePath,
-      cart,
-      $t: t
+      cart
     }
   },
   data() {
