@@ -23,7 +23,7 @@ export abstract class AuthService extends BaseServiceLocalized {
   // Api
   public ofetch: $Fetch
   public baseUrl: string
-  public authEndpoint: string = 'auth'
+  public authEndpoint: string = ''
   public userEndpoint: string = 'customer'
   public urlEndpointAuth: string = ''
   public urlEndpointUser: string = ''
@@ -56,11 +56,13 @@ export abstract class AuthService extends BaseServiceLocalized {
     super.init(services)
     this.urlEndpointAuth = this.buildUrlEndpoint(this.baseUrl, this.authEndpoint)
     this.urlEndpointUser = this.buildUrlEndpoint(this.baseUrl, this.userEndpoint)
+    console.log('AuthService.init', this.urlEndpointAuth, this.urlEndpointUser)
     return Promise.resolve()
   }
 
   buildUrlEndpoint(baseUrl: string, entrypoint: string): string {
-    return (baseUrl.endsWith('/') ? baseUrl : baseUrl + '/') + entrypoint
+    const url = (baseUrl.endsWith('/') ? baseUrl : baseUrl + '/') + entrypoint
+    return url.endsWith('/') ? url.slice(0, -1) : url
   }
 
   getUser(): Ref<User | null> {
@@ -102,6 +104,7 @@ export abstract class AuthService extends BaseServiceLocalized {
     const store = this.store()
     if (data) {
       const user: User | null = data ? new User(data) : null
+      console.log('AuthService.setUser', user)
       store.setUser(user)
       this.setSession(user !== null)
       if (user !== null) {
