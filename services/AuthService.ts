@@ -3,7 +3,7 @@ import mitt from 'mitt'
 import nuxtStorage from 'nuxt-storage'
 import type { $Fetch, FetchContext } from 'ofetch'
 import { storeToRefs } from 'pinia'
-import { ServiceLocalized } from './ServiceLocalized'
+import { BaseServiceLocalized } from './BaseServiceLocalized'
 
 export interface AuthUserCredential {
   login: string
@@ -19,7 +19,7 @@ type AuthEvents = {
   'user:unloaded': User | null
 }
 
-export abstract class AuthService extends ServiceLocalized {
+export abstract class AuthService extends BaseServiceLocalized {
   // Api
   public ofetch: $Fetch
   public baseUrl: string

@@ -31,7 +31,7 @@ export const useShopinvaderStore = defineStore('shopinvader', {
   }
 })
 
-export class Service {
+export class BaseService {
   // List of all available services
   services: ShopinvaderServiceList | null = null
 
