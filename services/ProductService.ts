@@ -11,7 +11,7 @@ export class ProductService extends BaseServiceElastic {
       )
       return this.jsonToModel({
         ...hit._source,
-        ...{ productVariants }
+        ...{ variants: productVariants }
       })
     })
   }

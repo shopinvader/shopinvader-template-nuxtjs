@@ -104,7 +104,6 @@ export abstract class AuthService extends BaseServiceLocalized {
     const store = this.store()
     if (data) {
       const user: User | null = data ? new User(data) : null
-      console.log('AuthService.setUser', user)
       store.setUser(user)
       this.setSession(user !== null)
       if (user !== null) {

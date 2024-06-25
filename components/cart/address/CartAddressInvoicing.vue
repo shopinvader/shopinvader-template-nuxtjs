@@ -33,8 +33,8 @@
               </span>
             </div>
             <address-form
-              v-if="value"
-              :address="value"
+              v-if="model"
+              :address="model"
               @saved="(e) => onUpdateAddress(e)"
             ></address-form>
           </template>
@@ -43,87 +43,69 @@
     </template>
   </address-card>
 </template>
-<script lang="ts">
-import { AddressForm } from '#components'
+<script lang="ts" setup>
 import { Address } from '#models'
-
-export default defineNuxtComponent({
-  events: ['close', 'open'],
-  name: 'cart-delivery-address',
-  components: {
-    'address-form': AddressForm
-  },
-  props: {
-    /**
-     * Is the current step of the checkout process
-     */
-    editable: {
-      type: Boolean,
-      required: false,
-      default: true
-    }
-  },
-  async setup() {
-    const opened = ref(false)
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService?.getCart() || ref(null)
-    const value = ref(null) as Ref<Address | null>
-
-    const invoicingAddress = computed(() => {
-      const cartService = useShopinvaderService('cart')
-      const cart = cartService.getCart()
-      return cart.value?.invoicing?.address || null
-    })
-    const hasSameAddresses = computed(
-      () => cart?.value?.delivery?.address?.id == invoicingAddress?.value?.id
-    )
-
-    return {
-      value,
-      opened,
-      hasSameAddresses,
-      invoicingAddress
-    }
-  },
-  methods: {
-    async onUpdateAddress(address: Address | null) {
-      if (!address) return null
-
-      const addressService = useShopinvaderService('addresses')
-      const addressSaved = (await addressService?.update(address)) || null
-
-      if (addressSaved) {
-        const cartService = useShopinvaderService('cart')
-        await cartService.setAddress('invoicing', addressSaved)
-      }
-      this.onClose()
-    },
-    onClose() {
-      this.value = null
-      this.opened = false
-      this.$emit('close')
-    },
-    async onOpen() {
-      let data = this.invoicingAddress?.data || null
-      if (!data) {
-        const addressService = useShopinvaderService('addresses')
-        const main = await addressService?.getMainAddress()
-        data = main?.data || null
-      }
-      this.value = new Address({
-        ...data,
-        type: 'invoicing'
-      })
-      this.opened = true
-      this.$emit('open')
-    }
-  },
-  watch: {
-    value(val) {
-      this.$emit('select', val)
-    }
+const emits = defineEmits(['close', 'open', 'select'])
+defineProps({
+  editable: {
+    type: Boolean,
+    required: false,
+    default: true
   }
 })
+const opened = ref(false)
+const addressService = useShopinvaderService('addresses')
+const cartService = useShopinvaderService('cart')
+const cart = cartService?.getCart() || ref(null)
+const model = ref(null) as Ref<Address | null>
+
+const invoicingAddress = computed(() => {
+  const cartService = useShopinvaderService('cart')
+  const cart = cartService.getCart()
+  return cart.value?.invoicing?.address || null
+})
+
+const hasSameAddresses = computed(
+  () => cart?.value?.delivery?.address?.id == invoicingAddress?.value?.id
+)
+
+const onClose = () => {
+  model.value = null
+  opened.value = false
+  emits('close')
+}
+
+const onUpdateAddress = async (address: Address | null) => {
+  if (!address) return null
+
+  const addressSaved = (await addressService?.update(address)) || null
+
+  if (addressSaved) {
+    await cartService.setAddress('invoicing', addressSaved)
+  }
+  onClose()
+}
+
+const onOpen = async () => {
+  let data = invoicingAddress.value?.data || null
+  if (!data) {
+    const main = await addressService?.getMainAddress()
+    data = main?.data || null
+  }
+  model.value = new Address({
+    ...data,
+    type: 'invoicing'
+  })
+  opened.value = true
+  emits('open')
+}
+
+watch(
+  () => model.value,
+  (val) => {
+    emits('select', val)
+  }
+)
 </script>
 <style lang="scss">
 .cart-address-invoicing {
