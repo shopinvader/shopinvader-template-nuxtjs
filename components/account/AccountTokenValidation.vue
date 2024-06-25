@@ -30,31 +30,21 @@
   </section>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from 'vue'
-
-export default defineComponent({
-  name: 'AccountTokenValidation',
-
-  async setup() {
-    const auth = useShopinvaderService('auth')
-    const urlHasToken = ref<boolean>(false)
-    const route = useRoute()
-    if (!route.query.token) {
-      urlHasToken.value = false
-    } else if (route.query.token) {
-      urlHasToken.value = true
-      const isTokenValid = (await auth?.checkRegisterToken(route.query.token as string)) as boolean
-      if (isTokenValid) {
-        await navigateTo({ path: `/account/profile` })
-      } else {
-        urlHasToken.value = false
-      }
-    }
-    return {
-      urlHasToken,
-      auth
-    }
+<script lang="ts" setup>
+const auth = useShopinvaderService('auth')
+const urlHasToken = ref<boolean>(false)
+const route = useRoute()
+const localePath = useLocalePath()
+const token = ref(route?.query?.token)
+if (!token.value) {
+  urlHasToken.value = false
+} else if (token.value) {
+  urlHasToken.value = true
+  const isTokenValid = (await auth?.checkRegisterToken(token.value as string)) as boolean
+  if (isTokenValid) {
+    await navigateTo(localePath('/account/profile'))
+  } else {
+    urlHasToken.value = false
   }
-})
+}
 </script>
