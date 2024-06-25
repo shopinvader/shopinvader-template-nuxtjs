@@ -9,34 +9,28 @@
         {{ $t('navbar.cart') }}
       </span>
     </div>
-    <div v-if="linesCount > 0" class="cart-badge">
-      <template v-if="linesCount < 99">
-        {{ linesCount }}
-      </template>
-      <template v-else> +99 </template>
-    </div>
+    <client-only>
+      <div v-if="linesCount > 0" class="cart-badge">
+        <template v-if="linesCount < 99">
+          {{ linesCount }}
+        </template>
+        <template v-else> +99 </template>
+      </div>
+    </client-only>
   </nuxt-link>
 </template>
-<script lang="ts">
-export default defineNuxtComponent({
-  name: 'CartIcon',
-  components: {},
-  async setup() {
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService?.getCart()
-    return {
-      linesCount: computed((): number => {
-        return cart?.value?.lines?.length || 0
-      })
-    }
-  }
+<script lang="ts" setup>
+const cartService = useShopinvaderService('cart')
+const cart = cartService?.getCart()
+const linesCount = computed((): number => {
+  return cart?.value?.lines?.length || 0
 })
 </script>
 <style lang="scss">
 .cart-icon {
-  @apply relative flex  px-2;
+  @apply relative flex px-2;
   .button {
-    @apply btn btn-ghost flex flex-col flex-nowrap  max-md:px-1;
+    @apply btn btn-ghost flex flex-col flex-nowrap max-md:px-1;
     &__icon {
       @apply text-2xl;
     }
