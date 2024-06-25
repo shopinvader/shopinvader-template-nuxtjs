@@ -1,7 +1,7 @@
 import type { $Fetch } from 'ofetch'
-import { ServiceLocalized } from './ServiceLocalized'
+import { BaseServiceLocalized } from './BaseServiceLocalized'
 
-export class ServiceErp extends ServiceLocalized {
+export class BaseServiceErp extends BaseServiceLocalized {
   public ofetch: $Fetch
   // Base url of the erp API (eg; https://myerp.mycompany.com/shopinvader)
   public erpBaseUrl: string
