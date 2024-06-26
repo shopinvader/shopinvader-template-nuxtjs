@@ -6,7 +6,7 @@
           <spinner />
         </div>
       </template>
-      <div v-if="auth.getUser()" class="account-layout">
+      <div v-if="user" class="account-layout">
         <slot v-if="navbar" name="navbar">
           <account-navbar
             v-if="items && items?.length > 0"
@@ -69,6 +69,7 @@ export default defineNuxtComponent({
   setup() {
     const loading = ref(false)
     const auth = useShopinvaderService('auth')
+    const user = auth.getUser()
     const localePath = useLocalePath()
     const logout = () => {
       loading.value = true
@@ -85,7 +86,8 @@ export default defineNuxtComponent({
       localePath,
       logout,
       loading,
-      auth
+      auth,
+      user
     }
   },
   data() {
