@@ -249,6 +249,7 @@
       "zip": "Code postal",
       "city": "Ville",
       "phone": "Téléphone",
+      "mobile": "Mobile",
       "company": "Société",
       "country": "Pays",
       "noresult": "Aucune adresse",

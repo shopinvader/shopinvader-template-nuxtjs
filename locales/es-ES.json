@@ -232,6 +232,7 @@
       "zip": "Códgo postal",
       "city": "Ciudad",
       "phone": "Teléfno",
+      "mobile": "Móvil",
       "country": "País",
       "noresult": "No se ha encontrado direcciones",
       "count": "{count} resultado(s)",
