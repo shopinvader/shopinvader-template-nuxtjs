@@ -35,11 +35,7 @@
                   :class="{ 'tooltip tooltip-primary': cart?.hasPendingTransactions }"
                   :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')"
                 >
-                  <button
-                    type="button"
-                    class="checkout__btn"
-                    @click="!cart?.hasPendingTransactions && $emit('next')"
-                  >
+                  <button type="button" class="checkout__btn" @click="onNextStep">
                     {{ $t('cart.summary.checkout') }}
                     <icon name="right" class="text-lg"></icon>
                   </button>
@@ -72,61 +68,41 @@
     </client-only>
   </div>
 </template>
-<script lang="ts">
-import CartEmpty from '~/components/cart/CartEmpty.vue'
-import CartLines from '~/components/cart/CartLines.vue'
-import CartTotal from '~/components/cart/CartTotal.vue'
-import Spinner from '~/components/global/Spinner.vue'
-import type { Cart } from '~~/models'
+<script lang="ts" setup>
+import type { Cart } from '#models'
+const emits = defineEmits(['next'])
+const i18n = useI18n()
+const loading = ref(false)
+const hasPendingTransactions = ref(false)
+const cartService = useShopinvaderService('cart')
+const cart = cartService.getCart()
 let timer: any = null
-export default defineNuxtComponent({
-  name: 'Cart',
-  emits: {
-    /**  Emit when the user click on the next button */
-    next: () => true
-  },
-  components: {
-    'cart-lines': CartLines,
-    'cart-total': CartTotal,
-    'cart-empty': CartEmpty,
-    spinner: Spinner
-  },
-  computed: {
-    lineCount(): number {
-      return this.cart?.lines?.length || 0
+
+watch(
+  () => cart.value,
+  (c: Cart | null) => {
+    const pendingTransaction = c?.hasPendingTransactions || false
+    if (!pendingTransaction) {
+      hasPendingTransactions.value = false
+      if (timer) clearTimeout(timer)
+    } else {
+      timer = setTimeout(() => {
+        hasPendingTransactions.value = true
+      }, 2000)
     }
   },
-  setup() {
-    const i18n = useI18n()
-    const loading = ref(false)
-    const hasPendingTransactions = ref(false)
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    useHead({
-      title: i18n.t('cart.title')
-    })
-    return {
-      cart,
-      loading,
-      hasPendingTransactions
-    }
-  },
-  watch: {
-    cart: {
-      handler(cart: Cart) {
-        const hasPendingTransactions = cart?.hasPendingTransactions || false
-        if (!hasPendingTransactions) {
-          this.hasPendingTransactions = false
-          if (timer) clearTimeout(timer)
-        } else {
-          timer = setTimeout(() => {
-            this.hasPendingTransactions = true
-          }, 2000)
-        }
-      },
-      immediate: true
-    }
+  { immediate: true }
+)
+
+const lineCount = computed(() => cart?.value?.lines?.length || 0)
+const onNextStep = () => {
+  if (!hasPendingTransactions.value) {
+    emits('next')
   }
+}
+
+useHead({
+  title: i18n.t('cart.title')
 })
 </script>
 <style lang="scss">
