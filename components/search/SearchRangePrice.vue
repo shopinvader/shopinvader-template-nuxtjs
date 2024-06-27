@@ -1,5 +1,5 @@
 <template>
-  <div v-if="loaded || 1 == 1" class="searchfilter filter-price-range">
+  <div v-if="loaded" class="searchfilter filter-price-range">
     <slot name="title" :title="title">
       <div class="searchfilter__header" @click="opened = !opened">
         <div class="header__title">
