@@ -7,10 +7,8 @@
 </template>
 <script lang="ts" setup>
 const i18n = useI18n()
-const cartService = useShopinvaderService('cart')
 const localePath = useLocalePath()
 const router = useRouter()
-const cart = cartService.getCart()
 
 useHead({
   title: i18n.t('cart.title')
