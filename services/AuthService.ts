@@ -56,7 +56,6 @@ export abstract class AuthService extends BaseServiceLocalized {
     super.init(services)
     this.urlEndpointAuth = this.buildUrlEndpoint(this.baseUrl, this.authEndpoint)
     this.urlEndpointUser = this.buildUrlEndpoint(this.baseUrl, this.userEndpoint)
-    console.log('AuthService.init', this.urlEndpointAuth, this.urlEndpointUser)
     return Promise.resolve()
   }
 
