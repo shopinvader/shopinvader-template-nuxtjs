@@ -366,8 +366,17 @@ class ErpFetchWrapper {
     this.baseUrl = baseUrl
   }
 
-  post(resource: string, body = {}, options = {}, _responseType = 'json'): Promise<any> {
-    return this.ofetch(this.baseUrl + resource, { method: 'POST', ...options, body })
+  async post(resource: string, body = {}, options = {}, _responseType = 'json'): Promise<any> {
+    const response = await this.ofetch.raw(this.baseUrl + resource, {
+      method: 'POST',
+      ...options,
+      body
+    })
+    response.json = () => {
+      return response._data
+    }
+    console.log()
+    return response
   }
 
   put(resource: string, body = {}, options = {}, _responseType = 'json'): Promise<any> {
