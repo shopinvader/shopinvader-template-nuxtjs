@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer__logo">
       <slot name="logo">
-        <brand-logo></brand-logo>
+        <logo></logo>
       </slot>
     </div>
     <div class="footer__content">
@@ -11,15 +11,7 @@
     </div>
   </footer>
 </template>
-<script lang="ts">
-import Logo from '~/components/global/Logo.vue'
-export default defineNuxtComponent({
-  name: 'global-footer',
-  components: {
-    'brand-logo': Logo
-  }
-})
-</script>
+<script lang="ts" setup></script>
 <style lang="scss">
 .footer {
   @apply container mx-auto border-t p-4 py-10;
