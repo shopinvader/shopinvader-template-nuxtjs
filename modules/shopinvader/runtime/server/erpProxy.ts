@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
       headers['Authorization'] = erpProxyConfig.auth
     }
     if (logLevel > 0) {
-      console.log('[ShopInvader] PROXY - request:', proxiedUrl)
+      console.log(`[ShopInvader] PROXY - ${proxiedUrl} request`)
     }
     return await proxyRequest(event, proxiedUrl, {
       headers,
@@ -31,17 +31,18 @@ export default defineEventHandler(async (event) => {
       },
       onResponse: async (event, response) => {
         if (logLevel > 0) {
+          const color = response.status >= 400 ? '\x1b[31m' : '\x1b[32m'
           console.log(
-            '[ShopInvader] PROXY - response:',
-            event.node.req.url,
-            response.status,
-            response.statusText
+            `[ShopInvader] PROXY - ${proxiedUrl} response: ${color}${response.status} ${response.statusText}\x1b[0m`
           )
           if (logLevel > 1) {
             // Need to clone the response to read the body, else it will be consumed
             const copyResponse = response.clone()
             const body = await copyResponse.text()
-            console.log('[ShopInvader] PROXY - response body:', event.node.req.url, body)
+            console.log(
+              `[ShopInvader] PROXY - ${proxiedUrl} response body:`,
+              body || '\x1b[3mempty\x1b[0m'
+            )
           }
         }
         return response
