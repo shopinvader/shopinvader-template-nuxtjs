@@ -42,7 +42,9 @@ function extractTsClass(files: string[]): TSFile[] {
           if (tsfile && tsfile?.path !== file) {
             tsfile.name = `${name}Original`
             tsfile.alias = name
-            tsfile = null
+            console.log(
+              `[ShopInvader] BUILD - ShopInvader model \x1b[32m${name}\x1b[0m overrided by your custom model. Renaming ShopInvader model as \x1b[32m${tsfile.name}\x1b[0m.`
+            )
           }
           if (!tsfile) {
             tsfile = { name, path: file, content: '', nodeType, imports, alias: null }
@@ -76,6 +78,7 @@ function extractTsClass(files: string[]): TSFile[] {
   return declarations
 }
 
+// Scan all layers for models and services and create a single file for each via the prepare:types Nuxt hook
 export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
   const layers = [...nuxt.options._layers].reverse()
   const types = ['models', 'services']
@@ -92,14 +95,15 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
         ).filter((file) => !file.endsWith('index.ts'))
         filenames = [...filenames, ...files]
       }
-
       templates.push(
         addTemplate({
           filename: `shopinvader/${type}.ts`,
           write: true,
           getContents: () => {
+            console.log(
+              `[ShopInvader] BUILD - Creating .nuxt/shopinvader/${type}.ts file for #${type} imports...`
+            )
             const files = extractTsClass(filenames)
-
             const lines = files.map((f) => {
               const type = f.nodeType == 'interface' ? 'type ' : ''
               const name = f.alias ? `${f.alias} as ${f.name}` : f.name
@@ -109,6 +113,7 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
           }
         })
       )
+      // Allows three ways to import models/services
       alias = {
         ...alias,
         [`~/${type}`]: resolve(`./shopinvader/${type}.ts`),
@@ -117,21 +122,15 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
       }
     }
   }
-
+  // Add alias to nuxt options
   nuxt.options.alias = {
     ...alias,
     ...nuxt.options.alias
   }
+  // Add custom references to Nuxt
   nuxt.hook('prepare:types', ({ references }) => {
     for (const template of templates) {
       references.push({ path: template.dst })
-    }
-  })
-  nuxt.hook('vite:extend', (ctx) => {
-    ctx.config.resolve = ctx.config.resolve || {}
-    ctx.config.resolve.alias = {
-      ...alias,
-      ...ctx.config.resolve.alias
     }
   })
 }
