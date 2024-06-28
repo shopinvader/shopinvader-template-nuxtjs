@@ -22,14 +22,14 @@ export default defineEventHandler(async (event) => {
       headers['Authorization'] = erpProxyConfig.auth
     }
     if (logLevel > 0) {
-      console.log('[erpProxy] request:', proxiedUrl)
+      console.log('[ShopInvader] PROXY - request:', proxiedUrl)
     }
     return await proxyRequest(event, proxiedUrl, {
       headers,
       onResponse: async (event, response) => {
         if (logLevel > 0) {
           console.log(
-            '[erpProxy] response:',
+            '[ShopInvader] PROXY - response:',
             event.node.req.url,
             response.status,
             response.statusText
@@ -38,14 +38,14 @@ export default defineEventHandler(async (event) => {
             // Need to clone the response to read the body, else it will be consumed
             const copyResponse = response.clone()
             const body = await copyResponse.text()
-            console.log('[erpProxy] response body:', event.node.req.url, body)
+            console.log('[ShopInvader] PROXY - response body:', event.node.req.url, body)
           }
         }
         return response
       }
     })
   } catch (error: any) {
-    console.log('[erpProxy] error:', error)
+    console.log('[ShopInvader] PROXY - \x1b[31merror\x1b[0m:', error)
     return createError({
       statusCode: error?.response?.status,
       statusMessage: error?.message,
