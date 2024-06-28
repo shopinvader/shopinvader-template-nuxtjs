@@ -4,11 +4,11 @@ import * as ts from 'typescript'
 
 interface TSFile {
   name: string
+  originalName: string | null
   path: string
   nodeType: string
   content: string
   imports: string[]
-  alias: string | null
 }
 
 /**
@@ -38,18 +38,29 @@ function extractTsClass(files: string[]): TSFile[] {
             imports.push(heritage)
           }
           const nodeType = ts.isInterfaceDeclaration(node) ? 'interface' : 'class'
-          let tsfile: TSFile | null = declarations.find((f) => f.name === name) || null
-          if (tsfile && tsfile?.path !== file) {
-            tsfile.name = `${name}Original`
-            tsfile.alias = name
+          // Check if this class/interface was already declared in another file
+          const sameNameTSFile: TSFile | undefined = declarations.find(
+            (f) => f.name === name && f.path !== file
+          )
+          if (sameNameTSFile) {
+            // Rename the existing entry
+            sameNameTSFile.name = `${name}Original`
+            // Keep the original name for aliasing
+            sameNameTSFile.originalName = name
+            // Let the user know
             console.log(
-              `[ShopInvader] BUILD - ShopInvader model \x1b[32m${name}\x1b[0m overrided by your custom model. Renaming ShopInvader model as \x1b[32m${tsfile.name}\x1b[0m.`
+              `[ShopInvader] BUILD - ShopInvader model \x1b[32m${name}\x1b[0m overrided by your custom model. Aliasing ShopInvader model to \x1b[32m${sameNameTSFile.name}\x1b[0m.`
             )
           }
-          if (!tsfile) {
-            tsfile = { name, path: file, content: '', nodeType, imports, alias: null }
-            declarations.push(tsfile)
-          }
+          // Add the class/interface to the list
+          declarations.push({
+            name,
+            originalName: null,
+            path: file,
+            content: '',
+            nodeType,
+            imports
+          })
         }
       }
     })
@@ -106,8 +117,8 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
             const files = extractTsClass(filenames)
             const lines = files.map((f) => {
               const type = f.nodeType == 'interface' ? 'type ' : ''
-              const name = f.alias ? `${f.alias} as ${f.name}` : f.name
-              return `export ${type} { ${name} } from '${f.path.replace('.ts', '')}'`
+              const exportedName = f.originalName ? `${f.originalName} as ${f.name}` : f.name
+              return `export ${type} { ${exportedName} } from '${f.path.replace('.ts', '')}'`
             })
             return lines.join('\n')
           }
