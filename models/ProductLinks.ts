@@ -1,9 +1,8 @@
 import { Model } from '#models'
 
-export type linkId = { id: number }
 export class ProductLinks extends Model {
-  crossLink: linkId[] = []
-  upLink: linkId[] = []
+  crossLink: { id: number }[] = []
+  upLink: { id: number }[] = []
 
   constructor(links: any) {
     super(links)

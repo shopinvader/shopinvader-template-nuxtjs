@@ -11,6 +11,7 @@ export class ProductPrice extends Model {
     this.value = data?.value
     this.tax_included = data?.tax_included
     this.original_value = data?.original_value
+    this.discount = data?.discount
   }
 }
 export interface ProductPriceList {

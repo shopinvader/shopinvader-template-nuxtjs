@@ -25,7 +25,7 @@ definePageMeta({
   &__container {
     @apply container mx-auto px-4 py-8;
     .container__link {
-      @apply btn-primary btn-sm btn mb-4 rounded-full text-white;
+      @apply btn btn-primary btn-sm mb-4 rounded-full text-white;
     }
   }
 }

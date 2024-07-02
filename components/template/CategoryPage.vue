@@ -4,7 +4,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Category } from '#models'
+import type { Category } from '#models'
 
 /**
  * Get Category from payload set on the route middleware
@@ -14,9 +14,6 @@ const category: Category | null = useNuxtApp().payload?.data?.entity || null
 if (!category) {
   throw createError({ statusCode: 404, statusMessage: 'Page Not Found' })
 }
-const url = useRequestURL()
-const host = url.host
-const protocol = url.protocol
 useHead({
   title: category.name,
   meta: [

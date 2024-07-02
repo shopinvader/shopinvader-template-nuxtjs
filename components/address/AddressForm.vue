@@ -4,7 +4,7 @@
       <div v-for="title in titles" :key="title.id" class="form-control">
         <label class="label cursor-pointer">
           <input
-            v-model="value.title"
+            v-model="model.title"
             type="radio"
             name="title"
             class="radio"
@@ -16,31 +16,31 @@
       </div>
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">
           {{ $t('account.address.name') }}
         </span>
       </label>
       <input
-        v-model="value.name"
+        v-model="model.name"
         :disabled="submitted"
         type="text"
         required
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
     <div class="form-control inline-block w-full">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">
           {{ $t('account.address.street') }}
         </span>
       </label>
       <input
-        v-model="value.street"
+        v-model="model.street"
         required
         bled="submitted"
         type="text"
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
     <div class="form-control inline-block w-full">
@@ -48,53 +48,51 @@
         <span class="label-text">{{ $t('account.address.street2') }}</span>
       </label>
       <input
-        v-model="value.street2"
+        v-model="model.street2"
         :disabled="submitted"
         type="text"
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
     <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">{{ $t('account.address.zip') }}</span>
       </label>
       <input
-        v-model="value.zip"
+        v-model="model.zip"
         required
         :disabled="submitted"
         type="text"
-        class="input-bordered input w-full md:max-w-xs"
+        class="input input-bordered w-full md:max-w-xs"
       />
     </div>
     <div class="form-control inline-block w-full md:w-2/3">
-      <label class="label required">
+      <label class="required label">
         <span class="label-text">{{ $t('account.address.city') }}</span>
       </label>
       <input
-        v-model="value.city"
+        v-model="model.city"
         required
         :disabled="submitted"
         type="text"
-        class="input-bordered input w-full"
+        class="input input-bordered w-full"
       />
     </div>
-    <div v-if="countries.length > 0" class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
-      <label class="label required">
+    <div
+      v-if="countries.length > 0"
+      class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2"
+    >
+      <label class="required label">
         <span class="label-text">{{ $t('account.address.country') }}</span>
       </label>
       <select
-        v-model="value.country"
-        class="select-bordered select w-full max-w-xs"
+        v-model="model.country"
+        class="select select-bordered w-full max-w-xs"
         :disabled="submitted"
         required
       >
         <option disabled v-if="countries.length > 1">{{ $t('account.address.country') }}</option>
-        <option
-          v-for="country of countries"
-          :key="country.id"
-          :value="country"
-
-        >
+        <option v-for="country of countries" :key="country.id" :value="country">
           {{ country.name }}
         </option>
       </select>
@@ -107,18 +105,18 @@
         </span>
       </label>
       <input
-        v-model="value.phone"
+        v-model="model.phone"
         :disabled="submitted"
         type="phone"
-        class="input-bordered input w-full md:max-w-xs"
+        class="input input-bordered w-full md:max-w-xs"
       />
     </div>
-    <slot name="footer" :address="value">
+    <slot name="footer" :address="model">
       <div class="my-2 flex w-full items-center border-t pt-4">
         <div class="flex-grow">
-          <slot name="actions" :address="value"></slot>
+          <slot name="actions" :address="model"></slot>
         </div>
-        <button type="submit" :disabled="submitted" class="btn-primary btn">
+        <button type="submit" :disabled="submitted" class="btn btn-primary">
           <icon name="check" class="mr-2 h-5 w-5" />
           {{ $t('actions.validate') }}
         </button>
@@ -126,73 +124,62 @@
     </slot>
   </form>
 </template>
-<script lang="ts">
-import { type PropType, ref } from 'vue'
+<script lang="ts" setup>
+import type { Country } from '#models'
+import { type PropType } from 'vue'
 import { Address } from '~/models'
-import { Country } from '#models'
-
-export default defineNuxtComponent({
-  emits: ['saved'],
-  props: {
-    address: {
-      type: Object as PropType<Address> | null,
-      required: false,
-      default: () => {
-        return new Address({})
-      }
-    }
-  },
-  data() {
-    const settings = useShopinvaderService('settings')?.options
-    const countries = settings?.countries || []
-    const titles = settings?.titles || []
-    return {
-      value: new Address({}),
-      submitted: false,
-      countries,
-      titles,
-      countryId: null
-    }
-  },
-  watch: {
-    countryId: {
-      handler: function (value) {
-        if (value) {
-          this.address.country = this.countries.find((i: Country) => {
-            return i.id == value
-          })
-        }
-      },
-      immediate: true
-    },
-    address: {
-      handler: function (value) {
-        if (value) {
-          if (value?.country?.id == null) {
-            value.country = this.countries?.[0] || null
-          }
-          if (value?.title?.id == null) {
-            value.title = this.titles?.[0] || null
-          }
-          this.value = value
-        }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    save(e: Event) {
-      e.preventDefault()
-      this.submitted = true
-      this.$emit('saved', this.value)
-    }
-  },
-  computed: {
-    hasValidCountry(): boolean {
-      return this.countries?.some(
-        (i: Country) => i.id == this.value?.country?.id
-      )
+const props = defineProps({
+  address: {
+    type: Object as PropType<Address> | null,
+    required: false,
+    default: () => {
+      return new Address({})
     }
   }
 })
+const emit = defineEmits(['saved'])
+const settings = useShopinvaderService('settings')?.options
+const countries = settings?.countries || []
+const titles = settings?.titles || []
+const model = ref(new Address({})) as Ref<Address>
+const submitted = ref(false)
+const countryId = ref(null)
+
+watch(
+  () => countryId.value,
+  (id) => {
+    if (id) {
+      model.value.country = countries.find((i: Country) => {
+        return i.id == id
+      })
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => props.address,
+  (address) => {
+    if (address) {
+      model.value = new Address(address.toJSON())
+      if (address?.country?.id == null) {
+        model.value.country = countries?.[0] || null
+      }
+      if (address?.title?.id == null) {
+        model.value.title = titles?.[0] || null
+      }
+    }
+  },
+  { immediate: true }
+)
+
+/**
+ * emit the saved event
+ * @param e
+ */
+const save = (e: Event) => {
+  e.preventDefault()
+  submitted.value = true
+  emit('saved', model.value)
+}
 </script>

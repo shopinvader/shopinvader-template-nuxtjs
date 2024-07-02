@@ -5,11 +5,13 @@
     :query="query"
     :pagination="true"
     cardinality-field="url_key"
-    :sort-options="sortOptions || [
-      { label: $t('search.sort.relevance'), value: '_score', order: 'desc'  },
-      { label: $t('search.sort.name_asc'), value: 'name.sortable' },
-      { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
-    ]"
+    :sort-options="
+      sortOptions || [
+        { label: $t('search.sort.relevance'), value: '_score', order: 'desc' },
+        { label: $t('search.sort.name_asc'), value: 'name.sortable' },
+        { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
+      ]
+    "
   >
     <template #filters>
       <slot name="filters">
@@ -24,17 +26,20 @@
     </template>
     <template #items="{ items }">
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
-        <ProductHit
-          v-for="(item, index) in items"
-          :key="item.id"
-          :product="item"
-          :inline="false"
-          v-animate="{name: 'searchProduct', index}"
-        >
-          <template #variants>
-
-          </template>
-        </ProductHit>
+        <template v-for="(item, index) in items">
+          <slot name="product" :product="item">
+            <product-hit
+              :key="item.id"
+              :product="item"
+              :inline="false"
+              v-animate="{ name: 'searchProduct', index }"
+            >
+              <template #variants>
+                <span></span>
+              </template>
+            </product-hit>
+          </slot>
+        </template>
       </div>
     </template>
     <template #footer>
@@ -42,87 +47,32 @@
     </template>
   </search-base>
 </template>
-<script lang="ts">
-import { Product } from '#models'
-import ProductHit from '~/components/product/ProductHit.vue'
-import SearchSelectedFilters from '~~/components/search/SearchSelectedFilters.vue'
-import SearchBaseVue from '~~/components/search/SearchBase.vue'
-import SearchTermsAggregation from '~~/components/search/SearchTermsAggregation.vue'
-import esb from 'elastic-builder'
+<script lang="ts" setup>
+import { matchAllQuery } from 'elastic-builder'
 
 export interface SortItem {
   label: string
   value: string
   order?: string
 }
-export default {
-  components: {
-    ProductHit,
-    'search-base': SearchBaseVue,
-    'search-terms-aggregation': SearchTermsAggregation,
-    'search-selected-filters': SearchSelectedFilters
+defineProps({
+  provider: {
+    type: Function,
+    required: true
   },
-  layout: 'default',
-  props: {
-    provider: {
-      type: Function,
-      required: true
-    },
-    query: {
-      type: Function,
-      required: false,
-      default: () => {
-        return esb.matchAllQuery()
-      }
-    },
-    sortOptions: {
-      type: Array as PropType<Array<SortItem>>,
-      required: false,
-      default: () => {
-        return null
-      }
+  query: {
+    type: Function,
+    required: false,
+    default: () => {
+      return matchAllQuery()
     }
   },
-  data() {
-    return {
-      layout: 'grid',
-      facets: {
-        name: [],
-        url: []
-      }
-    }
-  },
-  setup() {
-
-    const { t } = useI18n()
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    return {
-      localePath,
-      cart,
-      $t: t
-    }
-
-  },
-  methods: {
-    transformResult(result: any) {
-      const authService = useShopinvaderService('auth')
-      let role: string | null = null
-      const user = authService.getUser()
-      if(user?.value && user?.value?.role) {
-        role = authService.getUser()?.role as string
-      }
-      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
-    },
-    motion(index:number) {
-      const { animations } = useAppConfig() as any
-      if(!animations) return false
-      let motion = animations?.searchProduct || false
-      if(typeof motion === 'function') {
-        motion = motion(index)
-      }
-      return motion || false
+  sortOptions: {
+    type: Array as PropType<Array<SortItem>>,
+    required: false,
+    default: () => {
+      return null
     }
   }
-}
+})
 </script>

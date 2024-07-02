@@ -7,7 +7,7 @@
   "search": {
     "noresults": "Aucun résultat",
     "filter": "Filtrer",
-    "results":{
+    "results": {
       "count": "{count} résultat(s)"
     },
     "sort": {
@@ -115,7 +115,7 @@
         "continue": "Continuer",
         "free": "Livraison gratuite",
         "no-method": "Aucune méthode de livraison Sélectionnée",
-        "empty":"Aucune méthode de livraison n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat"
+        "empty": "Aucune méthode de livraison n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat"
       }
     },
     "summary": {
@@ -142,7 +142,7 @@
       "title": "Merci !",
       "intro": "Votre commande a bien été validée.",
       "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
-      "link":"Voir mes commandes",
+      "link": "Voir mes commandes",
       "pending": "Votre commande est en attente de paiement",
       "retry": "Réessayer",
       "cancelled": {
@@ -261,7 +261,6 @@
         "error": "Impossible de supprimer l'adresse",
         "success": "Adresse supprimée"
       }
-
     },
     "quotations": "Mes devis",
     "invoices": "Mes factures",
@@ -274,7 +273,7 @@
   "actions": {
     "modify": "Modifier",
     "update": "Actualiser",
-    "create": "Créer " ,
+    "create": "Créer ",
     "validate": "Valider",
     "delete": "Supprimer",
     "close": "Fermer"
@@ -287,7 +286,7 @@
     "phone": "Téléphone",
     "country": "Pays",
     "noresult": "Aucune adresse",
-    "type" : {
+    "type": {
       "delivery": "Adresse de livraison",
       "invoice": "Adresse de facturation",
       "contact": "Adresse de contact"
@@ -373,6 +372,6 @@
   "table": {
     "noresult": "Aucun résultat",
     "size": "Nombre de résultats par page",
-    "count":"{count} resultat(s)"
+    "count": "{count} resultat(s)"
   }
 }

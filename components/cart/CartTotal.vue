@@ -24,9 +24,7 @@
         <div class="label">
           {{ $t('cart.total.discount') }}
         </div>
-        <div class="value">
-          - {{ $filter.currency(cart?.amount?.discountTotal) }}
-        </div>
+        <div class="value">- {{ $filter.currency(cart?.amount?.discountTotal) }}</div>
       </div>
       <div class="cart-total__subtotal">
         <div class="label">
@@ -75,26 +73,24 @@
   </div>
 </template>
 <script lang="ts" setup>
-  /**
-   * Display the cart's total
-   * This component is used in the component Cart and in sereral checkout steps.
-   * This component retrieve the cart from the store.
-   */
-  const cartService = useShopinvaderService('cart')
-  const cart = cartService.getCart()
+/**
+ * Display the cart's total
+ * This component is used in the component Cart and in sereral checkout steps.
+ * This component retrieve the cart from the store.
+ */
+const cartService = useShopinvaderService('cart')
+const cart = cartService.getCart()
 </script>
 <style lang="scss">
 .cart-total {
   @apply card card-body card-bordered bg-gray-100;
   &__title {
-    @apply font-heading text-xl border-b;
+    @apply border-b font-heading text-xl;
   }
   & > div {
     @apply flex flex-wrap items-center justify-between pb-2;
     .label {
       @apply p-0;
-    }
-    .value {
     }
     .mention {
       @apply w-full flex-grow text-sm text-gray-600;

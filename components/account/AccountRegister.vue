@@ -1,5 +1,5 @@
 <template>
-  <div v-if="auth?.type=='credentials'">
+  <div v-if="auth?.type == 'credentials'">
     <slot name="register-thankyou">
       <div v-if="accountIsCreated" class="message">
         <div class="message__container">
@@ -50,9 +50,7 @@
           <form class="" @submit.prevent="createAccount">
             <div class="input-container">
               <div class="input-container__wrapper">
-                <label class="" for="firstname">{{
-                  $t('account.address.name')
-                }}</label>
+                <label class="" for="firstname">{{ $t('account.address.name') }}</label>
                 <input
                   class=""
                   id="firstname"
@@ -65,9 +63,7 @@
                 />
               </div>
               <div class="input-container__wrapper">
-                <label class="" for="email">{{
-                  $t('account.address.email')
-                }}</label>
+                <label class="" for="email">{{ $t('account.address.email') }}</label>
                 <input
                   v-model="email"
                   class=""
@@ -79,9 +75,7 @@
                 />
               </div>
               <div class="input-container__wrapper">
-                <label class="" for="password">{{
-                  $t('account.login.password')
-                }}</label>
+                <label class="" for="password">{{ $t('account.login.password') }}</label>
                 <input
                   v-model="password"
                   class=""
@@ -98,9 +92,7 @@
                   <div class="checkbox-container__outer">
                     <div class="checkbox-content">
                       <input type="checkbox" class="" :disabled="loading" />
-                      <label
-                        class="font-bold text-gray-500"
-                        for="signUpLightReverseCheckbox1-1"
+                      <label class="font-bold text-gray-500" for="signUpLightReverseCheckbox1-1"
                         ><span> {{ $t('account.register.accept_terms') }} </span
                         ><a class="content-link" href="#">
                           {{ $t('account.register.terms_conditions') }}</a
@@ -113,7 +105,7 @@
               <div class="w-full p-3">
                 <div class="-m-2 flex flex-wrap md:justify-end">
                   <div class="w-full p-2">
-                    <button type="submit" class="btn-primary btn w-full" :disabled="loading">
+                    <button type="submit" class="btn btn-primary w-full" :disabled="loading">
                       <span v-if="loading" class="loading loading-spinner"></span>
                       {{ $t('account.register.sign_up') }}
                     </button>
@@ -131,10 +123,7 @@
         <div class="register__footer">
           <p class="footer-text">
             <span>{{ $t('account.register.already_have_account') }}</span
-            ><nuxt-link
-              :to="localePath('/account/login')"
-              class="footer-text__link"
-            >
+            ><nuxt-link :to="localePath('/account/login')" class="footer-text__link">
               {{ $t('account.login.sign_in') }}
             </nuxt-link>
           </p>
@@ -143,9 +132,9 @@
     </div>
   </div>
 </template>
+
 <script lang="ts">
 import LogoVue from '../global/Logo.vue'
-import { User } from '~/models'
 export default {
   name: 'AccountRegister',
   components: {
@@ -174,6 +163,7 @@ export default {
       this.loading = true
       const auth = useShopinvaderService('auth')
       const notifications = useNotification()
+      if (!auth) return console.error('Auth service not found')
       try {
         await auth.registerUser(this.name, this.password, this.email)
         // Display success message

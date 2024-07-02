@@ -19,6 +19,7 @@
     </ul>
   </div>
 </template>
+
 <script lang="ts">
 import type { PropType } from 'vue'
 export default {
@@ -30,6 +31,7 @@ export default {
       required: true
     }
   },
+  emits: ['select'],
   computed: {
     length() {
       return this.suggestions.reduce((acc, suggestion) => {

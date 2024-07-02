@@ -1,10 +1,4 @@
-import { Model, CategoryImageSet } from '#models'
-
-export interface CategoryResult {
-  hits: Category[]
-  total: number
-  aggregations?: any
-}
+import { CategoryImageSet, Model } from '#models'
 
 export class CategoryChild extends Model {
   name: string

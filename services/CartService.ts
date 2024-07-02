@@ -1,31 +1,31 @@
-import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
+import type { Address, Product } from '#models'
 import {
-  Cart as CartModel,
-  Product,
   CartLine as CartLineModel,
-  Address,
-  Sale,
+  Cart as CartModel,
+  DeliveryCarrier,
   PaymentData,
-  DeliveryCarrier
+  Sale
 } from '#models'
-
-import { Service } from '#services'
+import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
+import type { $Fetch } from 'ofetch'
 import { storeToRefs } from 'pinia'
-import isEqual from 'lodash.isequal'
+import isEqual from '~/utils/IsEqual'
+import { BaseServiceErp } from './BaseServiceErp'
 
 class CartObserver {
   prevCartData: any
   callback: (cart: CartModel, syncError: boolean) => void // Nuxt context
+
   constructor(callback: (cart: CartModel, syncError: boolean) => void) {
     this.callback = callback
   }
 
   onCartUpdated(data: any) {
-    let cartData:any = {}
-    if(typeof data?.getData == 'function') {
-      cartData = {...data.getData()}
+    let cartData: any = {}
+    if (typeof data?.getData == 'function') {
+      cartData = { ...data.getData() }
     }
-    if(isEqual(this.prevCartData, cartData)) {
+    if (isEqual(this.prevCartData, cartData)) {
       return
     }
     const erpCart = cartData?.erpCart || {}
@@ -55,42 +55,35 @@ class CartObserver {
   }
 }
 
-export class CartService extends Service {
-  services: ShopinvaderServiceList | null = null
-  serviceName = 'cart'
-  endpoint:string = 'carts'
-  syncUrl:string = 'carts/sync'
-  erp: any // ErpFetch
-  cart: any | null
-  id: number | null = null // Cart ID
-  products: Product[] = []
-  debug = false
-  constructor(erp: any) {
-    super()
-    this.erp = erp
+export class CartService extends BaseServiceErp {
+  public endpoint: string = 'carts'
+  public cart: any | null
+  public id: number | null = null // Cart ID
+  public products: Product[] = []
+  public debug = false
+
+  constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string) {
+    super(isoLocale, ofetch, baseUrl)
     this.setCart = this.setCart.bind(this)
     this.transformCart = this.transformCart.bind(this)
   }
+
   init(services: ShopinvaderServiceList): void {
     super.init(services)
     if (!import.meta.env.SSR) {
+      const erpFetchWrapper = new ErpFetchWrapper(this.ofetch)
       const observer = new CartObserver(this.setCart)
-      this.cart = new Cart(
-        this.erp,
-        new WebStorageCartStorage(window.localStorage), {
-          syncUrl: this.syncUrl,
-          debug: true
-        }
-      )
+      this.cart = new Cart(erpFetchWrapper, new WebStorageCartStorage(window.localStorage), {
+        syncUrl: this.urlEndpoint + '/sync',
+        debug: true
+      })
       this.cart.registerObserver(observer)
-
-      /** Get last stored cart before fetching API with syncWithRetry */
+      // Get last stored cart before fetching API with syncWithRetry
       if (window?.localStorage?.getItem('cart')) {
         let data = JSON.parse(window.localStorage.getItem('cart') || '{}')
-
         const urlParams = new URLSearchParams(window.location.search)
         const status = urlParams.get('status') || null
-        if((status == 'success' || status == 'pending')) {
+        if (status == 'success' || status == 'pending') {
           this.store().setLastSale(data)
           this.cart?.clearPendingTransactions()
           data = {}
@@ -98,25 +91,24 @@ export class CartService extends Service {
         this.setCart(new CartModel(data))
         this.sync()
       }
-
-
     }
-    if(services?.auth && services?.cart) {
-      const { auth } = services
-      /** Retrieve cart content on user login */
-      auth?.onUserLoaded((user) => {
+    // Subscribe to auth events
+    if (services?.auth && services?.cart) {
+      services.auth.bus.on('user:loaded', () => {
+        // Retrieve cart content on user login
         services.cart.sync()
       })
-      /** Clear cart after user logout */
-      auth?.onUserUnLoaded(() => {
+      services.auth.bus.on('user:unloaded', () => {
+        // Clear cart after user logout
         services.cart.clear()
       })
     }
-
   }
+
   sync() {
     this.cart?.syncWithRetry()
   }
+
   getCart(): Ref<CartModel | null> {
     if (!import.meta.env.SSR) {
       const store = this.store()
@@ -127,9 +119,8 @@ export class CartService extends Service {
   }
 
   async setCart(cart: CartModel | null) {
-    /** Store the cart on the localstorage */
-
-    if(cart?.toJSON) {
+    // Store the cart on the localstorage
+    if (cart?.toJSON) {
       window.localStorage.setItem('cart', JSON.stringify(cart?.toJSON()))
     }
     const store = this.store()
@@ -147,21 +138,19 @@ export class CartService extends Service {
 
     store.setCart(cart)
   }
+
   async transformCart(cart: CartModel): Promise<CartModel> {
-    /** Fetch cart product to product index */
+    // Fetch cart product to product index
     if (cart?.lines?.length > 0 && this.services?.products !== null) {
       const ids: number[] =
         cart.lines
           .map((l: CartLineModel) => l.productId || 0)
-          .filter(
-            (i: number | null) =>
-              i !== null && !this.products.some((p) => i === p?.id)
-          ) || []
+          .filter((i: number | null) => i !== null && !this.products.some((p) => i === p?.id)) || []
 
       if (ids.length > 0) {
-        const { hits } = (await this.services?.products.getByIds(ids)) || { hits:[] }
+        const { hits } = (await this.services?.products.getByIds(ids)) || { hits: [] }
         const products = hits.reduce((acc: any, product: Product) => {
-          return [...acc, ...product.variants || []]
+          return [...acc, ...(product.variants || [])]
         }, [])
         if (Array.isArray(products)) {
           this.products = [...this.products, ...products]
@@ -169,29 +158,31 @@ export class CartService extends Service {
       }
 
       for (const line of cart.lines || []) {
-        const product =
-          this.products.find((p: Product) => p.id === line.productId) || null
+        const product = this.products.find((p: Product) => p.id === line.productId) || null
 
         if (product !== null) {
           line.product = product
         }
       }
     }
-    if(this.services?.settings) {
-      const countries = await this.services?.settings?.get('countries') || []
-      if(countries?.length > 0) {
-        if(cart.delivery.address) {
-          let address = cart.delivery.address
-          cart.delivery.address.country = countries.find((c: any) => c.id === address?.country?.id) || null
+    if (this.services?.settings) {
+      const countries = (await this.services?.settings?.get('countries')) || []
+      if (countries?.length > 0) {
+        if (cart.delivery.address) {
+          const address = cart.delivery.address
+          cart.delivery.address.country =
+            countries.find((c: any) => c.id === address?.country?.id) || null
         }
-        if(cart.invoicing.address) {
-          let address = cart.delivery.address
-          cart.invoicing.address.country = countries.find((c: any) => c.id === address?.country?.id) || null
+        if (cart.invoicing.address) {
+          const address = cart.delivery.address
+          cart.invoicing.address.country =
+            countries.find((c: any) => c.id === address?.country?.id) || null
         }
       }
     }
     return cart
   }
+
   addTransaction(id: number, qty: number, options?: any) {
     if (id != null && qty != null && !isNaN(qty)) {
       this.cart.addTransaction(new CartTransaction(id, qty, undefined, options || null))
@@ -226,12 +217,12 @@ export class CartService extends Service {
       this.addTransaction(productId, qty, line?.options || null)
     }
   }
+
   /**
    * deleteItem : delete a cart line
    * @param {*} id cart line ID
    */
   deleteItem(line: CartLineModel) {
-    const cart = this.getCart()?.value || null
     if (line !== null) {
       const qty = line.qty * -1
       const productId: number | null = line?.productId || null
@@ -241,10 +232,10 @@ export class CartService extends Service {
     }
   }
 
-  async setAddress(type: string, address:Address) {
+  async setAddress(type: string, address: Address) {
     const cart = this.getCart()?.value || null
-    if(!cart) return null
-    if(type == 'delivery') {
+    if (!cart) return null
+    if (type == 'delivery') {
       cart.delivery.address = address
     } else {
       cart.invoicing.address = address
@@ -258,8 +249,11 @@ export class CartService extends Service {
    * @param carrierId selected carrier ID
    */
   async setDeliveryCarrier(carrierId: number) {
-    const data: any = await this.erp.post(`${this.endpoint}/current/set_carrier`, {
-      carrier_id: carrierId
+    const data: any = await this.ofetch(this.urlEndpoint + '/current/set_carrier', {
+      method: 'POST',
+      body: {
+        carrier_id: carrierId
+      }
     })
     if (data?.id) {
       this.setCart(new CartModel(data))
@@ -267,15 +261,18 @@ export class CartService extends Service {
   }
 
   async update(cart: CartModel) {
-    const data: any = await this.erp.post(`${this.endpoint}/current/update`, {
-      client_order_ref: cart.orderRef || '',
-      delivery: {
-        address_id: cart?.delivery?.address?.id || null
-      },
-      invoicing: {
-        address_id: cart?.invoicing?.address?.id || null
-      },
-      note: cart.note || ''
+    const data: any = await this.ofetch(this.urlEndpoint + '/current/update', {
+      method: 'POST',
+      body: {
+        client_order_ref: cart.orderRef || '',
+        delivery: {
+          address_id: cart?.delivery?.address?.id || null
+        },
+        invoicing: {
+          address_id: cart?.invoicing?.address?.id || null
+        },
+        note: cart.note || ''
+      }
     })
     await this.setCart(new CartModel(data))
   }
@@ -285,13 +282,13 @@ export class CartService extends Service {
    * and retrieve products from the sales service
    * @returns Sale | null
    */
-  async getLastSale():Promise<Sale | null>  {
+  async getLastSale(): Promise<Sale | null> {
     let sale: Sale | null = null
-    const data = this.store()?.lastSale ||  {}
-    if(data) {
+    const data = this.store()?.lastSale || {}
+    if (data) {
       const saleService = this.services?.sales
       sale = new Sale(data)
-      if(saleService) {
+      if (saleService) {
         sale = await saleService.fetchProductToSale(sale)
       }
     }
@@ -303,8 +300,7 @@ export class CartService extends Service {
    * @returns A promise that resolves to an array of DeliveryCarrier objects.
    */
   async getDeliveryCarrier(): Promise<DeliveryCarrier[]> {
-    const url = `${this.endpoint}/current/delivery_carriers`
-    const data = await this.erp?.get(url, [], null)
+    const data = await this.ofetch(this.urlEndpoint + '/current/delivery_carriers')
     if (Array.isArray(data)) {
       return data.map((item: any) => new DeliveryCarrier(item))
     }
@@ -321,21 +317,57 @@ export class CartService extends Service {
    * @param couponCode The coupon code to apply
    */
   async applyCoupon(code: string) {
-    if(!code) return null
-    const cart:any = await this.erp.post(`${this.endpoint}/current/coupon`, {
-      code
+    if (!code) return null
+    const cart: any = await this.ofetch(this.urlEndpoint + '/current/coupon', {
+      method: 'POST',
+      body: { code }
     })
-
     if (cart?.id) {
-      this.setCart(new CartModel(cart));
+      this.setCart(new CartModel(cart))
     }
   }
 
   async getPayable(): Promise<PaymentData | null> {
-    const data = await this.erp.get(`${this.endpoint}/current/payable`, {})
-    if(data) {
+    const data = await this.ofetch(this.urlEndpoint + '/current/payable')
+    if (data) {
       return new PaymentData(data)
     }
     return null
+  }
+}
+
+// shopinvader-js-cart wants a ErpFetch so we need to wrap our $Fetch
+class ErpFetchWrapper {
+  ofetch: $Fetch
+  baseUrl: string
+
+  constructor(ofetch: $Fetch, baseUrl = '') {
+    this.ofetch = ofetch
+    this.baseUrl = baseUrl
+  }
+
+  async post(resource: string, body = {}, options = {}, _responseType = 'json'): Promise<any> {
+    const response = await this.ofetch.raw(this.baseUrl + resource, {
+      method: 'POST',
+      ...options,
+      body
+    })
+    response.json = () => {
+      return response._data
+    }
+    console.log()
+    return response
+  }
+
+  put(resource: string, body = {}, options = {}, _responseType = 'json'): Promise<any> {
+    return this.ofetch(this.baseUrl + resource, { method: 'PUT', ...options, body })
+  }
+
+  get(resource: string, query: any, options: any, _responseType = 'json'): Promise<any> {
+    return this.ofetch(this.baseUrl + resource, { query, ...options })
+  }
+
+  delete(resource: string, body = {}, options = {}, _responseTypes = 'json'): Promise<any> {
+    return this.ofetch(this.baseUrl + resource, { method: 'DELETE', ...options, body })
   }
 }

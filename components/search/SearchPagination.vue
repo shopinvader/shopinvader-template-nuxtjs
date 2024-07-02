@@ -1,13 +1,7 @@
 <template>
   <div class="btn-group">
-    <button v-if="currentPage > 1" class="btn btn-sm" @click="changePage(1)">
-      «
-    </button>
-    <button
-      v-if="currentPage > 1"
-      class="btn btn-sm"
-      @click="changePage(currentPage - 1)"
-    >
+    <button v-if="currentPage > 1" class="btn btn-sm" @click="changePage(1)">«</button>
+    <button v-if="currentPage > 1" class="btn btn-sm" @click="changePage(currentPage - 1)">
       ‹
     </button>
     <button
@@ -19,11 +13,7 @@
     >
       {{ page }}
     </button>
-    <button
-      v-if="currentPage < count"
-      class="btn btn-sm"
-      @click="changePage(currentPage + 1)"
-    >
+    <button v-if="currentPage < count" class="btn btn-sm" @click="changePage(currentPage + 1)">
       ›
     </button>
   </div>
@@ -51,7 +41,7 @@ export default {
       return Math.ceil(this.total / this.size)
     },
     pages(): number[] {
-      let pages = []
+      const pages = []
       for (let i = this.currentPage - 2; i < this.currentPage; i++) {
         if (i > 0) {
           pages.push(i)

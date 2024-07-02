@@ -1,3 +1,5 @@
+// Usage: Add a filter to format currency in templates
+// Todo: convert into a composable
 export default defineNuxtPlugin((/* nuxtApp */) => {
   return {
     provide: {

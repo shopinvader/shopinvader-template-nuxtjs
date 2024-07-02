@@ -1,25 +1,13 @@
-import {
-  Cart,
-  CategoryImageSet,
-  Category,
-  CategoryParent,
-  Product
-} from '#models'
-
+import { Cart, Category, CategoryImageSet, CategoryParent, Product } from '#models'
+// Manage payload types on SSR and hydration
 export default definePayloadPlugin(() => {
   /**Cart */
-  definePayloadReducer(
-    'Cart',
-    (value) => value instanceof Cart && value.toJSON()
-  )
+  definePayloadReducer('Cart', (value) => value instanceof Cart && value.toJSON())
   definePayloadReviver('Cart', (data) => new Cart(data))
 
   /**Category */
   definePayloadReviver('Category', (data) => new Category(data))
-  definePayloadReducer(
-    'Category',
-    (value) => value instanceof Category && value.toJSON()
-  )
+  definePayloadReducer('Category', (value) => value instanceof Category && value.toJSON())
 
   /**CategoryParent */
   definePayloadReviver('CategoryParent', (data) => new CategoryParent(data))
@@ -30,10 +18,7 @@ export default definePayloadPlugin(() => {
 
   /**Product */
   definePayloadReviver('Product', (data) => new Product(data))
-  definePayloadReducer(
-    'Product',
-    (value) => value instanceof Product && value.toJSON()
-  )
+  definePayloadReducer('Product', (value) => value instanceof Product && value.toJSON())
 
   /**CategoryImageSet */
   definePayloadReviver('CategoryImageSet', (data) => new CategoryImageSet(data))
