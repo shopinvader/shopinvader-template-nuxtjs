@@ -1,11 +1,5 @@
 import { CategoryImageSet, Model } from '#models'
 
-export interface CategoryResult {
-  hits: Category[]
-  total: number
-  aggregations?: any
-}
-
 export class CategoryChild extends Model {
   name: string
   urlKey: string
