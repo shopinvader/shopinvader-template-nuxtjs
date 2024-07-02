@@ -109,8 +109,3 @@ export class Address extends Model {
     return data
   }
 }
-
-export interface AddressResult {
-  size: number
-  data: Address[]
-}
