@@ -12,7 +12,6 @@ export class CategoryService extends BaseServiceElastic {
   }
 
   /**
-   *
    * @param field
    * @param value
    * @returns
@@ -34,8 +33,8 @@ export class CategoryService extends BaseServiceElastic {
     return this.search(body)
   }
 
-  getAll(): Promise<CategoryResult> {
-    const body = { query: { match_all: {} } }
+  getAll(maxSize = 100): Promise<CategoryResult> {
+    const body = { query: { match_all: {} }, size: maxSize }
     return this.search(body)
   }
 

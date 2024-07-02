@@ -54,7 +54,6 @@ export class ProductService extends BaseServiceElastic {
   }
 
   /**
-   *
    * @param field
    * @param value
    * @returns
@@ -66,8 +65,8 @@ export class ProductService extends BaseServiceElastic {
     return this.search(body)
   }
 
-  getAll(): Promise<ProductResult> {
-    const body = { query: { match_all: {} } }
+  getAll(maxSize = 100): Promise<ProductResult> {
+    const body = { query: { match_all: {} }, size: maxSize }
     return this.search(body)
   }
 
