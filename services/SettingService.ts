@@ -3,24 +3,21 @@ import { BaseServiceErp } from './BaseServiceErp'
 
 export class SettingService extends BaseServiceErp {
   public endpoint: string = 'settings'
-  public options: any = null
+  public settings: Settings | null = null
 
   async init(service: ShopinvaderServiceList) {
     super.init(service)
-    this.options = await this.getAll()
+    const res = await this.getAll()
+    this.settings = new Settings(res)
   }
 
   async getAll(): Promise<Settings | null> {
     let data = {}
     try {
-      data = (await this.ofetch(this.urlEndpoint + '/all')) || {}
+      data = (await this.ofetch(this.urlEndpoint)) || {}
     } catch (e) {
       console.error('Error while fetching settings', e)
     }
     return new Settings(data)
-  }
-
-  get(key: string): any {
-    return this.options?.[key] || null
   }
 }
