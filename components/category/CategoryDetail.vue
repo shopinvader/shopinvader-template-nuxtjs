@@ -67,7 +67,6 @@ export default {
       let current:Category | CategoryParent | null = this.category
       const items = [current]
       while (current?.parent !== null) {
-        console.log(current?.parent)
         current = current?.parent || null
         if(current?.name) {
           items.push(current)
@@ -91,7 +90,12 @@ export default {
         query = esb
           .nestedQuery()
           .path('categories')
-          .query(esb.boolQuery().must([esb.matchQuery('categories.id', id)]))
+          .query(
+            esb.boolQuery()
+            .must([esb.matchQuery('categories.id', id)])
+            .should(esb.termQuery('main', true))
+          )
+
       }
       return query
     }
