@@ -18,9 +18,9 @@
           <icon class="text-[20rem] text-gray-300" name="error" />
           <div>
             <h1 class="text-9xl text-primary">
-              {{ error.statusCode }}
+              {{ error?.statusCode }}
             </h1>
-            <template v-if="error.statusCode === 404">
+            <template v-if="error?.statusCode === 404">
               <div class="text-2xl">
                 {{ $t('error.404.title') }}
               </div>
@@ -37,9 +37,9 @@
             </div>
           </div>
 
-          <div v-if="error.statusCode !== 404" class="w-full flex-grow p-3 xl:px-10">
-            <div v-if="error.message" class="mockup-code">
-              <pre data-prefix="$"><code> {{ error.message }}</code></pre>
+          <div v-if="error?.statusCode !== 404" class="w-full flex-grow p-3 xl:px-10">
+            <div v-if="error?.message" class="mockup-code">
+              <pre data-prefix="$"><code> {{ error?.message }}</code></pre>
             </div>
           </div>
         </div>
@@ -51,4 +51,11 @@
 
 <script setup>
 const localePath = useLocalePath()
+defineProps({
+  error: {
+    type: Object,
+    required: false,
+    default: null
+  }
+})
 </script>
