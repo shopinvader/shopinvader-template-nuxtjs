@@ -62,7 +62,7 @@ function extractTsClass(layerFiles: LayerFile[]): TSFile[] {
             sameNameTSFile.originalName = name
             // Let the user know
             console.log(
-              `[ShopInvader] BUILD - ShopInvader model ${UNICODE_GREEN}${name}${UNICODE_RESET} overrided by your custom model. You can use ${UNICODE_GREEN}${sameNameTSFile.name}${UNICODE_RESET} to access original.`
+              `[ShopInvader] BUILD - ShopInvader model ${UNICODE_GREEN}${name}${UNICODE_RESET} overrided by your custom model. You can use ${UNICODE_GREEN}${sameNameTSFile.name}${UNICODE_RESET} to access the original.`
             )
           }
           // Add the class/interface to the list
