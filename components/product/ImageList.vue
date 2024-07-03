@@ -18,6 +18,7 @@
           quality="80"
           :placeholder="img(image.large?.src, { h: 548, f: 'webp', blur: 2, q: 10 })"
           format="webp"
+          :data-zoom-src="image.xlarge?.src"
         />
       </div>
     </div>
