@@ -33,7 +33,7 @@ if (!entity && !slots?.fallback) {
   throw showError({
     statusCode: 404,
     fatal: true,
-    statusMessage: 'Page Not Found'
+    statusMessage: 'Page Not Found: /' + path
   })
 }
 if (entity) {
