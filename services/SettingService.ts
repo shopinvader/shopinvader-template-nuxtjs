@@ -3,12 +3,12 @@ import { BaseServiceErp } from './BaseServiceErp'
 
 export class SettingService extends BaseServiceErp {
   public endpoint: string = 'settings'
-  public settings: Settings | null = null
+  public values: Settings | null = null
 
   async init(service: ShopinvaderServiceList) {
     super.init(service)
     const res = await this.getAll()
-    this.settings = new Settings(res)
+    this.values = new Settings(res)
   }
 
   async getAll(): Promise<Settings | null> {
