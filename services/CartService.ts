@@ -167,7 +167,7 @@ export class CartService extends BaseServiceErp {
       }
     }
     if (this.services?.settings) {
-      const countries = (await this.services?.settings?.get('countries')) || []
+      const countries = this.services?.settings.values?.countries || []
       if (countries?.length > 0) {
         if (cart.delivery.address) {
           const address = cart.delivery.address
