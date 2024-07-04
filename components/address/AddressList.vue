@@ -104,7 +104,7 @@
 <script lang="ts" setup>
 import { AddressCard, AddressForm, AsideDrawer } from '#components'
 import { Address } from '#models'
-const props = defineProps({
+defineProps({
   type: {
     type: String,
     required: false,
