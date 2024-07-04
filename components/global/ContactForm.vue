@@ -10,15 +10,19 @@
         </slot>
         <div>
           <form v-if="lead" @submit="save">
-            <slot name="body">
+            <slot name="subject" :subjects="subjects" :lead="lead" :loading="loading">
               <div class="form-fieldset--full">
                 <div class="form-fieldset--full__field">
                   <label class="label required">
                     <span class="label-text">{{$t('contact.subject')}}</span>
                   </label>
-                  <select  v-if="subjects.length > 0"  class="" v-model="lead.subject" required :disabled="loading">
-                    <option v-for="subjet in subjects" :value="subjects.id">{{subjects.name}} </option>
-                  </select>
+                  <template v-if="subjects.length > 0" >
+                    <select class="" v-model="lead.subject" required :disabled="loading">
+                      <option v-for="subjet in subjects" :value="subjet.id" :key="subjet.id">
+                        {{subjet.name}}
+                      </option>
+                    </select>
+                  </template>
                   <input
                     v-else
                     type="text"
@@ -30,6 +34,8 @@
                   />
                 </div>
               </div>
+            </slot>
+            <slot name="name" :loading="loading" :lead="lead">
               <div class="form-fieldset">
                 <div class="form-fieldset__field">
                   <label class="label required">
@@ -57,8 +63,9 @@
 
                   />
                 </div>
-
               </div>
+            </slot>
+            <slot name="contact" :loading="loading" :lead="lead">
               <div class="form-fieldset ">
                 <div class="form-fieldset__field ">
                   <label class="label required">
@@ -72,6 +79,7 @@
                     required
                   />
                 </div>
+
                 <div class="form-fieldset__field  ">
                   <label class="label required">
                     <span class="label-text">{{$t('account.address.phone')}}</span>
@@ -86,6 +94,8 @@
                   />
                 </div>
               </div>
+            </slot>
+            <slot name="street" :loading="loading" :lead="lead">
               <div class="form-fieldset--full">
                 <div class="form-fieldset--full__field ">
                   <label class="label required">
@@ -101,6 +111,8 @@
                   />
                 </div>
               </div>
+            </slot>
+            <slot name="street2" :loading="loading" :lead="lead">
               <div class="form-fieldset--full">
                 <div class="form-fieldset--full__field ">
                   <label class="label">
@@ -115,6 +127,8 @@
                   />
                 </div>
               </div>
+            </slot>
+            <slot name="city" :loading="loading" :lead="lead">
               <div class="form-fieldset ">
                 <div class="form-fieldset__field ">
                   <label class="label required">
@@ -143,6 +157,8 @@
                   />
                 </div>
               </div>
+            </slot>
+            <slot name="country" :loading="loading" :lead="lead" :countries="countries">
               <div  v-if="countries.length > 0" class="form-fieldset--full">
                 <div class="form-fieldset--full__field">
                   <label class="label required">
@@ -154,6 +170,8 @@
 
                 </div>
               </div>
+            </slot>
+            <slot name="message" :loading="loading" :lead="lead" :countries="countries">
               <div class="form-fieldset ">
                 <div class="form-fieldset__messagearea">
                   <label class="label required">
@@ -169,6 +187,36 @@
                   </textarea>
                 </div>
                </div>
+            </slot>
+            <slot name="files" :loading="loading" :lead="lead" >
+              <label class="form-control w-full">
+                <div class="label">
+                  <span class="label-text">
+                    {{ $t("contact.attachment") }}
+                  </span>
+                </div>
+                <div class="w-full pb-1">
+                  <div class="join w-full">
+                    <input
+                      type="file"
+                      @change="(e) => addFile(e)"
+                      ref="inputFile"
+                      class="file-input file-input-bordered w-full"
+                      :class="fileError ? 'file-input-error' : 'file-input-primary'"
+                      :disabled="loading"
+                      autocomplete="off"
+                    />
+                    <button type="button" class="btn btn-link" @click="clearFile">
+                      <icon name="close" />
+                    </button>
+                  </div>
+                  <div class="label">
+                    <span v-if="fileError" class="label-text-alt text-error">
+                      {{ fileError }}
+                    </span>
+                  </div>
+                </div>
+              </label>
             </slot>
             <slot name="error">
               <div v-if="error" class="alert my-5">
@@ -217,29 +265,49 @@
 </section>
 </template>
 <script lang="ts" setup>
-  import { Country, Lead } from '#models'
+  import { Country, Lead, Title } from '#models'
   const props = defineProps({
     dataPolicyPage: {
       type: String,
       required: false
+    },
+    subjects: {
+      type: Array as PropType<Title[]>,
+      required: false,
+      default: () => null
     }
   })
   const emit = defineEmits(['submit'])
   const localePath = useLocalePath()
+  const inputFile = ref<HTMLInputElement | null>(null)
+  const files = ref<FileList | null>(null)
   const privacyPolicylink = props.dataPolicyPage || localePath({ path:'/privacy-policy'})
-  const countries = ref([]) as Ref<Country[]>
-  const subjects = ref([])
+  const fileError = ref<string | null>(null)
+  const countries = ref<Country[]>([])
+  const subjects = ref<Title[]>([])
   const loading = ref(false)
   const error = ref(null)
   const done = ref(false)
   const lead = ref(new Lead({}))
   const { t } = useI18n()
+
   onMounted(() => {
     const settingsService = useShopinvaderService('settings')
     countries.value = settingsService?.options?.countries || []
-    subjects.value = settingsService?.options?.leadSubjects || []
+    subjects.value = props?.subjects || settingsService?.options?.leadSubjects || []
     lead.value.country = countries.value[0]
   })
+
+  const addFile = (e: Event) => {
+    files.value = (e.target as HTMLInputElement).files
+  }
+
+  const clearFile = () => {
+    files.value = null
+    if (inputFile.value) {
+      inputFile.value.value = ''
+    }
+  }
   const save = async (e: Event) => {
     e.preventDefault()
     const leadsService = useShopinvaderService('leads')
@@ -247,7 +315,7 @@
     try {
       error.value = null
       loading.value = true
-      await leadsService?.create(lead.value)
+      await leadsService?.create(lead.value, files.value)
       done.value = true
     } catch (e) {
       console.error(e)
@@ -258,6 +326,7 @@
       loading.value = false
     }
   }
+
 </script>
 <style lang="scss">
 .component-section {

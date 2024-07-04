@@ -358,5 +358,20 @@
     "noresult": "Sin resultados",
     "size": "Nombre de resultados por página",
     "count":"{count} resultado(s)"
+  },
+  "contact":{
+    "title":"Contacto",
+    "message":"Póngase en contacto con nosotros a través del siguiente formulario",
+    "subject":"Asunto",
+    "description":"Mensaje...",
+    "data_protection":"Usted acepta nuestra ",
+    "data_policy": "Política de protección de datos personales",
+    "send":"Enviar",
+    "attachment": "Adjunto",
+    "error": "Se ha producido un error al enviar el formulario. Por favor, inténtelo de nuevo.",
+    "form_sent": {
+      "thankyou_title": "Gracias por su mensaje.",
+      "thankyou_description": "Nos pondremos en contacto con usted lo antes posible."
+    }
   }
 }

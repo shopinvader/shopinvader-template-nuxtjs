@@ -397,12 +397,11 @@
     "title":"Contact",
     "message":"Contactez-nous via le formulaire ci-dessous",
     "subject":"Sujet",
-    "first_option":"SAV",
-    "second_option":"Commercial",
     "description":"Votre message...",
     "data_protection":"Vous accéptez notre ",
     "data_policy": "Politique de protection de données personnelles",
     "send":"Envoyer",
+    "attachment": "Pièce jointe",
     "error": "Une erreur est survenue lors de l'envoi du formulaire.",
     "form_sent": {
       "thankyou_title": "Merci pour votre message !",

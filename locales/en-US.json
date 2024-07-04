@@ -381,12 +381,11 @@
     "title":"Contact",
     "message":"We will be glad to hear from you!",
     "subject":"Subject",
-    "first_option":"Support",
-    "second_option":"Sales",
     "description":"Your message...",
     "data_protection":"You accept our ",
     "data_policy": "Data protection policy",
     "send":"Send",
+    "attachment": "Attachment",
     "error": "An error occured, please try later or contact our support team.",
     "form_sent": {
       "thankyou_title": "Thank you for contacting us !",

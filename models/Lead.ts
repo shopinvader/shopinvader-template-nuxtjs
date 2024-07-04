@@ -15,7 +15,6 @@ export class Lead extends Model {
   company: string | null
   mobile: string | null
   description: string | null
-
   constructor(data: any) {
     super(data)
     this.subject = data?.subject || null
