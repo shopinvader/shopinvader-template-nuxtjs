@@ -106,11 +106,21 @@ function extractTsClass(layerFiles: LayerFile[]): TSFile[] {
 
 async function writeIndexFileContent(applicationRoot: string, type: string, content: string) {
   const dir = applicationRoot + '/' + type
-  // Check if the directory exists
+  // Create the directory if it does not exist
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
   }
-  fs.writeFileSync(dir + '/index.ts', content)
+  // Read the current file content if the file exists
+  if (fs.existsSync(dir + '/index.ts')) {
+    const currentContent = fs.readFileSync(dir + '/index.ts', 'utf8')
+    // Avoid writing the file if the content is the same
+    if (currentContent === content) {
+      console.log(`[ShopInvader] BUILD - #${type} index file is still up to date. Do nothing.`)
+      return
+    }
+  }
+  fs.writeFileSync(dir + '/index.ts', content, 'utf8')
+  console.log(`[ShopInvader] BUILD - new #${type} index file saved.`)
 }
 
 async function buildindexFileContent(nuxt: Nuxt, type: string): Promise<string> {
@@ -193,9 +203,7 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
     } else {
       return
     }
-    console.log(
-      `[ShopInvader] EVENT - ${pShortPath} ${pEvent} => rebuild ${UNICODE_GREEN}#${type}${UNICODE_RESET} index file`
-    )
+    console.log(`[ShopInvader] EVENT - ${pShortPath} ${pEvent} => rebuild #${type} index file`)
     const content = await buildindexFileContent(nuxt, type)
     await writeIndexFileContent(applicationRoot, type, content)
   })
