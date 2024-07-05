@@ -70,6 +70,7 @@ export class Address extends Model {
       zip: this.zip || '',
       city: this.city || '',
       phone: this.phone || '',
+      mobile: this.mobile || '',
       email: this.email,
       vat: this.vat || '',
     }

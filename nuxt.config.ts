@@ -57,7 +57,7 @@ export default defineNuxtConfig({
     "nuxt-delay-hydration",
     "nuxt-icon",
     '@nuxtjs/tailwindcss',
-    'nuxt-simple-sitemap',
+    '@nuxtjs/sitemap',
     'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
