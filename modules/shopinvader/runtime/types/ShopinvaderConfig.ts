@@ -1,6 +1,7 @@
-import type { AuthAPIConfig, AuthOIDCConfig, PaymentService } from '#services'
-import type { $Fetch } from 'ofetch'
 import type {
+  AuthAPIConfig,
+  AuthOIDCConfig,
+  PaymentService,
   AddressService,
   AuthService,
   CartService,
@@ -11,7 +12,8 @@ import type {
   ProductService,
   SaleService,
   SettingService
-} from '~/services'
+} from '#services'
+import type { $Fetch } from 'ofetch'
 
 export interface ShopinvaderProxyConfig {
   url: string
