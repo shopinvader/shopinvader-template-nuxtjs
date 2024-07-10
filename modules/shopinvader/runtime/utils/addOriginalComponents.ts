@@ -1,5 +1,6 @@
 import { addComponent, createResolver, resolveFiles } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
+import { useShopinvaderLogger } from './logger'
 
 /**
  * Add components from other original layers with the component name prefix "original"
@@ -7,6 +8,8 @@ import type { Nuxt } from 'nuxt/schema'
  * @param nuxt
  */
 export const addOriginalComponents = async (nuxt: Nuxt) => {
+  const logger = useShopinvaderLogger()
+
   const layers = nuxt.options._layers
   if (layers.length > 1) {
     for (const layer of layers) {
@@ -27,6 +30,6 @@ export const addOriginalComponents = async (nuxt: Nuxt) => {
         }
       }
     }
-    console.info('Original components added')
+    logger.info('Original components added')
   }
 }
