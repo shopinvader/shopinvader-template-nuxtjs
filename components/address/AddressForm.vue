@@ -125,12 +125,11 @@
   </form>
 </template>
 <script lang="ts" setup>
-import type { Country } from '#models'
-import { type PropType } from 'vue'
-import { Address } from '~/models'
+import { Address, type Country } from '#models'
+
 const props = defineProps({
   address: {
-    type: Object as PropType<Address> | null,
+    type: Address,
     required: false,
     default: () => {
       return new Address({})

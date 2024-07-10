@@ -11,6 +11,7 @@ import {
 } from '@nuxt/kit'
 
 import { type Router } from 'vue-router'
+import { useShopinvaderLogger } from './runtime/utils/logger'
 import {
   type ShopinvaderConfig,
   type ShopinvaderFetchersList
@@ -67,7 +68,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
     }
   },
   async setup(options, nuxt) {
-    const console = useLogger('shopinvader')
+    const logger = useShopinvaderLogger()
     const { resolve } = createResolver(import.meta.url)
     // Default runtimeConfig
     const runtimeConfig = nuxt.options.runtimeConfig || {}
@@ -107,32 +108,8 @@ export default defineNuxtModule<ShopinvaderConfig>({
       order++
     }
 
-    if (nuxt.options.dev && nuxt.options?.devtools?.enabled) {
-      extendPages((pages) => {
-        pages.push({
-          name: 'shopinvader',
-          path: '/_shopinvader',
-          file: resolve('./runtime/devtool/index.vue')
-        })
-      })
-
-      addCustomTab({
-        // unique identifier
-        name: 'shopinvader',
-        // title to display in the tab
-        title: 'Shopinvader',
-        // any icon from Iconify, or a URL to an image
-        icon: 'mdi:space-invaders',
-        // iframe view
-        view: {
-          type: 'iframe',
-          src: '/_shopinvader'
-        }
-      })
-    }
-
     if (nuxt.options.dev) {
-      console.success(
+      logger.success(
         'Shopinvader config loaded - API %s - Elastic %s',
         config.erp.url,
         config.elasticsearch.url

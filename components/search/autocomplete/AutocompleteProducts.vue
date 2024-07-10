@@ -36,18 +36,10 @@
   </div>
 </template>
 <script lang="ts">
-import { type ProductResult } from '#models'
-import type { Product } from '~/models'
-import Spinner from '~~/components/global/Spinner.vue'
-import ProductHit from '../../product/ProductHit.vue'
+import type { ProductResult, Product } from '#models'
 
 export default {
   name: 'AutocompleteProducts',
-
-  components: {
-    'product-hit': ProductHit,
-    Spinner
-  },
   props: {
     query: {
       type: String,

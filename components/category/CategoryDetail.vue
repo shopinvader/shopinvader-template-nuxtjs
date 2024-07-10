@@ -29,8 +29,7 @@
   </search-product>
 </template>
 <script lang="ts" setup>
-import type { CategoryParent } from '#models'
-import { Category } from '#models'
+import { Category, type CategoryParent } from '#models'
 import esb from 'elastic-builder'
 import type { PropType } from 'vue'
 
