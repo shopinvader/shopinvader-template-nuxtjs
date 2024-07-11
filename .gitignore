@@ -7,4 +7,6 @@ node_modules
 .env*
 dist
 models/index.ts
+models/originals.ts
 services/index.ts
+services/originals.ts
