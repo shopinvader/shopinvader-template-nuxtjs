@@ -2,75 +2,43 @@
   <figure
     v-if="imageSized != null"
     class="product-image"
-    :class="{ 'product-image--loaded': loaded }"
-    @click="$emit('click')"
+    @click="onClickImage"
   >
-    <img :src="imageSized.src" :alt="imageSized.alt" ref="image" />
+    <NuxtImg
+      :src="imageSized.src"
+      :alt="imageSized.alt"
+      :title="imageSized.alt"
+      :placeholder="img(imageSized.src, { f: 'webp', blur: 2, q: 10 })"
+    />
   </figure>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { ProductImage, ProductImageSet } from '#models'
 import type { PropType } from 'vue'
-
-export default {
-  name: 'ProductImage',
-  props: {
-    image: {
-      type: Object as PropType<ProductImageSet>,
-      required: true
-    },
-    size: {
-      type: String as PropType<string>,
-      required: false,
-      default: 'large'
-    }
+const props = defineProps({
+  image: {
+    type: Object as PropType<ProductImageSet>,
+    required: true
   },
-  emits: {
-    /** on click event */
-    click: null
-  },
-  data() {
-    return {
-      loaded: false,
-      observer: null as IntersectionObserver | null
-    }
-  },
-  computed: {
-    imageSized(): ProductImage | null {
-      return this.image?.[this?.size as keyof ProductImageSet] || null
-    }
-  },
-  mounted() {
-    const imgRef = this.$refs.image as HTMLImageElement
-    if (imgRef != null) {
-      const observer = new IntersectionObserver((entries) => {
-        const entry = entries[0]
-        if (entry.isIntersecting) {
-          this.loaded = true
-          observer.unobserve(entry.target)
-        }
-      })
-      observer.observe(imgRef)
-      this.observer = observer
-    }
-  },
-  beforeUnmount() {
-    if (this.observer) {
-      this.observer.disconnect()
-    }
+  size: {
+    type: String as PropType<string>,
+    required: false,
+    default: 'large'
   }
+})
+const emit = defineEmits(['click'])
+const img = useImage()
+const imageSized = computed((): ProductImage | null => {
+  return props.image?.[props?.size as keyof ProductImageSet] || null
+})
+const onClickImage = () => {
+  emit('click')
 }
 </script>
 <style lang="scss">
 .product-image {
   img {
     @apply h-full w-full object-contain;
-  }
-  &:not(.product-image--loaded) {
-    @apply animate-pulse rounded-lg bg-gray-100;
-    img {
-      @apply opacity-0;
-    }
   }
 }
 </style>

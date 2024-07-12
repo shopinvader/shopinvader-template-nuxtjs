@@ -170,13 +170,11 @@ export default defineNuxtComponent({
       const cartService = useShopinvaderService('cart')
       const cart = cartService.getCart()
       try {
-        console.log('fetch carrier', cart?.value)
         this.loading = true
         this.error = null
         this.carriers = []
         if (cart?.value) {
           const carriers = (await cartService.getDeliveryCarrier()) || []
-          console.log('getDeliveryCarrier', carriers)
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
               const name =

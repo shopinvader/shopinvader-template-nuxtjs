@@ -36,6 +36,12 @@
     <div class="product-detail__content">
       <div class="content">
         <div class="content__header">
+          <div class="content__ref">
+            <!-- @slot Ref content -->
+            <slot name="ref" :variant="variant">
+              {{ $t('product.ref') }} {{ variant.sku }}
+            </slot>
+          </div>
           <!-- @slot Header content -->
           <slot name="header" :variant="variant">
             <div class="header">
@@ -48,16 +54,14 @@
             </div>
           </slot>
         </div>
-        <div class="content__ref">
-          <!-- @slot Ref content -->
-          <slot name="ref" :variant="variant">
-            {{ variant.sku }}
-          </slot>
-        </div>
+
         <div class="content__shortDescription">
           <!-- @slot Intro content -->
           <slot name="intro" :variant="variant">
             <div v-if="variant.shortDescription" v-html="variant.shortDescription"></div>
+            <nuxt-link to="#description" class="py-2">
+              {{ $t('product.description.link') }}
+            </nuxt-link>
           </slot>
         </div>
         <div class="content__variants">
@@ -108,9 +112,10 @@
         </div>
       </div>
     </div>
-    <div class="product-detail__description">
+    <div class="product-detail__description" id="description">
       <!-- @slot Description content -->
       <slot name="description" :variant="variant">
+        <h2>{{ $t('product.description.title') }}</h2>
         <div v-html="variant.description" class="prose-sm prose max-w-none"></div>
       </slot>
     </div>
@@ -140,96 +145,115 @@
   </div>
   <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { Product, ProductCategory, ProductPrice } from '#models'
 import type { PropType } from 'vue'
 import { useHistoryStore } from '~/stores/history'
-export default {
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: true
-    },
-    cssclass: {
-      type: String,
-      default: ''
-    }
+const props = defineProps({
+  product: {
+    type: Object as PropType<Product>,
+    required: true
   },
-  setup(props) {
-    const localePath = useLocalePath()
-    const variant = ref<any>(props.product)
-    const router = useRouter()
+  cssclass: {
+    type: String,
+    default: ''
+  }
+})
+const localePath = useLocalePath()
+const variant = ref<any>(props.product)
+const router = useRouter()
 
-    useHistoryStore().addProduct(props.product)
-    const changeVariant = (product: Product) => {
-      const item = {
-        ...product,
-        variants: props.product.variants
-      }
-      variant.value = item
-      if (item?.sku) {
-        const route = useRoute()
-        router.push(localePath({ path: route.fullPath, query: { sku: item.sku } }))
-      }
-    }
-    const breadcrumbs = computed(() => {
-      const lastCategoryId: number | null = useHistoryStore()?.lastCategory?.id || null
-      const categories = variant.value.categories || []
-      let category: ProductCategory | null =
-        categories.find((c: any) => c.findCategory(lastCategoryId)) || categories[0] || null
-      const items = []
-      while (category) {
-        items.unshift(category)
-        category = category?.childs?.[0] || null
-      }
-      return items
-    })
-    return {
-      variant,
-      breadcrumbs,
-      changeVariant,
-      localePath
-    }
-  },
-  computed: {
-    variants() {
-      return this.product?.variants || null
-    },
-    ids() {
-      if (!this.product) return []
-      const idList: number[] = []
-      if (this.product.id) {
-        idList.push(this.product.id)
-      }
-      if (this.product.variants) {
-        this.product.variants.forEach((v) => {
-          if (v.id) {
-            idList.push(v.id)
-          }
-        })
-      }
-      return idList
-    },
-    price(): ProductPrice | null {
-      const authService = useShopinvaderService('auth')
-      const user = authService?.getUser()
-      const role = (user?.value?.role as string) || null
-      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
-      if (role !== null && this.variant?.pricesList?.[role]) {
-        price = this.variant?.pricesList?.[role]
-      }
-      return price
-    }
-  },
-  watch: {
-    product: {
-      handler: function (product: Product) {
-        this.variant = product
-      },
-      deep: true
-    }
+onMounted(() => {
+  if (variant.value?.sku) {
+    useHistoryStore()?.addProduct(variant.value)
+  }
+})
+
+const changeVariant = (product: Product) => {
+  const item = {
+    ...product,
+    variants: props.product.variants
+  }
+  variant.value = item
+  if (item?.sku) {
+    const route = useRoute()
+    router.push(localePath({ path: route.fullPath, query: { sku: item.sku } }))
   }
 }
+
+const breadcrumbs = computed(() => {
+  const lastCategoryId: number | null = useHistoryStore()?.lastCategory?.id || null
+  const categories = variant.value.categories || []
+  let category: ProductCategory | null =
+    categories.find((c: any) => c.findCategory(lastCategoryId)) || categories[0] || null
+  const items = []
+  while (category) {
+    items.unshift(category)
+    category = category?.childs?.[0] || null
+  }
+  return items
+})
+
+const variants = computed(() => {
+  return props.product?.variants || null
+})
+
+const ids = computed(() => {
+  if (!props.product) return []
+  const idList: number[] = []
+  if (props.product.id) {
+    idList.push(props.product.id)
+  }
+  if (props.product.variants) {
+    props.product.variants.forEach((v) => {
+      if (v.id) {
+        idList.push(v.id)
+      }
+    })
+  }
+  return idList
+})
+
+const price = computed((): ProductPrice | null => {
+  const authService = useShopinvaderService('auth')
+  const user = authService?.getUser()
+  const role = (user?.value?.role as string) || null
+  let price = variant.value?.pricesList?.['default'] || variant.value?.price || null
+  if (role !== null && variant.value?.pricesList?.[role]) {
+    price = variant.value?.pricesList?.[role]
+  }
+  return price
+})
+
+/** WATCHER */
+watch(
+  () => props.product,
+  (product) => {
+    variant.value = product
+  },
+  { deep: true }
+)
+/** SEO
+useSchemaOrg([
+  defineBreadcrumb({
+    itemListElement: [
+      ... breadcrumbs.value.map((category) => ({
+        name: category.name,
+        item: localePath({ path: '/' + category.urlKey })
+      })),
+      {
+        name: variant.value?.model?.name || variant.value?.name,
+        item: localePath({ path: '/' + variant.value?.urlKey })
+      }
+    ]
+  }),
+  defineProduct({
+    name: variant.value?.name,
+    description: variant.value?.shortDescription,
+    image: variant.value?.images?.[0]?.url,
+    sku: variant.value?.sku
+  })
+])*/
 </script>
 <style lang="scss">
 .product-detail {
@@ -241,7 +265,10 @@ export default {
     @apply w-full flex-grow;
   }
   &__image {
-    @apply w-full px-3 md:w-1/2 lg:w-3/5;
+    @apply w-full py-4 md:pr-5 md:w-1/2 lg:w-3/5;
+    .image-slider {
+      @apply bg-white;
+    }
   }
   &__content {
     @apply w-full pt-5 md:w-1/2 md:px-2 lg:w-2/5;
@@ -263,6 +290,18 @@ export default {
         .variants {
           @apply flex flex-wrap;
         }
+      }
+      &__ref {
+        @apply text-sm text-gray-400 pb-4;
+      }
+      &__shortDescription {
+        @apply text-sm prose max-w-none pb-4;
+        a {
+          @apply text-primary underline;
+        }
+      }
+      &__price {
+        @apply border-t mt-4;
       }
     }
     .variants {

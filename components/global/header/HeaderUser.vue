@@ -33,7 +33,7 @@ const next = async () => {
 </script>
 <style lang="scss">
 .header-user {
-  @apply relative flex;
+  @apply relative flex pb-5;
   &--logged {
     .button {
       &__label {
@@ -42,7 +42,7 @@ const next = async () => {
     }
   }
   .button {
-    @apply btn btn-ghost flex flex-col flex-nowrap max-md:px-1;
+    @apply relative btn btn-ghost flex flex-col flex-nowrap max-md:px-1;
     &__icon {
       @apply text-2xl;
     }

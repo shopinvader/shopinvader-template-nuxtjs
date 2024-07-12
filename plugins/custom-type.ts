@@ -24,6 +24,10 @@ export default definePayloadPlugin(() => {
   definePayloadReviver('CategoryImageSet', (data) => new CategoryImageSet(data))
   definePayloadReducer(
     'CategoryImageSet',
-    (value) => value instanceof CategoryImageSet && value.toJSON()
+    (value) => {
+      if(value instanceof CategoryImageSet) {
+        return value.toJSON()
+      }
+    }
   )
 })
