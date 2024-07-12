@@ -121,7 +121,7 @@ header {
       }
 
       &__title {
-        @apply col-start-2 col-end-2 lg:row-span-2;
+        @apply col-start-2 col-end-2 ;
         .logo {
           @apply flex flex-col items-center;
           &__baseline {
@@ -131,11 +131,14 @@ header {
       }
 
       &__menu {
-        @apply col-start-3 col-end-6 row-start-2;
+        @apply col-start-2 col-end-6 row-start-2 relative;
       }
 
       &__search {
-        @apply col-start-1 col-end-5 max-lg:row-start-2 max-lg:bg-slate-100 lg:col-start-3;
+        @apply col-start-1 col-end-5 max-lg:row-start-2 max-lg:bg-slate-100 lg:col-start-3 flex justify-end;
+        .search-autocomplete {
+          @apply p-2 lg:p-0 lg:max-w-96;
+        }
       }
 
       &__icons {

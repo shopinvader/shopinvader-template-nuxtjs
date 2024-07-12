@@ -62,6 +62,14 @@
     },
     "discount": {
       "tag": "{discount}% Off"
+    },
+    "description": {
+      "title": "Description",
+      "link": "Read more"
+    },
+    "ref": "SKU.",
+    "variants": {
+      "count": "{count} variants available"
     }
   },
   "cart": {

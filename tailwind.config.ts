@@ -7,7 +7,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: 'Montserrat'
+        heading: 'Urbanist',
+        sans: 'Open Sans'
       },
       colors: {
         slate: colors.slate,
@@ -53,6 +54,20 @@ export default {
           '800': '#8c2849',
           '900': '#74253f',
           '950': '#471022'
+        },
+        success: {
+          DEFAULT: '#0EA44D',
+          50: '#CBFBCF',
+          100: '#AFF8B7',
+          200: '#77F38E',
+          300: '#3FEE6D',
+          400: '#13DD58',
+          500: '#0EA44D',
+          600: '#0C8849',
+          700: '#096C42',
+          800: '#075036',
+          900: '#043427',
+          950: '#03261D'
         }
       }
     }
@@ -61,17 +76,19 @@ export default {
     themes: [
       {
         mytheme: {
-          fontFamily: 'Montserrat,"sanssecondaryerif"',
-          primary: '#13263d',
-          secondary: '#dca11d',
-          accent: '#def2ff',
-          neutral: '#42536d',
-          'base-100': '#ffffff',
-          info: '#0284c7',
-          success: '#3EE581',
-          warning: '#fde047',
-          error: '#db2777',
-          '--rounded-box': '.5rem'
+          "color-scheme": "light",
+          "primary": "#13263d",
+          "secondary": "#dca11d",
+          "accent": "#74253f",
+          "success": "#0EA44D",
+          "neutral": "#291334",
+          "base-100": "#f9f9f9",
+          "base-200": "#efeae6",
+          "base-300": "#e7e2df",
+          "base-content": "#291334",
+          "--rounded-btn": "1.9rem",
+          "--tab-border": "2px",
+          "--tab-radius": "0.7rem",
         }
       }
     ],
