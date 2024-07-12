@@ -36,7 +36,7 @@ export default {
 </script>
 <style lang="scss">
 .product-price {
-  @apply flex w-full flex-wrap items-center justify-end gap-x-2;
+  @apply flex w-full flex-wrap items-center justify-end gap-x-1;
   &__value {
     @apply pb-0 text-3xl font-semibold leading-6;
     &--discount {
@@ -44,7 +44,7 @@ export default {
     }
   }
   &__tax {
-    @apply w-full text-sm font-normal text-gray-500;
+    @apply text-xs font-normal text-gray-500;
   }
   &__original {
     @apply text-lg font-normal text-gray-500 line-through;

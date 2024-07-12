@@ -1,3 +1,4 @@
+
 export default defineAppConfig({
   nuxtIcon: {
     aliases: {
@@ -95,5 +96,12 @@ export default defineAppConfig({
         }
       }
     }
+  },
+  theme: {
+    logo: process.env.VUE_APP_LOGO_URL || ''
+  },
+  search: {
+    filters: [
+    ]
   }
 })

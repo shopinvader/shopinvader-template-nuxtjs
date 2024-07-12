@@ -3,14 +3,17 @@ import { BaseServiceElastic } from './BaseServiceElastic'
 
 export class CatalogService extends BaseServiceElastic {
   async search(body: any): Promise<CatalogResult> {
-    body.collapse = {
-      field: 'url_key',
-      inner_hits: [
-        {
-          size: 100,
-          name: 'variants'
-        }
-      ]
+    body = {
+      ...body || {},
+      collapse: {
+        field: 'url_key',
+        inner_hits: [
+          {
+            size: 100,
+            name: 'variants'
+          }
+        ]
+      }
     }
     const result = await this.elasticSearch(body)
     const rawsHits = result?.hits?.hits?.map((hit: any) => {

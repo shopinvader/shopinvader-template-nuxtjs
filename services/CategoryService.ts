@@ -3,6 +3,13 @@ import esb, { MultiMatchQuery } from 'elastic-builder'
 import { BaseServiceElastic } from './BaseServiceElastic'
 
 export class CategoryService extends BaseServiceElastic {
+  navCategories:Category[] | null = null
+
+  async init(services: ShopinvaderServiceList) {
+    this.services = services
+    /** load and cached navigations categories */
+    await this.getNavCategories()
+  }
   async search(body: any): Promise<CategoryResult> {
     const result = await this.elasticSearch(body)
     const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))
@@ -51,6 +58,21 @@ export class CategoryService extends BaseServiceElastic {
       .requestBodySearch()
       .query(new MultiMatchQuery(['name', 'description'], query).type('phrase_prefix'))
     return await this.search(body.toJSON())
+  }
+
+  async getNavCategories(): Promise<Category[]> {
+    if(this.navCategories == null) {
+      const result = await this?.search({
+        size: 20,
+        query: {
+          term: {
+            level: 0
+          }
+        }
+      })
+      this.navCategories = result?.hits || []
+    }
+    return this.navCategories || []
   }
 
   jsonToModel(json: any): Category {

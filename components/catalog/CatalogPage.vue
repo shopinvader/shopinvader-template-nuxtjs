@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 // Display a product or a category page
 import { Category, Product } from '~/models'
-
+const { origin } = useRequestURL()
 const localePath = useLocalePath()
 const route = useRoute()
 /** Get path without locale Prefix */
@@ -43,21 +43,22 @@ if (entity) {
       redirectCode: 301
     })
   }
-  useHead(() => ({
-    title: entity.name,
-    meta: [
+  useHead({
+    link: [
       {
-        hid: 'description',
-        name: 'description',
-        content: entity.metaDescription || entity.shortDescription || ''
-      },
-      {
-        hid: 'keywords',
-        name: 'keywords',
-        content: entity.metaKeywords || ''
+        rel: 'canonical',
+        href: `${origin}/${entity.urlKey}`
       }
     ]
-  }))
+  })
+  useSeoMeta({
+    title: entity.name,
+    ogTitle: entity.name,
+    description: entity.metaDescription || entity.shortDescription || '',
+    ogDescription: entity.metaDescription || entity.shortDescription || '',
+    keywords: entity.metaKeywords || '',
+    ogImage: entity.images?.[0]?.medium?.src || ''
+  })
 }
 const product = computed(() => (entity instanceof Product ? entity : null))
 const category = computed(() => (entity instanceof Category ? entity : null))

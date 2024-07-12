@@ -5,7 +5,7 @@
       {{ error }}
     </div>
     <div class="product-variant-selector__axis">
-      <div v-for="(axis, name) of variantAxes" :key="name" class="variant-axis">
+      <label v-for="(axis, name) of variantAxes" :key="name" class="variant-axis">
         <div class="variant-axis__name">
           {{ name }}
         </div>
@@ -40,7 +40,7 @@
             </option>
           </select>
         </div>
-      </div>
+      </label>
     </div>
   </div>
 </template>

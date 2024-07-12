@@ -28,9 +28,9 @@ const linesCount = computed((): number => {
 </script>
 <style lang="scss">
 .cart-icon {
-  @apply relative flex px-2;
+  @apply relative flex px-2 pb-5;
   .button {
-    @apply btn btn-ghost flex flex-col flex-nowrap max-md:px-1;
+    @apply btn btn-ghost flex flex-col flex-nowrap max-md:px-1 relative;
     &__icon {
       @apply text-2xl;
     }

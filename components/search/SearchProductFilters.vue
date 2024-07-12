@@ -1,39 +1,35 @@
 <template>
-  <search-terms-aggregation
-    name="categories"
-    nested-path="categories"
-    field="categories.name"
-    title="Categories"
-    :aggregation-query="categoryQuery"
-    url-param="category"
-  ></search-terms-aggregation>
-  <search-terms-aggregation
-    name="color"
-    field="variant_attributes.color"
-    title="Color"
-    url-param="name"
-  ></search-terms-aggregation>
-  <search-range-price
-    name="price"
-    field="price.default.value"
-    :title="$t('filters.price')"
-    :close="false"
-    url-param="price"
-  ></search-range-price>
+  <div v-for="filter in filters" :key="filter.name">
+    <component :is="filter.component" v-bind="filter"></component>
+  </div>
 </template>
+<script lang="ts" setup>
+const appConfig = useAppConfig()
+interface FilterComponent {
+  name: string;
+  field: string;
+  title: string;
+  close: boolean;
+  component: Component;
+  urlParam: string;
+}
 
-<script lang="ts">
-import { BoolQuery, TermQuery } from 'elastic-builder'
-export default defineNuxtComponent({
-  methods: {
-    categoryQuery(query: BoolQuery) {
-      if (query !== null) {
-        query.must(new TermQuery('categories.level', '0'))
-      } else {
-        query = new BoolQuery().must(new TermQuery('categories.level', '0'))
-      }
-      return query
+const filters = ref<FilterComponent[]>([])
+if (appConfig?.search?.filters) {
+  filters.value = appConfig.search.filters.map((filter: any) => {
+    let component: Component | string | null = null
+    if (filter.type === 'range-price') {
+      component = resolveComponent('SearchRangePrice')
+    } else {
+      component = resolveComponent('SearchTermsAggregation')
     }
-  }
-})
+
+    return {
+      ...filter,
+      close: filter.close || false,
+      title: filter.title || $t(`filters.${filter.name}`),
+      component
+    }
+  })
+}
 </script>

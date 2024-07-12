@@ -48,10 +48,12 @@ export default defineNuxtComponent({
     open: {
       immediate: true,
       handler(open) {
-        if (open) {
-          document.body.classList.add('aside--opened')
-        } else {
-          document.body.classList.remove('aside--opened')
+        if(document?.body) {
+          if (open) {
+            document.body.classList.add('aside--opened')
+          } else {
+            document.body.classList.remove('aside--opened')
+          }
         }
       }
     }
