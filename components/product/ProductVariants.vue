@@ -8,7 +8,12 @@
       @mouseover="mouseoverVariant(product)"
       @mouseleave="mouseleaveVariant(product)"
     >
-      <product-image v-if="product?.images?.[0]" :image="product.images[0]" class="hit__image">
+      <product-image
+        v-if="product?.images?.[0]"
+        :image="product.images[0]"
+        :size="size"
+        class="hit__image"
+      >
       </product-image>
       <div class="hit__title">
         {{ product.shortName }}
@@ -24,6 +29,11 @@ export default {
     variants: {
       type: Array as PropType<Product[]>,
       required: true
+    },
+    size: {
+      type: String as PropType<string>,
+      required: false,
+      default: 'small'
     }
   },
   emits: ['selectVariant', 'mouseover', 'mouseleave'],
