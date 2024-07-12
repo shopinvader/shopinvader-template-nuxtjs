@@ -67,6 +67,14 @@
     },
     "discount": {
       "tag": "{discount}% de descuento"
+    },
+    "description": {
+      "title": "Descripción",
+      "link": "Ver más"
+    },
+    "ref": "Ref.",
+    "variants": {
+      "count": "{count} modelos disponibles",
     }
   },
   "cart": {

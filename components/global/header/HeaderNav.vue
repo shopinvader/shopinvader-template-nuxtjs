@@ -20,6 +20,7 @@
           <button
             type="button"
             class="btn btn-ghost btn-sm"
+            :aria-label="level1.name"
             @click="clickedIndex = clickedIndex == level1.id ? null : level1.id"
           >
             <icon name="right" />
@@ -45,54 +46,28 @@
     </ul>
   </nav>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { Category } from '#models'
-
-export default defineNuxtComponent({
-  fetchKey: 'category',
-  data() {
-    return {
-      categories: [] as Category[]
-    }
-  },
-  async asyncData() {
-    let categories: Category[] = []
-    try {
-      const categoryService = useShopinvaderService('categories')
-      const result = await categoryService?.search({
-        size: 10,
-        query: {
-          term: {
-            level: 0
-          }
-        }
-      })
-      categories = result?.hits || []
-    } catch (error) {
-      categories = []
-      console.error(error)
-    }
-
-    return {
-      categories
-    }
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const hoverIndex = ref<number | null>(null)
-    const clickedIndex = ref<number | null>(null)
-    return {
-      localePath,
-      hoverIndex,
-      clickedIndex
-    }
+const localePath = useLocalePath()
+const hoverIndex = ref<number | null>(null)
+const clickedIndex = ref<number | null>(null)
+const categories = ref<Category[]>([])
+const { data } = await useAsyncData(
+  'categories',
+  async () => {
+    const categoryService = useShopinvaderService('categories')
+    return await categoryService.getNavCategories()
   }
-})
+)
+if (data.value) {
+  categories.value = data.value
+}
+
 </script>
 <style lang="scss">
 .drawer-content {
   .navbar {
-    @apply relative flex flex-1 justify-start p-0;
+    @apply flex flex-1 justify-start p-0;
     .navbar__level1 {
       position: unset !important;
       .level1__item {

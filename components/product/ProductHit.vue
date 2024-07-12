@@ -34,11 +34,9 @@
         </div>
         <div class="body__variants">
           <slot name="variants" :variants="variants">
-            <product-variants
-              v-if="variants && variants?.length > 1 && variants?.length < 8"
-              :variants="variants"
-              @select-variant="changeVariant"
-            />
+            <div v-if="variant?.variantCount && variant?.variantCount > 1">
+              {{ $t('product.variants.count', { count : variant?.variantCount}) }}
+            </div>
           </slot>
         </div>
         <div class="body__desc">
@@ -140,7 +138,7 @@ const changeVariant = (v: Product) => {
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card relative flex h-full flex-col border p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3;
+  @apply card card-bordered relative flex h-full flex-col p-2 duration-300 ease-in hover:rounded-md hover:shadow-xl lg:p-3;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
@@ -148,12 +146,16 @@ const changeVariant = (v: Product) => {
     @apply absolute left-1 top-2 z-10;
   }
   &__image {
-    @apply relative aspect-square max-h-full cursor-pointer overflow-hidden;
+    @apply relative  aspect-square  max-h-full cursor-pointer overflow-hidden pb-2;
     .product-image {
-      @apply h-full w-full rounded-md py-2;
+      @apply h-full w-full rounded-md ;
+      img {
+        @apply card h-full w-full object-contain hover:scale-125 transition-transform;
+
+      }
     }
     .noimage {
-      @apply h-full w-full rounded-md bg-slate-50;
+      @apply card h-full w-full bg-slate-100;
     }
   }
 
@@ -161,7 +163,7 @@ const changeVariant = (v: Product) => {
     @apply card-body grow px-0 py-2 text-sm;
 
     .body__title {
-      @apply line-clamp-2 font-bold;
+      @apply line-clamp-2;
       flex-grow: 1;
       cursor: pointer;
     }
@@ -196,21 +198,17 @@ const changeVariant = (v: Product) => {
       }
     }
     .body__price {
+      .product-price {
+        @apply justify-start;
+        &__value {
+          @apply text-lg font-bold;
+
+        }
+      }
       @apply text-right;
     }
     .body__variants {
-      .variants {
-        @apply py-0;
-        &__hit {
-          @apply h-10 w-10 p-1;
-          .hit__image {
-            @apply p-1;
-          }
-          .hit__title {
-            @apply hidden;
-          }
-        }
-      }
+      @apply text-gray-600 text-xs;
     }
   }
   &--inline {
