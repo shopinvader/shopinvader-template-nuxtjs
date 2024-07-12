@@ -1,31 +1,31 @@
 <template>
-  <div class="navbar-bottom">
+  <div class="btm-nav">
     <slot name="header"></slot>
     <slot name="content">
-      <div class="navbar-bottom__icons">
-        <nuxt-link :to="localePath('/') || '/'" class="iconlink">
-          <div class="navlink">
-            <icon class="home-icon" name="home"></icon>
-            <span class="navlink__label">
-              {{ $t('navbar.home') }}
-            </span>
-          </div>
-        </nuxt-link>
-        <nuxt-link :to="localePath('/search') || '/search'" class="iconlink">
-          <div class="navlink">
-            <icon class="search-icon" name="search" />
-            <span class="navlink__label">
-              {{ $t('navbar.search') }}
-            </span>
-          </div>
-        </nuxt-link>
-        <div class="iconlink">
-          <lazy-cart-icon class="cart-icon"></lazy-cart-icon>
-        </div>
-        <div class="iconlink">
-          <lazy-header-user class="user-icon"></lazy-header-user>
-        </div>
-      </div>
+      <nuxt-link :to="localePath('/') || '/'" class="iconlink">
+        <icon class="h-5 w-5" name="home"></icon>
+        <span class="btm-nav-label">
+          {{ $t('navbar.home') }}
+        </span>
+      </nuxt-link>
+      <nuxt-link :to="localePath('/search') || '/search'" class="iconlink">
+        <icon class="h-5 w-5" name="search" />
+        <span class="btm-nav-label">
+          {{ $t('navbar.search') }}
+        </span>
+      </nuxt-link>
+      <nuxt-link :to="localePath('/cart') || '/search'" class="iconlink">
+        <icon class="h-5 w-5" name="cart" />
+        <span class="btm-nav-label">
+          {{ $t('navbar.cart') }}
+        </span>
+      </nuxt-link>
+      <nuxt-link :to="localePath('/account') || '/search'" class="iconlink">
+        <icon class="h-5 w-5" name="user" />
+        <span class="btm-nav-label">
+          {{ $t('navbar.search') }}
+        </span>
+      </nuxt-link>
     </slot>
     <slot name="footer"></slot>
   </div>
@@ -36,39 +36,8 @@ export default {
 }
 </script>
 <style lang="scss">
-.navbar-bottom {
-  @apply fixed bottom-0 left-0 right-0 border-t-gray-200 bg-white pb-2 pt-2;
-  &__icons {
-    @apply flex items-center justify-between font-normal;
-    .router-link-active {
-      @apply font-bold;
-    }
-    .iconlink {
-      @apply flex w-1/4 flex-col items-center justify-center;
-      .icon,
-      .search-icon {
-        @apply mx-auto text-3xl leading-3;
-      }
-
-      .navlink {
-        @apply flex flex-col items-center justify-center rounded-md border-0 bg-white p-1 text-gray-600 hover:bg-gray-300;
-        &__label {
-          @apply block w-full text-center text-xs normal-case transition-all duration-100 ease-in-out;
-        }
-      }
-      .cart-icon {
-        .cart-badge {
-          @apply hidden;
-        }
-      }
-      .user-icon {
-        .button {
-          &__icon {
-            @apply text-2xl;
-          }
-        }
-      }
-    }
-  }
+.btm-nav {
+  @apply text-xs drop-shadow-2xl;
 }
+
 </style>

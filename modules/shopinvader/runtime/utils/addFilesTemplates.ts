@@ -160,17 +160,16 @@ async function buildindexFileContent(
     .join('\n')
 
   // Add all originals file
-  contents.originals += files
-    .filter((f) => f.target === 'originals')
-    .map((f) => {
-      logger.log(
-        `[ShopInvader] BUILD - ShopInvader model ${UNICODE_GREEN}${f.name}${UNICODE_RESET} overrided by your custom model. You can use ${UNICODE_GREEN}import { ${f.name} from #models/originals ${UNICODE_RESET} to access the original.`
-      )
+  const originalsFiles = files.filter((f) => f.target === 'originals')
+  contents.originals += originalsFiles.map((f) => {
       const type = f.nodeType == 'interface' ? 'type ' : ''
       return `export ${type} { ${f.name} } from '${f.path.replace('.ts', '')}'`
     })
     .join('\n')
+  if(originalsFiles.length > 0) {
 
+    logger.log(`[ShopInvader] BUILD - Some ShopInvader model are overrided by your custom model. You can use ${UNICODE_GREEN}import * as OriginalModels from #models/originals ${UNICODE_RESET} to access the originals.`)
+  }
   return contents
 }
 

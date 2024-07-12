@@ -3,8 +3,20 @@ import { fileURLToPath } from 'url'
 const dir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
+  nitro: {
+    compressPublicAssets: true,
+    minify: true
+  },
+  delayHydration: {
+    mode: 'init'
+  },
   app: {
     head: {
+      templateParams: {
+        separator: "|",
+        siteName: "Shopinvader Demo",
+      },
+      titleTemplate: "%s %separator %siteName",
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
@@ -23,9 +35,6 @@ export default defineNuxtConfig({
     },
     // Client-side and server-side configuration
     public: {
-      theme: {
-        logo: process.env.VUE_APP_LOGO_URL || ''
-      },
       shopinvader: {
         erp: {
           key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || '',
@@ -51,17 +60,20 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    'nuxt-delay-hydration',
+    '@nuxtjs/critters',
     'nuxt-icon',
     '@nuxtjs/tailwindcss',
-    '@nuxtjs/sitemap',
-    'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@vueuse/motion/nuxt',
     '@nuxt/image',
-    '@nuxt/eslint'
+    '@nuxt/eslint',
+    '@nuxt/fonts',
+    '@nuxtjs/sitemap',
+    'nuxt-simple-robots',
+    'nuxt-schema-org',
+    "nuxt-delay-hydration"
   ],
   piniaPersistedstate: {
     cookieOptions: {
@@ -69,13 +81,18 @@ export default defineNuxtConfig({
     },
     storage: 'localStorage'
   },
-  delayHydration: {
-    mode: 'mount'
+  image: {
+    format: ["webp"],
   },
   pages: true,
   sitemap: {
     sources: ["/api/_sitemap-urls"],
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
+  },
+  critters: {
+    config: {
+      preload: 'swap',
+    },
   },
   i18n: {
     locales: [
@@ -105,7 +122,12 @@ export default defineNuxtConfig({
     lazy: true,
     langDir: 'locales',
     defaultLocale: 'en',
-    strategy: 'prefix_except_default'
+    strategy: 'prefix_except_default',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "i18n_redirected",
+      alwaysRedirect: true,
+    },
   },
   build: {
     transpile: ['@shopinvader/cart']
@@ -114,6 +136,11 @@ export default defineNuxtConfig({
     enabled: false
   },
   routeRules: {
+    '/': {
+      index: true,
+      ssr: true,
+      swr: true
+    },
     '/account/**': {
       index: false,
       ssr: false
@@ -129,6 +156,20 @@ export default defineNuxtConfig({
     '/search': {
       index: true,
       ssr: false
+    }
+  },
+  site: {
+    url: 'https://example.com',
+    name: 'My Website'
+  },
+  fonts: {
+    providers: {
+      google: {}
+    },
+    defaults: {
+      fallbacks: {
+        monospace: ['Inter']
+      }
     }
   }
 })

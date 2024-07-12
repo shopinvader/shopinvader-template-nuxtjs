@@ -16,7 +16,7 @@
             v-model="query"
             type="text"
             name="query"
-            class="input"
+            class="search-input"
             @focus="focused = true"
             @keydown="onKeySearch"
             autocomplete="off"
@@ -173,15 +173,15 @@ export default {
   &__form {
     .form {
       &__input {
-        @apply relative m-2 flex cursor-pointer items-center rounded bg-gray-100 md:rounded-full lg:m-1;
-        .input {
-          @apply input-xs flex-1 bg-transparent p-2 text-sm md:input-md;
+        @apply input input-bordered flex items-center gap-2 relative pr-0;
+        .search-input {
+          @apply grow bg-transparent;
           &:focus {
             outline: none;
           }
         }
         .button {
-          @apply m-2 flex h-full justify-center rounded-full bg-secondary p-1 text-white md:p-2;
+          @apply btn btn-ghost btn-sm h-full text-primary;
         }
       }
       &__dropdown {
