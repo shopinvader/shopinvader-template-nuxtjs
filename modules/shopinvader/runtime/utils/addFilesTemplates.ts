@@ -61,7 +61,10 @@ function extractTsClass(type: string, filePaths: string[]): TSFile[] {
 
   const sourceFiles = project.getSourceFiles()
   for (const sourceFile of sourceFiles) {
-    if (!excludedFiles.includes(sourceFile.getFilePath())) {
+    if (
+      !excludedFiles.includes(sourceFile.getFilePath()) &&
+      !sourceFile.getFilePath().includes('index.ts')
+    ) {
       const imports = extractTSImports(type, sourceFile)
       for (const [name, [declaration]] of sourceFile.getExportedDeclarations()) {
         // Add the class/interface to the list

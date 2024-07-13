@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const logLevel = erpProxyConfig.logLevel || 0
+    const logLevel = erpProxyConfig.logLevel || 10
     const proxiedUrl: string = erpProxyConfig.url + event.node.req.url?.replace('/shopinvader', '')
     const reqHeaders = getHeaders(event)
     const headers: HeadersInit = {

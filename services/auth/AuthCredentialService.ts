@@ -14,7 +14,8 @@ export interface AuthAPIConfig {
  * @extends AuthService
  */
 export class AuthCredentialService extends AuthService {
-  public type: string = 'credentials'
+  override type: string = 'credentials'
+  override authEndpoint: string = 'auth'
   private config: AuthAPIConfig
 
   constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthAPIConfig) {
@@ -27,7 +28,8 @@ export class AuthCredentialService extends AuthService {
     }
   }
 
-  init(): Promise<any> {
+  override init(services: ShopinvaderServiceList): Promise<any> {
+    super.init(services)
     if (this.getSession()) {
       this.profile()
     } else {

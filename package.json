@@ -40,7 +40,6 @@
     "sharp": "^0.33.2"
   },
   "devDependencies": {
-    "@iconify-json/ph": "^1.1.13",
     "@nuxt/content": "^2.13.2",
     "@nuxt/devtools": "^0.4.1",
     "@nuxt/eslint": "^0.3.13",

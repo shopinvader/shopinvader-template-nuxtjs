@@ -310,13 +310,13 @@ useSchemaOrg([
         @apply pb-4 text-sm text-gray-400;
       }
       &__shortDescription {
-        @apply prose order-2 max-w-none pb-0 text-sm;
+        @apply prose max-w-none pb-0 text-sm;
         a {
           @apply text-primary underline;
         }
       }
       &__stock {
-        @apply order-4 pb-4;
+        @apply pb-4;
         .stock-status {
           @apply font-bold;
           &__available .stock-text {
@@ -325,10 +325,10 @@ useSchemaOrg([
         }
       }
       &__price {
-        @apply order-1 mt-4 min-h-48 border-t sm:min-h-14;
+        @apply mt-4 min-h-48 border-t sm:min-h-14;
       }
       &__cart {
-        @apply order-6 sm:min-h-28;
+        @apply sm:min-h-28;
         .product-cart {
           @apply transition-opacity duration-700 ease-in-out;
         }

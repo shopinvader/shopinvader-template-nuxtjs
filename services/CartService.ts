@@ -56,7 +56,7 @@ class CartObserver {
 }
 
 export class CartService extends BaseServiceErp {
-  public endpoint: string = 'carts'
+  override endpoint: string = 'carts'
   public cart: any | null
   public id: number | null = null // Cart ID
   public products: Product[] = []
@@ -355,7 +355,6 @@ class ErpFetchWrapper {
     response.json = () => {
       return response._data
     }
-    console.log()
     return response
   }
 

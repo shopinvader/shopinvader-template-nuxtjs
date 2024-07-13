@@ -1,38 +1,37 @@
 @tailwind components;
 
-
-
 @layer components {
   .heading {
-      @apply font-heading uppercase font-bold
-    }
+    @apply font-heading font-bold uppercase;
   }
 
   h2,
   .h2 {
-
-    @apply font-heading leading-tight text-3xl mt-0 mb-5 text-primary;
+    @apply mb-5 mt-0 font-heading text-3xl leading-tight text-primary;
   }
 
   h1,
   .h1 {
-    @apply font-heading leading-tight text-4xl mt-0 mb-5 text-primary;
+    @apply mb-5 mt-0 font-heading text-4xl leading-tight text-primary;
   }
 
   .backdrop {
-    @apply backdrop-blur-sm fixed top-0 left-0 z-20 h-screen w-screen bg-gray-900/20;
+    @apply fixed left-0 top-0 z-20 h-screen w-screen bg-gray-900/20 backdrop-blur-sm;
   }
-
+  .icon {
+    font-size: 24px;
+  }
   .form-control {
-    .label, label {
+    .label,
+    label {
       &.required {
         .label-text {
           &:after {
-            @apply text-error inline pr-1;
-            content: "*";
-
+            @apply inline pr-1 text-error;
+            content: '*';
           }
         }
       }
     }
   }
+}
