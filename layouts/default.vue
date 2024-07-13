@@ -2,37 +2,22 @@
   <div id="app">
     <div id="header-target"></div>
     <slot name="header">
-      <header-main></header-main>
+      <HeaderMain />
     </slot>
     <main>
       <slot name="body"> </slot>
       <slot></slot>
     </main>
-    <footer-main></footer-main>
-    <navbar-bottom class="md:hidden"></navbar-bottom>
+    <server-only>
+      <FooterMain />
+    </server-only>
     <client-only>
-      <notifications></notifications>
+      <lazy-navbar-bottom class="md:hidden"></lazy-navbar-bottom>
+      <Notifications />
     </client-only>
   </div>
 </template>
-<script lang="ts">
-import FooterMain from '~/components/global/FooterMain.vue'
-import NavbarBottomVue from '~/components/global/NavbarBottom.vue'
-import Notifications from '~/components/global/Notifications.vue'
-import HeaderMain from '~/components/global/header/HeaderMain.vue'
-export default defineNuxtComponent({
-  name: 'Default',
-  components: {
-    'header-main': HeaderMain,
-    'footer-main': FooterMain,
-    'notifications-vue': Notifications,
-    'navbar-bottom': NavbarBottomVue
-  },
-  setup() {
-    return {}
-  }
-})
-</script>
+<script lang="ts" setup></script>
 <style lang="scss">
 main {
   @apply container mx-auto flex-grow;

@@ -3,7 +3,7 @@
     <div class="product-detail__header">
       <!-- @slot Breadcrumbs content -->
       <slot name="breadcrumbs" :variant="variant">
-        <div class="breadcrumbs text-sm">
+        <div class="max-lg:hidden breadcrumbs text-sm">
           <ul>
             <li>
               <nuxt-link :to="localePath({ path: '/' })">
@@ -20,6 +20,10 @@
             </li>
           </ul>
         </div>
+        <nuxt-link v-if="lastCategory" :to="localePath({ path: '/' + lastCategory.urlKey })" class="lg:hidden btn btn-ghost btn-sm">
+          <icon name="left" class="mr-2" />
+          {{ lastCategory.name }}
+        </nuxt-link>
       </slot>
     </div>
     <div class="product-detail__tag">
@@ -88,8 +92,8 @@
         <div class="content__stock">
           <!-- @slot Sxtock content -->
           <slot name="stock" :variant="variant">
-            <lazy-product-stock v-if="variant.stock !== null" :stock="variant.stock">
-            </lazy-product-stock>
+            <product-stock v-if="variant.stock !== null" :stock="variant.stock">
+            </product-stock>
           </slot>
         </div>
         <div class="content__price">
@@ -106,7 +110,7 @@
           <!-- @slot Price content -->
           <slot name="add-to-cart" :variant="variant">
             <client-only>
-              <product-cart v-if="variant !== null" :product="variant"></product-cart>
+              <lazy-product-cart v-if="variant !== null" :product="variant"></lazy-product-cart>
             </client-only>
           </slot>
         </div>
@@ -143,7 +147,9 @@
       </slot>
     </div>
   </div>
-  <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
+  <dev-only>
+    <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
+  </dev-only>
 </template>
 <script lang="ts" setup>
 import type { Product, ProductCategory, ProductPrice } from '#models'
@@ -194,6 +200,9 @@ const breadcrumbs = computed(() => {
   return items
 })
 
+const lastCategory = computed(() => {
+  return breadcrumbs.value[breadcrumbs.value.length - 1] || null
+})
 const variants = computed(() => {
   return props.product?.variants || null
 })
@@ -233,7 +242,7 @@ watch(
   },
   { deep: true }
 )
-/** SEO
+/** SEO*/
 useSchemaOrg([
   defineBreadcrumb({
     itemListElement: [
@@ -253,7 +262,7 @@ useSchemaOrg([
     image: variant.value?.images?.[0]?.url,
     sku: variant.value?.sku
   })
-])*/
+])
 </script>
 <style lang="scss">
 .product-detail {
@@ -301,7 +310,10 @@ useSchemaOrg([
         }
       }
       &__price {
-        @apply border-t mt-4 min-h-40;
+        @apply border-t mt-4 min-h-48 sm:min-h-40;
+        .product-cart {
+          @apply transition-opacity duration-700 ease-in-out;
+        }
       }
     }
     .variants {

@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     minify: true
   },
   delayHydration: {
-    mode: 'init'
+    mode: 'mount'
   },
   app: {
     head: {
@@ -138,7 +138,7 @@ export default defineNuxtConfig({
     '/': {
       index: true,
       ssr: true,
-      swr: true
+      swr: 60*60
     },
     '/account/**': {
       index: false,
@@ -164,11 +164,6 @@ export default defineNuxtConfig({
   fonts: {
     providers: {
       google: {}
-    },
-    defaults: {
-      fallbacks: {
-        monospace: ['Inter']
-      }
     }
   }
 })
