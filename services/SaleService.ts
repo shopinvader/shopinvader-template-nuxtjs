@@ -4,12 +4,12 @@ import { BaseServiceErp } from './BaseServiceErp'
 
 // Service to fetch Sales
 export class SaleService extends BaseServiceErp {
-  public endpoint: string = 'sales'
+  public override endpoint: string = 'sales'
   public endpointInvoice: string = 'invoice'
   public urlEndpointInvoice: string = ''
   public productService: ProductService | null = null
 
-  init(services: ShopinvaderServiceList) {
+  override init(services: ShopinvaderServiceList) {
     super.init(services)
     this.productService = services.products
     this.urlEndpointInvoice = this.buildUrlEndpoint(this.erpBaseUrl, this.endpointInvoice)
@@ -27,7 +27,7 @@ export class SaleService extends BaseServiceErp {
   }
 
   async getById(id: number): Promise<Sale | null> {
-    const json = await this.ofetch(this.urlEndpoint + '/' + id)
+    const json = await this.ofetch(`${this.urlEndpoint}/${id}`)
     if (!json) return null
     const model = this.jsonToModel(json)
 
@@ -35,13 +35,12 @@ export class SaleService extends BaseServiceErp {
   }
 
   download(id: number): Promise<Blob> | null {
-    return this.ofetch(this.urlEndpoint + '/' + id + '/download', { responseType: 'blob' }) || null
+    return this.ofetch(`${this.urlEndpoint}/${id}/download'`, { responseType: 'blob' }) || null
   }
 
   downloadInvoice(id: number): Promise<Blob> | null {
     return (
-      this.ofetch(this.urlEndpointInvoice + '/' + id + '/download', { responseType: 'blob' }) ||
-      null
+      this.ofetch(`${this.urlEndpointInvoice}/${id}/download'`, { responseType: 'blob' }) || null
     )
   }
 
