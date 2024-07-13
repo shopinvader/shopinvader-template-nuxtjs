@@ -12,6 +12,7 @@ export default defineAppConfig({
       search: 'mdi:magnify',
       'search-circle': 'ic:round-search',
       plus: 'mdi:plus',
+      minus: 'mdi:minus',
       delete: 'mdi:trash',
       remove: 'ph:trash',
       edit: 'ph:pencil',

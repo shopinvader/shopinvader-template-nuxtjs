@@ -1,5 +1,4 @@
 <template>
-  <json-viewer :data="category"></json-viewer>
   <search-product v-if="category !== null" :provider="providerFunction" :query="query">
     <template #header>
       <div class="border-b">
@@ -27,6 +26,9 @@
       </slot>
     </template>
   </search-product>
+  <dev-only>
+    <lazy-debug-json-viewer :data="category"></lazy-debug-json-viewer>
+  </dev-only>
 </template>
 <script lang="ts" setup>
 import { Category, type CategoryParent } from '#models'
