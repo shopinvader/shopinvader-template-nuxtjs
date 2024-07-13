@@ -43,7 +43,7 @@ export class AddressService extends BaseServiceErp {
     if (this.addresses == null) {
       this.addresses = (await this.getAll()) || []
     }
-    await this.ofetch(this.urlEndpoint + '/' + address.type + 'address.id', {
+    await this.ofetch(`${this.urlEndpoint}/${address.type}/${address.id}`, {
       method: 'DELETE'
     })
     this.addresses = this.addresses.filter((item: Address) => item.id !== address.id)
