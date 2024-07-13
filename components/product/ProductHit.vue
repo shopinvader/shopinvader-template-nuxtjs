@@ -3,7 +3,8 @@
     class="product-hit"
     :class="{
       'product-hit--inline': inline,
-      'product-hit--loading': !variant
+      'product-hit--loading': !variant,
+      cssClass
     }"
   >
     <slot name="header"></slot>
@@ -35,7 +36,7 @@
         <div class="body__variants">
           <slot name="variants" :variants="variants">
             <div v-if="variant?.variantCount && variant?.variantCount > 1">
-              {{ $t('product.variants.count', { count : variant?.variantCount}) }}
+              {{ $t('product.variants.count', { count: variant?.variantCount }) }}
             </div>
           </slot>
         </div>
@@ -81,6 +82,10 @@ const props = defineProps({
     type: Boolean,
     required: false,
     default: false
+  },
+  cssClass: {
+    type: String,
+    default: ''
   }
 })
 const localePath = useLocalePath()
@@ -146,12 +151,11 @@ const changeVariant = (v: Product) => {
     @apply absolute left-1 top-2 z-10;
   }
   &__image {
-    @apply relative  aspect-square  max-h-full cursor-pointer overflow-hidden pb-2;
+    @apply relative aspect-square max-h-full cursor-pointer overflow-hidden pb-2;
     .product-image {
-      @apply h-full w-full rounded-md ;
+      @apply h-full w-full rounded-md;
       img {
-        @apply card h-full w-full object-contain hover:scale-125 transition-transform;
-
+        @apply card h-full w-full object-contain transition-transform hover:scale-125;
       }
     }
     .noimage {
@@ -202,13 +206,12 @@ const changeVariant = (v: Product) => {
         @apply justify-start;
         &__value {
           @apply text-lg font-bold;
-
         }
       }
       @apply text-right;
     }
     .body__variants {
-      @apply text-gray-600 text-xs;
+      @apply text-xs text-gray-600;
     }
   }
   &--inline {
@@ -217,7 +220,7 @@ const changeVariant = (v: Product) => {
       @apply w-1/5 md:w-1/6;
     }
     .product-hit__body {
-      @apply flex flex-col flex-wrap justify-between md:flex-row;
+      @apply flex flex-col flex-wrap justify-between pl-6 md:flex-row;
       .body__title {
         @apply md:order-1 md:w-1/3;
       }
@@ -225,10 +228,16 @@ const changeVariant = (v: Product) => {
         @apply md:order-3 md:w-2/3;
       }
       .body__price {
-        @apply text-right md:order-2 md:w-1/3 md:border-l md:p-3;
+        @apply md:order-2 md:w-1/3 md:border-l md:p-3;
+        .product-price {
+          @apply justify-end;
+        }
       }
       .body__actions {
-        @apply md:order-4 md:w-1/3 md:border-l md:p-3;
+        @apply md:order-5 md:w-1/3 md:p-3;
+      }
+      .body__stock {
+        @apply md:order-4 md:w-2/3;
       }
     }
   }

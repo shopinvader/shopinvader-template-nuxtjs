@@ -7,9 +7,11 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
     minify: true
   },
+
   delayHydration: {
     mode: 'init'
   },
+
   app: {
     head: {
       templateParams: {
@@ -20,7 +22,9 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
+
   css: ['~/assets/css/main.scss'],
+
   runtimeConfig: {
     // Serveur-side only configuration
     basicAuth: process.env.NUXT_BASIC_AUTH || '',
@@ -59,9 +63,10 @@ export default defineNuxtConfig({
       }
     }
   },
+
   modules: [
     '@nuxtjs/critters',
-    'nuxt-icon',
+    "@nuxt/icon",
     '@nuxtjs/tailwindcss',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
@@ -71,29 +76,40 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxtjs/sitemap',
-    'nuxt-simple-robots',
     'nuxt-schema-org',
-    "nuxt-delay-hydration"
+    "nuxt-delay-hydration",
+    "@nuxt/content",
+    "@nuxtjs/robots"
   ],
+
+  content: {
+    documentDriven: false
+  },
+
   piniaPersistedstate: {
     cookieOptions: {
       sameSite: 'strict'
     },
     storage: 'localStorage'
   },
+
   image: {
     format: ["webp"],
   },
+
   pages: true,
+
   sitemap: {
     sources: ["/api/_sitemap-urls"],
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
+
   critters: {
     config: {
       preload: 'swap',
     },
   },
+
   i18n: {
     locales: [
       {
@@ -129,17 +145,20 @@ export default defineNuxtConfig({
       alwaysRedirect: true,
     },
   },
+
   build: {
     transpile: ['@shopinvader/cart']
   },
+
   devtools: {
-    enabled: false
+    enabled: true
   },
+
   routeRules: {
     '/': {
       index: true,
       ssr: true,
-      swr: true
+      swr: 60*60
     },
     '/account/**': {
       index: false,
@@ -158,18 +177,17 @@ export default defineNuxtConfig({
       ssr: false
     }
   },
+
   site: {
     url: 'https://example.com',
     name: 'My Website'
   },
+
   fonts: {
     providers: {
       google: {}
-    },
-    defaults: {
-      fallbacks: {
-        monospace: ['Inter']
-      }
     }
-  }
+  },
+
+  compatibilityDate: '2024-07-22'
 })

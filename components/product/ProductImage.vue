@@ -1,9 +1,5 @@
 <template>
-  <figure
-    v-if="imageSized != null"
-    class="product-image"
-    @click="onClickImage"
-  >
+  <figure v-if="imageSized != null" class="product-image" :class="cssClass" @click="onClickImage">
     <NuxtImg
       :src="imageSized.src"
       :alt="imageSized.alt"
@@ -19,6 +15,10 @@ const props = defineProps({
   image: {
     type: Object as PropType<ProductImageSet>,
     required: true
+  },
+  cssClass: {
+    type: String,
+    default: ''
   },
   size: {
     type: String as PropType<string>,
