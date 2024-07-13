@@ -18,7 +18,7 @@
                 @input="searchAddress(searchQuery)"
               />
               <span>
-                <icon name="mdi:magnify" class="text-lg"></icon>
+                <icon name="search" class="text-lg"></icon>
               </span>
             </label>
           </div>
@@ -29,7 +29,7 @@
           </template>
         </div>
         <button type="button" class="btn btn-primary btn-sm" @click="createAddress">
-          <icon name="mdi:plus" class="text-lg"></icon>
+          <icon name="plus" class="text-lg"></icon>
           {{ $t('actions.create') }}
         </button>
       </slot>

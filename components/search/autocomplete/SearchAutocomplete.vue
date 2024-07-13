@@ -9,7 +9,7 @@
     <form @submit="submit" class="search-autocomplete__form">
       <div class="form">
         <span v-show="focused" class="form__back" @click="resetSearch">
-          <icon name="ic:baseline-arrow-back" class="text-3xl" />
+          <icon name="left" class="text-3xl" />
         </span>
         <label class="form__input">
           <input
@@ -169,11 +169,13 @@ export default {
 <style lang="scss">
 .search-autocomplete {
   @apply relative w-full;
-
+  .backdrop {
+    @apply fixed inset-0 z-30 bg-black/50;
+  }
   &__form {
     .form {
       &__input {
-        @apply input input-bordered flex items-center gap-2 relative pr-0;
+        @apply input input-bordered relative flex items-center gap-2 pr-0;
         .search-input {
           @apply grow bg-transparent;
           &:focus {

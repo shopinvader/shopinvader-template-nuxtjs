@@ -29,28 +29,22 @@
   </footer>
 </template>
 <script lang="ts" setup>
-import type { Category } from '#models'
-const categories = ref<Category[]>([])
-
-const { data } = await useAsyncData(
+const { data:categories } = await useLazyAsyncData(
   'categories',
   async () => {
     const categoryService = useShopinvaderService('categories')
     return await categoryService.getNavCategories()
   }
 )
-if (data.value) {
-  categories.value = data.value
-}
 </script>
 <style lang="scss">
 .footer {
   @apply w-screen bg-white p-10;
   &__body {
-    @apply container mx-auto p-4 py-10 flex;
+    @apply container mx-auto p-4 py-10 flex max-md:flex-wrap;
     .body {
       &__logo {
-        @apply w-1/4;
+        @apply w-full md:w-1/4;
       }
       &__content {
         ul.nav {

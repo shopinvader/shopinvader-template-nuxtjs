@@ -6,19 +6,17 @@
 		@binding {string} onChange callback function to fire quantity change save
 	  -->
     <slot name="selector" v-bind="{ value }" :on-change="inputValue">
-      <div class="input-group">
-        <div class="cartline-qty__btn min" @click="decrQuantity()">-</div>
-        <input
-          ref="input"
-          v-model.number="value"
-          type="number"
-          class="cartline-qty__input"
-          @click="selectContent"
-          @keydown="keydown"
-          @keypress="isNumber($event)"
-        />
-        <div class="cartline-qty__btn max" @click="incrQuantity()">+</div>
-      </div>
+      <icon class="input-qty__btn min" @click="decrQuantity()" name="minus" />
+      <input
+        ref="input"
+        v-model.number="value"
+        type="number"
+        class="input-qty__input"
+        @click="selectContent"
+        @keydown="keydown"
+        @keypress="isNumber($event)"
+      />
+      <icon class="input-qty__btn max" @click="incrQuantity()" name="plus" />
     </slot>
   </div>
 </template>
@@ -110,6 +108,16 @@ export default {
 </script>
 <style lang="scss">
 .input-qty {
+  @apply input input-bordered flex items-center gap-2;
+  &__input {
+    @apply grow text-center w-24;
+    appearance: textfield;
+  }
+  &__btn {
+    @apply cursor-pointer hover:text-primary-500;
+  }
+}
+.input-qty-old {
   @apply w-52 rounded-full border-2 border-primary;
   .cartline-qty {
     @apply form-control mx-3 w-10 max-w-fit;

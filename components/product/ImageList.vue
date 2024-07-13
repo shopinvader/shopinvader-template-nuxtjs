@@ -9,16 +9,15 @@
           class="image-slider__item"
           :key="'img-' + index"
         >
-          <nuxt-img
+          <NuxtPicture
             v-if="image.large?.src"
             :src="image.large?.src"
             class="item-image"
             :class="zoom ? 'image-zoom' : ''"
             :alt="image.large?.alt"
             :title="image.large?.alt"
-            height="500"
-            width="500"
-            :placeholder="img(image.large?.src, { h: 548, f: 'webp', q: 10 })"
+            :img-attrs="{ height: 500 }"
+            :placeholder="img(image.large?.src, { h: 500, f: 'webp', q: 10 })"
             format="webp"
             @click="onImageZoom(image)"
           />
@@ -82,7 +81,7 @@
               class="zoom__image"
               :style="`background-image: url(${img(selectedImage?.xlarge?.src, { h: 1500, f: 'webp', blur: 0, q: 100 })})`"
             >
-              <nuxt-img
+              <NuxtPicture
                 v-if="selectedImage.xlarge?.src"
                 :src="selectedImage.xlarge?.src"
                 :alt="selectedImage.xlarge?.alt"
@@ -168,12 +167,14 @@ const onImageHover = (e:MouseEvent) => {
 </script>
 <style lang="scss">
 .image-slider {
-  @apply carousel w-full items-center rounded max-md:h-full;
+  @apply carousel w-full items-center rounded max-md:h-full min-h-[500px];
   &__item {
     @apply carousel-item h-full w-full items-center justify-center max-md:max-h-96;
   }
   .item-image {
-    @apply mx-auto max-h-96 min-h-max p-6 object-contain max-sm:w-full lg:max-h-[500px] cursor-zoom-in;
+    img {
+      @apply mx-auto max-h-96 min-h-max p-6 object-contain max-sm:w-full lg:max-h-[500px] cursor-zoom-in;
+    }
   }
 }
 .slider-indicators {

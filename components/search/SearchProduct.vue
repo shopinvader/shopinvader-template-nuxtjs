@@ -5,6 +5,7 @@
     :query="query"
     :pagination="true"
     cardinality-field="url_key"
+    class="search-product"
     :sort-options="
       sortOptions || [
         { label: $t('search.sort.relevance'), value: '_score', order: 'desc' },
@@ -24,14 +25,41 @@
       </div>
       <search-selected-filters></search-selected-filters>
     </template>
+    <template #action>
+      <slot name="action"></slot>
+      <div class="search-product__display">
+        <button
+          @click="displayMode = 'grid'"
+          class="btn-grid btn"
+          :class="{ 'btn--selected': displayMode == 'grid' }"
+        >
+          <icon name="product-grid"></icon>
+          {{ $t('search.display_mode.grid') }}
+        </button>
+        <button
+          @click="displayMode = 'list'"
+          class="btn-list btn"
+          :class="{ 'btn--selected': displayMode == 'list' }"
+        >
+          <icon name="product-list"></icon>
+          {{ $t('search.display_mode.list') }}
+        </button>
+      </div>
+    </template>
     <template #items="{ items }">
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
+      <div
+        class="search-product__results"
+        :class="{
+          'search-product__results--grid': displayMode === 'grid',
+          'search-product__results--list': displayMode === 'list'
+        }"
+      >
         <template v-for="(item, index) in items">
           <slot name="product" :product="item">
             <product-hit
               :key="item.id"
               :product="item"
-              :inline="false"
+              :inline="displayMode == 'list'"
               v-animate="{ name: 'searchProduct', index }"
             >
               <template #variants>
@@ -48,13 +76,11 @@
   </search-base>
 </template>
 <script lang="ts" setup>
+import type { SearchSortItem } from '#models'
 import { matchAllQuery } from 'elastic-builder'
 
-export interface SortItem {
-  label: string
-  value: string
-  order?: string
-}
+const displayMode = ref('grid')
+
 defineProps({
   provider: {
     type: Function,
@@ -68,7 +94,7 @@ defineProps({
     }
   },
   sortOptions: {
-    type: Array as PropType<Array<SortItem>>,
+    type: Array as PropType<Array<SearchSortItem>>,
     required: false,
     default: () => {
       return null
@@ -76,3 +102,24 @@ defineProps({
   }
 })
 </script>
+<style lang="scss">
+.search-product {
+  &__results {
+    &--grid {
+      @apply grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3;
+    }
+    &--list {
+      @apply grid grid-cols-1 gap-3;
+    }
+  }
+  &__display {
+    @apply flex flex-1 justify-end gap-2 px-3 max-md:order-first;
+    button.btn {
+      @apply btn-outline btn-sm rounded-md;
+      &--selected {
+        @apply border-primary;
+      }
+    }
+  }
+}
+</style>

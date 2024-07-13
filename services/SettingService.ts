@@ -5,10 +5,16 @@ export class SettingService extends BaseServiceErp {
   public endpoint: string = 'settings'
   public values: Settings | null = null
 
+  setSettings(res: any) {
+    this.values = new Settings(res)
+  }
+
   async init(service: ShopinvaderServiceList) {
     super.init(service)
-    const res = await this.getAll()
-    this.values = new Settings(res)
+    if(this.values === null) {
+      const res = await this.getAll()
+      this.setSettings(res)
+    }
   }
 
   async getAll(): Promise<Settings | null> {

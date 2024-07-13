@@ -1,5 +1,5 @@
 <template>
-  <div v-if="price !== null" class="product-price">
+  <div v-if="price !== null" class="product-price" :class="cssClass">
     <slot name="price" :price="price">
       <div v-if="hasDiscount" class="product-price__original">
         {{ $filter.currency(price.original_value) }}
@@ -25,6 +25,10 @@ export default {
     price: {
       type: Object as PropType<ProductPrice>,
       required: true
+    },
+    cssClass: {
+      type: String,
+      default: ''
     }
   },
   computed: {

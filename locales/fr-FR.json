@@ -30,6 +30,10 @@
       "queries": "Mes recherches récentes",
       "clear": "Effacer",
       "seeall": "Voir tout"
+    },
+    "display_mode": {
+      "grid": "Mosaïque",
+      "list": "Liste"
     }
   },
   "filters": {

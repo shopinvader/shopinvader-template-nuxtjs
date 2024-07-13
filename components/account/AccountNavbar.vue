@@ -13,7 +13,7 @@
         </div>
         <div class="intro__btn">
           <button class="btn-link text-white" @click="display = !display">
-            <icon name="ph:list" class="text-4xl" />
+            <icon name="menu" class="text-4xl" />
           </button>
         </div>
       </div>

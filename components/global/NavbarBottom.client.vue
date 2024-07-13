@@ -37,7 +37,15 @@ export default {
 </script>
 <style lang="scss">
 .btm-nav {
-  @apply text-xs drop-shadow-2xl;
+  @apply md:hidden text-xs drop-shadow-2xl;
+  animation: navbar-slideup 0.5s ease-in-out;
 }
-
+@keyframes navbar-slideup {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
 </style>

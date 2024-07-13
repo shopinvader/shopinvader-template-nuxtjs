@@ -4,6 +4,9 @@ export default defineNuxtPlugin((/* nuxtApp */) => {
   return {
     provide: {
       filter: {
+        nl2br(value: string) {
+          return value.replace(/\n/g, '<br>')
+        },
         currency(value: number) {
           const formatter = new Intl.NumberFormat('fr-FR', {
             style: 'currency',

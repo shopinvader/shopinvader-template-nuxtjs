@@ -10,22 +10,11 @@
       </span>
     </div>
     <client-only>
-      <div v-if="linesCount > 0" class="cart-badge">
-        <template v-if="linesCount < 99">
-          {{ linesCount }}
-        </template>
-        <template v-else> +99 </template>
-      </div>
+      <lazy-cart-count />
     </client-only>
   </nuxt-link>
 </template>
-<script lang="ts" setup>
-const cartService = useShopinvaderService('cart')
-const cart = cartService?.getCart()
-const linesCount = computed((): number => {
-  return cart?.value?.lines?.length || 0
-})
-</script>
+<script lang="ts" setup></script>
 <style lang="scss">
 .cart-icon {
   @apply relative flex px-2 pb-5;
@@ -41,8 +30,6 @@ const linesCount = computed((): number => {
       @apply block w-full text-center text-xs font-normal normal-case transition-all duration-100 ease-in-out md:hidden;
     }
   }
-  .cart-badge {
-    @apply badge badge-secondary absolute right-1 top-1 text-xs font-semibold text-white shadow-md;
-  }
+
 }
 </style>

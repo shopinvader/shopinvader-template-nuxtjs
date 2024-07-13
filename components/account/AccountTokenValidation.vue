@@ -7,7 +7,7 @@
       <div class="rounded-3xl bg-white p-10">
         <div class="py-4 text-left">
           <nuxt-link :to="localePath('/')" class="btn btn-primary btn-sm rounded-full text-white">
-            <icon name="material-symbols:arrow-back-ios" class="inline"> </icon>
+            <icon name="left" class="inline"> </icon>
             {{ $t('btn.back_to_homepage') }}
           </nuxt-link>
         </div>

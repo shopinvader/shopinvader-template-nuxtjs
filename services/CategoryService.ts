@@ -7,8 +7,6 @@ export class CategoryService extends BaseServiceElastic {
 
   async init(services: ShopinvaderServiceList) {
     this.services = services
-    /** load and cached navigations categories */
-    await this.getNavCategories()
   }
   async search(body: any): Promise<CategoryResult> {
     const result = await this.elasticSearch(body)
