@@ -37,7 +37,7 @@ export default {
 </script>
 <style lang="scss">
 .btm-nav {
-  @apply md:hidden text-xs drop-shadow-2xl;
+  @apply text-xs drop-shadow-2xl md:hidden;
   animation: navbar-slideup 0.5s ease-in-out;
 }
 @keyframes navbar-slideup {
