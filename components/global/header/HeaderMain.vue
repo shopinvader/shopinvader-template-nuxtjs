@@ -145,7 +145,7 @@ header {
         @apply col-start-3 col-end-5 row-start-1 hidden items-center justify-end gap-2 px-2 md:flex lg:col-start-5;
         .button {
           &__icon {
-            @apply rounded-full bg-primary p-1.5 text-4xl text-white;
+            @apply bg-primary p-1.5 text-4xl text-white;
           }
         }
       }
