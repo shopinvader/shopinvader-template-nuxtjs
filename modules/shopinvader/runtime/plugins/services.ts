@@ -130,6 +130,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     customer: new CustomerService(isoLocale, erpFetch, erpBaseUrl)
   }
 
+  const { settings } = useAppConfig()
+  if(settings && services.settings) {
+    services.settings.setSettings(settings)
+  }
   // Let the child add custom services or replace the default ones
   await nuxtApp.callHook('shopinvader:services', services, fetchers, shopinvaderConfig, nuxtApp)
 

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="product !== null" class="product-cart">
+  <div v-if="product !== null" class="product-cart" :class="cssClass">
     <slot name="input" :product="product" :qty="qty">
       <input-qty
         v-if="!disabledAddToCart"
@@ -99,6 +99,10 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    cssClass: {
+      type: String,
+      default: ''
     }
   },
   emits: {

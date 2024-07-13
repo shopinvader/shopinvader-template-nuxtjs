@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar">
+  <nav class="navbar" :class="`navbar--${status}`">
     <ul class="navbar__level1">
       <li
         v-for="(level1, index) in categories"
@@ -47,26 +47,24 @@
   </nav>
 </template>
 <script lang="ts" setup>
-import type { Category } from '#models'
 const localePath = useLocalePath()
 const hoverIndex = ref<number | null>(null)
 const clickedIndex = ref<number | null>(null)
-const categories = ref<Category[]>([])
-const { data } = await useAsyncData(
+const { data:categories, status } = await useLazyAsyncData(
   'categories',
   async () => {
     const categoryService = useShopinvaderService('categories')
     return await categoryService.getNavCategories()
   }
 )
-if (data.value) {
-  categories.value = data.value
-}
 
 </script>
 <style lang="scss">
 .drawer-content {
   .navbar {
+    &--pending {
+      @apply opacity-50 min-h-16;
+    }
     @apply flex flex-1 justify-start p-0;
     .navbar__level1 {
       position: unset !important;

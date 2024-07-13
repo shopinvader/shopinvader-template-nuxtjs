@@ -48,7 +48,6 @@ function extractTSImports(type: string, sourceFile: SourceFile): string[] {
 function extractTsClass(type: string, filePaths: string[]): TSFile[] {
   const declarations: TSFile[] = []
   const project = new Project({
-    tsConfigFilePath: 'tsconfig.json',
     skipFileDependencyResolution: true,
     skipLoadingLibFiles: true,
     skipAddingFilesFromTsConfig: true
@@ -62,7 +61,10 @@ function extractTsClass(type: string, filePaths: string[]): TSFile[] {
 
   const sourceFiles = project.getSourceFiles()
   for (const sourceFile of sourceFiles) {
-    if (!excludedFiles.includes(sourceFile.getFilePath())) {
+    if (
+      !excludedFiles.includes(sourceFile.getFilePath()) &&
+      !sourceFile.getFilePath().includes('index.ts')
+    ) {
       const imports = extractTSImports(type, sourceFile)
       for (const [name, [declaration]] of sourceFile.getExportedDeclarations()) {
         // Add the class/interface to the list
@@ -161,14 +163,16 @@ async function buildindexFileContent(
 
   // Add all originals file
   const originalsFiles = files.filter((f) => f.target === 'originals')
-  contents.originals += originalsFiles.map((f) => {
+  contents.originals += originalsFiles
+    .map((f) => {
       const type = f.nodeType == 'interface' ? 'type ' : ''
       return `export ${type} { ${f.name} } from '${f.path.replace('.ts', '')}'`
     })
     .join('\n')
-  if(originalsFiles.length > 0) {
-
-    logger.log(`[ShopInvader] BUILD - Some ShopInvader model are overrided by your custom model. You can use ${UNICODE_GREEN}import * as OriginalModels from #models/originals ${UNICODE_RESET} to access the originals.`)
+  if (originalsFiles.length > 0) {
+    logger.log(
+      `[ShopInvader] BUILD - Some ShopInvader model are overrided by your custom model. You can use ${UNICODE_GREEN}import * as OriginalModels from #models/originals ${UNICODE_RESET} to access the originals.`
+    )
   }
   return contents
 }
@@ -190,7 +194,6 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
     if (layers.length > 0) {
       for (const layer of layers) {
         if (layer.cwd !== applicationRoot) {
-          console.log(layer.cwd, indexFile)
           await writeFileContent(
             layer.cwd,
             type,

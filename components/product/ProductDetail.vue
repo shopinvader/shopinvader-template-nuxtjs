@@ -3,7 +3,7 @@
     <div class="product-detail__header">
       <!-- @slot Breadcrumbs content -->
       <slot name="breadcrumbs" :variant="variant">
-        <div class="breadcrumbs text-sm">
+        <div class="breadcrumbs text-sm max-lg:hidden">
           <ul>
             <li>
               <nuxt-link :to="localePath({ path: '/' })">
@@ -19,6 +19,16 @@
               {{ variant?.model?.name || variant?.name }}
             </li>
           </ul>
+        </div>
+        <div class="lg:hidden">
+          <nuxt-link
+            v-if="lastCategory"
+            :to="localePath({ path: '/' + lastCategory.urlKey })"
+            class="btn btn-ghost btn-sm lg:hidden"
+          >
+            <icon name="left" class="mr-2" />
+            {{ lastCategory.name }}
+          </nuxt-link>
         </div>
       </slot>
     </div>
@@ -38,9 +48,7 @@
         <div class="content__header">
           <div class="content__ref">
             <!-- @slot Ref content -->
-            <slot name="ref" :variant="variant">
-              {{ $t('product.ref') }} {{ variant.sku }}
-            </slot>
+            <slot name="ref" :variant="variant"> {{ $t('product.ref') }} {{ variant.sku }} </slot>
           </div>
           <!-- @slot Header content -->
           <slot name="header" :variant="variant">
@@ -78,7 +86,7 @@
               @select-variant="changeVariant"
             />
             <product-variants
-              v-else-if="variants !== null"
+              v-else-if="variants !== null && variants.length > 1"
               :variants="variants"
               @select-variant="changeVariant"
             >
@@ -88,25 +96,26 @@
         <div class="content__stock">
           <!-- @slot Sxtock content -->
           <slot name="stock" :variant="variant">
-            <lazy-product-stock v-if="variant.stock !== null" :stock="variant.stock">
-            </lazy-product-stock>
+            <product-stock v-if="variant.stock !== null" :stock="variant.stock"> </product-stock>
           </slot>
         </div>
         <div class="content__price">
           <!-- @slot Price content -->
           <slot name="price" :variant="variant">
             <client-only>
-              <lazy-product-price v-if="price !== null" :price="price" class="py-4 text-right">
+              <lazy-product-price v-if="price !== null" :price="price" css-class="py-4 text-right">
                 <template #price>
                   <slot name="price" :price="price"></slot>
                 </template>
               </lazy-product-price>
             </client-only>
           </slot>
+        </div>
+        <div class="content__cart">
           <!-- @slot Price content -->
           <slot name="add-to-cart" :variant="variant">
             <client-only>
-              <product-cart v-if="variant !== null" :product="variant"></product-cart>
+              <lazy-product-cart v-if="variant !== null" :product="variant"></lazy-product-cart>
             </client-only>
           </slot>
         </div>
@@ -143,7 +152,9 @@
       </slot>
     </div>
   </div>
-  <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
+  <dev-only>
+    <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
+  </dev-only>
 </template>
 <script lang="ts" setup>
 import type { Product, ProductCategory, ProductPrice } from '#models'
@@ -194,6 +205,9 @@ const breadcrumbs = computed(() => {
   return items
 })
 
+const lastCategory = computed(() => {
+  return breadcrumbs.value[breadcrumbs.value.length - 1] || null
+})
 const variants = computed(() => {
   return props.product?.variants || null
 })
@@ -233,11 +247,11 @@ watch(
   },
   { deep: true }
 )
-/** SEO
+/** SEO*/
 useSchemaOrg([
   defineBreadcrumb({
     itemListElement: [
-      ... breadcrumbs.value.map((category) => ({
+      ...breadcrumbs.value.map((category) => ({
         name: category.name,
         item: localePath({ path: '/' + category.urlKey })
       })),
@@ -253,7 +267,7 @@ useSchemaOrg([
     image: variant.value?.images?.[0]?.url,
     sku: variant.value?.sku
   })
-])*/
+])
 </script>
 <style lang="scss">
 .product-detail {
@@ -265,7 +279,7 @@ useSchemaOrg([
     @apply w-full flex-grow;
   }
   &__image {
-    @apply w-full py-4 md:pr-5 md:w-1/2 lg:w-3/5;
+    @apply w-full py-4 md:w-1/2 md:pr-5 lg:w-3/5;
     .image-slider {
       @apply bg-white;
     }
@@ -292,16 +306,31 @@ useSchemaOrg([
         }
       }
       &__ref {
-        @apply text-sm text-gray-400 pb-4;
+        @apply pb-4 text-sm text-gray-400;
       }
       &__shortDescription {
-        @apply text-sm prose max-w-none pb-4;
+        @apply prose max-w-none pb-0 text-sm;
         a {
           @apply text-primary underline;
         }
       }
+      &__stock {
+        @apply pb-4;
+        .stock-status {
+          @apply font-bold;
+          &__available .stock-text {
+            @apply text-success;
+          }
+        }
+      }
       &__price {
-        @apply border-t mt-4 min-h-40;
+        @apply mt-4 min-h-48 border-t sm:min-h-14;
+      }
+      &__cart {
+        @apply sm:min-h-28;
+        .product-cart {
+          @apply transition-opacity duration-700 ease-in-out;
+        }
       }
     }
     .variants {

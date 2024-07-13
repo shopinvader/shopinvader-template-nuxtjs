@@ -1,10 +1,14 @@
 <template>
-  <json-viewer :data="category"></json-viewer>
-  <search-product v-if="category !== null" :provider="providerFunction" :query="query">
+  <search-product
+    v-if="category !== null"
+    :provider="providerFunction"
+    :query="query"
+    class="category-detail"
+  >
     <template #header>
-      <div class="border-b">
+      <div class="category-detail__header">
         <slot name="name" :category="category">
-          <h1 class="mb-0">
+          <h1 class="header__name">
             {{ category.name }}
           </h1>
         </slot>
@@ -27,6 +31,9 @@
       </slot>
     </template>
   </search-product>
+  <dev-only>
+    <lazy-debug-json-viewer :data="category"></lazy-debug-json-viewer>
+  </dev-only>
 </template>
 <script lang="ts" setup>
 import { Category, type CategoryParent } from '#models'
@@ -79,3 +86,13 @@ onMounted(() => {
   useHistoryStore()?.setLastCategory(props.category)
 })
 </script>
+<style lang="scss">
+.category-detail {
+  &__header {
+    @apply border-b p-4;
+    .header__name {
+      @apply text-2xl font-bold;
+    }
+  }
+}
+</style>

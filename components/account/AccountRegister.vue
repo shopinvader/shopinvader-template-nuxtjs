@@ -4,7 +4,7 @@
       <div v-if="accountIsCreated" class="message">
         <div class="message__container">
           <div class="icon-wrapper">
-            <icon name="ic:outline-email" class="icon-wrapper__icon"> </icon>
+            <icon name="email" class="icon-wrapper__icon"> </icon>
           </div>
           <div class="text-content">
             {{ $t('account.register.notification_registration_thankyou') }}

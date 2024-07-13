@@ -16,7 +16,7 @@ export class BaseServiceErp extends BaseServiceLocalized {
     this.erpBaseUrl = erpBaseUrl
   }
 
-  init(services: ShopinvaderServiceList): void {
+  override init(services: ShopinvaderServiceList): void {
     super.init(services)
     this.urlEndpoint = this.buildUrlEndpoint(this.erpBaseUrl, this.endpoint)
   }
