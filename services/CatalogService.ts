@@ -9,7 +9,7 @@ export class CatalogService extends BaseServiceElastic {
         field: 'url_key',
         inner_hits: [
           {
-            size: 100,
+            size: 0,
             name: 'variants'
           }
         ]

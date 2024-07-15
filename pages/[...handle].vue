@@ -1,4 +1,4 @@
 <template>
-  <lazy-catalog-page></lazy-catalog-page>
+  <catalog-page></catalog-page>
 </template>
 <script setup lang="ts"></script>

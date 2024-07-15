@@ -7,8 +7,8 @@ export class SettingService extends BaseServiceErp {
 
   async init(service: ShopinvaderServiceList) {
     super.init(service)
-    const res = await this.getAll()
-    this.values = new Settings(res)
+    // const res = await this.getAll()
+    // this.values = new Settings(res)
   }
 
   async getAll(): Promise<Settings | null> {

@@ -83,6 +83,8 @@ export default defineNuxtConfig({
   },
   image: {
     format: ["webp"],
+    provider: 'netlify',
+    domains: ['luminous-babka-12ccff.netlify.app', 'orod.fr']
   },
   pages: true,
   sitemap: {
@@ -155,13 +157,18 @@ export default defineNuxtConfig({
     '/search': {
       index: true,
       ssr: false
-    }
+    },
   },
   site: {
     url: 'https://example.com',
     name: 'My Website'
   },
   fonts: {
+    defaults: {
+      weights: [300, 400, 700],
+      styles: ['normal', 'italic'],
+      subsets: ['latin-ext', 'latin']
+    },
     providers: {
       google: {}
     }
