@@ -10,13 +10,14 @@ export default defineNuxtConfig({
   delayHydration: {
     mode: 'mount'
   },
+  hub: {},
   app: {
     head: {
       templateParams: {
-        separator: "|",
-        siteName: "Shopinvader Demo",
+        separator: '|',
+        siteName: 'Shopinvader Demo'
       },
-      titleTemplate: "%s %separator %siteName",
+      titleTemplate: '%s %separator %siteName',
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
@@ -73,7 +74,8 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-simple-robots',
     'nuxt-schema-org',
-    "nuxt-delay-hydration"
+    'nuxt-delay-hydration',
+    '@nuxthub/core'
   ],
   piniaPersistedstate: {
     cookieOptions: {
@@ -82,7 +84,7 @@ export default defineNuxtConfig({
     storage: 'localStorage'
   },
   image: {
-    format: ["webp"],
+    format: ['webp']
   },
   pages: true,
   sitemap: {
@@ -90,8 +92,8 @@ export default defineNuxtConfig({
   },
   critters: {
     config: {
-      preload: 'swap',
-    },
+      preload: 'swap'
+    }
   },
   i18n: {
     locales: [
@@ -124,9 +126,9 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
       useCookie: true,
-      cookieKey: "i18n_redirected",
-      alwaysRedirect: true,
-    },
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true
+    }
   },
   build: {
     transpile: ['@shopinvader/cart']
@@ -138,7 +140,7 @@ export default defineNuxtConfig({
     '/': {
       index: true,
       ssr: true,
-      swr: 60*60
+      swr: 60 * 60
     },
     '/account/**': {
       index: false,
