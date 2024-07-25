@@ -2,14 +2,9 @@
   <nuxt-layout name="login">
     <template #body>
       <div
-        class="mx-auto rounded-3xl bg-white px-4 pt-16 md:max-w-3xl md:px-0 md:pb-52"
+        class="card card-body max-w-xl bg-white"
       >
-        <div class="flex justify-center pb-4">
-          <Logo></Logo>
-        </div>
-        <div class="mx-auto md:max-w-md">
-          <account-set-new-password ></account-set-new-password>
-        </div>
+        <account-set-new-password ></account-set-new-password>
       </div>
     </template>
   </nuxt-layout>

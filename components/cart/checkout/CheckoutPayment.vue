@@ -13,7 +13,7 @@
           <payment-method-list :paymentData="paymentData"></payment-method-list>
         </slot>
       </template>
-      <template v-else>
+      <template v-else-if="loading">
         <div class="checkout-payment__loading">
           <spinner></spinner>
           <div>
@@ -96,7 +96,6 @@ export default defineNuxtComponent({
     const cartService = useShopinvaderService('cart')
     const paymentService = useShopinvaderService('payment')
     const cart = cartService.getCart()
-    const router = useRouter()
     const loading = ref(true)
     const methods = ref([] as PaymentWithComponent[])
     const error = ref(null)

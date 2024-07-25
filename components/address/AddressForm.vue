@@ -38,7 +38,7 @@
       <input
         v-model="value.street"
         required
-        bled="submitted"
+        :disabled="submitted"
         type="text"
         class="input-bordered input w-full"
       />

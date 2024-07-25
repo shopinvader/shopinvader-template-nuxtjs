@@ -5,7 +5,8 @@ import {
   CartDiscount,
   CartInvoicing,
   CartDelivery,
-  Model
+  Model,
+  Address
 } from '#models'
 
 export class Cart extends Model {
@@ -88,5 +89,12 @@ export class Cart extends Model {
   static setLines(cart: Cart, lines: CartLine[]) {
     cart.lines = lines
     cart.linesCount = Cart.getLinesCount(lines)
+  }
+  hasValidAddresses() {
+    const addresses = [this.invoicing?.address || null, this.delivery?.address || null]
+    return addresses.every((address: (Address| null)) => address && address?.isValidAddress())
+  }
+  hasSameAddress() {
+    return this.invoicing?.address?.id === this.delivery?.address?.id
   }
 }

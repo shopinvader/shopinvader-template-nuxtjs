@@ -122,6 +122,7 @@
       "checkout": "Commander"
     },
     "address": {
+      "warning": "Les adresses sélectionnées ne sont pas complètes",
       "title": "Mes adresses",
       "no-address": "Aucune adresse Sélectionnée",
       "select": "Sélectionner une adresse",
@@ -184,6 +185,7 @@
       "password": "Mot de passe",
       "forgot_password": "Mot de passe oublié ?",
       "not_yet_account": "Vous n'avez pas encore de compte ?",
+      "password_requirements": "Le mot de passe doit contenir au moins 6 caractères.",
       "create_account": "Créer un compte !",
       "sign_in": "Se connecter"
     },
@@ -234,6 +236,8 @@
     "address": {
       "title": "Mes adresses",
       "name": "Nom et Prénom",
+      "firstname": "Prénom",
+      "lastname": "Nom",
       "email": "Email",
       "street": "Adresse",
       "street2": "Complément d'adresse",
@@ -280,6 +284,7 @@
     "close": "Fermer"
   },
   "address": {
+    "uncomplete": "Cette adresse est incomplète",
     "name": "Nom et Prénom",
     "street": "Rue",
     "zip": "Code postal",

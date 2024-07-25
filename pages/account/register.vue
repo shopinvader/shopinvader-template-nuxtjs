@@ -1,7 +1,7 @@
 <template>
   <nuxt-layout name="login">
     <template #body>
-      <div class="rounded-3xl bg-white p-10">
+      <div>
         <AccountRegister v-if="!user"> </AccountRegister>
       </div>
     </template>

@@ -119,6 +119,7 @@
       "checkout": "Confirmar"
     },
     "address": {
+      "warning": "Las direcciones elegidas no están completas.",
       "title": "Mis direcciones",
       "no-address": "No se ha seleccionado ninguna dirección",
       "select": "Seleccionar una dirección",
@@ -173,6 +174,16 @@
       },
       "modify_btn": "Editar la información de perfil"
     },
+    "login": {
+      "description": "",
+      "welcome_back": "Bienvenido de nuevo",
+      "password": "Contraseña",
+      "forgot_password": "¿Olvidaste tu contraseña?",
+      "not_yet_account": "¿No tienes una cuenta?",
+      "password_requirements": "La contraseña debe tener al menos 6 caracteres",
+      "create_account": "Crear una cuenta",
+      "sign_in": "Iniciar sesión"
+    },
     "sales": {
       "sale": "Mis pedidos",
       "sale_subtotal": "Total parcial",
@@ -194,6 +205,8 @@
     "address": {
       "title": "Mis direcciones",
       "name": "Nombre y Apellido",
+      "firstname": "Nombre",
+      "lastname": "Apellido",
       "email": "Email",
       "street": "Postal Address",
       "street2": "Dirección 2",
@@ -240,6 +253,7 @@
     "close": "Cerrar"
   },
   "address": {
+    "uncomplete": "Dirección incompleta",
     "title": "Mis direcciones",
     "name": "Nombre y Apellido",
     "email": "Email",

@@ -116,6 +116,7 @@
       "checkout": "Checkout"
     },
     "address": {
+      "warning": "The selected addresses are not complete",
       "title": "My addresses",
       "no-address": "No address selected",
       "select": "Select an address",
@@ -175,6 +176,7 @@
       "password": "Password",
       "forgot_password": "Forgot password",
       "not_yet_account": "You don't have an account ?",
+      "password_requirements": "The password must contain at least 6 characters.",
       "create_account": "Create it now !",
       "sign_in": "Sign in"
     },
@@ -223,6 +225,8 @@
     "address": {
       "title": "My addresses",
       "name": "First and last name",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
       "email": "Email",
       "street": "Postal Address",
       "street2": "Street 2",
@@ -266,6 +270,7 @@
     "close": "close"
   },
   "address": {
+    "uncomplete": "Not a valid address",
     "name": "Name",
     "street": "Street",
     "zip": "Zip code",

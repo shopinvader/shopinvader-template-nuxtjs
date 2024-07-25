@@ -62,6 +62,12 @@ export class Address extends Model {
   toString(): string {
     return `${this.name}, ${this.street} ${this.street2} - ${this.zip} ${this.city} ${this.country?.name}`
   }
+  isValidAddress(): boolean {
+    const requiredFields = [this.name, this.street, this.zip, this.city,this.email]
+    return requiredFields.every((field) => {
+      return field && field.trim().length > 0
+    })
+  }
   getJSONData(): any {
     let data:any = {
       name: this.name,

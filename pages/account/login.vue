@@ -1,18 +1,8 @@
 <template>
-  <LazyClientOnly>
+  <client-only>
     <nuxt-layout v-if="user == false" name="login">
       <template #body>
-        <div
-          class="mx-auto rounded-3xl bg-white px-4 pt-16 md:max-w-3xl md:px-0 md:pb-52"
-        >
-          <div class="flex justify-center pb-4">
-            <Logo></Logo>
-          </div>
-
-          <div class="mx-auto md:max-w-md">
-            <account-login @success="goToAccount"></account-login>
-          </div>
-        </div>
+        <account-login @success="goToAccount"></account-login>
       </template>
     </nuxt-layout>
     <div v-else class="flex justify-center items-center h-screen ">
@@ -21,7 +11,7 @@
         {{ $t('account.loading') }}
       </div>
     </div>
-  </LazyClientOnly>
+  </client-only>
 </template>
 <script setup lang="ts">
 import { User } from '~/models';

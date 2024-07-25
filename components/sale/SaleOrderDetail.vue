@@ -52,7 +52,7 @@
       window.URL.revokeObjectURL(fatUrl)
       document.body.removeChild(a)
     } catch (err: any) {
-      console.log(err)
+      console.error(err)
       error.value = err
     } finally {
       loading.value = false

@@ -29,7 +29,6 @@
           <div class="badge badge-primary" v-if="address?.main">
             {{ $t('address.main.title') }}
           </div>
-
           <span v-if="address && address?.addressType !== 'profile'">
             <p>{{ address?.street }}</p>
             <p v-if="address?.street2">{{ address?.street2 }}</p>
@@ -56,6 +55,12 @@
           </span>
         </template>
         <address-form v-else-if="address" :address="address"></address-form>
+      </slot>
+      <slot name="warning" :address="address">
+        <div v-if="!address?.isValidAddress()" class="content__warning">
+          <icon name="error" class="text-lg"></icon>
+          {{ $t('address.uncomplete') }}
+        </div>
       </slot>
     </div>
     <div class="address-card__footer">
@@ -104,6 +109,9 @@ export default defineNuxtComponent({
 
   &__content {
     @apply py-3 pl-4;
+    .content__warning {
+      @apply text-error flex items-center gap-1;
+    }
   }
 }
 </style>

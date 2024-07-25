@@ -1,106 +1,92 @@
 <template>
-  <div v-if="auth?.type=='credentials'">
+  <div
+    v-if="auth?.type=='credentials'"
+    class="account-login">
     <slot name="head">
-      <div class="login-heading">
-        <h2 class="login-heading__title">
+      <div class="account-login__heading">
+        <h2 class="heading__title">
           {{ $t('account.login.welcome_back') }}
         </h2>
-        <p class="login-heading__description">
+        <p class="heading__description">
           {{ $t('account.login.description') }}
         </p>
       </div>
     </slot>
-    <form @submit.prevent="submit">
-      <div class="subscription-form">
-        <div class="subscription-form__row">
-          <label class="" for="email">{{ $t('account.address.email') }}</label>
-          <input
-            id="email"
-            v-model="login"
-            class=""
-            type="email"
-            @keyup="checkValidity('login', $event)"
-            required
-            placeholder="Enter email address"
-            :disabled="loading"
-          />
+    <form @submit.prevent="submit" class="account-login__form">
+      <label class="form__control control-login">
+        <div class="label">
+          <span class="label-text">
+            {{ $t('account.address.email') }}
+          </span>
         </div>
-        <div class="subscription-form__error" v-if="error.login">
-          {{ error.login }}
+        <input type="email" v-model="login" class="control__input" @keyup="checkValidity('email', $event)" :placeholder="$t('account.address.email')" />
+        <div class="label">
+          <span v-if="error.login" class="label-text-alt text-error">{{ error.login }}</span>
+        </div>
+      </label>
+      <label class="form__control control-password">
+        <div class="label">
+          <span class="label-text">
+             {{ $t('account.login.password') }}
+          </span>
+        </div>
+        <label class="control__input">
+          <input
+            v-model="password"
+            :type="passwordView ? 'text' : 'password'"
+            :disabled="loading"
+            required
+            class="grow"
+            minlength="6"
+            :placeholder="passwordView ? '' : '*************'"
+            @keyup="checkValidity('password', $event)"
+          />
+          <button type="button" @click="passwordView = !passwordView" class="cursor-pointer text-lg">
+            <icon
+              class="view-icon"
+              :name="passwordView ? 'view': 'hide'"
+            />
+          </button>
+        </label>
+        <div class="label">
+          <span v-if="error.password" class="label-text-alt text-error">{{ error.password }}</span>
+        </div>
+        <div class="label">
+          <NuxtLink
+            class="label-text-alt underline"
+            :to="localePath('/account/password-reset')"
+            >{{ $t('account.login.forgot_password') }}
+          </NuxtLink>
         </div>
 
-        <div class="subscription-form__row">
-          <label class="" for="password">
-            {{ $t('account.login.password') }}
-          </label>
-          <div class="pswd-container">
-            <div class="pswd-container__wrapper">
-              <div class="pswd-input">
-                <input
-                  id="password"
-                  v-model="password"
-                  @keyup="checkValidity('password', $event)"
-                  class=""
-                  required
-                  :disabled="loading"
-                  :type="passwordView ? 'text' : 'password'"
-                  :placeholder="passwordView ? '' : '*************'"
-                />
-              </div>
-              <div class="pswd-view">
-                <button type="button" @click="passwordView = !passwordView" class="btn btn-link">
-                  <icon
-                    class="view-icon"
-                    :name="passwordView ? 'view': 'hide'"
-                  />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="pswd-forgot">
-            <NuxtLink
-              class="pswd-forgot__link"
-              :to="localePath('/account/password-reset')"
-              >{{ $t('account.login.forgot_password') }}
-            </NuxtLink>
-          </div>
+      </label>
+      <div class="form__submit">
+        <div v-if="error.auth" class="submit__error" >
+          <icon class="text-xl" name="error" />
+            {{ error.auth }}
         </div>
-        <div v-if="error.password" class="subscription-form__error" >
-          {{ error.password }}
-        </div>
-        <div class="w-full p-3">
-          <div class="subscription-form__error" >
-            <template v-if="error.auth">
-              <icon class="text-xl" name="error" />
-              {{ error.auth }}
-            </template>
-          </div>
-          <div class="subscription-btn">
-            <div class="subscription-btn__wrapper">
-              <button type="submit" class="btn" :disabled="loading">
-                <span v-if="loading" class="loading loading-spinner"></span>
-                {{ $t('account.login.sign_in') }}
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class="w-full p-3">
-          <slot name="footer">
-            <p class="footer-content">
-              <span class="footer-content__text">
-                {{ $t('account.login.not_yet_account') }}
-              </span>
-              <nuxt-link
-                class="footer-content__link"
-                :to="localePath('/account/register')"
-              >
-                {{ $t('account.login.create_account') }}
-              </nuxt-link>
-            </p>
-          </slot>
-        </div>
+        <button type="submit" class="submit__btn " :disabled="loading">
+          <span v-if="loading" class="loading loading-spinner"></span>
+          {{ $t('account.login.sign_in') }}
+        </button>
       </div>
+
     </form>
+    <div class="account-login__footer">
+      <slot name="footer">
+        <p class="footer-content">
+          <span class="footer-content__text">
+            {{ $t('account.login.not_yet_account') }}
+          </span>
+          <nuxt-link
+            class="footer-content__link"
+            :to="localePath('/account/register')"
+          >
+            {{ $t('account.login.create_account') }}
+          </nuxt-link>
+        </p>
+      </slot>
+    </div>
   </div>
   <div v-else>
     <div v-if="loading" class="">
@@ -178,72 +164,73 @@ export default defineNuxtComponent({
 })
 </script>
 <style lang="scss">
-.login-heading {
-  @apply mb-10 text-center;
-  &__title {
-    @apply mb-4 text-4xl font-black tracking-tight text-black md:text-5xl;
-  }
-  &__description {
-    @apply font-bold text-gray-500;
-  }
-}
-.subscription-form {
-  @apply -m-3 flex flex-wrap;
-  &__row {
-    @apply w-full p-3 pb-0;
-    label {
-      @apply mb-2 block text-sm font-bold text-gray-500;
-    }
-    input {
-      @apply w-full appearance-none rounded-full border border-gray-100 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary;
-    }
-    .pswd-container {
-      @apply overflow-hidden rounded-full border border-gray-200 focus-within:ring-4 focus-within:ring-secondary;
-      &__wrapper {
-        @apply flex flex-wrap ;
-        .pswd-input {
-          @apply flex-1 bg-gray-100;
-          input {
-            @apply w-full appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:border-2 focus:outline-0 focus:ring-transparent active:bg-inherit;
-          }
-        }
-        .pswd-view {
-          @apply bg-gray-100 flex justify-center items-center;
-          .view-icon {
-            @apply  text-2xl text-gray-500;
-          }
-        }
+.account-login {
+  @apply flex flex-col max-w-sm;
+  &__form {
 
+    @apply card card-body card-bordered rounded-b-none bg-white;
+    .form {
+      &__control {
+
+        @apply form-control w-full max-w-xs;
+        .control {
+          &__input {
+            @apply input input-bordered w-full max-w-xs;
+          }
+
+        }
+        &.control-password {
+          .control__input{
+            @apply flex items-center gap-2;
+          }
+        }
+      }
+      .form__control {
+        &.control-password {
+
+          .control {
+            &__input {
+              @apply  items-center gap-2;
+            }
+          }
+        }
+      }
+      &__submit {
+        @apply flex flex-col justify-center;
+        .submit {
+          &__error {
+            @apply text-error py-4 text-center;
+          }
+          &__btn {
+            @apply btn btn-primary btn-block;
+          }
+        }
       }
     }
-    .pswd-forgot {
+  }
+  &__heading {
+    @apply mb-10 text-center;
+    .heading {
+      &__title {
+        @apply mb-4 text-4xl font-black tracking-tight text-black md:text-5xl;
+      }
+      &__description {
+        @apply font-bold text-gray-500;
+      }
+    }
+  }
+  &__footer {
+    @apply card card-body bg-primary-800 text-primary-content rounded-t-none;
+    .footer-content {
+      @apply flex flex-col justify-center items-center gap-2;
+      &__text {
+        @apply text-lg;
+      }
       &__link {
-        @apply btn btn-link btn-xs;
+        @apply  btn btn-sm bg-white;
       }
-    }
-  }
-  &__error {
-    @apply text-error mb-3 min-h-6 flex gap-1 items-center;
-  }
-
-  .subscription-btn {
-    @apply -m-2 flex flex-wrap md:justify-end;
-    &__wrapper {
-      @apply w-full p-2;
-      button {
-        @apply btn btn-primary btn-lg w-full rounded-full;
-        //@apply block w-full rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary;
-      }
-    }
-  }
-  .footer-content {
-    @apply text-center font-bold text-gray-600;
-    &__text {
-      @apply mr-2;
-    }
-    &__link {
-      @apply cursor-pointer font-bold text-secondary hover:text-primary;
     }
   }
 }
+
 </style>

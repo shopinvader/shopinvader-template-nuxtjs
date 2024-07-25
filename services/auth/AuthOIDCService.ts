@@ -88,7 +88,7 @@ export class AuthOIDCService extends AuthService {
       await this.provider?.post("signin", [], { headers }, '')
       await this.fetchUser()
     } catch (e) {
-      console.log(e)
+      console.error(e)
       await this.userUnloaded()
       await this.client.signoutSilentCallback()
       throw showError({ statusCode: 500, fatal: true})

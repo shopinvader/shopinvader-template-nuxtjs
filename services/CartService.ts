@@ -249,7 +249,7 @@ export class CartService extends Service {
     } else {
       cart.invoicing.address = address
     }
-    this.update(cart)
+    await this.update(cart)
   }
 
   /**

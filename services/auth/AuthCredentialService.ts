@@ -78,7 +78,7 @@ export class AuthCredentialService extends AuthService {
         await this.profile()
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
       throw error
     }
   }

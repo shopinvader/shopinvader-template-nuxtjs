@@ -1,30 +1,48 @@
 <template>
   <div
-    v-if="cart && user"
+    v-if="cart && user && !loadingStep"
     class="checkout-address"
     :class="{ 'checkout-address--active': active }"
   >
-
     <div v-if="error" class="alert alert-error mb-6 flex gap-1">
       <icon name="error" class="text-xl"></icon>
       <span>{{ error }}</span>
     </div>
-    <div class="checkout-address__items">
-      <cart-address-delivery class="address" :editable="active"></cart-address-delivery>
-      <cart-address-invoicing class="address" :editable="active"></cart-address-invoicing>
-    </div>
-    <div v-if="active" class="checkout-address__submit">
-      <button
-        class="btn-secondary btn px-10"
-        :class="{ loading: loading }"
-        type="submit"
-        @click="submit"
-        :disabled="loading"
-      >
-        {{ $t('cart.address.continue') }}
-        <icon name="right" class="text-lg"></icon>
-      </button>
-    </div>
+    <template v-if="editAddress">
+      <slot name="create-address" :cart="cart">
+        <div class="checkout-address__form">
+          <h2>{{ $t('cart.address.shipping.title') }}</h2>
+          <address-form
+            v-if="editAddress"
+            @saved="saveAddress"
+            class="address"
+            :address="editAddress"
+          ></address-form>
+          <button class="btn btn-link" @click="editAddress = null">
+            {{ $t('cart.back') }}
+          </button>
+        </div>
+      </slot>
+    </template>
+    <template v-else>
+      <div class="checkout-address__items">
+        <cart-address-delivery class="address" :editable="active"></cart-address-delivery>
+        <cart-address-invoicing class="address" :editable="active"></cart-address-invoicing>
+      </div>
+      <div v-if="active" class="checkout-address__submit">
+        <button
+          class="btn-secondary btn px-10"
+          :class="{ loading: loading }"
+          type="submit"
+          @click="submit"
+          :disabled="loading"
+        >
+          {{ $t('cart.address.continue') }}
+          <icon name="right" class="text-lg"></icon>
+        </button>
+      </div>
+    </template>
+
   </div>
 </template>
 <script lang="ts">
@@ -58,31 +76,40 @@ export default defineNuxtComponent({
       required: true
     }
   },
-  computed: {
-    deliveryAddress() {
-      const cartService = useShopinvaderService('cart')
-      const cart = cartService.getCart()
-      return cart.value?.delivery?.address
-    },
-  },
   async setup(props, { emit }) {
     const i18n = useI18n()
     const auth = useShopinvaderService('auth')
     const cartService = useShopinvaderService('cart')
+    const addressService = useShopinvaderService('addresses')
+    const editAddress = ref(null as Address | null)
     const cart = cartService.getCart()
     const loading = ref(false)
+    const loadingStep = ref(true)
     const error = ref(null as string | null)
+    const deliveryAddress = computed(() => {
+      return cart.value?.delivery?.address || new Address({})
+    })
+    const invoicingAddress = computed(() => {
+      return cart.value?.invoicing?.address || deliveryAddress.value
+    })
 
-    /** Check if the customer is logged */
-    const user = auth?.getUser()
+    onMounted(async ()=> {
+      if(!cart.value || !addressService) return
+      if(!cart.value?.hasValidAddresses()) {
+        const addresses = await addressService.search('')
+        editAddress.value = addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
+      }
+      loadingStep.value = false
+    })
 
     const submit = () => {
       try {
         loading.value = true
-        if (!cart.value) throw new Error('Cart not found')
-        const { delivery, invoicing } = cart.value
-        if (!delivery?.address?.id || !invoicing?.address?.id) {
-          throw new Error(i18n.t('cart.address.no-address'))
+        if(!cart.value || !cart.value?.hasValidAddresses()) {
+          setTimeout(() => {
+            error.value = i18n.t('cart.address.warning')
+            loading.value = false
+          }, 1000)
         }
         emit('next')
       } catch (e: any) {
@@ -93,11 +120,45 @@ export default defineNuxtComponent({
       }
     }
 
+    /** Check if the customer is logged */
+    const user = auth?.getUser()
+    const saveAddress = async (address: Address) => {
+      const addressService = useShopinvaderService('addresses')
+      if (addressService && address) {
+        try {
+          if (address.id) {
+            address = await addressService.update(address)
+          } else {
+            address = await addressService.create(address)
+          }
+          await cartService.setAddress('delivery', address)
+          if(!cart.value?.invoicing?.address?.isValidAddress()) {
+            await cartService.setAddress('invoicing', address)
+          }
+          if(cart.value?.hasValidAddresses()) {
+            emit('next')
+          }
+        } catch (e) {
+          console.error(e)
+          error.value = i18n.t('error.generic')
+        } finally {
+          editAddress.value = null
+
+        }
+      }
+    }
+
+
     return {
       error,
       cart,
       loading,
+      loadingStep,
       submit,
+      saveAddress,
+      deliveryAddress,
+      invoicingAddress,
+      editAddress,
       user
     }
   }
@@ -106,10 +167,13 @@ export default defineNuxtComponent({
 <style lang="scss">
 .checkout-address {
   @apply flex flex-col gap-6;
+  &__form {
+    @apply card card-body max-w-xl mx-auto;
+  }
   &__items {
     @apply flex w-full flex-row flex-wrap gap-6;
     .address-card {
-      @apply shadow-none;
+      @apply shadow-none ;
       &__header {
         .title {
           @apply m-0 flex items-center gap-3 text-xl font-bold uppercase leading-none text-inherit;
@@ -125,10 +189,19 @@ export default defineNuxtComponent({
 
     }
   }
-  &--active {
+
+  &:not(.checkout-address--active) {
     .checkout-address__items {
-      .address {
-        @apply border bg-gray-100 ;
+      .address-card {
+        @apply border-0 px-2 py-1 rounded-none;
+        &:first-child {
+          @apply border-r;
+        }
+        .header__title {
+          .title {
+            @apply text-base;
+          }
+        }
       }
     }
   }

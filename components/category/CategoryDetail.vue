@@ -67,7 +67,6 @@ export default {
       let current:Category | CategoryParent | null = this.category
       const items = [current]
       while (current?.parent !== null) {
-        console.log(current?.parent)
         current = current?.parent || null
         if(current?.name) {
           items.push(current)
