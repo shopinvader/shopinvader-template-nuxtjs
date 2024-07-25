@@ -7,7 +7,6 @@ export default defineAppConfig({
   },
   icon: {
     class: 'icon',
-    size: '24px',
     aliases: {
       addresses: 'ph:address-book-light',
       profile: 'ph:person-light',

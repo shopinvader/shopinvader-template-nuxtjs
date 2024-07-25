@@ -31,7 +31,9 @@ export default {
 .account-link {
   @apply card card-body flex w-auto cursor-pointer flex-col items-center justify-center bg-base-100 p-5;
   &__icon {
-    @apply my-5 rounded-full bg-primary p-4 text-4xl text-white;
+    .icon {
+      @apply text-5xl text-primary;
+    }
   }
   &__content {
     @apply pt-2 text-center text-lg font-semibold;
