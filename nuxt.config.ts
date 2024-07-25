@@ -15,10 +15,10 @@ export default defineNuxtConfig({
   app: {
     head: {
       templateParams: {
-        separator: "|",
-        siteName: "Shopinvader Demo",
+        separator: '|',
+        siteName: 'Shopinvader Demo'
       },
-      titleTemplate: "%s %separator %siteName",
+      titleTemplate: '%s %separator %siteName',
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
@@ -66,7 +66,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@nuxtjs/critters',
-    "@nuxt/icon",
+    '@nuxt/icon',
     '@nuxtjs/tailwindcss',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
@@ -77,14 +77,11 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
-    "nuxt-delay-hydration",
-    "@nuxt/content",
-    "@nuxtjs/robots"
+    'nuxt-delay-hydration',
+    '@nuxt/content',
+    '@nuxtjs/robots',
+    '@nuxtjs/seo'
   ],
-
-  content: {
-    documentDriven: false
-  },
 
   piniaPersistedstate: {
     cookieOptions: {
@@ -94,7 +91,7 @@ export default defineNuxtConfig({
   },
 
   image: {
-    format: ["webp"],
+    format: ['webp']
   },
 
   pages: true,
@@ -106,8 +103,8 @@ export default defineNuxtConfig({
 
   critters: {
     config: {
-      preload: 'swap',
-    },
+      preload: 'swap'
+    }
   },
 
   i18n: {
@@ -141,9 +138,9 @@ export default defineNuxtConfig({
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
       useCookie: true,
-      cookieKey: "i18n_redirected",
-      alwaysRedirect: true,
-    },
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true
+    }
   },
 
   build: {
@@ -158,7 +155,7 @@ export default defineNuxtConfig({
     '/': {
       index: true,
       ssr: true,
-      swr: 60*60
+      swr: 60 * 60
     },
     '/account/**': {
       index: false,
