@@ -2,16 +2,16 @@ import { Settings } from '#models'
 import { BaseServiceErp } from './BaseServiceErp'
 
 export class SettingService extends BaseServiceErp {
-  public endpoint: string = 'settings'
+  public override endpoint: string = 'settings'
   public values: Settings | null = null
 
   setSettings(res: any) {
     this.values = new Settings(res)
   }
 
-  async init(service: ShopinvaderServiceList) {
+  override async init(service: ShopinvaderServiceList) {
     super.init(service)
-    if(this.values === null) {
+    if (this.values === null) {
       const res = await this.getAll()
       this.setSettings(res)
     }

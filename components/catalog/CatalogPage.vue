@@ -9,7 +9,7 @@
 </template>
 <script lang="ts" setup>
 // Display a product or a category page
-import { Category, Product } from '~/models'
+import { Category, Product } from '#models'
 const { origin } = useRequestURL()
 const localePath = useLocalePath()
 const route = useRoute()
@@ -24,7 +24,7 @@ const { data } = await useAsyncData('entity', async () => {
   const catalog = useShopinvaderService('catalog')
   const sku = route?.query?.sku?.toString() || null
   const entity = await catalog.getEntityByURLKey(path, sku)
-  return entity
+  return entity || false
 })
 const entity = data.value
 const slots = useSlots()
