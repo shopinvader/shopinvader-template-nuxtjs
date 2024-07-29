@@ -59,7 +59,7 @@ export class Address extends Model {
       update: true
     }
   }
-  toString(): string {
+  override toString(): string {
     return `${this.name}, ${this.street} ${this.street2} - ${this.zip} ${this.city} ${this.country?.name}`
   }
   getJSONData(): any {
