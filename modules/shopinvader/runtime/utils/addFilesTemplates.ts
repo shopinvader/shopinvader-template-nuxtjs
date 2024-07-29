@@ -127,7 +127,7 @@ async function writeFileContent(
     }
   }
   fs.writeFileSync(filepath, content, 'utf8')
-  logger.log(`[ShopInvader] BUILD - new ${type} ${name} file saved.`)
+  logger.log(`[ShopInvader] BUILD - ${type}/${name}.ts file saved.`)
   return filepath
 }
 
@@ -170,7 +170,7 @@ async function buildindexFileContent(
     .join('\n')
   if (originalsFiles.length > 0) {
     logger.log(
-      `[ShopInvader] BUILD - Some ShopInvader model are overrided by your custom model. You can use ${UNICODE_GREEN}import * as OriginalModels from #models/originals ${UNICODE_RESET} to access the originals.`
+      `[ShopInvader] BUILD - Note: you overrided some ShopInvader models. Originals are available in ${UNICODE_GREEN}#models/originals${UNICODE_RESET}.`
     )
   }
   return contents
@@ -181,30 +181,45 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
   const applicationRoot = nuxt.options.srcDir
   const types = ['models', 'services']
   const cwd = process.cwd()
-  /** Add models and services alias for sublayers */
-  if (cwd != applicationRoot) {
+
+  // Paths can be different on Windows because of the backslashes, so we need to clean them
+  const cleanedCwd = cwd.replace(/\\/g, '/')
+  const cleanedApplicationRoot = applicationRoot.replace(/\\/g, '/')
+
+  // If the application root is not the current working directory then it means we are in a parent layer
+  // and we need to set its aliases to the application directories.
+  // This case happend when we launch the "yarn install" command that calls the "nuxt prepare"
+  // of the application AND of the other layers.
+  if (cleanedCwd != cleanedApplicationRoot) {
+    const relativePath = cleanedApplicationRoot.replace(cleanedCwd, '')
+    logger.log(
+      `[ShopInvader] BUILD - Setting aliases in ${UNICODE_GREEN}${relativePath}${UNICODE_RESET}, targeting current application:`
+    )
     for (const type of types) {
+      const aliasValue = join(cwd, type)
+      logger.log(`[ShopInvader] BUILD - ${UNICODE_GREEN}#${type}${UNICODE_RESET} -> ${aliasValue}.`)
       nuxt.options.alias = {
         ...nuxt.options.alias,
-        [`#${type}`]: join(cwd, type)
+        [`#${type}`]: aliasValue
       }
     }
     return
   }
 
+  // Otherwise, we need to set the aliases AND build the index files of the application.
   let alias = {}
   for (const type of types) {
-    // Write index files
-    const content = await buildindexFileContent(nuxt, type)
-    logger.log(`[ShopInvader] BUILD - Writing index ${type} file`)
-    await writeFileContent(applicationRoot, type, 'index', content.index)
-    await writeFileContent(applicationRoot, type, 'originals', content.originals)
-
-    // Add alias to nuxt options
+    logger.log(
+      `[ShopInvader] BUILD - Setting alias and building export file for ${UNICODE_GREEN}#${type}${UNICODE_RESET} in current application.`
+    )
     alias = {
       ...alias,
       [`#${type}`]: join(applicationRoot, type)
     }
+    // Write index files
+    const content = await buildindexFileContent(nuxt, type)
+    await writeFileContent(applicationRoot, type, 'index', content.index)
+    await writeFileContent(applicationRoot, type, 'originals', content.originals)
   }
   // Add alias to nuxt options
   nuxt.options.alias = {
@@ -212,7 +227,7 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
     ...nuxt.options.alias
   }
 
-  // Add hook to webpack:change
+  // Add hook to webpack:change to rebuild the index files when a model or service is modified/removed/added.
   nuxt.hook('builder:watch', async (pEvent, pShortPath) => {
     if (
       pShortPath.endsWith('models/index.ts') ||
@@ -232,7 +247,7 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
       return
     }
     logger.log(
-      `[ShopInvader] EVENT - ${pShortPath} ${pEvent} => Checking #${type} index and originals files`
+      `[ShopInvader] EVENT - ${pShortPath} ${pEvent} -> Checking #${type} index and originals files`
     )
     const content = await buildindexFileContent(nuxt, type)
     await writeFileContent(applicationRoot, type, 'index', content.index)
