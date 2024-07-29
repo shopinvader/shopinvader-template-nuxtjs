@@ -180,27 +180,26 @@ async function buildindexFileContent(
 export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
   const applicationRoot = nuxt.options.srcDir
   const types = ['models', 'services']
-  const layers = nuxt.options._layers
-  let alias = {}
+  const cwd = process.cwd()
+  /** Add models and services alias for sublayers */
+  if (cwd != applicationRoot) {
+    for (const type of types) {
+      nuxt.options.alias = {
+        ...nuxt.options.alias,
+        [`#${type}`]: join(cwd, type)
+      }
+    }
+    return
+  }
 
+  let alias = {}
   for (const type of types) {
     // Write index files
     const content = await buildindexFileContent(nuxt, type)
-    logger.log(`[ShopInvader] BUILD - Checking index ${type} file`)
-    const indexFile = await writeFileContent(applicationRoot, type, 'index', content.index)
+    logger.log(`[ShopInvader] BUILD - Writing index ${type} file`)
+    await writeFileContent(applicationRoot, type, 'index', content.index)
     await writeFileContent(applicationRoot, type, 'originals', content.originals)
-    if (layers.length > 0) {
-      for (const layer of layers) {
-        if (layer.cwd !== applicationRoot) {
-          await writeFileContent(
-            layer.cwd,
-            type,
-            'index',
-            `${warning}export * from '${indexFile.replace('.ts', '')}'\n`
-          )
-        }
-      }
-    }
+
     // Add alias to nuxt options
     alias = {
       ...alias,

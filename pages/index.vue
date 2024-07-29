@@ -13,7 +13,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Product } from '~/models'
+import type { Product } from '#models'
 let error: any = null
 let products: Product[] = []
 try {
