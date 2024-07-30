@@ -131,7 +131,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   }
 
   const { settings } = useAppConfig()
-  if(settings && services.settings) {
+  if (settings && services.settings) {
     services.settings.setSettings(settings)
   }
   // Let the child add custom services or replace the default ones
