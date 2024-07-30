@@ -69,7 +69,7 @@ export class CartService extends BaseServiceErp {
     this.transformCart = this.transformCart.bind(this)
   }
 
-  init(services: ShopinvaderServiceList): void {
+  override init(services: ShopinvaderServiceList): void {
     super.init(services)
     if (!import.meta.env.SSR) {
       const erpFetchWrapper = new ErpFetchWrapper(this.ofetch)
