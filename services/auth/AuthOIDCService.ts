@@ -12,7 +12,7 @@ export interface AuthOIDCConfig {
 }
 
 export class AuthOIDCService extends AuthService {
-  public type: string = 'oidc'
+  public override type: string = 'oidc'
   private config: AuthOIDCConfig
   private clientOIDC: UserManager | null = null
   private redirectUri: string | null = null
@@ -22,7 +22,7 @@ export class AuthOIDCService extends AuthService {
     this.config = config
   }
 
-  async init(services: ShopinvaderServiceList): Promise<any> {
+  override async init(services: ShopinvaderServiceList): Promise<any> {
     super.init(services)
     this.services = services
     if (!import.meta.env.SSR) {

@@ -2,7 +2,7 @@ import { Address } from '#models'
 import { BaseServiceErp } from './BaseServiceErp'
 
 export class AddressService extends BaseServiceErp {
-  public endpoint: string = 'addresses'
+  public override endpoint: string = 'addresses'
   public addresses: Address[] | null = null
 
   async getAll(): Promise<Address[] | null> {
@@ -130,9 +130,9 @@ export class AddressService extends BaseServiceErp {
   jsonToModel(json: any): Address {
     const address = new Address(json)
     if (this.services?.settings) {
-      address.country = this.services.settings.options?.countries.find(
-        (item: any) => item.id === json.country_id
-      )
+      address.country =
+        this.services.settings.values?.countries.find((item: any) => item.id === json.country_id) ||
+        null
     }
     return address
   }
