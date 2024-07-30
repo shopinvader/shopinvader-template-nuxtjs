@@ -120,7 +120,7 @@ export class AuthCredentialService extends AuthService {
    * @param login
    * @returns
    */
-  async registerUser(
+  override async registerUser(
     name: string,
     password: string,
     login: string

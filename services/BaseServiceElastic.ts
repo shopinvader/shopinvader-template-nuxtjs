@@ -24,7 +24,7 @@ export class BaseServiceElastic extends BaseServiceLocalized {
   }
 
   // Change indexes' names to match the current locale
-  changeLocale(isoLocale: string): void {
+  override changeLocale(isoLocale: string): void {
     super.changeLocale(isoLocale)
     this.elasticUrl = this.buildLocalizedElasticUrl(this.elasticBaseUrl, this.elasticIndex)
   }
@@ -55,9 +55,41 @@ export class BaseServiceElastic extends BaseServiceLocalized {
         }
       }
     }
-    return await this.ofetch(this.elasticUrl, {
+    const res = await this.ofetch(this.elasticUrl, {
       method: 'POST',
       body
     })
+    // Check for errors in the response
+    const errors = this.findFailureInElasticResponse(res)
+    if (errors) {
+      // Warn about the errors
+      console.warn('ElasticSearch error(s):', errors)
+    }
+    return res
+  }
+
+  // Recursively search for 'failures' or 'failed_shards' fields somewhere deep in the response and concat errors from them
+  findFailureInElasticResponse(response: any): string | null {
+    const searchFailures = (level: number, obj: any): string => {
+      let errors = ''
+      for (const key in obj) {
+        if (key === 'failures' || key === 'failed_shards') {
+          // if it's an array, concat all the messages
+          if (Array.isArray(obj[key])) {
+            errors += obj[key]
+              .map((item: any) => `${item?.index}: ${item?.reason?.reason}`)
+              .join('; ')
+          } else {
+            errors += JSON.stringify(obj[key])
+          }
+        } else if (level < 1 && typeof obj[key] === 'object') {
+          // Go deeper only once for optimization
+          errors += searchFailures(level + 1, obj[key])
+        }
+      }
+      return errors
+    }
+    const res = searchFailures(0, response)
+    return res || null
   }
 }

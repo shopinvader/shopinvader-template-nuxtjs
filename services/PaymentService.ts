@@ -8,7 +8,7 @@ import { BaseServiceErp } from './BaseServiceErp'
  * @description This service is used to manage the payment methods and transactions.
  */
 export class PaymentService extends BaseServiceErp {
-  public endpoint: string = 'payment'
+  public override endpoint: string = 'payment'
   paymentProvider: any
 
   /**

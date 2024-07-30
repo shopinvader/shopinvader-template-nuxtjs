@@ -3,9 +3,9 @@ import esb, { MultiMatchQuery } from 'elastic-builder'
 import { BaseServiceElastic } from './BaseServiceElastic'
 
 export class CategoryService extends BaseServiceElastic {
-  navCategories:Category[] | null = null
+  navCategories: Category[] | null = null
 
-  async init(services: ShopinvaderServiceList) {
+  override async init(services: ShopinvaderServiceList) {
     this.services = services
   }
   async search(body: any): Promise<CategoryResult> {
@@ -59,7 +59,7 @@ export class CategoryService extends BaseServiceElastic {
   }
 
   async getNavCategories(): Promise<Category[]> {
-    if(this.navCategories == null) {
+    if (this.navCategories == null) {
       const result = await this?.search({
         size: 20,
         query: {

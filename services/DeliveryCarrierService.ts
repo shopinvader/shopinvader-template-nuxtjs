@@ -5,7 +5,7 @@ import { BaseServiceErp } from './BaseServiceErp'
  * Service for managing delivery carriers.
  */
 export class DeliveryCarrierService extends BaseServiceErp {
-  public endpoint: string = '' // We must cheat here because on service does not start with the entrypoint
+  public override endpoint: string = '' // We must cheat here because on service does not start with the entrypoint
 
   /**
    * Retrieves all delivery carriers.
