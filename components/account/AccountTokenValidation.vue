@@ -51,8 +51,6 @@ export default defineComponent({
     let urlHasToken = ref<boolean>(false)
     const route = useRoute()
     onMounted(async () => {
-
-      console.log(route.query.token)
       if (!route.query.token) {
         urlHasToken.value = false
       } else if (route.query.token) {
