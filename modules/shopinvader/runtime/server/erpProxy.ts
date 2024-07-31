@@ -24,6 +24,9 @@ export default defineEventHandler(async (event) => {
     }
     return await proxyRequest(event, `${config?.url}${url}`, {
       headers,
+      fetchOptions: {
+        redirect: 'manual'
+      }
     })
   } catch (error:any) {
     return createError({
