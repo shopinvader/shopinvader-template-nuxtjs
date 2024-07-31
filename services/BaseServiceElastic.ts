@@ -55,21 +55,43 @@ export class BaseServiceElastic extends BaseServiceLocalized {
         }
       }
     }
-    const res = await this.ofetch(this.elasticUrl, {
-      method: 'POST',
-      body
-    })
-    // Check for errors in the response
-    const errors = this.findFailureInElasticResponse(res)
-    if (errors) {
-      // Warn about the errors
-      console.warn('ElasticSearch error(s):', errors)
+    try {
+      const res = await this.ofetch(this.elasticUrl, {
+        method: 'POST',
+        body
+      })
+      // ElasticSearch sends back a 200 but can contain errors
+      const errors = this.findFailureInElasticResponse(res)
+      if (errors) {
+        console.warn('ElasticSearch error(s):', errors, '. Request: ', JSON.stringify(body))
+      }
+      return res
+    } catch (error: any) {
+      const errors = this.findFailureInElasticResponse(error?.data)
+      if (errors) {
+        console.error(
+          `ElasticSearch error ${error.status}:`,
+          errors,
+          '. Request: ',
+          JSON.stringify(body)
+        )
+      } else {
+        console.error(
+          'ElasticSearch error:',
+          error,
+          '. Index: ' + this.elasticUrl + ' Request: ',
+          JSON.stringify(body)
+        )
+      }
+      throw error
     }
-    return res
   }
 
   // Recursively search for 'failures' or 'failed_shards' fields somewhere deep in the response and concat errors from them
   findFailureInElasticResponse(response: any): string | null {
+    if (!response) {
+      return null
+    }
     const searchFailures = (level: number, obj: any): string => {
       let errors = ''
       for (const key in obj) {
