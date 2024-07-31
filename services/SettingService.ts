@@ -9,14 +9,6 @@ export class SettingService extends BaseServiceErp {
     this.values = new Settings(res)
   }
 
-  async init(service: ShopinvaderServiceList) {
-    super.init(service)
-    if(this.values === null) {
-      const res = await this.getAll()
-      this.setSettings(res)
-    }
-  }
-
   override async init(service: ShopinvaderServiceList) {
     super.init(service)
     if (this.values === null) {

@@ -185,7 +185,7 @@ export default defineNuxtComponent({
     @apply grid grid-cols-1 gap-6 lg:grid-cols-2;
 
     .address-card {
-      @apply shadow-none;
+      @apply shadow-none bg-white;
       &__header {
         .title {
           @apply m-0 flex items-center gap-3 text-xl font-bold uppercase leading-none text-inherit;
