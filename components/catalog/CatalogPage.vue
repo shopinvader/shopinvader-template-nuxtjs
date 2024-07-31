@@ -57,7 +57,10 @@ if (entity) {
     description: entity.metaDescription || entity.shortDescription || '',
     ogDescription: entity.metaDescription || entity.shortDescription || '',
     keywords: entity.metaKeywords || '',
-    ogImage: entity.images?.[0]?.medium?.src || ''
+    ogImage:
+      entity.images && entity.images.length > 0 && entity.images[0].medium?.src
+        ? entity.images[0].medium.src
+        : null
   })
 }
 const product = computed(() => (entity instanceof Product ? entity : null))
