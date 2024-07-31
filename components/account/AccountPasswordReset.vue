@@ -86,7 +86,7 @@ const checkValidity = (e: KeyboardEvent) => {
 }
 
 const submit = async (e: Event) => {
-  const auth = useShopinvaderService('auth')
+  const auth = useShopinvaderService('auth') as AuthCredentialService
   if (login.value) {
     try {
       const resetPasswordSent = (await auth?.resetPassword(
