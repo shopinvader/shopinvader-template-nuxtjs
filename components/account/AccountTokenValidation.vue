@@ -41,27 +41,30 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { ref } from 'vue'
+import type { AuthCredentialService } from '~/services';
 
 export default defineComponent({
   name: 'AccountTokenValidation',
   async setup() {
     const auth = useShopinvaderService('auth')
+    const localePath = useLocalePath()
     let urlHasToken = ref<boolean>(false)
     const route = useRoute()
+    onMounted(async () => {
 
-    if (!route.query.token) {
-      urlHasToken.value = false
-    } else if (route.query.token) {
-      urlHasToken.value = true
-      const isTokenValid = (await auth?.checkRegisterToken(
-        route.query.token
-      )) as boolean
-      if (isTokenValid) {
-        navigateTo({ path: `/account/profile` })
-      } else {
+      console.log(route.query.token)
+      if (!route.query.token) {
         urlHasToken.value = false
+      } else if (route.query.token) {
+        urlHasToken.value = true
+        try {
+          await auth?.validateEmail(route.query.token)
+          auth?.loginRedirect(localePath(`/account/profile`))
+        } catch {
+          urlHasToken.value = false
+        }
       }
-    }
+    })
     return {
       urlHasToken,
       auth

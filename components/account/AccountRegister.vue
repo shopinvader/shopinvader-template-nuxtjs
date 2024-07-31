@@ -74,6 +74,7 @@
                 :disabled="loading"
                 type="text"
                 required
+                :placeholder="$t('account.address.lastname')"
                 class="input-bordered input w-full"
               />
             </div>
@@ -84,12 +85,20 @@
                 </span>
               </label>
               <input
-                v-model="email"
+                v-model="login"
                 :disabled="loading"
                 type="email"
                 required
+                :placeholder="$t('account.address.email')"
                 class="input-bordered input w-full"
+                :class="{ 'input-bordered-error': fieldError.login }"
+                @keyup="checkValidity('login', $event)"
               />
+              <div class="label">
+                <span v-if="fieldError.login" class="label-text-alt text-error">
+                  {{ $t('error.login.email') }}
+                </span>
+              </div>
             </div>
             <div class="form-control w-full col-span-2">
               <label class="label required">
@@ -97,16 +106,32 @@
                   {{ $t('account.login.password') }}
                 </span>
               </label>
-              <input
-                v-model="password"
-                :disabled="loading"
-                type="password"
-                required
-                class="input-bordered input w-full"
-                minlength="6"
-              />
+              <div class="input-bordered input  w-full flex items-center"
+                :class="{
+                  'input-bordered-error': fieldError.password,
+                  'input-disabled': loading
+                }"
+              >
+                <input
+                  v-model="password"
+                  :readonly="loading"
+                  :type="passwordView ? 'password' : 'text'"
+                  required
+                  :placeholder="passwordView ? '' : '********'"
+                  class="grow"
+                  minlength="8"
+                  pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!?])[A-Za-z\d@#$%^&+=!?]{8,}$"
+                  @keyup="checkValidity('password', $event)"
+                />
+                <button type="button" @click="passwordView = !passwordView" class="cursor-pointer text-lg">
+                  <icon
+                    class="view-icon"
+                    :name="passwordView ? 'view': 'hide'"
+                  />
+                </button>
+              </div>
               <div class="label">
-                <span class="label-text-alt">
+                <span class="label-text-alt" :class="{ 'text-error': fieldError.password }">
                   {{ $t('account.login.password_requirements') }}
                 </span>
               </div>
@@ -140,8 +165,8 @@
 
             </div>
             <div v-if="error" class="flex justify-center py-4 w-full col-span-2 text-error">
-                {{ error }}
-              </div>
+              {{ error }}
+            </div>
           </form>
         </div>
       </slot>
@@ -161,60 +186,59 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import LogoVue from '../global/Logo.vue'
-import { User } from '~/models'
-export default {
-  name: 'AccountRegister',
-  props: {
+<script lang="ts" setup>
+  defineProps({
     legalsLink: {
       type: String,
       required: false,
       default: '/legals'
     }
-  },
-  components: {
-    logo: LogoVue
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const auth = useShopinvaderService('auth')
-    return {
-      localePath,
-      auth
-    }
-  },
-  data() {
-    return {
-      legals: false as boolean,
-      loading: false as boolean,
-      error: '' as string,
-      password: '' as string,
-      email: '' as string,
-      firstname: '' as string,
-      lastname: '' as string,
-      accountIsCreated: false as boolean
-    }
-  },
-  methods: {
-    async createAccount() {
-      this.loading = true
-      const auth = useShopinvaderService('auth')
-      const notifications = useNotification()
-      try {
-        await auth.registerUser(this.firstname +' '+this.lastname, this.password, this.email)
-        // Display success message
-        this.accountIsCreated = true
-      } catch (e) {
-        console.error(e)
-        this.error = this.$t('error.login.unable_to_login')
-        notifications.addError(this.$t('error.login.unable_to_login'))
-      } finally {
-        this.loading = false
-      }
+  })
+  const loading = ref(false)
+  const firstname = ref('')
+  const lastname = ref('')
+  const password = ref('')
+  const login = ref('')
+  const accountIsCreated = ref(false)
+  const passwordView = ref(false)
+  const legals = ref(false)
+  const error = ref(null)
+  const fieldError = ref({
+    login: false,
+    password: false
+  })
+
+  const localePath = useLocalePath()
+  const auth = useShopinvaderService('auth')
+  const checkValidity = (input: "login" | "password", e: KeyboardEvent) => {
+    const target = e.target as HTMLInputElement
+    const validity = target?.checkValidity()
+    fieldError.value = {
+      ...fieldError.value,
+      [input] : !validity || target?.value === ''
     }
   }
-}
+  const createAccount = async () => {
+    loading.value = true
+    error.value = null
+    const auth = useShopinvaderService('auth')
+    const notifications = useNotification()
+    try {
+      if(legals.value === false) {
+        return
+      }
+      await auth.registerUser(firstname.value +' '+lastname.value, password.value, login.value)
+      // Display success message
+      accountIsCreated.value = true
+    } catch (e) {
+      console.error(e)
+      error.value = $t('error.login.unable_to_login')
+      notifications.addError($t('error.login.unable_to_login'))
+    } finally {
+      loading.value = false
+    }
+  }
+
 </script>
 <style lang="scss">
 .message {

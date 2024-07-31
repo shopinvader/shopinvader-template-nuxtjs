@@ -122,9 +122,13 @@
       "warning": "Las direcciones elegidas no están completas.",
       "title": "Mis direcciones",
       "no-address": "No se ha seleccionado ninguna dirección",
-      "select": "Seleccionar una dirección",
+      "select": "Seleccione otra dirección de entrega",
       "pick": "Seleccionar esta dirección",
       "continue": "Continuar",
+      "same-address": {
+        "title": "Dirección de entrega y facturación",
+        "label": "Dirección de facturación idéntica a la dirección de entrega"
+      },
       "shipping": {
         "title": "Dirección de entrega"
       },
@@ -180,7 +184,7 @@
       "password": "Contraseña",
       "forgot_password": "¿Olvidaste tu contraseña?",
       "not_yet_account": "¿No tienes una cuenta?",
-      "password_requirements": "La contraseña debe tener al menos 6 caracteres",
+      "password_requirements": "La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula y un carácter especial {'@#$%^&+=!?'}.",
       "create_account": "Crear una cuenta",
       "sign_in": "Iniciar sesión"
     },

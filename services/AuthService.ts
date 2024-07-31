@@ -65,6 +65,7 @@ export abstract class AuthService extends Service {
           }
         }
       } else {
+
         for (const callback of this.callbacksUserUnLoaded) {
           if (typeof callback == 'function') {
             await callback(user)
@@ -75,6 +76,11 @@ export abstract class AuthService extends Service {
     } else {
       store.setUser(null)
       this.setSession(null)
+      for (const callback of this.callbacksUserUnLoaded) {
+        if (typeof callback == 'function') {
+          await callback(null)
+        }
+      }
       return null
     }
   }

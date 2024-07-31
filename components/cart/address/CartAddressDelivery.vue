@@ -1,13 +1,20 @@
 <template>
    <address-card class="cart-address-delivery" :address="deliveryAddress">
     <template #header>
-      <h2 class="title">
-        <icon name="shipping"></icon>
-        {{ $t('cart.address.shipping.title') }}
-      </h2>
-      <div class="subtitle">
-        {{ deliveryAddress?.name }}
-      </div>
+      <slot name="header" :address="deliveryAddress">
+        <h2 class="title">
+          <icon name="shipping"></icon>
+          <template v-if="cart?.hasSameAddress()">
+            {{ $t('cart.address.same-address.title') }}
+          </template>
+          <template v-else>
+            {{ $t('cart.address.shipping.title') }}
+          </template>
+        </h2>
+        <div class="subtitle">
+          {{ deliveryAddress?.name }}
+        </div>
+      </slot>
     </template>
     <template v-if="!deliveryAddress?.id" #body>
       <div class="cart-address-delivery__error">
@@ -15,6 +22,9 @@
       </div>
     </template>
     <template v-if="editable" #footer>
+      <div v-if="cart?.hasSameAddress()" class="cart-address-delivery__same-address">
+        {{ $t('cart.address.same-address.label') }}
+      </div>
       <div class="cart-address-delivery__footer">
         <div class="address-selector">
           <slot name="action" onOpen>
@@ -57,6 +67,9 @@
           </aside-drawer>
         </div>
       </div>
+
+      <slot name="footer" :address="deliveryAddress">
+      </slot>
     </template>
   </address-card>
 
@@ -88,7 +101,8 @@ export default defineNuxtComponent({
 
     return  {
       deliveryAddress,
-      opened
+      opened,
+      cart
     }
   },
   methods: {
@@ -117,6 +131,9 @@ export default defineNuxtComponent({
 <style lang="scss">
 
 .cart-address-delivery {
+  &__same-address {
+    @apply text-right text-sm text-gray-500 pt-4 pb-2;
+  }
   &__footer {
     @apply flex justify-end gap-4;
   }

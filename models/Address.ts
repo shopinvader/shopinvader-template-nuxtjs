@@ -63,7 +63,7 @@ export class Address extends Model {
     return `${this.name}, ${this.street} ${this.street2} - ${this.zip} ${this.city} ${this.country?.name}`
   }
   isValidAddress(): boolean {
-    const requiredFields = [this.name, this.street, this.zip, this.city,this.email]
+    const requiredFields = [this.name, this.street, this.zip, this.city]
     return requiredFields.every((field) => {
       return field && field.trim().length > 0
     })

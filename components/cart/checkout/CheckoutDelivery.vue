@@ -266,6 +266,7 @@ export default defineNuxtComponent({
     @apply col-span-3 flex h-full flex-col items-center justify-center gap-4 md:col-span-2;
   }
   &__summary {
+    @apply col-span-3 md:col-span-2;
     .method {
       @apply flex w-full gap-2;
       &__icon {

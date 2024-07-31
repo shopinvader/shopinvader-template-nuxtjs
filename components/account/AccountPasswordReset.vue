@@ -20,13 +20,13 @@
               v-model="login"
               class=""
               type="email"
-              @keyup="checkValidity('login', $event)"
+              @keyup="checkValidity($event)"
               required
               placeholder="Enter email address"
             />
           </div>
           <div class="reset-form__error" v-if="error.login">
-            {{ error.login }}
+            {{ $t('error.login.email') }}
           </div>
           <div class="w-full p-3">
             <div class="reset-btn">
@@ -67,96 +67,78 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import LogoVue from '../global/Logo.vue'
+<script lang="ts" setup>
 
-export default defineNuxtComponent({
-  name: 'AccountLogin',
-  components: {
-    logo: LogoVue
-  },
-  data() {
-    const route = useRoute()
+const login = ref('')
+const successMessage = ref(false)
+const error = reactive({
+  auth: null,
+  login: false
+})
+const localePath = useLocalePath()
+const auth = useShopinvaderService('auth')
+const route = useRoute()
 
-    return {
-      login: route?.query?.email || '' as string | null,
-      successMessage: false as boolean,
-      error: {
-        auth: null as string | null,
-        login: null as string | null
+onMounted(() => {
+  login.value = route?.query?.login?.toString() || ''
+})
+
+const checkValidity = (e: KeyboardEvent) => {
+  const target = e.target as HTMLInputElement
+  const validity = target?.checkValidity()
+  error.login = !validity || target?.value === ''
+}
+
+const submit = async (e: Event) => {
+  const auth = useShopinvaderService('auth')
+  if (login.value) {
+    try {
+      const resetPasswordSent = (await auth?.resetPassword(
+        login.value
+      )) as boolean
+      if (resetPasswordSent) {
+        successMessage.value = true
       }
-    }
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const auth = useShopinvaderService('auth')
-    return {
-      localePath,
-      auth
-    }
-  },
-  methods: {
-    checkValidity(input: string, e: Event) {
-      this.error.login = null
-      if (e.target?.validity?.valid == false) {
-        if (input == 'login') {
-          this.error.login = this.$t('error.login.email')
-        }
-      } else {
-        this.error.login = null
-      }
-    },
-    async submit(e: Event) {
-      const auth = useShopinvaderService('auth')
-      if (this?.login) {
-        try {
-          const resetPasswordSent = (await auth?.resetPassword(
-            this.login
-          )) as boolean
-          if (resetPasswordSent) {
-            this.successMessage = true
-          }
-          this.login = ''
-        } catch (e) {
-          console.error(e)
-          this.error.auth = e?.message || this.t$('error.login.unable_to_login')
-        }
-      }
+      login.value = ''
+    } catch (e) {
+      console.error(e)
+      error.auth = e?.message || $t('error.login.unable_to_login')
     }
   }
-})
+}
+
 </script>
 <style lang="scss">
 .reset-heading {
   @apply mb-10 text-center;
   &__title {
-    @apply mb-4 text-4xl font-black tracking-tight text-black md:text-5xl;
+    @apply mb-4 text-4xl tracking-tight text-black md:text-5xl;
   }
   &__description {
-    @apply font-bold text-gray-500;
+    @apply text-gray-500;
   }
 }
 .reset-form {
-  @apply -m-3 flex flex-wrap;
+  @apply flex flex-wrap justify-center;
   &__row {
-    @apply w-full p-3;
+    @apply form-control w-full  max-w-md;
     label {
-      @apply mb-2 block text-sm font-bold text-gray-500;
+      @apply label;
     }
     input {
-      @apply w-full appearance-none rounded-full border border-gray-100 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary;
+      @apply input input-bordered w-full   ;
     }
   }
   &__error {
-    @apply pl-4 text-sm italic text-red-500;
+    @apply pl-4 text-sm text-error;
   }
 
   .reset-btn {
     @apply -m-2 flex flex-wrap md:justify-end;
     &__wrapper {
-      @apply w-full p-2;
+      @apply flex justify-center w-full p-2;
       button {
-        @apply block w-full rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary;
+        @apply btn btn-primary;
       }
     }
   }

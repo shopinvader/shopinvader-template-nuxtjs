@@ -87,8 +87,8 @@ export class AuthCredentialService extends AuthService {
    * logout user
    */
   async logout(): Promise<any> {
-    await this.setUser(null)
     await this.provider?.post("auth/logout", {})
+    await this.setUser(null)
   }
 
   /**
@@ -167,4 +167,8 @@ export class AuthCredentialService extends AuthService {
       }
     }
   }
+  async validateEmail(token: string): Promise<any> {
+    return await this.provider?.post("auth/validate_email", { token })
+  }
+
 }

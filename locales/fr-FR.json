@@ -123,11 +123,16 @@
     },
     "address": {
       "warning": "Les adresses sélectionnées ne sont pas complètes",
-      "title": "Mes adresses",
+      "title": "Adresses",
       "no-address": "Aucune adresse Sélectionnée",
-      "select": "Sélectionner une adresse",
+      "select": "Sélectionner une autre adresse de livraison",
       "pick": "Choisir cette adresse",
       "continue": "Continuer",
+
+      "same-address": {
+        "title": "Adresse de livraison et de facturation",
+        "label": "Adresse de facturation identique à l'adresse de livraison",
+      },
       "shipping": {
         "title": "Adresse de livraison"
       },
@@ -185,7 +190,7 @@
       "password": "Mot de passe",
       "forgot_password": "Mot de passe oublié ?",
       "not_yet_account": "Vous n'avez pas encore de compte ?",
-      "password_requirements": "Le mot de passe doit contenir au moins 6 caractères.",
+      "password_requirements": "Le mot de passe doit contenir au moins 8 caractères et contenir au moins une majuscule et un caractère spécial {'@#$%^&+=!?'}.",
       "create_account": "Créer un compte !",
       "sign_in": "Se connecter"
     },
@@ -314,7 +319,7 @@
     "retry": "Réessayer",
     "login": {
       "email": "Format d'adresse e-mail invalide.",
-      "password": "Le mot de passe doit contenir au moins 6 caractères.",
+      "password": "Le mot de passe doit contenir au moins 8 caractères.",
       "unable_to_login": "Impossible de se connecter"
     },
     "reset": {

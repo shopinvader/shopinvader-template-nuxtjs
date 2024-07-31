@@ -19,9 +19,9 @@
             {{ $t('account.address.email') }}
           </span>
         </div>
-        <input type="email" v-model="login" class="control__input" @keyup="checkValidity('email', $event)" :placeholder="$t('account.address.email')" />
+        <input type="email" v-model="login" class="control__input" @keyup="checkValidity('login', $event)" :placeholder="$t('account.address.email')" />
         <div class="label">
-          <span v-if="error.login" class="label-text-alt text-error">{{ error.login }}</span>
+          <span v-if="error.login" class="label-text-alt text-error">{{ $t('error.login.email') }}</span>
         </div>
       </label>
       <label class="form__control control-password">
@@ -49,16 +49,19 @@
           </button>
         </label>
         <div class="label">
-          <span v-if="error.password" class="label-text-alt text-error">{{ error.password }}</span>
+          <span v-if="error.password" class="label-text-alt text-error">{{ $t('error.login.password') }}</span>
         </div>
         <div class="label">
           <NuxtLink
             class="label-text-alt underline"
-            :to="localePath('/account/password-reset')"
-            >{{ $t('account.login.forgot_password') }}
+            :to="{
+              path: localePath('/account/password-reset'),
+              query: { login }
+            }"
+          >
+            {{ $t('account.login.forgot_password') }}
           </NuxtLink>
         </div>
-
       </label>
       <div class="form__submit">
         <div v-if="error.auth" class="submit__error" >
@@ -70,7 +73,6 @@
           {{ $t('account.login.sign_in') }}
         </button>
       </div>
-
     </form>
     <div class="account-login__footer">
       <slot name="footer">
@@ -119,7 +121,8 @@ export default defineNuxtComponent({
   },
   setup() {
     const localePath = useLocalePath()
-    const auth = useShopinvaderService('auth') as AuthCredentialService
+    const auth = useShopinvaderService('auth') as AuthCredentialService | null
+
     onMounted(async () => {
       if(!auth?.getUser()?.value && auth?.type == 'oidc') {
         const url = useRequestURL()
@@ -132,18 +135,12 @@ export default defineNuxtComponent({
     }
   },
   methods: {
-    checkValidity(input: string, e: Event) {
-      this.error.login = null
-      this.error.password = null
-      if (e.target?.validity?.valid == false) {
-        if (input == 'login') {
-          this.error.login = this.$t('error.login.email')
-        } else if (input == 'password') {
-          this.error.password = this.$t('error.login.password')
-        }
-      } else {
-        this.error.login = null
-        this.error.password = null
+    checkValidity(input: "login" | "password", e: Event) {
+      const target = e.target as HTMLInputElement
+      const validity = target?.checkValidity()
+      this.error = {
+        ...this.error,
+        [input] : !validity || target?.value === ''
       }
     },
     async submit(e: Event) {

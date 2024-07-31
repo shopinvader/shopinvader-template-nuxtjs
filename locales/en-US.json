@@ -119,9 +119,13 @@
       "warning": "The selected addresses are not complete",
       "title": "My addresses",
       "no-address": "No address selected",
-      "select": "Select an address",
+      "select": "Select another delivery address",
       "pick": "Select this address",
       "continue": "Continue",
+      "same-address": {
+        "title": "Delivery and billing address",
+        "label": "Invoice address identical to delivery address"
+      },
       "shipping": {
         "title": "Delivery address"
       },
@@ -176,7 +180,7 @@
       "password": "Password",
       "forgot_password": "Forgot password",
       "not_yet_account": "You don't have an account ?",
-      "password_requirements": "The password must contain at least 6 characters.",
+      "password_requirements": "Password must be at least 8 characters long and contain at least one uppercase letter and one special character {'@#$%^&+=!?'}.",
       "create_account": "Create it now !",
       "sign_in": "Sign in"
     },

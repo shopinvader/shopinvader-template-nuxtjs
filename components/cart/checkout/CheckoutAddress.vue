@@ -8,7 +8,7 @@
       <icon name="error" class="text-xl"></icon>
       <span>{{ error }}</span>
     </div>
-    <template v-if="editAddress">
+    <template v-if="editAddress && active">
       <slot name="create-address" :cart="cart">
         <div class="checkout-address__form">
           <h2>{{ $t('cart.address.shipping.title') }}</h2>
@@ -26,8 +26,9 @@
     </template>
     <template v-else>
       <div class="checkout-address__items">
-        <cart-address-delivery class="address" :editable="active"></cart-address-delivery>
-        <cart-address-invoicing class="address" :editable="active"></cart-address-invoicing>
+        <cart-address-delivery class="address" :editable="active">
+        </cart-address-delivery>
+        <cart-address-invoicing v-if="!sameAddresses" class="address" :editable="active"></cart-address-invoicing>
       </div>
       <div v-if="active" class="checkout-address__submit">
         <button
@@ -42,7 +43,6 @@
         </button>
       </div>
     </template>
-
   </div>
 </template>
 <script lang="ts">
@@ -83,6 +83,9 @@ export default defineNuxtComponent({
     const addressService = useShopinvaderService('addresses')
     const editAddress = ref(null as Address | null)
     const cart = cartService.getCart()
+    const sameAddresses = computed(() => {
+      return cart.value?.hasSameAddress()
+    })
     const loading = ref(false)
     const loadingStep = ref(true)
     const error = ref(null as string | null)
@@ -110,8 +113,9 @@ export default defineNuxtComponent({
             error.value = i18n.t('cart.address.warning')
             loading.value = false
           }, 1000)
+        } else {
+          emit('next')
         }
-        emit('next')
       } catch (e: any) {
         error.value = e?.message || e
         loading.value = false
@@ -154,6 +158,7 @@ export default defineNuxtComponent({
       cart,
       loading,
       loadingStep,
+      sameAddresses,
       submit,
       saveAddress,
       deliveryAddress,
@@ -171,7 +176,8 @@ export default defineNuxtComponent({
     @apply card card-body max-w-xl mx-auto;
   }
   &__items {
-    @apply flex w-full flex-row flex-wrap gap-6;
+    @apply grid grid-cols-1 gap-6 sm:grid-cols-2;
+
     .address-card {
       @apply shadow-none ;
       &__header {
@@ -193,14 +199,18 @@ export default defineNuxtComponent({
   &:not(.checkout-address--active) {
     .checkout-address__items {
       .address-card {
-        @apply border-0 px-2 py-1 rounded-none;
-        &:first-child {
-          @apply border-r;
-        }
-        .header__title {
-          .title {
-            @apply text-base;
+        @apply border-0 bg-transparent;
+
+        &__header {
+          @apply text-sm pb-0;
+          .header__title {
+          .subtitle {
+            @apply font-sans text-sm font-normal;
           }
+        }
+        }
+        &__content {
+          @apply text-sm;
         }
       }
     }
