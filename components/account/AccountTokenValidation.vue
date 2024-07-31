@@ -42,7 +42,7 @@ onMounted(async () => {
   } else if (route.query.token) {
     urlHasToken.value = true
     try {
-      await auth?.validateEmail(route.query.token)
+      await auth?.validateEmail(route.query?.token?.toString() || '')
       auth?.loginRedirect(localePath(`/account/profile`))
     } catch {
       urlHasToken.value = false
