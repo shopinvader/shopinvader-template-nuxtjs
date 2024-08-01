@@ -28,6 +28,7 @@
             {{ page.title }}
           </NuxtLink>
         </li>
+        <slot name="extra" :pages="pages"></slot>
       </ul>
     </div>
   </nav>

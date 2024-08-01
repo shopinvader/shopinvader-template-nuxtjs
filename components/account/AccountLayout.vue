@@ -12,7 +12,16 @@
           :items="items"
           :selected="slug"
           class="account-layout__navbar"
-        ></account-navbar>
+        >
+          <template #extra="{ pages }">
+            <li v-if="pages.length > 0" class="extra">
+              <nuxt-link :to="localePath('account-logout')">
+                <icon name="logout" />
+                {{ $t('account.logout') }}
+              </nuxt-link>
+            </li>
+          </template>
+        </account-navbar>
       </slot>
       <div class="account-layout__main">
         <div class="main__head">
@@ -28,7 +37,7 @@
                 <h1 class="head__title">
                   {{ currentPage?.title }}
                 </h1>
-                <button class="btn btn-primary" @click="logout">
+                <button @click="logout" class="head__logout">
                   <icon name="logout" class="" />
                   {{ $t('account.logout') }}
                 </button>
@@ -37,7 +46,7 @@
           </slot>
         </div>
         <div v-if="!loading" class="main__content">
-          <slot  name="content" :items="items"></slot>
+          <slot name="content" :items="items"></slot>
         </div>
         <div v-else="loading" class="main__loading">
           <spinner/>
@@ -131,17 +140,20 @@ export default defineNuxtComponent({
     @apply w-full;
     .main {
       &__head {
-        @apply flex items-center gap-2 border-b p-3 text-xl max-sm:shadow md:pb-3 lg:text-3xl;
+        @apply flex items-start sm:items-center gap-2 border-b p-3 text-xl max-sm:shadow md:pb-3 lg:text-3xl;
         .head {
-          @apply flex justify-between w-full gap-2 items-center;
+          @apply flex flex-wrap justify-between w-full gap-2 sm:items-center;
           &__icon {
-            @apply text-2xl md:text-5xl;
+            @apply text-2xl md:text-4xl;
           }
           &__title {
-            @apply flex-1 m-0 p-0 text-xl md:text-4xl;
+            @apply flex-1 m-0 p-0 text-lg sm:text-xl md:text-4xl;
           }
           &__back {
             @apply cursor-pointer text-primary lg:hidden;
+          }
+          &__logout {
+            @apply btn max-sm:hidden sm:btn-sm btn-primary;
           }
         }
       }

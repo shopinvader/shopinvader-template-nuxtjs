@@ -60,7 +60,7 @@ useSeoMeta({
       @apply w-full;
       .blocks {
         &__list {
-          @apply grid grid-cols-2 gap-4 lg:grid-cols-3;
+          @apply grid sm:grid-cols-2 gap-4 lg:grid-cols-3;
         }
       }
     }
