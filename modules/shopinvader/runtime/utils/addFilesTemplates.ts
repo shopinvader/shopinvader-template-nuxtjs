@@ -170,7 +170,7 @@ async function buildindexFileContent(
     .join('\n')
   if (originalsFiles.length > 0) {
     logger.log(
-      `[ShopInvader] BUILD - Note: you overrided some ShopInvader models. Originals are available in ${UNICODE_GREEN}#models/originals${UNICODE_RESET}.`
+      `[ShopInvader] BUILD - Note: you overrided some ShopInvader ${type}. Originals are available in ${UNICODE_GREEN}#${type}/originals${UNICODE_RESET}.`
     )
   }
   return contents
