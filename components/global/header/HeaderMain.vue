@@ -1,21 +1,12 @@
 <template>
   <header :class="{ scrolled: scrolled }">
-
-    <aside-menu
-      name="header"
-      class="header"
-      class-content="header-navbar"
-      :sideMenu="scrolled"
-    >
+    <aside-menu name="header" class="header" class-content="header-navbar" :side-menu="scrolled">
       <template #top>
         <slot name="top"></slot>
       </template>
       <template #button>
         <div class="menu">
-          <icon
-            name="menu"
-            class="text-3xl text-primary"
-          />
+          <icon name="menu" class="text-3xl text-primary" />
         </div>
       </template>
       <template #header>
@@ -39,7 +30,7 @@
           </div>
         </slot>
       </template>
-      <template #menu="{context}">
+      <template #menu="{ context }">
         <slot name="menu">
           <header-nav :collapsible="context == 'side'"></header-nav>
         </slot>
@@ -48,40 +39,40 @@
   </header>
 </template>
 <script lang="ts" setup>
-  const props = defineProps({
-    scrolledEffect: {
-      type: Boolean,
-      default: true
-    }
-  })
-  const localePath = useLocalePath()
-  let interval:any | null = null
-  let scrolled = ref(false)
-  let headerHeight: Number = 0
-  let previsousScrollState = false
-  const handleScroll = () => {
-    let isScrolled = window.scrollY > 200
-    if(isScrolled !== previsousScrollState) {
-      scrolled.value = isScrolled
-      previsousScrollState = isScrolled
-      if(isScrolled) {
-        headerHeight = document.querySelector('header')?.clientHeight || 0
-        if(interval) clearTimeout(interval)
-        interval = setTimeout(() => {
-          scrolled.value = true
-        }, 100)
-      } else {
-        headerHeight = 0
-        scrolled.value = false
-      }
-      document.querySelector('body')?.style.setProperty('--header-height', `${headerHeight}px`)
-    }
+const props = defineProps({
+  scrolledEffect: {
+    type: Boolean,
+    default: true
   }
-  onMounted(() => {
-    if(!props.scrolledEffect) return
-    previsousScrollState = window.scrollY > 200
-    window.addEventListener('scroll', handleScroll)
-  })
+})
+const localePath = useLocalePath()
+let interval: any | null = null
+const scrolled = ref(false)
+let headerHeight: number = 0
+let previsousScrollState = false
+const handleScroll = () => {
+  const isScrolled = window.scrollY > 200
+  if (isScrolled !== previsousScrollState) {
+    scrolled.value = isScrolled
+    previsousScrollState = isScrolled
+    if (isScrolled) {
+      headerHeight = document.querySelector('header')?.clientHeight || 0
+      if (interval) clearTimeout(interval)
+      interval = setTimeout(() => {
+        scrolled.value = true
+      }, 100)
+    } else {
+      headerHeight = 0
+      scrolled.value = false
+    }
+    document.querySelector('body')?.style.setProperty('--header-height', `${headerHeight}px`)
+  }
+}
+onMounted(() => {
+  if (!props.scrolledEffect) return
+  previsousScrollState = window.scrollY > 200
+  window.addEventListener('scroll', handleScroll)
+})
 </script>
 <style lang="scss">
 body {
@@ -89,15 +80,15 @@ body {
   padding-top: var(--header-height);
 }
 header {
-  @apply  top-0 z-40 border-b bg-white pb-2;
+  @apply top-0 z-40 border-b bg-white pb-2;
   &.scrolled {
     opacity: 0;
     animation-name: header-slide;
     animation-duration: 0.3s;
     animation-timing-function: ease-in-out;
     animation-fill-mode: both;
-    animation-delay: .5s;
-    @apply fixed shadow-xl w-full;
+    animation-delay: 0.5s;
+    @apply fixed w-full shadow-xl;
     .header-navbar {
       .menu {
         @apply text-primary;
@@ -120,7 +111,7 @@ header {
     }
   }
   .header-navbar {
-    @apply navbar mx-auto  p-0 pt-2 lg:container lg:bg-transparent;
+    @apply navbar mx-auto p-0 pt-2 lg:container lg:bg-transparent;
     display: grid;
     grid-template-columns: auto auto 1fr 1fr auto;
     @apply grid-flow-row;
@@ -130,7 +121,7 @@ header {
       }
 
       &__title {
-        @apply col-start-2 col-end-2 lg:row-span-2;
+        @apply col-start-2 col-end-2 ;
         .logo {
           @apply flex flex-col items-center;
           &__baseline {
@@ -140,18 +131,21 @@ header {
       }
 
       &__menu {
-        @apply col-start-3 col-end-6 row-start-2;
+        @apply col-start-2 col-end-6 row-start-2 relative;
       }
 
       &__search {
-        @apply col-start-1 col-end-5 max-lg:row-start-2 max-lg:bg-slate-100 lg:col-start-3;
+        @apply col-start-1 col-end-5 max-lg:row-start-2 max-lg:bg-slate-100 lg:col-start-3 flex justify-end;
+        .search-autocomplete {
+          @apply p-2 lg:p-0 lg:max-w-96;
+        }
       }
 
       &__icons {
         @apply col-start-3 col-end-5 row-start-1 hidden items-center justify-end gap-2 px-2 md:flex lg:col-start-5;
         .button {
           &__icon {
-            @apply rounded-full bg-primary p-1.5 text-4xl text-white;
+            @apply bg-primary p-1.5 text-4xl text-white;
           }
         }
       }
@@ -171,6 +165,5 @@ header {
     opacity: 1;
     transform: translateY(0);
   }
-
 }
 </style>

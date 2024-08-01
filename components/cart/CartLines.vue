@@ -1,41 +1,36 @@
 <template>
   <div class="cart-lines">
-    <cart-line
-      v-for="(line, index) in lines"
-      :key="line.id"
-      :line="line"
-      :readonly="readonly"
-      v-animate="{name: 'cartLines', index}"
-    >
-    </cart-line>
+    <slot name="lines" :lines="lines">
+      <cart-line
+        v-for="(line, index) in lines"
+        :key="line.id"
+        :line="line"
+        :readonly="readonly"
+        v-animate="{ name: 'cartLines', index }"
+      >
+      </cart-line>
+    </slot>
   </div>
 </template>
-<script lang="ts">
-import CartLineVue from '~/components/cart/CartLine.vue'
-import { CartLine } from '~~/models'
+<script lang="ts" setup>
+import type { CartLine } from '#models'
 /**
  * Display the cart's lines
  * This component is used in the component Cart
  * This component loop on the cart's lines and display the component CartLine
  */
-export default defineNuxtComponent({
-  name: 'CartLines',
-  components: {
-    'cart-line': CartLineVue
+defineProps({
+  /**  Cart's lines */
+  lines: {
+    type: Array<CartLine>,
+    required: true,
+    default: null
   },
-  props: {
-    /**  Cart's lines */
-    lines: {
-      type: Array<CartLine>,
-      required: true,
-      default: null
-    },
-    /**  If the cart is readonly. Readonly mode prevent to update the line's quantity*/
-    readonly: {
-      type: Boolean,
-      default: false
-    }
-  },
+  /**  If the cart is readonly. Readonly mode prevent to update the line's quantity*/
+  readonly: {
+    type: Boolean,
+    default: false
+  }
 })
 </script>
 <style lang="scss">

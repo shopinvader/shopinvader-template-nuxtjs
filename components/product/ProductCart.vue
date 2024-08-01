@@ -1,5 +1,5 @@
 <template>
-  <div v-if="product !== null" class="product-cart">
+  <div v-if="product !== null" class="product-cart" :class="cssClass">
     <slot name="input" :product="product" :qty="qty">
       <input-qty
         v-if="!disabledAddToCart"
@@ -26,13 +26,18 @@
     <slot name="count" :count="line?.qty">
       <div v-if="line && !disabledAddToCart" class="product-cart__count">
         {{ $t('cart.line.count', { count: line?.qty || 0 }) }}
-        <nuxt-link class="text-secondary underline" :to="localePath('cart')">
+        <nuxt-link class="text-secondary underline" :to="localePath('cart') || 'cart'">
           {{ $t('cart.link') }}
         </nuxt-link>
       </div>
     </slot>
   </div>
-  <aside-drawer :open="cartDrowerOpened" direction="right" @close="closeDrawer" class-content="cart-confirmation">
+  <aside-drawer
+    :open="cartDrowerOpened"
+    direction="right"
+    @close="closeDrawer"
+    class-content="cart-confirmation"
+  >
     <template #header>
       <div class="cart-confirmation__header">
         {{ $t('cart.title') }}
@@ -45,13 +50,7 @@
             <icon name="check" class="icon" />
             {{ $t('cart.confirmation') }}
           </div>
-          <cart-line
-            v-if="line"
-            class="content__line"
-            :line="line"
-            :readonly="true"
-          >
-          </cart-line>
+          <cart-line v-if="line" class="content__line" :line="line" :readonly="true"> </cart-line>
           <product-links
             v-if="product"
             class="content__links"
@@ -67,11 +66,7 @@
     <template #footer>
       <div class="cart-confirmation__footer">
         <slot name="addedtocart-footer" :line="line">
-          <button
-            type="button"
-            class="btn-back"
-            @click="closeDrawer"
-          >
+          <button type="button" class="btn-back" @click="closeDrawer">
             {{ $t('cart.continue') }}
           </button>
           <button @click="gotToCart" class="btn-checkout">
@@ -84,8 +79,8 @@
   </aside-drawer>
 </template>
 <script lang="ts">
+import type { CartLine, Product } from '#models'
 import type { PropType } from 'vue'
-import { CartLine, Product } from '#models'
 export default {
   name: 'ProductCart',
   props: {
@@ -104,13 +99,17 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    cssClass: {
+      type: String,
+      default: ''
     }
   },
   emits: {
     /**  Emit when the quantity is updated */
-    update: (qty: number) => true,
+    update: (_qty: number) => true,
     /** Emit when the product is added to the cart */
-    add: (qty: number) => true
+    add: (_qty: number) => true
   },
   data() {
     return {
@@ -123,12 +122,10 @@ export default {
       const cartService = useShopinvaderService('cart')
       const cart = cartService.getCart()
       return (
-        cart?.value?.lines?.find(
-          (line: CartLine) => line.productId === this.product.id
-        ) || null
+        cart?.value?.lines?.find((line: CartLine) => line.productId === this.product.id) || null
       )
     },
-    stockState():string | null {
+    stockState(): string | null {
       return this.product?.stock?.global?.state || null
     },
     lines(): CartLine[] {
@@ -159,8 +156,6 @@ export default {
         this.$emit('add', this.qty)
         cartService.addItem(this.product.id, this.qty)
         this.cartDrowerOpened = true
-        if (!this.line) {
-        }
       }
     },
     gotToCart() {
@@ -186,7 +181,7 @@ export default {
 .product-cart {
   @apply flex flex-row flex-wrap items-center justify-end gap-2;
   &__add {
-    @apply btn-primary btn px-14  text-white hover:btn-primary hover:shadow-2xl;
+    @apply btn btn-primary px-14 text-white hover:btn-primary hover:shadow-2xl;
     .add-label {
       @apply ml-2;
     }
@@ -218,30 +213,30 @@ export default {
           }
         }
         &__line {
-          @apply border-l-0 border-r-0 flex justify-start flex-nowrap items-center gap-2 py-2;
+          @apply flex flex-nowrap items-center justify-start gap-2 border-l-0 border-r-0 py-2;
           .cartline {
             &__content {
-              @apply flex flex-col flex-grow gap-0 justify-start;
+              @apply flex flex-grow flex-col justify-start gap-0;
               .content__title {
-                @apply flex flex-col justify-start items-start gap-1 pb-0;
+                @apply flex flex-col items-start justify-start gap-1 pb-0;
               }
               .content__qty {
                 .label {
-                  @apply block justify-start text-sm p-0;
+                  @apply block justify-start p-0 text-sm;
                 }
               }
               .content__price {
                 @apply flex flex-row justify-start p-0 leading-3;
                 .label {
-                  @apply text-sm p-0;
+                  @apply p-0 text-sm;
                 }
                 .value .price__value {
-                  @apply text-base font-normal text-secondary-950 p-0;
+                  @apply p-0 text-base font-normal text-secondary-950;
                 }
               }
             }
             &__image {
-              @apply w-16 h-16;
+              @apply h-16 w-16;
             }
           }
         }
@@ -258,15 +253,15 @@ export default {
       }
     }
     &__footer {
-      @apply w-full flex justify-between items-center gap-2;
+      @apply flex w-full items-center justify-between gap-2;
       .btn-back {
-        @apply btn-outline btn max-md:hidden;
+        @apply btn btn-outline max-md:hidden;
       }
       .btn-checkout {
         .icon {
           @apply text-xl;
         }
-        @apply btn-success btn max-md:btn-block px-8 shadow-2xl text-white;
+        @apply btn btn-success px-8 text-white shadow-2xl max-md:btn-block;
       }
     }
   }

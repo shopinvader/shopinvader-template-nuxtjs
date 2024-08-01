@@ -11,6 +11,7 @@
       <product-image
         v-if="product?.images?.[0]"
         :image="product.images[0]"
+        :size="size"
         class="hit__image"
       >
       </product-image>
@@ -21,13 +22,18 @@
   </div>
 </template>
 <script lang="ts">
+import type { Product } from '#models'
 import type { PropType } from 'vue'
-import { Product } from '#models'
 export default {
   props: {
     variants: {
       type: Array as PropType<Product[]>,
       required: true
+    },
+    size: {
+      type: String as PropType<string>,
+      required: false,
+      default: 'small'
     }
   },
   emits: ['selectVariant', 'mouseover', 'mouseleave'],

@@ -1,6 +1,6 @@
 <template>
   <div class="account-dashboard">
-    <account-layout :slug="account" :navbar="false">
+    <account-layout slug="account" :navbar="false">
       <template #title>
         <div class="dashboard__title">
           <div>
@@ -34,13 +34,14 @@
 const localePath = useLocalePath()
 const { t } = useI18n()
 const auth = useShopinvaderService('auth')
-const user = auth.getUser().value
 definePageMeta({
   auth: true,
-  pageTransition: false,
+  pageTransition: false
 })
-const logout = () => {
-  auth.logoutRedirect()
+const logout = async () => {
+  if (auth) {
+    await auth.logoutRedirect()
+  }
 }
 useSeoMeta({
   title: t(`account.title`)
@@ -51,9 +52,9 @@ useSeoMeta({
 .account-dashboard {
   .dashboard {
     &__title {
-      @apply flex justify-between items-center w-full;
+      @apply flex w-full items-center justify-between;
       .title {
-        @apply text-center text-2xl font-bold m-0 p-0;
+        @apply m-0 p-0 text-center text-2xl font-bold;
       }
     }
     &__blocks {

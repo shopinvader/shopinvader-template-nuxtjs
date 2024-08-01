@@ -11,121 +11,105 @@
     </template>
     <template v-if="editable" #footer>
       <div class="cart-address-invoicing">
-      <slot v-if="invoicingAddress" name="action" onOpen>
-        <div class="cart-address-invoicing__btn">
-          <button class="btn" @click="onOpen">
-            <icon name="edit"></icon>
-            <span class="pl-1">{{ $t('account.address.edit') }}</span>
-          </button>
-        </div>
-      </slot>
-      <aside-drawer
-        :open="opened"
-        @close="onClose"
-        classContent="cart-address-invoicing__aside"
-      >
-        <template #header>
-          <div class="aside__header">
-            {{ $t('cart.address.billing.title') }}
+        <slot v-if="invoicingAddress" name="action" on-open>
+          <div class="cart-address-invoicing__btn">
+            <button class="btn" @click="onOpen">
+              <icon name="edit"></icon>
+              <span class="pl-1">{{ $t('account.address.edit') }}</span>
+            </button>
           </div>
-        </template>
-        <template #content>
-          <div v-if="hasSameAddresses" class="alert-same-address">
-            <icon name="warning"></icon>
-            <span>
-              {{ $t('cart.address.billing.warning_same') }}
-            </span>
-          </div>
-          <address-form v-if="value" :address="value" @saved="(e) => onUpdateAddress(e)"></address-form>
-        </template>
-      </aside-drawer>
-    </div>
+        </slot>
+        <aside-drawer :open="opened" @close="onClose" class-content="cart-address-invoicing__aside">
+          <template #header>
+            <div class="aside__header">
+              {{ $t('cart.address.billing.title') }}
+            </div>
+          </template>
+          <template #content>
+            <div v-if="hasSameAddresses" class="alert-same-address">
+              <icon name="warning"></icon>
+              <span>
+                {{ $t('cart.address.billing.warning_same') }}
+              </span>
+            </div>
+            <address-form
+              v-if="model"
+              :address="model"
+              @saved="(e) => onUpdateAddress(e)"
+            ></address-form>
+          </template>
+        </aside-drawer>
+      </div>
     </template>
   </address-card>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { Address } from '#models'
-import { AddressForm } from '#components'
-
-export default defineNuxtComponent({
-  events: ['close', 'open'],
-  name: 'cart-delivery-address',
-  components: {
-    'address-form': AddressForm
-  },
-  props: {
-    /**
-     * Is the current step of the checkout process
-     */
-     editable: {
-      type: Boolean,
-      required: false,
-      default: true
-    }
-  },
-  async setup() {
-    const opened = ref(false)
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService?.getCart() || ref(null)
-    const value = ref(null) as Ref<Address | null>
-
-    const invoicingAddress = computed(() => {
-      const cartService = useShopinvaderService('cart')
-      const cart = cartService.getCart()
-      return cart.value?.invoicing?.address || null
-    })
-    const hasSameAddresses = computed(() => cart?.value?.delivery?.address?.id == invoicingAddress?.value?.id)
-
-    return  {
-      value,
-      opened,
-      hasSameAddresses,
-      invoicingAddress
-    }
-  },
-  methods: {
-    async onUpdateAddress(address:Address | null) {
-      if(!address) return null
-
-      const addressService = useShopinvaderService('addresses')
-      const addressSaved = await addressService?.update(address) || null
-
-      if(addressSaved) {
-        const cartService = useShopinvaderService('cart')
-        await cartService.setAddress('invoicing', addressSaved)
-      }
-      this.onClose()
-    },
-    onClose() {
-      this.value = null
-      this.opened = false
-      this.$emit('close')
-    },
-    async onOpen() {
-      let data = this.invoicingAddress?.data || null
-      if(!data) {
-        const addressService = useShopinvaderService('addresses')
-        let main = await addressService?.getMainAddress()
-        data = main?.data || null
-      }
-      this.value = new Address({
-        ...data,
-        type: 'invoicing'
-      })
-      this.opened = true
-      this.$emit('open')
-    }
-  },
-  watch: {
-    value(val) {
-      this.$emit('select', val)
-    }
+const emits = defineEmits(['close', 'open', 'select'])
+defineProps({
+  editable: {
+    type: Boolean,
+    required: false,
+    default: true
   }
 })
+const opened = ref(false)
+const addressService = useShopinvaderService('addresses')
+const cartService = useShopinvaderService('cart')
+const cart = cartService?.getCart() || ref(null)
+const model = ref(null) as Ref<Address | null>
+
+const invoicingAddress = computed(() => {
+  const cartService = useShopinvaderService('cart')
+  const cart = cartService.getCart()
+  return cart.value?.invoicing?.address || null
+})
+
+const hasSameAddresses = computed(
+  () => cart?.value?.delivery?.address?.id == invoicingAddress?.value?.id
+)
+
+const onClose = () => {
+  model.value = null
+  opened.value = false
+  emits('close')
+}
+
+const onUpdateAddress = async (address: Address | null) => {
+  if (!address) return null
+
+  const addressSaved = (await addressService?.update(address)) || null
+
+  if (addressSaved) {
+    await cartService.setAddress('invoicing', addressSaved)
+  }
+  onClose()
+}
+
+const onOpen = async () => {
+  let data = invoicingAddress.value?.data || null
+  if (!data) {
+    const main = await addressService?.getMainAddress()
+    data = main?.data || null
+  }
+  model.value = new Address({
+    ...data,
+    type: 'invoicing'
+  })
+  opened.value = true
+  emits('open')
+}
+
+watch(
+  () => model.value,
+  (val) => {
+    emits('select', val)
+  }
+)
 </script>
 <style lang="scss">
 .cart-address-invoicing {
-  @apply w-full flex justify-end;
+  @apply flex w-full justify-end;
   .cart-address-invoicing__btn {
     .btn {
       @apply btn-link;
@@ -136,7 +120,7 @@ export default defineNuxtComponent({
       @apply font-heading text-2xl;
     }
     .alert-same-address {
-      @apply alert alert-warning mb-4 flex gap-4 items-center;
+      @apply alert alert-warning mb-4 flex items-center gap-4;
       .iconify {
         @apply text-6xl;
       }

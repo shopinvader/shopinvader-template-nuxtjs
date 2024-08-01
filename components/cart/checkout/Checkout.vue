@@ -14,7 +14,7 @@
         <slot name="pending">
           <h1>{{ $t('cart.pending.title') }}</h1>
           <p>{{ $t('cart.pending.checkout') }}</p>
-          <nuxt-link :to="localePath({ path: '/cart' })" class="btn-primary btn">
+          <nuxt-link :to="localePath('/cart')" class="btn btn-primary">
             {{ $t('cart.pending.back') }}
           </nuxt-link>
         </slot>
@@ -53,7 +53,7 @@
               <icon name="solar:cart-3-bold-duotone" />
             </div>
             <div class="cart__body">
-              <nuxt-link class="body__title" :to="localePath({ path: '/cart' })">
+              <nuxt-link class="body__title" :to="localePath('/cart')">
                 {{ $t('cart.title') }}
               </nuxt-link>
               <span class="body__count">
@@ -63,17 +63,11 @@
             <div class="cart__end">
               <button
                 type="button"
-                class="btn-ghost btn-circle btn"
-                :title="
-                  displayCart ? $t('cart.line.hide') : $t('cart.line.view')
-                "
+                class="btn btn-circle btn-ghost"
+                :title="displayCart ? $t('cart.line.hide') : $t('cart.line.view')"
                 @click="displayCart = !displayCart"
               >
-                <icon
-                  name="down"
-                  class="text-lg"
-                  :rotate="displayCart && '180deg'"
-                />
+                <icon name="down" class="text-lg" :rotate="displayCart && '180deg'" />
               </button>
             </div>
             <div v-if="displayCart" class="cart__lines">
@@ -87,16 +81,12 @@
             @binding {CheckoutStep[]} steps - checkout steps
             @binding {number} currentStepIndex - current step index
           -->
-          <slot
-            name="body"
-            :steps="checkoutSteps"
-            :currentStepIndex="currentStepIndex"
-          >
+          <slot name="body" :steps="checkoutSteps" :current-step-index="currentStepIndex">
             <div class="checkout-steps">
               <div
                 v-for="(step, index) in checkoutSteps"
                 :key="step.name"
-                :id="'step-' + (step.position)"
+                :id="'step-' + step.position"
                 :class="[
                   'checkout-step',
                   {
@@ -120,7 +110,7 @@
                       <button
                         v-if="index < currentStepIndex"
                         type="button"
-                        class="btn-ghost btn"
+                        class="btn btn-ghost"
                         @click="goToStep(index)"
                       >
                         {{ $t('cart.edit') }}
@@ -128,12 +118,8 @@
                     </div>
                   </div>
                 </div>
-                <div
-                  class="checkout-step__component"
-                  :class="`step-${step.name}`"
-                >
+                <div class="checkout-step__component" :class="`step-${step.name}`">
                   <slot :name="`step-${step.name}`">
-
                     <component
                       :is="step.component"
                       v-if="index <= currentStepIndex"
@@ -163,21 +149,21 @@
   </client-only>
 </template>
 <script lang="ts">
+import {
+  CartCheckoutAddress,
+  CartCheckoutDelivery,
+  CartCheckoutLogin,
+  CartCheckoutPayment,
+  CartEmpty,
+  Spinner
+} from '#components'
+
 interface checkoutStep {
   name: string
   title: string | null
   component: Component
   position: number
 }
-import {
-  CartCheckoutLogin,
-  CartCheckoutAddress,
-  CartCheckoutDelivery,
-  CartCheckoutPayment,
-  CartEmpty,
-  Spinner,
-} from '#components'
-
 
 /**
  * Checkout component.
@@ -191,8 +177,8 @@ export default defineNuxtComponent({
   emits: ['change', 'next', 'back'],
   components: {
     'checkout-login': CartCheckoutLogin,
-    'CartEmpty': CartEmpty,
-    'spinner': Spinner
+    CartEmpty: CartEmpty,
+    spinner: Spinner
   },
   props: {
     /**
@@ -220,10 +206,9 @@ export default defineNuxtComponent({
     const cart = cartService?.getCart() || ref(null)
     const i18n = useI18n()
     const displayCart = ref(false)
-    const elSteps = ref(null)
 
     /** Default steps of the checkout funnel */
-    let defaultSteps: checkoutStep[] = [
+    const defaultSteps: checkoutStep[] = [
       {
         name: 'login',
         title: null,
@@ -251,14 +236,14 @@ export default defineNuxtComponent({
     ]
     /** Merge props steps with default steps */
     let checkoutSteps = [...defaultSteps]
-    if(props.mergeSteps) {
+    if (props.mergeSteps) {
       checkoutSteps = [...defaultSteps, ...props.steps]
-      .reduce((steps, item) => {
-        steps[item?.position] = item
-        return steps
-      }, [] as checkoutStep[])
-      .filter((step) => step?.component)
-    } else if(props.steps) {
+        .reduce((steps, item) => {
+          steps[item?.position] = item
+          return steps
+        }, [] as checkoutStep[])
+        .filter((step) => step?.component)
+    } else if (props.steps) {
       checkoutSteps = props.steps
     }
     const currentStepIndex = ref(0 as number)
@@ -269,7 +254,7 @@ export default defineNuxtComponent({
       checkoutSteps,
       cart,
       displayCart,
-      localePath,
+      localePath
     }
   },
   computed: {
@@ -298,9 +283,7 @@ export default defineNuxtComponent({
      * Go to the previous step
      */
     back() {
-      this.currentStepIndex - 1 < 0
-        ? (this.currentStepIndex = 0)
-        : this.currentStepIndex--
+      this.currentStepIndex - 1 < 0 ? (this.currentStepIndex = 0) : this.currentStepIndex--
       this.$emit('back', { currentStepIndex: this.currentStepIndex })
       window.scrollTo({
         top: 0,
@@ -311,9 +294,7 @@ export default defineNuxtComponent({
      * Go to the next step
      */
     next() {
-      this.currentStepIndex + 1 < 0
-        ? (this.currentStepIndex = 0)
-        : this.currentStepIndex++
+      this.currentStepIndex + 1 < 0 ? (this.currentStepIndex = 0) : this.currentStepIndex++
       if (this.maxStepIndex < this.currentStepIndex) {
         this.maxStepIndex = this.currentStepIndex
       }
@@ -331,11 +312,10 @@ export default defineNuxtComponent({
       this.currentStepIndex = step
     },
     scrollToStep(step: number) {
-      const el = document
-      .querySelector(`#step-${step}`)
-      if(el) {
+      const el = document.querySelector(`#step-${step}`)
+      if (el) {
         setTimeout(() => {
-          el.scrollIntoView({behavior: 'smooth', block:'center'})
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
         }, 900)
       }
     },
@@ -350,15 +330,16 @@ export default defineNuxtComponent({
 .checkout {
   @apply p-4;
   &__header {
-    @apply hidden w-full border-b py-4 md:block sticky top-0 left-0  bg-white z-10;
+    @apply sticky left-0 top-0 z-10 hidden w-full border-b py-4 md:block bg-gray-50;
     .checkout-stepper {
-      @apply  flex w-full flex-row justify-center md:gap-8;
+      @apply flex w-full flex-row justify-center md:gap-8;
 
       .step {
-        @apply flex gap-2 justify-center items-center font-light uppercase text-gray-400;
-        &--done, &--active {
+        @apply flex items-center justify-center gap-2 font-light uppercase text-gray-400;
+        &--done,
+        &--active {
           .step__index {
-            @apply flex justify-center items-center text-xs border-2 border-primary rounded-full text-primary w-5 h-5 font-bold;
+            @apply  font-bold text-primary;
           }
           .step__title {
             @apply text-primary;
@@ -366,12 +347,15 @@ export default defineNuxtComponent({
         }
         &--done {
           .step__index {
-            @apply bg-primary text-white;
+            @apply text-primary;
+            .icon {
+              @apply text-sm;
+            }
           }
         }
         &--active {
           .step__title {
-            @apply text-primary font-bold;
+            @apply font-bold text-primary;
           }
         }
         &:not(:last-child)::after {
@@ -382,7 +366,7 @@ export default defineNuxtComponent({
     }
   }
   &__cart {
-    @apply mt-3 flex flex-row  flex-wrap items-center justify-start gap-2 bg-slate-100 p-3;
+    @apply mt-3 flex flex-row flex-wrap items-center justify-start gap-2 bg-slate-100 p-3;
     .cart {
       &__icon {
         @apply text-4xl text-primary;
@@ -418,9 +402,6 @@ export default defineNuxtComponent({
 
         &--done,
         &--active {
-          &:last-child {
-          }
-
           .checkout-step {
             &__header {
               .header {

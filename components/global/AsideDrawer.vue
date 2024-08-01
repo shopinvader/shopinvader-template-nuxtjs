@@ -1,25 +1,14 @@
 <template>
   <Teleport to="#header-target">
     <Transition name="aside-drawer">
-      <div
-        v-if="open"
-        class="aside-drawer"
-        :class="`aside-drawer--${direction}`"
-      >
+      <div v-if="open" class="aside-drawer" :class="`aside-drawer--${direction}`">
         <div class="aside-drawer__overlay" @click="$emit('close')"></div>
-        <div
-          class="aside-drawer__side"
-          :class="[`aside-drawer__side--${direction}`, classContent]"
-        >
+        <div class="aside-drawer__side" :class="[`aside-drawer__side--${direction}`, classContent]">
           <div class="side__header">
             <div>
               <slot name="header" :open="open"></slot>
             </div>
-            <icon
-              name="close"
-              class="cursor-pointer text-3xl"
-              @click="$emit('close')"
-            ></icon>
+            <icon name="close" class="cursor-pointer text-3xl" @click="$emit('close')"></icon>
           </div>
           <div class="side__content">
             <template v-if="open">
@@ -59,10 +48,12 @@ export default defineNuxtComponent({
     open: {
       immediate: true,
       handler(open) {
-        if (open) {
-          document.body.classList.add('aside--opened')
-        } else {
-          document.body.classList.remove('aside--opened')
+        if(document?.body) {
+          if (open) {
+            document.body.classList.add('aside--opened')
+          } else {
+            document.body.classList.remove('aside--opened')
+          }
         }
       }
     }
@@ -119,7 +110,7 @@ body {
   }
 
   &__side {
-    @apply flex flex-col absolute h-screen w-11/12 max-w-screen-sm overflow-y-auto bg-white shadow-xl;
+    @apply absolute flex h-screen w-11/12 max-w-screen-sm flex-col overflow-y-auto bg-white shadow-xl;
 
     .side {
       &__header {
@@ -127,11 +118,11 @@ body {
       }
 
       &__content {
-        @apply flex-grow overflow-auto flex flex-col items-start justify-start p-6 ;
+        @apply flex flex-grow flex-col items-start justify-start overflow-auto p-6;
       }
 
       &__footer {
-        @apply  flex items-end justify-end gap-4 bg-white p-4 drop-shadow-2xl w-full;
+        @apply flex w-full items-end justify-end gap-4 bg-white p-4 drop-shadow-2xl;
       }
     }
   }

@@ -16,9 +16,7 @@ export class SaleProduct extends Model {
     this.shortName = data?.short_name
     this.images = []
     if (data && data.images) {
-      data.images.forEach((image: any) =>
-        this.images.push(new SaleProductImageSet(image))
-      )
+      data.images.forEach((image: any) => this.images.push(new SaleProductImageSet(image)))
     }
     this.model = new SaleProductModel(data?.model || null)
     this.urlKey = data?.url_key

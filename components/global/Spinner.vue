@@ -21,6 +21,7 @@
     <span class="sr-only">Loading...</span>
   </div>
 </template>
+
 <script lang="ts">
 export default {
   props: {

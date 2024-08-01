@@ -97,7 +97,7 @@
   </div>
 </template>
 <script lang="ts">
-import { AuthCredentialService } from '#services'
+import type { AuthCredentialService } from '#services'
 import LogoVue from '../global/Logo.vue'
 
 export default defineNuxtComponent({
@@ -124,7 +124,7 @@ export default defineNuxtComponent({
     const auth = useShopinvaderService('auth') as AuthCredentialService | null
 
     onMounted(async () => {
-      if(!auth?.getUser()?.value && auth?.type == 'oidc') {
+      if (!auth?.getUser()?.value && auth?.type == 'oidc') {
         const url = useRequestURL()
         await auth?.loginRedirect(url?.href)
       }
@@ -143,7 +143,7 @@ export default defineNuxtComponent({
         [input] : !validity || target?.value === ''
       }
     },
-    async submit(e: Event) {
+    async submit(_e: Event) {
       const auth = this.auth
       this.loading = true
       if (this?.login && this?.password) {
@@ -229,5 +229,4 @@ export default defineNuxtComponent({
     }
   }
 }
-
 </style>

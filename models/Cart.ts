@@ -1,12 +1,12 @@
 import {
-  CartLine,
+  type Address,
   CartAmount,
-  CartLinesAmount,
+  CartDelivery,
   CartDiscount,
   CartInvoicing,
-  CartDelivery,
-  Model,
-  Address
+  CartLine,
+  CartLinesAmount,
+  Model
 } from '#models'
 
 export class Cart extends Model {
@@ -44,7 +44,7 @@ export class Cart extends Model {
     }
     this.lines = lines
     this.linesCount = Cart.getLinesCount(lines)
-    if(data?.amount?.total_without_shipping_without_discount) {
+    if (data?.amount?.total_without_shipping_without_discount) {
       this.linesAmount = new CartLinesAmount({
         total: data?.amount?.total_without_shipping_without_discount,
         untaxed: data?.amount?.untaxed_without_shipping,
@@ -57,7 +57,7 @@ export class Cart extends Model {
     this.amount = new CartAmount(data?.amount || {})
     this.discount = new CartDiscount(data || {})
     this.delivery = new CartDelivery(data?.delivery || {})
-    this.invoicing = new CartInvoicing({address: data?.invoicing?.address} || {})
+    this.invoicing = new CartInvoicing({ address: data?.invoicing?.address })
     this.note = data?.note
     this.orderRef = data?.client_order_ref || ''
     this.promoCodes = data?.promo_codes || []
@@ -73,7 +73,7 @@ export class Cart extends Model {
       untaxed += item.amount.untaxed
       tax += item.amount.tax
     }
-    return new CartLinesAmount({total, untaxed, tax})
+    return new CartLinesAmount({ total, untaxed, tax })
   }
 
   private static getLinesCount(lines: CartLine[]): number {
@@ -92,7 +92,7 @@ export class Cart extends Model {
   }
   hasValidAddresses() {
     const addresses = [this.invoicing?.address || null, this.delivery?.address || null]
-    return addresses.every((address: (Address| null)) => address && address?.isValidAddress())
+    return addresses.every((address: Address | null) => address && address?.isValidAddress())
   }
   hasSameAddress() {
     return this.invoicing?.address?.id === this.delivery?.address?.id

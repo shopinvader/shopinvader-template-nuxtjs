@@ -15,9 +15,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-  definePageMeta({
-    layout: false
-  })
+definePageMeta({
+  layout: false
+})
 </script>
 <style lang="scss">
 main {
@@ -28,4 +28,3 @@ main {
   @apply flex min-h-screen flex-col;
 }
 </style>
-
