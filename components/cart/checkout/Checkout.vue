@@ -50,7 +50,7 @@
           -->
           <slot name="cart" :cart="cart">
             <div class="cart__icon">
-              <icon name="cart" />
+              <icon name="solar:cart-3-bold-duotone" />
             </div>
             <div class="cart__body">
               <nuxt-link class="body__title" :to="localePath('/cart')">
@@ -330,7 +330,7 @@ export default defineNuxtComponent({
 .checkout {
   @apply p-4;
   &__header {
-    @apply sticky left-0 top-0 z-10 hidden w-full border-b bg-white py-4 md:block;
+    @apply sticky left-0 top-0 z-10 hidden w-full border-b py-4 md:block bg-gray-50;
     .checkout-stepper {
       @apply flex w-full flex-row justify-center md:gap-8;
 
@@ -339,7 +339,7 @@ export default defineNuxtComponent({
         &--done,
         &--active {
           .step__index {
-            @apply flex h-5 w-5 items-center justify-center rounded-full border-2 border-primary text-xs font-bold text-primary;
+            @apply  font-bold text-primary;
           }
           .step__title {
             @apply text-primary;
@@ -347,7 +347,10 @@ export default defineNuxtComponent({
         }
         &--done {
           .step__index {
-            @apply bg-primary text-white;
+            @apply text-primary;
+            .icon {
+              @apply text-sm;
+            }
           }
         }
         &--active {
