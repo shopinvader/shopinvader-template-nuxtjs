@@ -189,8 +189,8 @@
       "advantages": "Why should you join us?",
       "advantage_1": "Great support",
       "advantage_2": "Fast delivery",
-      "accept_terms": "By signing up I agree to the ",
-      "terms_conditions": "Terms and conditions",
+      "accept_terms": "I agree to the { link }",
+      "terms_conditions": "privacy policy",
       "sign_up": "Sign up",
       "already_have_account": "You already have an account ?",
       "notification_registration_thankyou": "Thank you for your registration!",
@@ -362,7 +362,12 @@
     }
   },
   "payment": {
-    "select": "Select"
+    "select": "Select",
+    "legals": {
+      "intro": "I accept our { link }",
+      "link": "Terms of Sales",
+      "help": "You must select a payment method and accept the terms and conditions to continue."
+    }
   },
   "table": {
     "noresult": "No result found",

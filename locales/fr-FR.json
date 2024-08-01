@@ -199,14 +199,14 @@
       "advantages": "Pourquoi créer un compte",
       "advantage_1": "Suivi de vos commandes",
       "advantage_2": "Historique de facture",
-      "accept_terms": "En m'enregistrant j'accepte les",
-      "terms_conditions": "Conditions générales de vente",
+      "accept_terms": "j'accepte la { link }",
+      "terms_conditions": "politique de protection des données personnelles",
       "sign_up": "S'enregistrer",
       "already_have_account": "Vous avez déjà un compte ?",
       "notification_registration_thankyou": "Merci pour votre inscription !",
       "notification_email_sent": "Un email vous a été envoyé pour confirmer votre inscription.",
-      "notification_token_error": "Erreur de token",
-      "notification_token_error_info": "Le token est invalide ou a expiré."
+      "notification_token_error": "Erreur",
+      "notification_token_error_info": "La demande est invalide ou a expirée."
     },
     "reset": {
       "reset_pswd": "Réinitialiser mon mot de passe",
@@ -315,7 +315,7 @@
     }
   },
   "error": {
-    "generic": "Une erreur est survenue",
+    "generic": "Une erreur est survenue, veuillez réessayer ultérieurement.",
     "retry": "Réessayer",
     "login": {
       "email": "Format d'adresse e-mail invalide.",
@@ -378,7 +378,12 @@
     }
   },
   "payment": {
-    "select": "Sélectionner"
+    "select": "Payer",
+    "legals": {
+      "intro": "J'accepte les { link }",
+      "link": "conditions générales de vente",
+      "help": "Vous devez sélectionner un mode de paiement et accepter les conditions générales de vente pour continuer."
+    }
   },
   "table": {
     "noresult": "Aucun résultat",

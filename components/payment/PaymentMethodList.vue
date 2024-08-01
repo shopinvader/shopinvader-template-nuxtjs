@@ -47,16 +47,35 @@
             {{ $t('cart.payment.empty') }}
           </div>
         </div>
-        <div class="flex justify-end py-3">
-          <button
-            v-if="modes?.length > 0"
-            type="submit"
-            class="btn"
-            :class="{'btn-primary': selected}"
-            :disabled="!selected"
-          >
-            {{ $t('payment.select', { amount: paymentData.amountFormatted }) }}
-          </button>
+        <div class="payment-list__submit">
+          <div class="terms-optin">
+            <label>
+              <input type="checkbox" v-model="legals" class="checkbox" required />
+              <i18n-t
+                tag="span"
+                keypath="payment.legals.intro"
+                class="label-text pl-1"
+              >
+                <template #link>
+                  <NuxtLinkLocale to="/legals/terms" class="text-nuxt-lightgreen">
+                    {{ $t('payment.legals.link') }}
+                  </NuxtLinkLocale>
+                </template>
+              </i18n-t>
+            </label>
+          </div>
+          <div :class="{ 'tooltip': !legals }" :data-tip="!legals ? $t('payment.legals.help') : ''">
+            <button
+              v-if="modes?.length > 0"
+              type="submit"
+              class="btn"
+              :class="{'btn-success': selected}"
+              :disabled="!selected || !legals"
+            >
+              <icon name="check" />
+              {{ $t('payment.select', { amount: paymentData.amountFormatted }) }}
+            </button>
+          </div>
         </div>
       </form>
       <div v-else class="payment-list__transaction">
@@ -90,7 +109,7 @@
       })
     )
   }
-
+  const legals = ref(false)
   const loading = ref(false)
   const modes = ref([]) as Ref<PaymentMethod[]>
   const error = ref(null)
@@ -190,6 +209,19 @@
             }
           }
         }
+      }
+    }
+    &__submit {
+      @apply flex flex-wrap justify-end gap-8 py-3;
+      .terms-optin {
+        @apply form-control;
+        label {
+          @apply cursor-pointer label;
+        }
+        a {
+          @apply underline;
+        }
+
       }
     }
   }

@@ -179,6 +179,7 @@
       "modify_btn": "Editar la información de perfil"
     },
     "login": {
+      "title": "Iniciar sesión",
       "description": "",
       "welcome_back": "Bienvenido de nuevo",
       "password": "Contraseña",
@@ -187,6 +188,20 @@
       "password_requirements": "La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula y un carácter especial {'@#$%^&+=!?'}.",
       "create_account": "Crear una cuenta",
       "sign_in": "Iniciar sesión"
+    },
+    "register": {
+      "title": "Crear una cuenta",
+      "advantages": "Ventajas de crear una cuenta",
+      "advantage_1": "Seguimiento de pedidos",
+      "advantage_2": "Historial de pedidos",
+      "accept_terms": "Acepto nuestra { link }",
+      "terms_conditions": "política de privacidad",
+      "sign_up": "Registrarse",
+      "already_have_account": "¿Ya tienes una cuenta ?",
+      "notification_registration_thankyou": "Gracias por su registro !",
+      "notification_email_sent": "Se le ha enviado un correo electrónico para confirmar su registro.",
+      "notification_token_error": "Error",
+      "notification_token_error_info": "La solicitud no es válida o ha caducado."
     },
     "sales": {
       "sale": "Mis pedidos",
@@ -330,7 +345,12 @@
     }
   },
   "payment": {
-    "select": "Seleccionar"
+    "select": "Seleccionar",
+    "legals": {
+      "intro": "Acepto los { link }",
+      "link": "condiciones generales de venta",
+      "help": "Debes seleccionar un método de pago y aceptar los términos y condiciones para continuar."
+    }
   },
   "table": {
     "noresult": "Sin resultados",

@@ -115,7 +115,7 @@
                 <input
                   v-model="password"
                   :readonly="loading"
-                  :type="passwordView ? 'password' : 'text'"
+                  :type="passwordView ? 'text' : 'password'"
                   required
                   :placeholder="passwordView ? '' : '********'"
                   class="grow"
@@ -145,13 +145,21 @@
                   required
                   class="checkbox"
                 />
-                <div class="label-text inline flex-1">
-                  {{ $t('account.register.accept_terms') }}
-                  <nuxt-link class="underline" :to="legalsLink">
-                    {{ $t('account.register.terms_conditions') }}
-                  </nuxt-link>
-                </div>
+                <i18n-t
+                  tag="div"
+                  keypath="account.register.accept_terms"
+                  class="label-text inline flex-1"
+                >
+                  <template #link>
+                    <NuxtLinkLocale :to="legalsLink" class="underline">
+                      {{ $t('account.register.terms_conditions') }}
+                    </NuxtLinkLocale>
+                  </template>
+                </i18n-t>
               </label>
+            </div>
+            <div v-if="error" class="text-center pt-2 w-full col-span-2 text-error">
+              {{ $t('error.generic') }}
             </div>
             <div class="flex justify-center py-4 w-full col-span-2">
               <button
@@ -164,9 +172,7 @@
               </button>
 
             </div>
-            <div v-if="error" class="flex justify-center py-4 w-full col-span-2 text-error">
-              {{ error }}
-            </div>
+
           </form>
         </div>
       </slot>
@@ -191,7 +197,7 @@
     legalsLink: {
       type: String,
       required: false,
-      default: '/legals'
+      default: '/legals/privacy'
     }
   })
   const loading = ref(false)
@@ -202,7 +208,7 @@
   const accountIsCreated = ref(false)
   const passwordView = ref(false)
   const legals = ref(false)
-  const error = ref(null)
+  const error = ref(false)
   const fieldError = ref({
     login: false,
     password: false
@@ -220,7 +226,7 @@
   }
   const createAccount = async () => {
     loading.value = true
-    error.value = null
+    error.value = false
     const auth = useShopinvaderService('auth')
     const notifications = useNotification()
     try {
@@ -232,7 +238,7 @@
       accountIsCreated.value = true
     } catch (e) {
       console.error(e)
-      error.value = $t('error.login.unable_to_login')
+      error.value = true
       notifications.addError($t('error.login.unable_to_login'))
     } finally {
       loading.value = false
