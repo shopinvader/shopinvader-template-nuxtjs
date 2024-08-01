@@ -2,7 +2,7 @@ import { Model } from '#models'
 
 export class ProductCategory extends Model {
   id: number
-  urlKey: number
+  urlKey: string
   name: string
   level: number
   childs: ProductCategory[] = []
