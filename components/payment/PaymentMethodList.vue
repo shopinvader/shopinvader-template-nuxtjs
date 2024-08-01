@@ -234,18 +234,20 @@ const createTransaction = async () => {
         }
       }
     }
-    &__submit {
-      @apply flex flex-wrap justify-end gap-8 py-3;
-      .terms-optin {
-        @apply form-control;
-        label {
-          @apply cursor-pointer label;
-        }
-        a {
-          @apply underline;
-        }
-
+  }
+  &__submit {
+    @apply flex flex-wrap justify-end gap-8 py-3;
+    .terms-optin {
+      @apply form-control;
+      label {
+        @apply cursor-pointer label;
       }
+      a {
+        @apply underline;
+      }
+    }
+    .btn {
+      @apply px-6;
     }
   }
 }
