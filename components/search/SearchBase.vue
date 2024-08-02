@@ -151,6 +151,8 @@ export default {
   },
 
   async setup(props) {
+    const route = useRoute()
+    const router = useRouter()
     const provider = useShopinvaderProviders('products')
     if (provider === null) {
       throw new Error('No provider found for products')
@@ -163,7 +165,7 @@ export default {
 
     let page = reactive({
       size: props.size,
-      from: 0,
+      from: route.query.page?.toString() ? ((parseInt(route.query.page.toString())-1)*props.size): 0,
       total: 0
     })
 
@@ -264,6 +266,10 @@ export default {
     const changePage = (from: number) => {
       page.from = from
       search()
+      if(window?.scrollTo) {
+        window.scrollTo(0, 0)
+        router.push({ query: { page: from/props.size +1 } })
+      }
     }
 
     provide('search', search)
