@@ -29,7 +29,13 @@ const props = defineProps({
 const emit = defineEmits(['click'])
 const img = useImage()
 const imageSized = computed((): ProductImage | null => {
-  return props.image?.[props?.size as keyof ProductImageSet] || null
+  const size = props.size as keyof ProductImageSet
+  const image = props.image?.[size] || null
+  // Replace spaces with %20
+  if (image?.src) {
+    image.src = image.src.replace(/ /g, '%20')
+  }
+  return image
 })
 const onClickImage = () => {
   emit('click')
