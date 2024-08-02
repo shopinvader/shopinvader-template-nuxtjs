@@ -215,21 +215,29 @@ export default {
     /**
      * Search : search function get items from provider
      */
-    const search = async () => {
+    interface SearchResponse {
+      aggregations: any
+      hits: any
+      total: number
+    }
+    const fetchSearch = async ():Promise<SearchResponse> => {
       if (typeof props?.provider !== 'function') {
         throw new Error('No provider function found')
       }
-      loading.value = true
+      const res = {
+        aggregations: null,
+        hits: null,
+        total: 0
+      }
       let postFilter = getFiltersQuery()
       let aggs: any[] = getFiltersAggs() || null
-
       const body = esb
         .requestBodySearch()
         .query(props.query())
         .size(page.size)
         .from(page.from)
 
-      if(props.cardinalityField) {
+      if(props?.cardinalityField) {
         let agg = new CardinalityAggregation('total', props.cardinalityField)
         if(postFilter) {
           agg = new FilterAggregation('total', postFilter).agg(agg)
@@ -247,18 +255,28 @@ export default {
       }
       const { aggregations, hits, total } = await props?.provider(body.toJSON())
 
-      response.value.aggregations = aggregations || null
-      response.value.hits = hits
+      res.aggregations = aggregations || null
+      res.hits = hits
 
       if(props.cardinalityField) {
-        page.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
+        res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
       } else {
-        page.total = total || 0
+        res.total = total || 0
       }
-
+      return res
+    }
+    const search = async() => {
+      loading.value = true
+      const {
+        aggregations,
+        hits,
+        total
+      } = await fetchSearch()
+      response.value.aggregations = aggregations
+      response.value.hits = hits
+      page.total = total
       loading.value = false
     }
-
     /**
      * changePage
      * @param from
@@ -281,6 +299,18 @@ export default {
       'filters',
       computed(() => filters)
     )
+
+    const { data } = await useAsyncData(async () => {
+      const a = await fetchSearch()
+      return a
+    })
+
+    if(data?.value) {
+      response.value.aggregations = data.value.aggregations
+      response.value.hits = data.value.hits
+      page.total = data.value.total
+      loading.value = false
+    }
 
     return {
       response,
