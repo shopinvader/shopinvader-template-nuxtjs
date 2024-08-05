@@ -22,8 +22,8 @@
             autocomplete="off"
             :placeholder="$t('search.autocomplete.search')"
           />
-          <span class="button" @click="resetSearch">
-            <Icon v-if="!query" name="search" class="text-lg md:text-xl" />
+          <span v-if="!query" class="button" @click="resetSearch">
+            <Icon name="search" class="text-lg md:text-xl" />
           </span>
         </label>
         <span v-show="focused" class="form__close" @click="resetSearch">
