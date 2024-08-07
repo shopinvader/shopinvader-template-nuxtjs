@@ -1,9 +1,9 @@
 <template>
-  <div class="flex gap-2 py-4">
+  <div class="searchSelectedFilters">
     <button
       v-for="filter in activeFilters"
       :key="filter.name"
-      class="btn btn-primary btn-outline btn-xs"
+      class="searchSelectedFilters-button"
       @click="filter?.setValues([])"
     >
       <slot :filter="filter" :clear-filter="clearFilter">
@@ -40,3 +40,11 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.searchSelectedFilters {
+  @apply flex gap-2 px-6 py-4;
+  &-button {
+    @apply btn btn-outline btn-primary btn-xs pl-4;
+  }
+}
+</style>
