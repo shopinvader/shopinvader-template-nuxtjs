@@ -1,7 +1,7 @@
 <template>
   <search-product v-if="!refresh" ref="searchProduct" :provider="providerFunction" :query="query">
     <template #header>
-      <div v-if="queryString" class="font-heading text-2xl">
+      <div v-if="queryString" class="searchProduct-queryString">
         {{ $t('search.autocomplete.product', { query: queryString }) }}
       </div>
     </template>
@@ -85,3 +85,8 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.searchProduct-queryString {
+  @apply px-6 pt-4 font-heading text-xl;
+}
+</style>
