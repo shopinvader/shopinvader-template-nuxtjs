@@ -65,7 +65,7 @@
         </div>
         <div class="content__variants">
           <!-- @slot Variants content -->
-          <slot name="variants" :variant="variant" variants="variants" :change-variant="changeVariant">
+          <slot name="variants" :variant="variant" :variants="variants" :change-variant="changeVariant">
             <product-variants-selector
               v-if="variant.variantCount > 5 || variants === null"
               :product="variant"
