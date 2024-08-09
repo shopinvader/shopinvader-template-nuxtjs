@@ -8,15 +8,9 @@
   </search-product>
 </template>
 <script lang="ts">
-import { Product } from '#models'
-import esb, { BoolQuery, TermQuery } from 'elastic-builder'
-import SearchProduct from '~/components/search/SearchProduct.vue'
+import esb from 'elastic-builder'
 
 export default {
-  components: {
-    'search-product': SearchProduct
-  },
-  layout: 'default',
   setup() {
     const { t } = useI18n()
     const $route = useRoute()
@@ -50,27 +44,9 @@ export default {
   },
 
   methods: {
-    transformResult(result: any) {
-      let role: string
-      const authService = useShopinvaderService('auth')
-      const user = authService?.getUser()
-      if (user && user.value?.role) {
-        role = user.value?.role as string
-      }
-      return result?.hits?.hits?.map((data: any) => new Product(data._source, role))
-    },
     async providerFunction(body: any) {
       const productService = useShopinvaderService('products')
       return (await productService?.search(body)) || null
-    },
-    categoryQuery(query: BoolQuery) {
-      if (query !== null) {
-        query.must(new TermQuery('categories.level', '0'))
-      } else {
-        query = new BoolQuery().must(new TermQuery('categories.level', '0'))
-      }
-
-      return query
     },
     query() {
       const route = useRoute()
