@@ -6,7 +6,7 @@
           {{ title }}
         </div>
         <div class="header__close">
-          <icon :name="opened ? 'uiw:up' : 'uiw:down'" />
+          <icon :name="opened ? 'up' : 'down'" />
         </div>
       </div>
     </slot>
