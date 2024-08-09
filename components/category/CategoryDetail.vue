@@ -16,7 +16,7 @@
           <div class="breadcrumbs text-sm">
             <ul>
               <li v-for="item in breadcrumb" :key="item.id">
-                <nuxt-link :to="localePath('/' + item.urlKey)">
+                <nuxt-link :to="localePath((item.urlKey.startsWith('/') ? '' : '/') + item.urlKey)">
                   {{ item.name }}
                 </nuxt-link>
               </li>
