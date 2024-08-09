@@ -4,17 +4,17 @@
   </div>
 </template>
 <script lang="ts" setup>
-const appConfig = useAppConfig()
 interface FilterComponent {
-  name: string;
-  field: string;
-  title: string;
-  close: boolean;
-  component: Component;
-  urlParam: string;
+  name: string
+  field: string
+  title: string
+  close: boolean
+  component: Component
+  urlParam: string
 }
-
-const filters = ref<FilterComponent[]>([])
+const appConfig = useAppConfig()
+// Use shallowref to avoid vuejs reactivity warning
+const filters = shallowRef<FilterComponent[]>([])
 if (appConfig?.search?.filters) {
   filters.value = appConfig.search.filters.map((filter: any) => {
     let component: Component | string | null = null
@@ -23,7 +23,6 @@ if (appConfig?.search?.filters) {
     } else {
       component = resolveComponent('SearchTermsAggregation')
     }
-
     return {
       ...filter,
       close: filter.close || false,
