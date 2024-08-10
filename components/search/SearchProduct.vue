@@ -3,7 +3,7 @@
     :size="30"
     :provider="provider"
     :query="query"
-    :suggester="suggester"
+    :suggesters="suggesters"
     :pagination="true"
     cardinality-field="url_key"
     class="search-product"
@@ -97,8 +97,9 @@ defineProps({
       return matchAllQuery()
     }
   },
-  suggester: {
-    type: Function,
+  suggesters: {
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    type: Array<Function>,
     required: false,
     default: null
   },

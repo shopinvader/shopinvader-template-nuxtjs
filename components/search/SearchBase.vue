@@ -130,8 +130,9 @@ export default {
         return esb.matchAllQuery()
       }
     },
-    suggester: {
-      type: Function,
+    suggesters: {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      type: Array<Function>,
       required: false,
       default: null
     },
@@ -256,9 +257,11 @@ export default {
         const aggs: any[] = getFiltersAggs() || null
         const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
 
-        // Add suggester if any
-        if (props.suggester) {
-          body.suggest(props.suggester())
+        // Add suggesters if any
+        if (props.suggesters) {
+          props.suggesters.forEach((suggester) => {
+            body.suggest(suggester())
+          })
         }
 
         if (props.cardinalityField) {
