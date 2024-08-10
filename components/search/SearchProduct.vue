@@ -70,6 +70,9 @@
         </template>
       </div>
     </template>
+    <template #no-results>
+      <slot name="no-results"></slot>
+    </template>
     <template #footer>
       <slot name="footer"></slot>
     </template>
