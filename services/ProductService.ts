@@ -30,7 +30,8 @@ export class ProductService extends BaseServiceElastic {
     const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
-    return { hits, total, aggregations }
+    const suggestions = result?.suggest?.suggest || null
+    return { hits, total, aggregations, suggestions }
   }
 
   fullTextQuery(query: string): Query {

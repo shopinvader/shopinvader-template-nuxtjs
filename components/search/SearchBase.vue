@@ -106,10 +106,10 @@
   </div>
 </template>
 <script lang="ts">
+import type { SearchSortItem } from '#models'
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
-import type { SearchSortItem } from '#models'
 
 export interface Filter {
   name: string
@@ -129,6 +129,11 @@ export default {
       default: () => {
         return esb.matchAllQuery()
       }
+    },
+    suggester: {
+      type: Function,
+      required: false,
+      default: null
     },
     size: {
       type: Number,
@@ -170,11 +175,11 @@ export default {
     if (provider === null) {
       throw new Error('No provider found for products')
     }
-    const error = ref(null)
+    const error = ref<any>(null)
     const filters = reactive([] as Filter[])
     const loading = ref(true)
     const displayfilters = ref(false)
-    const sort = ref(props?.sortOptions[0] || (null as SortItem | null))
+    const sort = ref(props?.sortOptions[0] || (null as SearchSortItem | null))
 
     const page = reactive({
       size: props.size,
@@ -186,6 +191,7 @@ export default {
 
     const response = ref({
       aggregations: null,
+      suggestions: null,
       hits: null,
       total: 0
     })
@@ -232,6 +238,7 @@ export default {
       aggregations: any
       hits: any
       total: number
+      suggestions: any
     }
     const fetchSearch = async (): Promise<SearchResponse> => {
       if (typeof props?.provider !== 'function') {
@@ -240,13 +247,19 @@ export default {
       const res = {
         aggregations: null,
         hits: null,
-        total: 0
+        total: 0,
+        suggestions: null
       } as SearchResponse
       try {
         error.value = null
         const postFilter = getFiltersQuery()
         const aggs: any[] = getFiltersAggs() || null
         const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
+
+        // Add suggester if any
+        if (props.suggester) {
+          body.suggest(props.suggester())
+        }
 
         if (props.cardinalityField) {
           let agg: CardinalityAggregation | FilterAggregation = new CardinalityAggregation(
@@ -269,9 +282,10 @@ export default {
         }
         const fetchedData = await props?.provider(body.toJSON())
         if (fetchedData) {
-          const { aggregations, hits, total } = fetchedData
+          const { aggregations, hits, total, suggestions } = fetchedData
           res.aggregations = aggregations || null
           res.hits = hits
+          res.suggestions = suggestions
 
           if (props.cardinalityField) {
             res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
@@ -286,9 +300,10 @@ export default {
     }
     const search = async () => {
       loading.value = true
-      const { aggregations, hits, total } = await fetchSearch()
+      const { aggregations, hits, total, suggestions } = await fetchSearch()
       response.value.aggregations = aggregations
       response.value.hits = hits
+      response.value.suggestions = suggestions
       page.total = total
       loading.value = false
     }
