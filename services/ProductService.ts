@@ -30,7 +30,7 @@ export class ProductService extends BaseServiceElastic {
     const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
-    const suggestions = result?.suggest?.suggest || null
+    const suggestions = result?.suggest || null
     return { hits, total, aggregations, suggestions }
   }
 
