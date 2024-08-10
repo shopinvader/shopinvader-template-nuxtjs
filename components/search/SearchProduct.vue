@@ -3,6 +3,7 @@
     :size="30"
     :provider="provider"
     :query="query"
+    :suggester="suggester"
     :pagination="true"
     cardinality-field="url_key"
     class="search-product"
@@ -70,8 +71,8 @@
         </template>
       </div>
     </template>
-    <template #no-results>
-      <slot name="no-results"></slot>
+    <template #no-results="{ total, response }">
+      <slot name="no-results" :total="total" :response="response"></slot>
     </template>
     <template #footer>
       <slot name="footer"></slot>
@@ -95,6 +96,11 @@ defineProps({
     default: () => {
       return matchAllQuery()
     }
+  },
+  suggester: {
+    type: Function,
+    required: false,
+    default: null
   },
   sortOptions: {
     type: Array as PropType<Array<SearchSortItem>>,
