@@ -83,7 +83,7 @@ export default {
 </script>
 <style lang="scss">
 .aside-menu.drawer {
-  @apply h-auto  transition duration-1000 ease-in;
+  @apply h-auto transition duration-1000 ease-in;
   overflow: visible;
   .drawer-content {
     overflow-y: visible;
@@ -96,9 +96,6 @@ export default {
       }
       &__menu {
         @apply hidden flex-1 lg:flex;
-      }
-      &__content {
-        @apply flex;
       }
     }
     .nav > :where(li) > :where(ul) {
