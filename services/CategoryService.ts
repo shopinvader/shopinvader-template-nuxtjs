@@ -51,10 +51,11 @@ export class CategoryService extends BaseServiceElastic {
     return null
   }
 
-  async autocompleteSearch(query: string): Promise<CategoryResult> {
+  async autocompleteSearch(query: string, limit: number): Promise<CategoryResult> {
     const body = esb
       .requestBodySearch()
       .query(new MultiMatchQuery(['name', 'description'], query).type('phrase_prefix'))
+      .size(limit)
     return await this.search(body.toJSON())
   }
 
