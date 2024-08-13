@@ -40,10 +40,8 @@ export default {
     const onSearch = async (query: string) => {
       try {
         const categoryService = useShopinvaderService('categories')
-
         if (categoryService) {
-          const { hits, total } = (await categoryService.autocompleteSearch(query)) || null
-
+          const { hits, total } = (await categoryService.autocompleteSearch(query, 6)) || null
           searchResults.hits = hits
           searchResults.total = total
         }
