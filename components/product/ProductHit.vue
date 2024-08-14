@@ -4,7 +4,7 @@
     :class="{
       'product-hit--inline': inline,
       'product-hit--loading': !variant,
-      cssClass
+      [props.cssClass]: true
     }"
   >
     <slot name="header"></slot>
@@ -135,10 +135,6 @@ const linkToProduct = () => {
       query: { sku: variant.value?.sku }
     })
   }
-}
-
-const changeVariant = (v: Product) => {
-  variant.value = v
 }
 </script>
 <style lang="scss">
