@@ -30,7 +30,7 @@
 <script lang="ts" setup>
 import type { DeliveryCarrier } from '#models'
 import type { PropType } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 
 defineProps({
   deliveryCarrier: {

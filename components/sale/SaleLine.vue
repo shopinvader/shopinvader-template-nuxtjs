@@ -56,7 +56,7 @@
 <script lang="ts" setup>
 import type { ProductImageSet, SaleLine } from '#models'
 import type { PropType } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 
 const props = defineProps({
   line: {

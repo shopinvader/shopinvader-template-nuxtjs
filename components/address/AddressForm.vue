@@ -137,7 +137,7 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['saved'])
-const settings = useShopinvaderService('settings')?.options
+const settings = useShopinvaderService('settings')?.values
 const countries = settings?.countries || []
 const titles = settings?.titles || []
 const model = ref(new Address({})) as Ref<Address>
@@ -148,9 +148,10 @@ watch(
   () => countryId.value,
   (id) => {
     if (id) {
-      model.value.country = countries.find((i: Country) => {
-        return i.id == id
-      })
+      model.value.country =
+        countries.find((i: Country) => {
+          return i.id == id
+        }) || null
     }
   },
   { immediate: true }

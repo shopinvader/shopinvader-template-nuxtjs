@@ -23,7 +23,7 @@
 </template>
 <script lang="ts" setup>
 import type { Sale } from '#models'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 
 const { t } = useI18n()
 const saleService = useShopinvaderService('sales')

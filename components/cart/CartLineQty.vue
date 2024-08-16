@@ -11,8 +11,8 @@
   </div>
 </template>
 <script lang="ts">
+import type { CartLine } from '#models'
 import type { PropType } from 'vue'
-import type { CartLine } from '~/models'
 /**
  * Display a selector to update the quantity of a cart's line.
  * This component is used in the component CartLine.

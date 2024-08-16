@@ -32,7 +32,7 @@
 <script lang="ts" setup>
 import type { SaleLine } from '#models'
 import type { PropType } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 
 defineProps({
   line: {

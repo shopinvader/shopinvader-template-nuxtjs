@@ -19,7 +19,7 @@
 <script lang="ts" setup>
 import type { ProductPrice } from '#models'
 import type { PropType } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 
 const props = defineProps({
   price: {
