@@ -4,7 +4,7 @@
       <slot v-if="line?.product?.images" name="image" :images="line.product?.images || null">
         <product-image
           v-if="line?.product?.images?.length > 0"
-          :image="line?.product.images[0]"
+          :image="line?.product.images[0] as ProductImageSet"
           class="product-hit__image"
           @click="linkToProduct()"
         >
@@ -39,10 +39,10 @@
         <slot name="price" :line="line">
           <div class="value">
             <div v-if="line.amount.discountTotal !== 0" class="price__original">
-              {{ $filter.currency(line.amount.totalWithoutDiscount) }}
+              {{ formatCurrency(line.amount.totalWithoutDiscount) }}
             </div>
             <div class="price__value">
-              {{ $filter.currency(line.amount.total) }}
+              {{ formatCurrency(line.amount.total) }}
             </div>
           </div>
         </slot>
@@ -53,33 +53,23 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import type { SaleLine } from '#models'
+<script lang="ts" setup>
+import type { ProductImageSet, SaleLine } from '#models'
 import type { PropType } from 'vue'
+import { formatCurrency } from '../../helpers/StringHelper'
 
-export default defineNuxtComponent({
-  name: 'SaleLine',
-  props: {
-    line: {
-      type: Object as PropType<SaleLine>,
-      required: true
-    }
-  },
-
-  setup(_props) {
-    const toggle = ref(false)
-    const localePath = useLocalePath()
-    return {
-      localePath,
-      toggle
-    }
-  },
-  methods: {
-    linkToProduct() {
-      this.$router.push({ path: `/${this.line.product.urlKey}` })
-    }
+const props = defineProps({
+  line: {
+    type: Object as PropType<SaleLine>,
+    required: true
   }
 })
+const localePath = useLocalePath()
+const router = useRouter()
+
+const linkToProduct = () => {
+  router.push({ path: `/${props.line.product.urlKey}` })
+}
 </script>
 <style lang="scss">
 .line {

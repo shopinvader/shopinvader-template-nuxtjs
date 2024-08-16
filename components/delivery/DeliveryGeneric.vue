@@ -4,7 +4,7 @@
     :class="{
       'method--selected': selected
     }"
-    @click="$emit('select', deliveryCarrier)"
+    @click="emit('select', deliveryCarrier)"
   >
     <div class="method__icon">
       <icon name="carrier" />
@@ -19,7 +19,7 @@
     </div>
     <div class="method__price">
       <template v-if="deliveryCarrier?.price && deliveryCarrier?.price > 0">
-        {{ $filter.currency(deliveryCarrier.price) }}
+        {{ formatCurrency(deliveryCarrier.price) }}
       </template>
       <template v-else>
         {{ $t('cart.delivery.method.free') }}
@@ -27,24 +27,22 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
+import type { DeliveryCarrier } from '#models'
 import type { PropType } from 'vue'
-import type { DeliveryCarrier } from '~/models'
+import { formatCurrency } from '../../helpers/StringHelper'
 
-export default {
-  name: 'DeliveryGeneric',
-  props: {
-    deliveryCarrier: {
-      type: Object as PropType<DeliveryCarrier>,
-      required: true
-    },
-    selected: {
-      type: Boolean,
-      required: false
-    }
+defineProps({
+  deliveryCarrier: {
+    type: Object as PropType<DeliveryCarrier>,
+    required: true
   },
-  emits: ['select']
-}
+  selected: {
+    type: Boolean,
+    required: false
+  }
+})
+const emit = defineEmits(['select'])
 </script>
 <style lang="scss">
 .method {

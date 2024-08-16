@@ -17,21 +17,21 @@
           {{ $t('cart.total.before-discount') }}
         </div>
         <div class="value">
-          {{ $filter.currency(cart?.amount?.totalWithoutDiscount) }}
+          {{ formatCurrency(cart?.amount?.totalWithoutDiscount) }}
         </div>
       </div>
       <div v-if="cart?.amount?.discountTotal !== 0" class="cart-total__discount">
         <div class="label">
           {{ $t('cart.total.discount') }}
         </div>
-        <div class="value">- {{ $filter.currency(cart?.amount?.discountTotal) }}</div>
+        <div class="value">- {{ formatCurrency(cart?.amount?.discountTotal) }}</div>
       </div>
       <div class="cart-total__subtotal">
         <div class="label">
           {{ $t('cart.total.subtotal') }}
         </div>
         <div class="value">
-          {{ $filter.currency(cart?.linesAmount?.untaxed) }}
+          {{ formatCurrency(cart?.linesAmount?.untaxed) }}
         </div>
       </div>
       <div v-if="cart.delivery?.method?.name" class="cart-total__shipping">
@@ -39,7 +39,7 @@
           {{ $t('cart.total.shipping') }}
         </div>
         <div class="value">
-          {{ $filter.currency(cart.delivery.fees?.total) }}
+          {{ formatCurrency(cart.delivery.fees?.total) }}
         </div>
         <div v-if="cart.delivery.method?.name" class="mention">
           <icon name="carrier" />
@@ -51,7 +51,7 @@
           {{ $t('cart.discount.title') }}
         </div>
         <div class="value">
-          {{ $filter.currency(cart?.discount?.taxIncluded) }}
+          {{ formatCurrency(cart?.discount?.taxIncluded) }}
         </div>
       </div>
       <div class="cart-total__total">
@@ -59,11 +59,9 @@
           {{ $t('cart.total.title') }}
         </div>
         <div class="value">
-          {{ $filter.currency(cart?.amount?.total) }}
+          {{ formatCurrency(cart?.amount?.total) }}
         </div>
-        <div class="mention">
-          {{ $t('cart.total.tax') }} {{ $filter.currency(cart.amount.tax) }}
-        </div>
+        <div class="mention">{{ $t('cart.total.tax') }} {{ formatCurrency(cart.amount.tax) }}</div>
       </div>
     </slot>
     <div class="cart-total__footer">
@@ -73,6 +71,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { formatCurrency } from '../../helpers/StringHelper'
 /**
  * Display the cart's total
  * This component is used in the component Cart and in sereral checkout steps.
@@ -99,10 +98,10 @@ const cart = cartService.getCart()
   &__discount {
     @apply border-t pt-2 text-info;
     .label {
-      @apply p-0  text-accent-600;
+      @apply p-0 text-accent-600;
     }
     .value {
-      @apply text-lg  text-accent-600;
+      @apply text-lg text-accent-600;
     }
   }
   &__total {

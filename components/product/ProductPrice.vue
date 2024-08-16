@@ -2,10 +2,10 @@
   <div v-if="price !== null" class="product-price" :class="cssClass">
     <slot name="price" :price="price">
       <div v-if="hasDiscount" class="product-price__original">
-        {{ $filter.currency(price.original_value) }}
+        {{ formatCurrency(price.original_value) }}
       </div>
       <div class="product-price__value" :class="{ 'product-price__value--discount': hasDiscount }">
-        {{ $filter.currency(price.value) }}
+        {{ formatCurrency(price.value) }}
       </div>
       <sub v-if="price.tax_included" class="product-price__tax">
         {{ $t('product.price.tax_included') }}
@@ -16,27 +16,25 @@
     </slot>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { ProductPrice } from '#models'
 import type { PropType } from 'vue'
-export default {
-  name: 'ProductPrice',
-  props: {
-    price: {
-      type: Object as PropType<ProductPrice>,
-      required: true
-    },
-    cssClass: {
-      type: String,
-      default: ''
-    }
+import { formatCurrency } from '../../helpers/StringHelper'
+
+const props = defineProps({
+  price: {
+    type: Object as PropType<ProductPrice>,
+    required: true
   },
-  computed: {
-    hasDiscount(): boolean {
-      return this.price.original_value !== this.price.value
-    }
+  cssClass: {
+    type: String,
+    default: ''
   }
-}
+})
+
+const hasDiscount = computed(() => {
+  return props.price.original_value !== props.price.value
+})
 </script>
 <style lang="scss">
 .product-price {

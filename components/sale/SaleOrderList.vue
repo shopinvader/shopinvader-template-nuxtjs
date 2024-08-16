@@ -12,7 +12,7 @@
       <sale-status :sale="row"></sale-status>
     </template>
     <template #amount-data="{ row }">
-      {{ $filter.currency(row.amount.total) }}
+      {{ formatCurrency(row.amount.total) }}
     </template>
     <template #action-data="{ row }">
       <button type="button" class="actions__view" @click="navigateToSale(row)">
@@ -23,6 +23,7 @@
 </template>
 <script lang="ts" setup>
 import type { Sale } from '#models'
+import { formatCurrency } from '../../helpers/StringHelper'
 
 const { t } = useI18n()
 const saleService = useShopinvaderService('sales')

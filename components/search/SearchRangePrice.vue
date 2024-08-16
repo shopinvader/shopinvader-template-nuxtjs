@@ -26,20 +26,20 @@
         <div class="searchfilter__range">
           <div class="range__min">
             <div class="min__label">
-              {{ $filter.currency(originalMin || 0) }}
+              {{ formatCurrency(originalMin || 0) }}
             </div>
           </div>
           <div class="range_max">
             <div class="max__label">
-              {{ $filter.currency(originalMax || 0) }}
+              {{ formatCurrency(originalMax || 0) }}
             </div>
           </div>
         </div>
         <div v-if="updated" class="searchfilter__value">
           {{
             $t('filters.price_range', {
-              min: $filter.currency(values[0]),
-              max: $filter.currency(values[1])
+              min: formatCurrency(values[0]),
+              max: formatCurrency(values[1])
             })
           }}
         </div>
@@ -60,6 +60,7 @@ import {
   StatsAggregation
 } from 'elastic-builder'
 import { inject, reactive } from 'vue'
+import { formatCurrency } from '../../helpers/StringHelper'
 import { type Filter } from './SearchBase.vue'
 interface FacetStat {
   count: number
@@ -243,7 +244,8 @@ export default {
       loaded,
       updated,
       values,
-      onChangeValues
+      onChangeValues,
+      formatCurrency
     }
   },
   watch: {
