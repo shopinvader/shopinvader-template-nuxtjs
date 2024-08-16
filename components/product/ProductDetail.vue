@@ -65,8 +65,8 @@
         </div>
 
         <div class="content__shortDescription">
-          <!-- @slot Intro content -->
-          <slot name="intro" :variant="variant">
+          <!-- @slot Short Description content -->
+          <slot name="short-description" :variant="variant">
             <div v-if="variant.shortDescription" v-html="variant.shortDescription"></div>
             <nuxt-link to="#description" class="py-2">
               {{ $t('product.description.link') }}
