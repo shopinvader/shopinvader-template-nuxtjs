@@ -95,7 +95,7 @@
           </slot>
         </div>
         <div class="content__stock">
-          <!-- @slot Sxtock content -->
+          <!-- @slot Stock content -->
           <slot name="stock" :variant="variant">
             <product-stock v-if="variant.stock !== null" :stock="variant.stock"> </product-stock>
           </slot>
