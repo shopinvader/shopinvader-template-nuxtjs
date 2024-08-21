@@ -172,10 +172,6 @@ export default {
   async setup(props) {
     const route = useRoute()
     const router = useRouter()
-    const provider = useShopinvaderProviders('products')
-    if (provider === null) {
-      throw new Error('No provider found for products')
-    }
     const error = ref<any>(null)
     const filters = reactive([] as Filter[])
     const loading = ref(true)
@@ -394,13 +390,13 @@ export default {
       &__action {
         @apply hidden;
       }
+      &__container {
+        @apply flex-1 overflow-auto;
+      }
     }
     &--active {
       @apply left-0 top-0 z-50 flex h-screen w-screen flex-col bg-white max-lg:fixed;
       .filters {
-        &__container {
-          @apply flex-1 overflow-auto;
-        }
         &__action {
           @apply flex justify-center border-t pt-4;
           button {
