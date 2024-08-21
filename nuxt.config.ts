@@ -77,6 +77,7 @@ export default defineNuxtConfig({
   },
   pages: true,
   sitemap: {
+    sources: ["/api/_sitemap-urls"],
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
   i18n: {
