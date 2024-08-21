@@ -57,13 +57,13 @@ export default defineNuxtConfig({
     "nuxt-delay-hydration",
     "nuxt-icon",
     '@nuxtjs/tailwindcss',
-    'nuxt-simple-sitemap',
     'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@vueuse/motion/nuxt',
     '@nuxt/image',
+    "@nuxtjs/sitemap"
   ],
   piniaPersistedstate: {
     cookieOptions: {
@@ -77,6 +77,7 @@ export default defineNuxtConfig({
   },
   pages: true,
   sitemap: {
+    sources: ["/api/_sitemap-urls"],
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
   i18n: {
