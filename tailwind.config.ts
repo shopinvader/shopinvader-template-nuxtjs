@@ -76,19 +76,19 @@ export default {
     themes: [
       {
         mytheme: {
-          "color-scheme": "light",
-          "primary": "#13263d",
-          "secondary": "#dca11d",
-          "accent": "#74253f",
-          "success": "#0EA44D",
-          "neutral": "#291334",
-          "base-100": "#f9f9f9",
-          "base-200": "#efeae6",
-          "base-300": "#e7e2df",
-          "base-content": "#291334",
-          "--rounded-btn": "1.9rem",
-          "--tab-border": "2px",
-          "--tab-radius": "0.7rem",
+          'color-scheme': 'light',
+          primary: '#13263d',
+          secondary: '#dca11d',
+          accent: '#74253f',
+          success: '#0EA44D',
+          neutral: '#291334',
+          'base-100': '#f9f9f9',
+          'base-200': '#efeae6',
+          'base-300': '#e7e2df',
+          'base-content': '#291334',
+          '--rounded-btn': '1.9rem',
+          '--tab-border': '2px',
+          '--tab-radius': '0.7rem'
         }
       }
     ],

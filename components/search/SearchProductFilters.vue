@@ -20,6 +20,8 @@ if (appConfig?.search?.filters) {
     let component: Component | string | null = null
     if (filter.type === 'range-price') {
       component = resolveComponent('SearchRangePrice')
+    } else if (filter.type === 'category') {
+      component = resolveComponent('SearchProductCategoryFilter')
     } else {
       component = resolveComponent('SearchTermsAggregation')
     }
