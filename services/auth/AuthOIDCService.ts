@@ -147,7 +147,7 @@ export class AuthOIDCService extends AuthService {
 
   async userUnloaded() {
     try {
-      await this.ofetch(this.urlEndpointAuth + '/signout')
+      await this.ofetch(this.urlEndpointAuth + '/signout', { method: 'POST' })
     } catch (e) {
       console.error(e)
     }
