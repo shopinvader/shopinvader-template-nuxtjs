@@ -168,6 +168,7 @@
     "loading": "Loading...",
     "title": "My account",
     "logout": "Logout",
+    "no_user": "No user connected",
     "profile": {
       "title": "My personal information",
       "accountdata": "Your account profile",

@@ -171,6 +171,7 @@
     "loading": "Cargando...",
     "title": "Mi cuenta",
     "logout": "Cerrar sesión",
+    "no_user": "No sesión iniciada",
     "profile": {
       "title": "Información de mi cuenta",
       "accountdata": "Mi Perfil",

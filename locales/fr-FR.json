@@ -181,6 +181,7 @@
     "loading": "Chargement...",
     "title": "Mon compte",
     "logout": "Déconnexion",
+    "no_user": "Vous n'êtes pas connecté",
     "profile": {
       "title": "Mon profil",
       "accountdata": "Mes informations de compte",

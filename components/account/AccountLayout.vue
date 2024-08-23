@@ -5,53 +5,63 @@
         <spinner />
       </div>
     </template>
-    <div v-if="user" class="account-layout">
-      <slot v-if="navbar" name="navbar">
-        <account-navbar
-          v-if="items && items?.length > 0"
-          :items="items"
-          :selected="slug"
-          class="account-layout__navbar"
-        >
-          <template #extra="{ pages }">
-            <li v-if="pages.length > 0" class="extra">
-              <nuxt-link :to="localePath('account-logout')">
-                <icon name="logout" />
-                {{ $t('account.logout') }}
-              </nuxt-link>
-            </li>
-          </template>
-        </account-navbar>
-      </slot>
-      <div class="account-layout__main">
-        <div class="main__head">
-          <slot name="title">
-            <div class="head__back">
-              <nuxt-link :to="localePath('account')">
-                <icon name="left"></icon>
-              </nuxt-link>
-            </div>
-            <template v-if="currentPage">
-              <div class="head">
-                <icon class="head__icon" :name="currentPage.icon"></icon>
-                <h1 class="head__title">
-                  {{ currentPage?.title }}
-                </h1>
-                <button @click="logout" class="head__logout">
-                  <icon name="logout" class="" />
+    <div class="account-layout">
+      <template v-if="user">
+        <slot v-if="navbar" name="navbar">
+          <account-navbar
+            v-if="items && items?.length > 0"
+            :items="items"
+            :selected="slug"
+            class="account-layout__navbar"
+          >
+            <template #extra="{ pages }">
+              <li v-if="pages.length > 0" class="extra">
+                <nuxt-link :to="localePath('account-logout')">
+                  <icon name="logout" />
                   {{ $t('account.logout') }}
-                </button>
-              </div>
+                </nuxt-link>
+              </li>
             </template>
-          </slot>
+          </account-navbar>
+        </slot>
+        <div class="account-layout__main">
+          <div class="main__head">
+            <slot name="title">
+              <div class="head__back">
+                <nuxt-link :to="localePath('account')">
+                  <icon name="left"></icon>
+                </nuxt-link>
+              </div>
+              <template v-if="currentPage">
+                <div class="head">
+                  <icon class="head__icon" :name="currentPage.icon"></icon>
+                  <h1 class="head__title">
+                    {{ currentPage?.title }}
+                  </h1>
+                  <button @click="logout" class="head__logout">
+                    <icon name="logout" class="" />
+                    {{ $t('account.logout') }}
+                  </button>
+                </div>
+              </template>
+            </slot>
+          </div>
+          <div v-if="!loading" class="main__content">
+            <slot name="content" :items="items"></slot>
+          </div>
+          <div v-else class="main__loading">
+            <spinner />
+          </div>
         </div>
-        <div v-if="!loading" class="main__content">
-          <slot name="content" :items="items"></slot>
+      </template>
+      <template v-else-if="!loading">
+        <div class="account-layout__no-user">
+          <p>{{ $t('account.no_user') }}</p>
+          <button @click="login" class="btn btn-primary">
+            {{ $t('account.login.title') }}
+          </button>
         </div>
-        <div v-else class="main__loading">
-          <spinner />
-        </div>
-      </div>
+      </template>
     </div>
   </client-only>
 </template>
@@ -74,7 +84,6 @@ const { t } = useI18n()
 
 const loading = ref(false)
 const user = auth?.getUser()
-
 const items = ref([
   {
     title: t('account.profile.title'),
@@ -92,7 +101,17 @@ const items = ref([
     slug: 'account-sales'
   }
 ])
-
+const login = async () => {
+  loading.value = true
+  try {
+    const localePath = useLocalePath()
+    await auth?.loginRedirect(localePath({ name: 'account' }))
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
+}
 const logout = async () => {
   if (!auth) return console.error('Auth service not found')
   loading.value = true
@@ -145,6 +164,9 @@ const currentPage = computed(() => {
         @apply flex min-h-36 items-center justify-center pt-10;
       }
     }
+  }
+  &__no-user {
+    @apply flex min-h-64 w-full flex-col items-center justify-center gap-2 text-center;
   }
 }
 </style>

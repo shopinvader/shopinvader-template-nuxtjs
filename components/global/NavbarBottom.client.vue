@@ -20,24 +20,26 @@
           {{ $t('navbar.cart') }}
         </span>
       </nuxt-link>
-      <nuxt-link :to="localePath('/account') || '/search'" class="iconlink">
+      <nuxt-link @click="login" class="iconlink">
         <icon class="h-5 w-5" name="user" />
         <span class="btm-nav-label">
-          {{ $t('navbar.search') }}
+          {{ $t('navbar.account') }}
         </span>
       </nuxt-link>
     </slot>
     <slot name="footer"></slot>
   </div>
 </template>
-<script lang="ts">
-export default {
-  name: 'NavbarBottom'
+<script lang="ts" setup>
+const auth = useShopinvaderService('auth')
+const login = async () => {
+  const localePath = useLocalePath()
+  await auth?.loginRedirect(localePath({ name: 'account' }))
 }
 </script>
 <style lang="scss">
 .btm-nav {
-  @apply md:hidden text-xs drop-shadow-2xl;
+  @apply text-xs drop-shadow-2xl md:hidden;
   animation: navbar-slideup 0.5s ease-in-out;
 }
 @keyframes navbar-slideup {
