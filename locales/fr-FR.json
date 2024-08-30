@@ -263,7 +263,8 @@
         "invoicing": "Adresse de facturation"
       },
       "save": {
-        "success": "Adresse enregistrée"
+        "success": "Adresse enregistrée",
+        "error": "Impossible d'enregistrer l'adresse"
       },
       "delete": {
         "confirm": "Êtes-vous sûr de vouloir supprimer cette adresse ?",

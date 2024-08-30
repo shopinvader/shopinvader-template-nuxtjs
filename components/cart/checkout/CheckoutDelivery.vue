@@ -33,7 +33,7 @@
             @slot Delivery carriers list
             @binding {Error} error
           -->
-          <slot name="items" :carriers="carriers" :select-carrier="selectCarrier">
+          <slot name="items" :carriers="carriers" :selectedCarrier="selectedCarrier" :select-carrier="selectCarrier">
             <component
               :is="component"
               v-for="{ carrier, component } of carriers"
@@ -59,7 +59,7 @@
             <template #footer>
               <div
                 v-if="!loading && !selectedCarrier"
-                class="flex items-center gap-2 font-bold"
+                class="no-delivery"
               >
                 <icon name="info" />
                 {{ $t('cart.delivery.method.no-method') }}
@@ -75,11 +75,8 @@
               </button>
             </template>
           </cart-total>
-
-
         </slot>
       </div>
-
       <div class="checkout-delivery__footer">
         <button type="button" class="btn-ghost btn" @click="back">
           <icon name="left"></icon>
@@ -228,6 +225,7 @@ export default defineNuxtComponent({
       } catch (e: any) {
         this.selectedCarrier = null
         this.error = e?.message || e
+        throw e
       } finally {
         this.loading = false
       }
@@ -252,6 +250,13 @@ export default defineNuxtComponent({
   }
   &__total {
     @apply col-span-3 flex flex-col justify-start gap-4 md:col-span-1;
+    .cart-total {
+      &__footer {
+        .no-delivery {
+          @apply flex items-center gap-1 text-sm pb-3;
+        }
+      }
+    }
   }
   &__header {
     @apply col-span-3 flex flex-col  justify-between;

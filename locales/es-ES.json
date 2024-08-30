@@ -245,7 +245,8 @@
         "invoice": "Dirección de facturación"
       },
       "save": {
-        "success": "Dirección guardada exitosamente"
+        "success": "Dirección guardada exitosamente",
+        "error": "Ha ocurrido un error guardando la dirección"
       },
       "delete": {
         "confirm": "Esta seguro que desea eliminar la dirección?",

@@ -250,7 +250,8 @@
         "billing": "Invoice address"
       },
       "save": {
-        "success": "Address saved successfully"
+        "success": "Address saved successfully",
+        "error": "An error occured while saving this address"
       },
       "delete": {
         "confirm": "Are you sure you want to delete this address ?",

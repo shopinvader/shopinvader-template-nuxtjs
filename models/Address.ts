@@ -30,6 +30,7 @@ export class Address extends Model {
   lang: string | null
   access: AddressAccess | null
   main: boolean | null
+  isDropoffSite: boolean
   constructor(data: any) {
     super(data)
     this.id = data?.id || null
@@ -54,6 +55,7 @@ export class Address extends Model {
     this.email = data?.email || null
     this.lang = data?.lang || null
     this.main = data?.main || null
+    this.isDropoffSite = data?.is_dropoff_site || false
     this.access = data?.access || {
       delete: !this.main,
       update: true
@@ -63,6 +65,9 @@ export class Address extends Model {
     return `${this.name}, ${this.street} ${this.street2} - ${this.zip} ${this.city} ${this.country?.name}`
   }
   isValidAddress(): boolean {
+    if(this.isDropoffSite) {
+      return true
+    }
     const requiredFields = [this.name, this.street, this.zip, this.city]
     return requiredFields.every((field) => {
       return field && field.trim().length > 0
@@ -78,6 +83,7 @@ export class Address extends Model {
       phone: this.phone || '',
       email: this.email,
       vat: this.vat || '',
+      state_id: null
     }
     if(this.country?.id) {
       data = {

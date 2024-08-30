@@ -168,13 +168,7 @@ export default defineNuxtComponent({
     address: {
       handler: function (value) {
         if (value) {
-          if (value?.country?.id == null) {
-            value.country = this.countries?.[0] || null
-          }
-          if (value?.title?.id == null) {
-            value.title = this.titles?.[0] || null
-          }
-          this.value = value
+          this.value = value.clone() || new Address({})
         }
       },
       immediate: true

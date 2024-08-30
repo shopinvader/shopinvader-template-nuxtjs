@@ -130,10 +130,12 @@ export default defineNuxtComponent({
       const addressService = useShopinvaderService('addresses')
       if (addressService && address) {
         try {
+
+          loading.value = true
           if (address.id) {
-            address = await addressService.update(address)
+            editAddress.value = address = await addressService.update(address)
           } else {
-            address = await addressService.create(address)
+            editAddress.value = address = await addressService.create(address)
           }
           await cartService.setAddress('delivery', address)
           if(!cart.value?.invoicing?.address?.isValidAddress()) {
@@ -144,15 +146,16 @@ export default defineNuxtComponent({
           }
         } catch (e) {
           console.error(e)
-          error.value = i18n.t('error.generic')
-        } finally {
           editAddress.value = null
-
+          setTimeout(() => {
+            editAddress.value = address
+          }, 100)
+          error.value = i18n.t('account.address.save.error')
+        } finally {
+          loading.value = false
         }
       }
     }
-
-
     return {
       error,
       cart,
@@ -176,7 +179,7 @@ export default defineNuxtComponent({
     @apply card card-body max-w-xl mx-auto;
   }
   &__items {
-    @apply grid grid-cols-1 gap-6 sm:grid-cols-2;
+    @apply grid grid-cols-1 gap-6 lg:grid-cols-2;
 
     .address-card {
       @apply shadow-none ;

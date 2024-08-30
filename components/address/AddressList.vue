@@ -101,6 +101,9 @@
         <div class="text-2xl">{{ $t('account.address.edit') }}</div>
       </template>
       <template #content>
+        <div v-if="saveError" class="alert alert-error">
+          {{ saveError }}
+        </div>
         <address-form
           v-if="editedAddress"
           :address="editedAddress"
@@ -143,6 +146,7 @@ export default defineNuxtComponent({
   data() {
     return {
       errors: [] as string[],
+      saveError: null as string | null,
       addresses: [] as Address[],
       editedAddress: null as Address | null,
       count: 0,
@@ -164,7 +168,12 @@ export default defineNuxtComponent({
       },
       immediate: true
     },
-
+    editedAddress: {
+      handler: async function (value) {
+        await this.searchAddress()
+        this.count = this.addresses.length
+      }
+    }
   },
   methods: {
     async searchAddress(query?: string | null) {
@@ -176,6 +185,7 @@ export default defineNuxtComponent({
         this.addresses = await addressService.search(query || '')
       } catch (e) {
         console.error(e)
+
         this.errors.push(this.$t('account.address.fetch.error'))
         notifications.addError(this.$t('account.address.fetch.error'))
       } finally {
@@ -201,6 +211,7 @@ export default defineNuxtComponent({
           this.searchAddress(this.searchQuery)
         } catch (e) {
           console.error(e)
+
           notifications.addError(this.$t('account.address.delete.error'))
         } finally {
           this.loading = false
@@ -208,6 +219,7 @@ export default defineNuxtComponent({
       }
     },
     async saveAddress(address: Address) {
+      this.errors = []
       this.editedAddress = null
       const addressService = useShopinvaderService('addresses')
       const notifications = useNotification()
@@ -219,13 +231,16 @@ export default defineNuxtComponent({
           } else {
             await addressService.create(address)
           }
-          this.searchAddress(this.searchQuery)
           notifications.addMessage(
             this.$t('account.address.save.success', { name: address.name })
           )
+          await this.searchAddress(this.searchQuery)
+          this.editedAddress = null
         } catch (e) {
           console.error(e)
-          notifications.addError(this.$t('account.address.fetch.error'))
+          this.editedAddress = address
+          this.saveError = this.$t('account.address.save.error')
+          notifications.addError(this.$t('account.address.save.error'))
         } finally {
           this.loading = false
         }

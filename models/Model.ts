@@ -11,4 +11,7 @@ export class Model {
   toJSON() {
     return { ...this.data }
   }
+  public clone<T>(): T {
+    return Object.create(this) as T;
+  }
 }
