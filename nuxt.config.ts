@@ -97,7 +97,7 @@ export default defineNuxtConfig({
   pages: true,
 
   sitemap: {
-    sources: ["/api/_sitemap-urls"],
+    sources: ['/api/_sitemap-urls'],
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
 
@@ -111,21 +111,21 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en',
-        iso: 'en_us',
+        language: 'en_us',
         file: 'en-US.json',
         name: 'English',
         icon: 'circle-flags:uk'
       },
       {
         code: 'es',
-        iso: 'es_es',
+        language: 'es_es',
         file: 'es-ES.json',
         name: 'Español',
         icon: 'circle-flags:es'
       },
       {
         code: 'fr',
-        iso: 'fr_fr',
+        language: 'fr_fr',
         file: 'fr-FR.json',
         name: 'Français',
         icon: 'circle-flags:fr'

@@ -92,7 +92,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   // Shortcuts to data
   const i18nOptions: any = nuxtApp.$i18n || {}
-  const isoLocale: string = i18nOptions?.localeProperties?.value?.iso || 'fr_fr'
+  const isoLocale: string =
+    i18nOptions?.localeProperties?.value?.language ||
+    i18nOptions?.localeProperties?.value?.iso || // For nuxt-i18n < 7
+    'fr_fr'
   const erpBaseUrl = shopinvaderConfig.erp.url
   const erpFetch = fetchers.erpFetch
   const elasticBaseUrl = shopinvaderConfig.elasticsearch.url
