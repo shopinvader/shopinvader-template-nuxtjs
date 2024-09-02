@@ -1,21 +1,15 @@
-import { addCustomTab } from '@nuxt/devtools-kit'
 import {
   addImportsDir,
   addPlugin,
   addServerHandler,
   createResolver,
   defineNuxtModule,
-  extendPages,
-  resolveFiles,
-  useLogger
+  resolveFiles
 } from '@nuxt/kit'
 
-import { type Router } from 'vue-router'
+import type { Router } from 'vue-router'
+import type { ShopinvaderConfig, ShopinvaderFetchersList } from './runtime/types/ShopinvaderConfig'
 import { useShopinvaderLogger } from './runtime/utils/logger'
-import {
-  type ShopinvaderConfig,
-  type ShopinvaderFetchersList
-} from './runtime/types/ShopinvaderConfig'
 
 import type { HookResult, Nuxt } from 'nuxt/schema'
 import {
