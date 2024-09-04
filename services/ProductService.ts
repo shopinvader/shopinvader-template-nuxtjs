@@ -45,9 +45,14 @@ export class ProductService extends Service {
   }
 
   fullTextQuery(query: string): Query {
-    return new MultiMatchQuery(['name', 'description'], query).type(
-      'phrase_prefix'
-    )
+    return esb.boolQuery().must([
+      new MultiMatchQuery(['name', 'description'], query).type(
+        'phrase_prefix'
+      )
+    ])
+    .should([
+      esb.termQuery('main', true)
+    ])
   }
 
   async autocompleteSearch(

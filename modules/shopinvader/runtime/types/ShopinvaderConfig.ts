@@ -1,4 +1,4 @@
-import type { AuthAPIConfig, AuthOIDCConfig, PaymentService } from '#services'
+import type { AuthAPIConfig, AuthOIDCConfig } from '#services'
 
 export interface ShopinvaderProxyConfig {
   url: string
@@ -44,10 +44,12 @@ import {
   CategoryService,
   CustomerService,
   DeliveryCarrierService,
+  LeadsService,
+  PaymentService,
   ProductService,
   SaleService,
   SettingService
-} from '~/services'
+} from '#services'
 
 export interface ShopinvaderProvidersList {
   [key: string]: ErpFetch | ElasticFetch
@@ -65,4 +67,5 @@ export interface ShopinvaderServiceList {
   customer: CustomerService | null
   deliveryCarriers: DeliveryCarrierService | null
   payment: PaymentService | null
+  leads : LeadsService | null
 }

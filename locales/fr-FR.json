@@ -249,6 +249,8 @@
       "zip": "Code postal",
       "city": "Ville",
       "phone": "Téléphone",
+      "mobile": "Mobile",
+      "company": "Société",
       "country": "Pays",
       "noresult": "Aucune adresse",
       "count": "{count} resultat(s)",
@@ -390,5 +392,20 @@
     "noresult": "Aucun résultat",
     "size": "Nombre de résultats par page",
     "count":"{count} resultat(s)"
+  },
+  "contact":{
+    "title":"Contact",
+    "message":"Contactez-nous via le formulaire ci-dessous",
+    "subject":"Sujet",
+    "description":"Votre message...",
+    "data_protection":"Vous accéptez notre ",
+    "data_policy": "Politique de protection de données personnelles",
+    "send":"Envoyer",
+    "attachment": "Pièce jointe",
+    "error": "Une erreur est survenue lors de l'envoi du formulaire.",
+    "form_sent": {
+      "thankyou_title": "Merci pour votre message !",
+      "thankyou_description": "Nous reviendrons vers vous au plus vite."
+    }
   }
 }

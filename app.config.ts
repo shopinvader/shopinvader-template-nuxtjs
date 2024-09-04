@@ -23,6 +23,7 @@ export default defineAppConfig({
       "user-circle": "ph:user-circle",
       "close-circle": "ic:round-close",
       phone: "ph:phone",
+      mobile: "ph:device-mobile",
       variants: "fluent:box-multiple-20-regular",
       printer: "ph:printer",
       error: "ph:warning-circle",

@@ -320,14 +320,22 @@ export class CartService extends Service {
    * Apply a coupon to the cart
    * @param couponCode The coupon code to apply
    */
-  async applyCoupon(code: string) {
-    if(!code) return null
-    const cart:any = await this.erp.post(`${this.endpoint}/current/coupon`, {
-      code
-    })
-
-    if (cart?.id) {
-      this.setCart(new CartModel(cart));
+  async applyCoupon(code: string, count: number = 1) {
+    let cart:any = {}
+    try {
+      if(!code) return null
+      for(let i = 0; i < count; i++) {
+        cart = await this.erp.post(`${this.endpoint}/current/coupon`, {
+          code
+        })
+      }
+    } catch (e) {
+      throw e
+    } finally {
+      console.log('cart', cart)
+      if (cart?.id) {
+        this.setCart(new CartModel(cart));
+      }
     }
   }
 

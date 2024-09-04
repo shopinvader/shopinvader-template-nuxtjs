@@ -231,12 +231,14 @@
       "name": "First and last name",
       "firstname": "Firstname",
       "lastname": "Lastname",
+      "company": "Company",
       "email": "Email",
       "street": "Postal Address",
       "street2": "Street 2",
       "zip": "Zip Code",
       "city": "City",
-      "phone": "Telephone",
+      "phone": "Phone number",
+      "mobile": "Mobile phone",
       "country": "Country",
       "noresult": "No address found",
       "count": "{count} result(s)",
@@ -374,5 +376,20 @@
     "noresult": "No result found",
     "size": "Page size",
     "count":"{count} result(s)"
+  },
+  "contact":{
+    "title":"Contact",
+    "message":"We will be glad to hear from you!",
+    "subject":"Subject",
+    "description":"Your message...",
+    "data_protection":"You accept our ",
+    "data_policy": "Data protection policy",
+    "send":"Send",
+    "attachment": "Attachment",
+    "error": "An error occured, please try later or contact our support team.",
+    "form_sent": {
+      "thankyou_title": "Thank you for contacting us !",
+      "thankyou_description": "We'll get back to you as soon as possible."
+    }
   }
 }

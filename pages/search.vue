@@ -83,7 +83,10 @@ export default {
         const productService = useShopinvaderService('products')
         return productService.fullTextQuery(query)
       } else {
-        return esb.matchAllQuery()
+        const matchAllQuery = esb.boolQuery()
+        .must(esb.matchAllQuery())
+        .should(esb.termQuery('main', true))
+        return matchAllQuery
       }
     }
   }
