@@ -62,7 +62,7 @@ export class Address extends Model {
     }
   }
   toString(): string {
-    return `${this.name}, ${this.street} ${this.street2} - ${this.zip} ${this.city} ${this.country?.name}`
+    return `${this.name}, ${this.street} ${this.street2 || ''} - ${this.zip} ${this.city} ${this.country?.name || ''}`
   }
   isValidAddress(): boolean {
     if(this.isDropoffSite) {

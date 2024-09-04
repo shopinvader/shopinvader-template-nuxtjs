@@ -33,7 +33,7 @@
             @slot Delivery carriers list
             @binding {Error} error
           -->
-          <slot name="items" :carriers="carriers" :selectedCarrier="selectedCarrier" :select-carrier="selectCarrier">
+          <slot name="items" :carriers="carriers" :selectedCarrier="selectedCarrier" :select-carrier="selectCarrier" :loading="loading">
             <component
               :is="component"
               v-for="{ carrier, component } of carriers"
@@ -54,7 +54,7 @@
       </slot>
       <div class="checkout-delivery__total">
         <!-- @slot Cart Total content -->
-        <slot name="total" :error="error">
+        <slot name="total" :error="error" :loading="loading" :carriers="carriers" :selectedCarrier="selectedCarrier">
           <cart-total>
             <template #footer>
               <div
@@ -85,15 +85,17 @@
       </div>
     </template>
     <div v-else class="checkout-delivery__summary">
-      <div class="method">
-        <div class="method__icon">
-          <icon name="carrier" />
+      <slot name="summary" :selected-carrier="selectedCarrier">
+        <div class="method">
+          <div class="method__icon">
+            <icon name="carrier" />
+          </div>
+          <div class="method__title">
+            {{ $t('cart.delivery.method.title') }} :
+            {{ selectedCarrier?.name }}
+          </div>
         </div>
-        <div class="method__title">
-          {{ $t('cart.delivery.method.title') }} :
-          {{ selectedCarrier?.name }}
-        </div>
-      </div>
+      </slot>
     </div>
   </div>
 </template>
