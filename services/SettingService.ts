@@ -8,15 +8,15 @@ export class SettingService extends BaseServiceErp {
   // Then the settings are overriden by the fetch of the settings (if any).
   public values: Settings | null = null
 
-  setSettings(res: any) {
-    this.values = new Settings(res)
+  setValues(values: Settings) {
+    this.values = values
   }
 
   override async init(service: ShopinvaderServiceList) {
     super.init(service)
     const res = await this.getAll()
     if (res) {
-      this.setSettings(res)
+      this.setValues(res)
     }
   }
 

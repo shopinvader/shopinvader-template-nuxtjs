@@ -1,4 +1,5 @@
 import { useRuntimeConfig } from '#app'
+import { Settings } from '#models'
 import type { AuthAPIConfig, AuthOIDCConfig, AuthService } from '#services'
 import {
   AddressService,
@@ -139,7 +140,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // Fill the settings if provided in the app.config.ts (will be overriden by the fetch in the init call later)
   const { settings } = useAppConfig()
   if (settings && services.settings) {
-    services.settings.setSettings(settings)
+    services.settings.setValues(new Settings(settings))
   }
 
   // Let the child add custom services or replace the default ones
