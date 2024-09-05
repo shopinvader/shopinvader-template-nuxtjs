@@ -332,7 +332,6 @@ export class CartService extends Service {
     } catch (e) {
       throw e
     } finally {
-      console.log('cart', cart)
       if (cart?.id) {
         this.setCart(new CartModel(cart));
       }

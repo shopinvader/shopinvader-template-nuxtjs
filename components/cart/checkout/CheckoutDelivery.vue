@@ -219,6 +219,9 @@ export default defineNuxtComponent({
      */
     async selectCarrier(carrier: DeliveryCarrier) {
       try {
+        if(carrier?.id == this.selectedCarrier?.id) {
+          return
+        }
         this.error = null
         this.selectedCarrier = carrier
         this.loading = true
