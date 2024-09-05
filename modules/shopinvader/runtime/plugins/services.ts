@@ -136,10 +136,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     leads: new LeadsService(isoLocale, erpFetch, erpBaseUrl)
   }
 
+  // Fill the settings if provided in the app.config.ts (will be overriden by the fetch in the init call later)
   const { settings } = useAppConfig()
   if (settings && services.settings) {
     services.settings.setSettings(settings)
   }
+
   // Let the child add custom services or replace the default ones
   await nuxtApp.callHook('shopinvader:services', services, fetchers, shopinvaderConfig, nuxtApp)
 
