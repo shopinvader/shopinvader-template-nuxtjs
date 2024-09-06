@@ -84,24 +84,13 @@ export abstract class AuthService extends BaseServiceLocalized {
     return user
   }
 
-  async saveUser(profile: User, logoutOnError = true): Promise<User | null> {
-    let user = null
-    try {
-      const json = profile.getJSONData()
-      user = await this.ofetch(this.urlEndpointUser, { method: 'POST', body: json })
-    } catch (e) {
-      console.error(e)
-      if (logoutOnError) {
-        this.setUser(null)
-      }
-      throw e
-    } finally {
-      user = await this.setUser(user)
-    }
-    return user
+  async saveUser(profile: User): Promise<User | null> {
+    const json = profile.getJSONData()
+    const res = await this.ofetch<User>(this.urlEndpointUser, { method: 'POST', body: json })
+    return await this.setUser(res)
   }
 
-  async setUser(data: AuthUserCredential | null): Promise<User | null> {
+  async setUser(data: AuthUserCredential | User | null): Promise<User | null> {
     const store = this.store()
     if (data) {
       const user: User | null = data ? new User(data) : null
