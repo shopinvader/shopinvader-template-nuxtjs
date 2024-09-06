@@ -10,7 +10,7 @@ export class User extends Model {
     this.login = data?.login || data?.email || null
     this.role = data?.role || data?.pricelist_id || 'default'
   }
-  getJSONData() {
+  getJSONData(): any {
     return {
       name: this.name,
       role: this.role
