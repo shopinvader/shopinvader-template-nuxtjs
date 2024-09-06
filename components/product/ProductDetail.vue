@@ -248,27 +248,32 @@ watch(
   },
   { deep: true }
 )
+
 /** SEO*/
-useSchemaOrg([
-  defineBreadcrumb({
-    itemListElement: [
-      ...breadcrumbs.value.map((category) => ({
-        name: category.name,
-        item: localePath({ path: '/' + category.urlKey })
-      })),
-      {
-        name: variant.value?.model?.name || variant.value?.name,
-        item: localePath({ path: '/' + variant.value?.urlKey })
-      }
-    ]
-  }),
-  defineProduct({
-    name: variant.value?.name,
-    description: variant.value?.shortDescription,
-    image: variant.value?.images?.[0]?.medium?.src,
-    sku: variant.value?.sku
-  })
-])
+try {
+  useSchemaOrg([
+    defineBreadcrumb({
+      itemListElement: [
+        ...breadcrumbs.value.map((category) => ({
+          name: category.name,
+          item: localePath({ path: '/' + category.urlKey })
+        })),
+        {
+          name: variant.value?.model?.name || variant.value?.name,
+          item: localePath({ path: '/' + variant.value?.urlKey })
+        }
+      ]
+    }),
+    defineProduct({
+      name: variant.value?.name,
+      description: variant.value?.shortDescription,
+      image: variant.value?.images?.[0]?.medium?.src,
+      sku: variant.value?.sku
+    })
+  ])
+} catch {
+  // do nothing
+}
 </script>
 <style lang="scss">
 .product-detail {
