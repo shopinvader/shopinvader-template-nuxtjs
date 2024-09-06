@@ -5,6 +5,13 @@ export default defineAppConfig({
     states: [],
     currencies: []
   },
+  notifications: {
+    duration: 5000,
+    position: {
+      x: 'right', // center, start, end,
+      y: 'bottom' // top, middle, bottom
+    }
+  },
   icon: {
     class: 'icon',
     aliases: {

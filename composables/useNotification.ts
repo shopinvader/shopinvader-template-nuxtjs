@@ -11,27 +11,32 @@ const notification = defineStore('notification', {
   }),
 
   actions: {
-    addMessage(message: string, title?: string) {
-      this.messages.push({
-        message,
-        type: 'success',
-        title
-      })
-      const index = this.messages.length - 1
-      setTimeout(() => {
-        this.messages.splice(index, 1)
-      }, 5000)
+    addMessage(message: string, title?: string, duration?: number) {
+      this.addNotification('success', message, title, duration)
     },
-    addError(message: string, title?: string) {
+    addWarning(message: string, title?: string, duration?: number) {
+      this.addNotification('warning', message, title, duration)
+    },
+    addError(message: string, title?: string, duration?: number) {
+      this.addNotification('error', message, title, duration)
+    },
+    addNotification(
+      type: 'error' | 'warning' | 'success',
+      message: string,
+      title?: string,
+      duration?: number
+    ) {
+      const appConfig = useAppConfig()
+      const nDuration = duration ? duration : appConfig?.notifications?.duration || 5000
       this.messages.push({
         message,
-        type: 'error',
+        type: type,
         title
       })
       const index = this.messages.length - 1
       setTimeout(() => {
         this.messages.splice(index, 1)
-      }, 5000)
+      }, nDuration)
     }
   }
 })
