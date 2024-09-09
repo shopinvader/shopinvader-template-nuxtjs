@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <client-only fallbackTag="div">
-      <template #fallback>
-        <div class="account-layout__loading">
-          <spinner />
-        </div>
-      </template>
-      <div v-if="user" class="account-layout">
+  <client-only fallback-tag="div">
+    <template #fallback>
+      <div class="account-layout__loading">
+        <spinner />
+      </div>
+    </template>
+    <div class="account-layout">
+      <template v-if="user">
         <slot v-if="navbar" name="navbar">
           <account-navbar
             v-if="items && items?.length > 0"
@@ -38,7 +38,7 @@
                   <h1 class="head__title">
                     {{ currentPage?.title }}
                   </h1>
-                  <button class="head__logout" @click="logout">
+                  <button @click="logout" class="head__logout">
                     <icon name="logout" class="" />
                     {{ $t('account.logout') }}
                   </button>
@@ -49,13 +49,21 @@
           <div v-if="!loading" class="main__content">
             <slot name="content" :items="items"></slot>
           </div>
-          <div v-else="loading" class="main__loading">
+          <div v-else class="main__loading">
             <spinner />
           </div>
         </div>
-      </div>
-    </client-only>
-  </div>
+      </template>
+      <template v-else-if="!loading">
+        <div class="account-layout__no-user">
+          <p>{{ $t('account.no_user') }}</p>
+          <button @click="login" class="btn btn-primary">
+            {{ $t('account.login.title') }}
+          </button>
+        </div>
+      </template>
+    </div>
+  </client-only>
 </template>
 <script lang="ts" setup>
 const props = defineProps({
@@ -74,7 +82,6 @@ const { t } = useI18n()
 
 const loading = ref(false)
 const user = auth?.getUser()
-
 const items = ref([
   {
     title: t('account.profile.title'),
@@ -92,7 +99,17 @@ const items = ref([
     slug: 'account-sales'
   }
 ])
-
+const login = async () => {
+  loading.value = true
+  try {
+    const localePath = useLocalePath()
+    await auth?.loginRedirect(localePath({ name: 'account' }))
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
+}
 const logout = async () => {
   if (!auth) return console.error('Auth service not found')
   loading.value = true
@@ -145,6 +162,9 @@ const currentPage = computed(() => {
         @apply flex min-h-36 items-center justify-center pt-10;
       }
     }
+  }
+  &__no-user {
+    @apply flex min-h-64 w-full flex-col items-center justify-center gap-2 text-center;
   }
 }
 </style>
