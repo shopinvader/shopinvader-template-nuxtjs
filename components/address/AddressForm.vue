@@ -15,131 +15,102 @@
         </label>
       </div>
     </div>
-    <slot name="name" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full">
-        <label class="required label">
-          <span class="label-text">
-            {{ $t('account.address.name') }}
-          </span>
-        </label>
-        <input
-          v-model="model.name"
-          :disabled="submitted"
-          type="text"
-          required
-          class="input input-bordered w-full"
-        />
-      </div>
-    </slot>
-    <slot name="street" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full">
-        <label class="required label">
-          <span class="label-text">
-            {{ $t('account.address.street') }}
-          </span>
-        </label>
-        <input
-          v-model="model.street"
-          required
-          :disabled="submitted"
-          type="text"
-          class="input input-bordered w-full"
-        />
-      </div>
-    </slot>
-    <slot name="street2" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full">
-        <label class="label">
-          <span class="label-text">{{ $t('account.address.street2') }}</span>
-        </label>
-        <input
-          v-model="model.street2"
-          :disabled="submitted"
-          type="text"
-          class="input input-bordered w-full"
-        />
-      </div>
-    </slot>
-    <slot name="city" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
-        <label class="required label">
-          <span class="label-text">{{ $t('account.address.zip') }}</span>
-        </label>
-        <input
-          v-model="model.zip"
-          required
-          :disabled="submitted"
-          type="text"
-          class="input input-bordered w-full md:max-w-xs"
-        />
-      </div>
-      <div class="form-control inline-block w-full md:w-2/3">
-        <label class="required label">
-          <span class="label-text">{{ $t('account.address.city') }}</span>
-        </label>
-        <input
-          v-model="model.city"
-          required
-          :disabled="submitted"
-          type="text"
-          class="input input-bordered w-full"
-        />
-      </div>
-    </slot>
-    <slot name="country" :address="model" :submitted="submitted" :countries="countries">
-      <div
-        v-if="countries.length > 0"
-        class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2"
+    <div class="form-control inline-block w-full">
+      <label class="required label">
+        <span class="label-text">
+          {{ $t('account.address.name') }}
+        </span>
+      </label>
+      <input
+        v-model="model.name"
+        :disabled="submitted"
+        type="text"
+        required
+        class="input input-bordered w-full"
+      />
+    </div>
+    <div class="form-control inline-block w-full">
+      <label class="required label">
+        <span class="label-text">
+          {{ $t('account.address.street') }}
+        </span>
+      </label>
+      <input
+        v-model="model.street"
+        required
+        :disabled="submitted"
+        type="text"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <div class="form-control inline-block w-full">
+      <label class="label">
+        <span class="label-text">{{ $t('account.address.street2') }}</span>
+      </label>
+      <input
+        v-model="model.street2"
+        :disabled="submitted"
+        type="text"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
+      <label class="required label">
+        <span class="label-text">{{ $t('account.address.zip') }}</span>
+      </label>
+      <input
+        v-model="model.zip"
+        required
+        :disabled="submitted"
+        type="text"
+        class="input input-bordered w-full md:max-w-xs"
+      />
+    </div>
+    <div class="form-control inline-block w-full md:w-2/3">
+      <label class="required label">
+        <span class="label-text">{{ $t('account.address.city') }}</span>
+      </label>
+      <input
+        v-model="model.city"
+        required
+        :disabled="submitted"
+        type="text"
+        class="input input-bordered w-full"
+      />
+    </div>
+    <div
+      v-if="countries.length > 0"
+      class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2"
+    >
+      <label class="required label">
+        <span class="label-text">{{ $t('account.address.country') }}</span>
+      </label>
+      <select
+        v-model="model.country"
+        class="select select-bordered w-full max-w-xs"
+        :disabled="submitted"
+        required
       >
-        <label class="required label">
-          <span class="label-text">{{ $t('account.address.country') }}</span>
-        </label>
-        <select
-          v-model="model.country"
-          class="select select-bordered w-full max-w-xs"
-          :disabled="submitted"
-          required
-        >
-          <option disabled v-if="countries.length > 1">{{ $t('account.address.country') }}</option>
-          <option v-for="country of countries" :key="country.id" :value="country">
-            {{ country.name }}
-          </option>
-        </select>
-      </div>
-    </slot>
-    <slot name="phone" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
-        <label class="label">
-          <span class="label-text">
-            <icon name="phone" />
-            {{ $t('account.address.phone') }}
-          </span>
-        </label>
-        <input
-          v-model="model.phone"
-          :disabled="submitted"
-          type="phone"
-          class="input input-bordered w-full md:max-w-xs"
-        />
-      </div>
-    </slot>
-    <slot name="mobile" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs">
-        <label class="label">
-          <span class="label-text">
-            <icon name="mobile" />
-            {{ $t('account.address.mobile') }}
-          </span>
-        </label>
-        <input
-          v-model="model.mobile"
-          :disabled="submitted"
-          type="mobile"
-          class="input input-bordered w-full md:max-w-xs"
-        />
-      </div>
-    </slot>
-    <slot name="container" :address="model" :submitted="submitted"></slot>
+        <option disabled v-if="countries.length > 1">{{ $t('account.address.country') }}</option>
+        <option v-for="country of countries" :key="country.id" :value="country">
+          {{ country.name }}
+        </option>
+      </select>
+    </div>
+    <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs">
+      <label class="label">
+        <span class="label-text">
+          <icon name="phone" />
+          {{ $t('account.address.phone') }}
+        </span>
+      </label>
+      <input
+        v-model="model.phone"
+        :disabled="submitted"
+        type="phone"
+        class="input input-bordered w-full md:max-w-xs"
+      />
+    </div>
     <slot name="footer" :address="model">
       <div class="my-2 flex w-full items-center border-t pt-4">
         <div class="flex-grow">
@@ -188,7 +159,6 @@ watch(
  */
 const save = (e: Event) => {
   e.preventDefault()
-  e.stopPropagation()
   submitted.value = true
   emit('saved', model.value)
 }
