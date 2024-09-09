@@ -60,7 +60,7 @@ import {
   StatsAggregation
 } from 'elastic-builder'
 import { inject, reactive } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 import { type Filter } from './SearchBase.vue'
 interface FacetStat {
   count: number

@@ -63,8 +63,8 @@
   </div>
 </template>
 <script lang="ts">
+import type { Address } from '#models'
 import type { PropType } from 'vue'
-import type { Address } from '~/models'
 import AddressFormVue from './AddressForm.vue'
 export default defineNuxtComponent({
   name: 'AddressCard',
@@ -104,7 +104,7 @@ export default defineNuxtComponent({
   &__content {
     @apply py-3 pl-4;
     .content__warning {
-      @apply text-error flex items-center gap-1;
+      @apply flex items-center gap-1 text-error;
     }
   }
 }

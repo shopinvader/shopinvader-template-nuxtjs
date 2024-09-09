@@ -9,7 +9,7 @@
 
 <script lang="ts">
 import { AccountLogin } from '#components'
-import { User } from '~/models';
+import { User } from '#models'
 /**
  * Checkout Login step.
  * This component is used in the Checkout funnel.
@@ -37,11 +37,14 @@ export default defineNuxtComponent({
         success()
       }
     })
-    watch(() => user?.value, (value) => {
-      if (value instanceof User) {
-        success()
+    watch(
+      () => user?.value,
+      (value) => {
+        if (value instanceof User) {
+          success()
+        }
       }
-    })
+    )
     return {
       user,
       success

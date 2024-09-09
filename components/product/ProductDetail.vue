@@ -158,8 +158,8 @@
   </dev-only>
 </template>
 <script lang="ts" setup>
-import type { Product, ProductCategory, ProductPrice } from '#models'
-import type { PropType } from 'vue'
+import type { ProductCategory, ProductPrice } from '#models'
+import { Product } from '#models'
 import { useHistoryStore } from '~/stores/history'
 const props = defineProps({
   product: {
@@ -172,7 +172,7 @@ const props = defineProps({
   }
 })
 const localePath = useLocalePath()
-const variant = ref<any>(props.product)
+const variant = ref<Product>(props.product)
 const router = useRouter()
 
 onMounted(() => {
@@ -182,10 +182,10 @@ onMounted(() => {
 })
 
 const changeVariant = (product: Product) => {
-  const item = {
+  const item = new Product({
     ...product,
     variants: props.product.variants
-  }
+  })
   variant.value = item
   if (item?.sku) {
     const route = useRoute()
@@ -209,8 +209,8 @@ const breadcrumbs = computed(() => {
 const lastCategory = computed(() => {
   return breadcrumbs.value[breadcrumbs.value.length - 1] || null
 })
-const variants = computed(() => {
-  return props.product?.variants || null
+const variants = computed<Product[]>(() => {
+  return (props.product?.variants as Product[]) || null
 })
 
 const ids = computed(() => {
@@ -265,7 +265,7 @@ useSchemaOrg([
   defineProduct({
     name: variant.value?.name,
     description: variant.value?.shortDescription,
-    image: variant.value?.images?.[0]?.url,
+    image: variant.value?.images?.[0]?.medium?.src,
     sku: variant.value?.sku
   })
 ])

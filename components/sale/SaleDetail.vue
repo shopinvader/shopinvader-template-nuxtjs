@@ -143,7 +143,7 @@
 </template>
 <script setup lang="ts">
 import type { Sale } from '#models'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 
 defineProps({
   sale: {

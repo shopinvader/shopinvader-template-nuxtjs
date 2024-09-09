@@ -1,14 +1,7 @@
 <template>
-  <Pagination
-    :total="total"
-    :size="size"
-    :page="currentPage"
-    @change="changePage"
-  />
+  <Pagination :total="total" :size="size" :page="currentPage" @change="changePage" />
 </template>
 <script lang="ts">
-import Pagination from '../global/Pagination.vue'
-
 export default {
   name: 'SearchPagination',
   props: {

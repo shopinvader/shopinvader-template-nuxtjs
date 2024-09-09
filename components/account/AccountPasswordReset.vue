@@ -89,20 +89,17 @@ const submit = async (e: Event) => {
   const auth = useShopinvaderService('auth') as AuthCredentialService
   if (login.value) {
     try {
-      const resetPasswordSent = (await auth?.resetPassword(
-        login.value
-      )) as boolean
+      const resetPasswordSent = (await auth?.resetPassword(login.value)) as boolean
       if (resetPasswordSent) {
         successMessage.value = true
       }
       login.value = ''
-    } catch (e) {
+    } catch (e: any) {
       console.error(e)
       error.auth = e?.message || $t('error.login.unable_to_login')
     }
   }
 }
-
 </script>
 <style lang="scss">
 .reset-heading {
@@ -117,12 +114,12 @@ const submit = async (e: Event) => {
 .reset-form {
   @apply flex flex-wrap justify-center;
   &__row {
-    @apply form-control w-full  max-w-md;
+    @apply form-control w-full max-w-md;
     label {
       @apply label;
     }
     input {
-      @apply input input-bordered w-full   ;
+      @apply input input-bordered w-full;
     }
   }
   &__error {
@@ -132,7 +129,7 @@ const submit = async (e: Event) => {
   .reset-btn {
     @apply -m-2 flex flex-wrap md:justify-end;
     &__wrapper {
-      @apply flex justify-center w-full p-2;
+      @apply flex w-full justify-center p-2;
       button {
         @apply btn btn-primary;
       }

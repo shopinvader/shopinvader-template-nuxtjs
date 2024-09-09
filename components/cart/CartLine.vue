@@ -118,7 +118,7 @@
 <script lang="ts">
 import { CartLine, CartLineAmount } from '#models'
 import type { PropType } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
 import ProductImageVue from '../product/ProductImage.vue'
 import CartLineQtyVue from './CartLineQty.vue'
 

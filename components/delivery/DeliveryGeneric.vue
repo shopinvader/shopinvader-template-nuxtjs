@@ -75,7 +75,8 @@
 <script lang="ts" setup>
 import { DeliveryPickupPoint, type DeliveryCarrier } from '#models'
 import type { PropType } from 'vue'
-import { formatCurrency } from '../../helpers/StringHelper'
+import { formatCurrency } from '~/utils/StringHelper'
+
 const emit = defineEmits(['select'])
 const props = defineProps({
   deliveryCarrier: {

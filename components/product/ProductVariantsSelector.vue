@@ -45,7 +45,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Product, VariantAttributes } from '~/models'
+import type { Product, VariantAttributes } from '#models'
 
 const props = defineProps({
   product: {
