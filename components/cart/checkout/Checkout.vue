@@ -50,7 +50,7 @@
           -->
           <slot name="cart" :cart="cart">
             <div class="cart__icon">
-              <icon name="solar:cart-3-bold-duotone" />
+              <icon name="cart" />
             </div>
             <div class="cart__body">
               <nuxt-link class="body__title" :to="localePath('/cart')">

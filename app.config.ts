@@ -1,6 +1,13 @@
-
 export default defineAppConfig({
-  nuxtIcon: {
+  settings: {
+    countries: [],
+    titles: [],
+    states: [],
+    currencies: []
+  },
+  icon: {
+    class: 'icon',
+    size: '24px',
     aliases: {
       addresses: 'ph:address-book-light',
       profile: 'ph:person-light',
@@ -9,10 +16,11 @@ export default defineAppConfig({
       left: 'ph:arrow-left',
       right: 'ph:arrow-right',
       logout: 'ph:power',
-      search: 'mdi:magnify',
-      'search-circle': 'ic:round-search',
-      plus: 'mdi:plus',
-      delete: 'mdi:trash',
+      search: 'ph:magnifying-glass-light',
+      'search-circle': 'ph:magnifying-glass-light',
+      plus: 'ph:plus-bold',
+      minus: 'ph:minus-bold',
+      delete: 'ph:trash',
       remove: 'ph:trash',
       edit: 'ph:pencil',
       info: 'ph:info',
@@ -20,28 +28,30 @@ export default defineAppConfig({
       user: 'ph:user',
       'user-logged': 'ph:user-duotone',
       'user-circle': 'ph:user-circle',
-      'close-circle': 'ic:round-close',
+      'close-circle': 'ph:x',
       phone: 'ph:phone',
       mobile: 'ph:device-mobile',
       variants: 'fluent:box-multiple-20-regular',
       printer: 'ph:printer',
       error: 'ph:warning-circle',
-      cart: 'clarity:shopping-bag-line',
+      cart: 'ph:bag-light',
       shipping: 'ph:package',
       billing: 'ph:receipt',
       email: 'ph:envelope',
       warning: 'ph:warning',
-      attention: 'iconamoon:attention-circle-thin',
+      attention: 'ph:info',
       down: 'ph:caret-down-light',
       up: 'ph:caret-up-light',
       home: 'ph:house',
-      history: 'ic:baseline-history',
-      view: 'clarity:eye-line',
-      hide: 'clarity:eye-hide-line',
-      location: 'ic:sharp-location-on',
-      menu: 'solar:hamburger-menu-outline',
-      download: 'material-symbols:download-for-offline-outline',
-      carrier: 'solar:box-line-duotone'
+      history: 'ph:clock-counter-clockwise-fill',
+      view: 'ph:eye-light',
+      hide: 'ph:eye-slash-duotone',
+      location: 'ph:map-pin-fill',
+      menu: 'ph:list',
+      download: 'ph:download-simple-fill',
+      carrier: 'ph:package-duotone',
+      'product-list': 'ph:list',
+      'product-grid': 'ph:grid-nine-fill'
     }
   },
   animations: {
@@ -102,7 +112,6 @@ export default defineAppConfig({
     logo: process.env.VUE_APP_LOGO_URL || ''
   },
   search: {
-    filters: [
-    ]
+    filters: []
   }
 })
