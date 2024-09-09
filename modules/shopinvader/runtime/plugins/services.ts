@@ -137,13 +137,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   // Init all services when the app is mounted
   // -----------------------------------------
-  nuxtApp.hook('app:mounted', async () => {
-    if (services) {
-      for (const service of Object.values(services)) {
-        await service.init(services)
-      }
+  if (services) {
+    for (const service of Object.values(services)) {
+      console.log('Init service', service.constructor.name)
+      await service.init(services)
     }
-  })
+  }
 
   // Manage the language switch
   // --------------------------
