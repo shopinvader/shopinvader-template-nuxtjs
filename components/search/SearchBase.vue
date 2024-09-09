@@ -76,7 +76,6 @@
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
-import ProductHistory from '~/components/product/ProductHistory.vue'
 
 export interface Filter {
   name: string
@@ -93,9 +92,6 @@ export interface SortItem {
   order?: string
 }
 export default {
-  components: {
-    'product-history': ProductHistory
-  },
   props: {
     query: {
       type: Function,

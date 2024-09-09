@@ -122,9 +122,7 @@
 </template>
 <script lang="ts">
 import type { DeliveryCarrier } from '#models'
-
-import DeliveryGeneric from '~/components/delivery/DeliveryGeneric.vue'
-import Spinner from '~/components/global/Spinner.vue'
+import { DeliveryGeneric, Spinner } from '#components'
 import CartTotal from '../CartTotal.vue'
 interface CarrierWithComponent extends DeliveryCarrier {
   component: any

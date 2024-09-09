@@ -125,11 +125,11 @@
   </form>
 </template>
 <script lang="ts" setup>
-import { type PropType } from 'vue'
-import { Address } from '~/models'
+import { Address, type Country } from '#models'
+
 const props = defineProps({
   address: {
-    type: Object as PropType<Address> | null,
+    type: Address,
     required: false,
     default: () => {
       return new Address({})
@@ -137,7 +137,7 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['saved'])
-const settings = useShopinvaderService('settings')?.options
+const settings = useShopinvaderService('settings')?.values
 const countries = settings?.countries || []
 const titles = settings?.titles || []
 const model = ref(new Address({})) as Ref<Address>

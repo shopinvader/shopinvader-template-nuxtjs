@@ -1,6 +1,7 @@
-import type { AuthAPIConfig, AuthOIDCConfig } from '#services'
 import type { $Fetch } from 'ofetch'
 import type {
+  AuthAPIConfig,
+  AuthOIDCConfig,
   AddressService,
   AuthService,
   CartService,

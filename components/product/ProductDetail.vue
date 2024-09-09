@@ -144,7 +144,6 @@
 import type { Product, ProductCategory, ProductPrice } from '#models'
 import type { PropType } from 'vue'
 import { useHistoryStore } from '~/stores/history'
-
 export default {
   props: {
     product: {
