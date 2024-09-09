@@ -21,6 +21,7 @@ export const initProviders = (
   if (!config.elasticsearch) {
     throw new Error('No shopinvader elasticsearch config found')
   }
+
   // Load erp
   const shopinvaderProvidersList = {} as ShopinvaderProvidersList
   shopinvaderProvidersList.erp = createErpProvider(config.erp) as ErpFetch
