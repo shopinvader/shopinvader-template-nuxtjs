@@ -1,7 +1,7 @@
 import { Category, Product, type CatalogResult } from '#models'
-import { ServiceElastic } from './ServiceElastic'
+import { BaseServiceElastic } from './BaseServiceElastic'
 
-export class CatalogService extends ServiceElastic {
+export class CatalogService extends BaseServiceElastic {
   async search(body: any): Promise<CatalogResult> {
     body.collapse = {
       field: 'url_key',

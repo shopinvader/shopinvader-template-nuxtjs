@@ -1,7 +1,7 @@
 import { Address } from '#models'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
-export class CustomerService extends ServiceErp {
+export class CustomerService extends BaseServiceErp {
   public endpoint: string = 'customer'
 
   async get(): Promise<Address | null> {

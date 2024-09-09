@@ -1,7 +1,7 @@
 import { Settings } from '#models'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
-export class SettingService extends ServiceErp {
+export class SettingService extends BaseServiceErp {
   public endpoint: string = 'settings'
   public options: Settings | null = null
 

@@ -1,9 +1,9 @@
 import { Sale } from '#models'
 import type { ProductService } from '#services'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
 // Service to fetch Sales
-export class SaleService extends ServiceErp {
+export class SaleService extends BaseServiceErp {
   public endpoint: string = 'sales'
   public endpointInvoice: string = 'invoice'
   public urlEndpointInvoice: string = ''

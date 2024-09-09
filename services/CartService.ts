@@ -11,7 +11,7 @@ import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
 import type { $Fetch } from 'ofetch'
 import { storeToRefs } from 'pinia'
 import isEqual from '~/utils/IsEqual'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
 class CartObserver {
   prevCartData: any
@@ -56,7 +56,7 @@ class CartObserver {
   }
 }
 
-export class CartService extends ServiceErp {
+export class CartService extends BaseServiceErp {
   public endpoint: string = 'carts'
   public cart: any | null
   public id: number | null = null // Cart ID

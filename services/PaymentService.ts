@@ -1,13 +1,13 @@
 import type { PaymentData } from '#models'
 import { PaymentMethod, PaymentTransaction } from '#models'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
 /**
  * PaymentService
  * @extends Service
  * @description This service is used to manage the payment methods and transactions.
  */
-export class PaymentService extends ServiceErp {
+export class PaymentService extends BaseServiceErp {
   public endpoint: string = 'payment'
   paymentProvider: any
 

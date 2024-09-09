@@ -1,7 +1,7 @@
 import type { $Fetch } from 'ofetch'
-import { ServiceLocalized } from './ServiceLocalized'
+import { BaseServiceLocalized } from './BaseServiceLocalized'
 
-export class ServiceElastic extends ServiceLocalized {
+export class BaseServiceElastic extends BaseServiceLocalized {
   ofetch: $Fetch
   elasticBaseUrl: string
   elasticIndex: string[] | string

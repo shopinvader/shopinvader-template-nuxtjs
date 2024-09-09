@@ -1,10 +1,10 @@
 import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
-import { ServiceErp } from './ServiceErp'
+import { BaseServiceErp } from './BaseServiceErp'
 
 /**
  * Service for managing delivery carriers.
  */
-export class DeliveryCarrierService extends ServiceErp {
+export class DeliveryCarrierService extends BaseServiceErp {
   public endpoint: string = '' // We must cheat here because on service does not start with the entrypoint
 
   /**

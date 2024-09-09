@@ -1,6 +1,6 @@
-import { Service } from './Service'
+import { BaseService } from './BaseService'
 
-export class ServiceLocalized extends Service {
+export class BaseServiceLocalized extends BaseService {
   currentIsoLocale: string = 'fr_fr'
 
   constructor(isoLocale: string) {
