@@ -6,7 +6,8 @@ import {
   Address,
   Sale,
   PaymentData,
-  DeliveryCarrier
+  DeliveryCarrier,
+  DeliveryPickupPoint
 } from '#models'
 
 import { Service } from '#services'
@@ -332,7 +333,6 @@ export class CartService extends Service {
     } catch (e) {
       throw e
     } finally {
-      console.log('cart', cart)
       if (cart?.id) {
         this.setCart(new CartModel(cart));
       }
@@ -345,5 +345,16 @@ export class CartService extends Service {
       return new PaymentData(data)
     }
     return null
+  }
+
+  async setPickupPoint(pickupPoint: DeliveryPickupPoint): Promise<CartModel | null> {
+    const data: any = await this.erp.post(
+      `${this.endpoint}/current/set_public_delivery_pickup`,
+      pickupPoint.toJSON()
+    )
+    if (data?.id) {
+      this.setCart(new CartModel(data))
+    }
+    return this.getCart()?.value || null
   }
 }

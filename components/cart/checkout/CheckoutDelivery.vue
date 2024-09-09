@@ -57,18 +57,27 @@
         <slot name="total" :error="error" :loading="loading" :carriers="carriers" :selectedCarrier="selectedCarrier">
           <cart-total>
             <template #footer>
-              <div
-                v-if="!loading && !selectedCarrier"
-                class="no-delivery"
-              >
-                <icon name="info" />
-                {{ $t('cart.delivery.method.no-method') }}
-              </div>
+              <template v-if="!loading">
+                <div
+                 v-if="!hasValidCarrier"
+                  class="no-delivery"
+                >
+                  <icon name="info" />
+                  <span v-if="selectedCarrier?.withDropoffSite && !deliveryAddress?.isDropoffSite">
+                    {{ $t('cart.delivery.method.no-dropoff') }}
+                  </span>
+                  <span v-else>
+                    {{ $t('cart.delivery.method.no-method') }}
+                  </span>
+
+                </div>
+              </template>
+
               <button
                 type="button"
                 class="btn-secondary btn-block btn"
                 @click="next"
-                :disabled="!selectedCarrier || loading"
+                :disabled="!hasValidCarrier || loading"
               >
                 {{ $t('cart.delivery.method.continue') }}
                 <icon name="right" />
@@ -92,7 +101,14 @@
           </div>
           <div class="method__title">
             {{ $t('cart.delivery.method.title') }} :
-            {{ selectedCarrier?.name }}
+            <span class="title__name">
+              {{ selectedCarrier?.name }}
+            </span>
+          </div>
+          <div
+            v-if="deliveryAddress?.isDropoffSite"
+            class="method__dropoff">
+            {{ deliveryAddress }}
           </div>
         </div>
       </slot>
@@ -108,13 +124,6 @@ import CartTotal from '../CartTotal.vue'
 interface CarrierWithComponent extends DeliveryCarrier {
   component: any
   carrier: DeliveryCarrier
-}
-const importDeliveryComponent = (name: string) => {
-  return defineAsyncComponent(() =>
-    import(`../../delivery/Delivery${name}.vue`).catch(() => {
-      return DeliveryGeneric
-    })
-  )
 }
 
 /**
@@ -141,20 +150,42 @@ export default defineNuxtComponent({
     active: {
       type: Boolean,
       required: true
+    },
+    deliveryComponents: {
+      type: Object as PropType<{[key: string]: Component}>,
+      default: () => ({})
     }
   },
   setup() {
     const i18n = useI18n()
+    const cartService = useShopinvaderService('cart')
+    const cart = cartService.getCart()
     const selectedCarrier = ref(null as DeliveryCarrier | null)
     const carriers = ref([] as CarrierWithComponent[])
     const error = ref(null as string | null)
     const loading = ref(false)
+    const hasValidCarrier = computed(() => {
+      if (selectedCarrier?.value) {
+        // Check if the selected carrier is a pickup carrier
+        if (selectedCarrier?.value?.withDropoffSite) {
+          return cart?.value?.delivery?.address?.isDropoffSite
+        }
+        return true
+      }
+      return false
+    })
+    const deliveryAddress = computed(() => {
+      return cart?.value?.delivery?.address
+    })
+
     return {
       loading,
       i18n,
       error,
       carriers,
-      selectedCarrier
+      selectedCarrier,
+      deliveryAddress,
+      hasValidCarrier
     }
   },
   async mounted() {
@@ -184,7 +215,7 @@ export default defineNuxtComponent({
               const name =
                 carrier.code?.charAt(0).toUpperCase() +
                 carrier.code?.slice(1).toLowerCase()
-              const component = importDeliveryComponent(name)
+              const component = this.deliveryComponents?.[carrier?.code] || DeliveryGeneric
               return {
                 component,
                 carrier
@@ -219,6 +250,9 @@ export default defineNuxtComponent({
      */
     async selectCarrier(carrier: DeliveryCarrier) {
       try {
+        if(carrier?.id == this.selectedCarrier?.id) {
+          return
+        }
         this.error = null
         this.selectedCarrier = carrier
         this.loading = true
@@ -275,12 +309,21 @@ export default defineNuxtComponent({
   &__summary {
     @apply col-span-3 md:col-span-2;
     .method {
-      @apply flex w-full gap-2;
+      @apply grid w-full gap-2;
+      grid-template: auto 2fr;
       &__icon {
-        @apply text-4xl text-primary;
+        @apply row-span-2 row-start-1 col-start-1 col-auto text-5xl text-primary;
       }
       &__title {
-        @apply flex items-center justify-start font-bold;
+        @apply col-span-2;
+        .title {
+          &__name {
+            @apply font-bold;
+          }
+        }
+      }
+      &__dropoff {
+        @apply text-xs font-normal col-span-2 row-start-2;
       }
     }
   }

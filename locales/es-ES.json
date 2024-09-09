@@ -111,7 +111,14 @@
         "intro": "Seleccione un modo de pago",
         "select": "Elegir este método",
         "continue": "Continuar",
+        "free": "Envío gratuito",
+        "pickup": {
+          "search": "Buscar un punto de recogida",
+          "intro": "Seleccione un punto de recogida",
+          "no-result": "No se han encontrado puntos de recogida"
+        },
         "no-method": "No se ha seleccionado ningún método de envío",
+        "no-dropoff": "No se ha seleccionado ningún punto de entrega",
         "empty":"No hay ningún método de entrega disponible para su carrito, sentimos las molestias. Póngase en contacto con nosotros para finalizar su compra"
       }
     },
