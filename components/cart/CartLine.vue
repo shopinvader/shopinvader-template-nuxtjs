@@ -97,10 +97,10 @@
           </div>
           <div class="value">
             <div v-if="line.amount.discountTotal !== 0" class="price__original">
-              {{ $filter.currency(amount.totalWithoutDiscount) }}
+              {{ formatCurrency(amount.totalWithoutDiscount) }}
             </div>
             <div class="price__value">
-              {{ $filter.currency(amount.total) }}
+              {{ formatCurrency(amount.total) }}
             </div>
           </div>
         </slot>
@@ -116,8 +116,9 @@
   </div>
 </template>
 <script lang="ts">
+import { CartLine, CartLineAmount } from '#models'
 import type { PropType } from 'vue'
-import { CartLine, CartLineAmount } from '~/models'
+import { formatCurrency } from '../../helpers/StringHelper'
 import ProductImageVue from '../product/ProductImage.vue'
 import CartLineQtyVue from './CartLineQty.vue'
 
@@ -159,7 +160,8 @@ export default defineNuxtComponent({
   setup() {
     const localePath = useLocalePath()
     return {
-      localePath
+      localePath,
+      formatCurrency
     }
   },
   computed: {
@@ -201,7 +203,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .cartline {
-  @apply card card-bordered card-side  mb-2 flex justify-center  p-3 sm:flex-nowrap;
+  @apply card card-bordered card-side mb-2 flex justify-center p-3 sm:flex-nowrap;
   &--pending {
     .cartline__content {
       .content__price .value {
@@ -227,7 +229,7 @@ export default defineNuxtComponent({
           @apply flex-row text-sm font-bold uppercase md:line-clamp-1;
         }
         .shortTitle {
-          @apply flex  divide-x divide-solid text-xs text-gray-500;
+          @apply flex divide-x divide-solid text-xs text-gray-500;
           li {
             @apply px-2 first:pl-0 last:pr-0;
           }
@@ -237,7 +239,7 @@ export default defineNuxtComponent({
         @apply col-span-4 max-sm:order-first md:col-span-3;
       }
       &__qty {
-        @apply col-span-3 flex flex-col text-sm sm:col-span-2  md:col-span-1 md:row-span-2;
+        @apply col-span-3 flex flex-col text-sm sm:col-span-2 md:col-span-1 md:row-span-2;
         .cart-line-qty {
           @apply h-10 w-full p-0;
           .input-qty {
@@ -249,7 +251,7 @@ export default defineNuxtComponent({
                   @apply h-full w-8 text-base;
                 }
                 &__input {
-                  @apply h-full  text-center text-base font-normal;
+                  @apply h-full text-center text-base font-normal;
                 }
               }
             }

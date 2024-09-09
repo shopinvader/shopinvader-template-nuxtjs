@@ -4,7 +4,7 @@
     :class="{
       'method--selected': selected
     }"
-    @click="$emit('select', deliveryCarrier)"
+    @click="emit('select', deliveryCarrier)"
   >
     <div class="method__icon">
       <icon name="carrier" />
@@ -64,7 +64,7 @@
     </div>
     <div class="method__price">
       <template v-if="deliveryCarrier?.price && deliveryCarrier?.price > 0">
-        {{ $filter.currency(deliveryCarrier.price) }}
+        {{ formatCurrency(deliveryCarrier.price) }}
       </template>
       <template v-else>
         {{ $t('cart.delivery.method.free') }}
@@ -72,74 +72,63 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
+import { DeliveryPickupPoint, type DeliveryCarrier } from '#models'
 import type { PropType } from 'vue'
-import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
-
-export default {
-  name: 'DeliveryGeneric',
-  props: {
-    deliveryCarrier: {
-      type: Object as PropType<DeliveryCarrier>,
-      required: true
-    },
-    selected: {
-      type: Boolean,
-      required: false
-    }
+import { formatCurrency } from '../../helpers/StringHelper'
+const emit = defineEmits(['select'])
+const props = defineProps({
+  deliveryCarrier: {
+    type: Object as PropType<DeliveryCarrier>,
+    required: true
   },
-  emits: ['select'],
-  setup(props) {
-    const error = ref(false)
-    const searchedName = ref<string | null>(null)
-    const cartService = useShopinvaderService('cart')
-    const carrierService = useShopinvaderService('deliveryCarriers')
-    const dropoffSites = ref([] as DeliveryPickupPoint[])
+  selected: {
+    type: Boolean,
+    required: false
+  }
+})
 
-    const onSearchPickupPoint = async () => {
-      try {
-        error.value = false
-        dropoffSites.value = []
-        dropoffSites.value = await carrierService?.getDeliveryPickups(
-          props.deliveryCarrier.id,
-          searchedName.value || ''
-        )
-      } catch (e) {
-        console.error(e)
-        error.value = true
-      }
-    }
+const error = ref(false)
+const searchedName = ref<string | null>(null)
+const cartService = useShopinvaderService('cart')
+const carrierService = useShopinvaderService('deliveryCarriers')
+const dropoffSites = ref([] as DeliveryPickupPoint[])
 
-    watch(
-      () => props.selected,
-      async () => {
-        await onSearchPickupPoint()
-      }
+const onSearchPickupPoint = async () => {
+  try {
+    error.value = false
+    dropoffSites.value = []
+    dropoffSites.value = await carrierService?.getDeliveryPickups(
+      props.deliveryCarrier.id,
+      searchedName.value || ''
     )
+  } catch (e) {
+    console.error(e)
+    error.value = true
+  }
+}
 
-    watch(
-      () => searchedName.value,
-      async () => {
-        await onSearchPickupPoint()
-      }
-    )
+watch(
+  () => props.selected,
+  async () => {
+    await onSearchPickupPoint()
+  }
+)
 
-    const selectPickup = async (dropoff: DeliveryPickupPoint) => {
-      try {
-        error.value = false
-        await cartService.setPickupPoint(dropoff)
-      } catch (e) {
-        console.error(e)
-        error.value = true
-      }
-    }
-    return {
-      dropoffSites,
-      searchedName,
-      onSearchPickupPoint,
-      selectPickup,
-      error
-    }
+watch(
+  () => searchedName.value,
+  async () => {
+    await onSearchPickupPoint()
+  }
+)
+
+const selectPickup = async (dropoff: DeliveryPickupPoint) => {
+  try {
+    error.value = false
+    await cartService.setPickupPoint(dropoff)
+  } catch (e) {
+    console.error(e)
+    error.value = true
   }
 }
 </script>

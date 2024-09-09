@@ -108,7 +108,7 @@
                 {{ $t('sale.amount.discount') }}
               </span>
               <span class="font-heading font-bold">
-                - {{ $filter.currency(sale?.amount?.discountTotal || 0) }}
+                - {{ formatCurrency(sale?.amount?.discountTotal || 0) }}
               </span>
             </div>
             <div class="total__item">
@@ -116,7 +116,7 @@
                 {{ $t('sale.amount.untaxed') }}
               </span>
               <span class="font-heading font-bold">
-                {{ $filter.currency(sale?.amount?.untaxed || 0) }}
+                {{ formatCurrency(sale?.amount?.untaxed || 0) }}
               </span>
             </div>
             <div class="total__item">
@@ -124,7 +124,7 @@
                 {{ $t('sale.amount.tax') }}
               </span>
               <span class="font-heading font-bold">
-                {{ $filter.currency(sale?.amount?.tax || 0) }}
+                {{ formatCurrency(sale?.amount?.tax || 0) }}
               </span>
             </div>
             <div class="total__item">
@@ -132,7 +132,7 @@
                 {{ $t('sale.amount.total') }}
               </span>
               <span class="font-heading font-bold">
-                {{ $filter.currency(sale?.amount?.total || 0) }}
+                {{ formatCurrency(sale?.amount?.total || 0) }}
               </span>
             </div>
           </div>
@@ -143,6 +143,8 @@
 </template>
 <script setup lang="ts">
 import type { Sale } from '#models'
+import { formatCurrency } from '../../helpers/StringHelper'
+
 defineProps({
   sale: {
     type: Object as PropType<Sale>,
