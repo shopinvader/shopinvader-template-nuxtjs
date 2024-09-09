@@ -100,7 +100,7 @@ export class CartService extends Service {
     if (services?.auth && services?.cart) {
       const { auth } = services
       /** Retrieve cart content on user login */
-      auth?.onUserLoaded((user) => {
+      auth?.onUserLoaded((_user) => {
         services.cart.sync()
       })
       /** Clear cart after user logout */

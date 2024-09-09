@@ -10,46 +10,6 @@ interface TSFile {
   imports: string[]
   alias: string | null
 }
-interface ServiceList {
-  serviceName: string
-  className: string
-  path: string
-}
-/**
- * extract serviceName attribute from a service file
- * TODO: TO BE REFACTORED
- * @param files
- * @returns ServiceList
- */
-function extractTsServiceName(files: string[]): ServiceList[] {
-  const program = ts.createProgram(files, { allowJs: true })
-  const result = []
-  for (const file of files) {
-    const sourceFile = program.getSourceFile(file)
-    if (!sourceFile) continue
-    const classes = sourceFile.statements.filter(ts.isClassDeclaration)
-    for (const c of classes) {
-      const item = c.members?.find(
-        (m) => ts.isPropertyDeclaration(m) && m.name?.getText(sourceFile) === 'serviceName'
-      )
-      if (item) {
-        const node = item
-          ?.getChildren(sourceFile)
-          .find((c) => c.kind === ts.SyntaxKind.StringLiteral)
-        const serviceName = node?.getText(sourceFile).replace(/['"]+/g, '').trim() || null
-        if (serviceName) {
-          const className = c?.name?.text || ''
-          result.push({
-            serviceName,
-            className,
-            path: file
-          })
-        }
-      }
-    }
-  }
-  return result
-}
 
 /**
  * extract class from a file
@@ -165,13 +125,6 @@ export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
   nuxt.hook('prepare:types', ({ references }) => {
     for (const template of templates) {
       references.push({ path: template.dst })
-    }
-  })
-  nuxt.hook('nitro:config', (config) => {
-    config.resolve = config.resolve || {}
-    config.resolve.alias = {
-      ...alias,
-      ...config.resolve.alias
     }
   })
   nuxt.hook('vite:extend', (ctx) => {

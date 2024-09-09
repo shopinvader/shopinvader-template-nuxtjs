@@ -1,6 +1,6 @@
 <template>
   <header :class="{ scrolled: scrolled }">
-    <aside-menu name="header" class="header" class-content="header-navbar" :sideMenu="scrolled">
+    <aside-menu name="header" class="header" class-content="header-navbar" :side-menu="scrolled">
       <template #top>
         <slot name="top"></slot>
       </template>

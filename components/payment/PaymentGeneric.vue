@@ -18,7 +18,7 @@
 import type { PaymentTransaction } from '#models'
 import { onMounted } from 'vue'
 const formPayment = ref<HTMLFormElement | null>(null)
-const props = defineProps({
+defineProps({
   transaction: {
     type: Object as PropType<PaymentTransaction>,
     required: true
