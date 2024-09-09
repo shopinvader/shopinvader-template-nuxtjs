@@ -1,5 +1,5 @@
 import { ErpFetch } from '@shopinvader/fetch'
-import { DeliveryCarrier } from '#models'
+import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
 import { Service } from '#services'
 
 /**
@@ -25,6 +25,22 @@ export class DeliveryCarrierService extends Service {
     const data = await this.provider?.get(url, [], null)
     if (Array.isArray(data)) {
       return data.map((item: any) => new DeliveryCarrier(item))
+    }
+    return []
+  }
+  async getDeliveryPickups(carrierId:number, name?: string): Promise<DeliveryPickupPoint[]> {
+    let query:any = {
+      carrier_id: carrierId
+    }
+    if (name) {
+      query = {
+        ...query,
+        name
+      }
+    }
+    const data = await this.provider?.get(`delivery_pickups`, query, null)
+    if (Array.isArray(data)) {
+      return data.map((item: any) => new DeliveryPickupPoint(item))
     }
     return []
   }

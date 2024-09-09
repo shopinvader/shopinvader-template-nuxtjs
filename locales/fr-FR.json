@@ -114,7 +114,13 @@
         "select": "Sélectionner",
         "continue": "Continuer",
         "free": "Livraison gratuite",
-        "no-method": "Aucune méthode de livraison Sélectionnée",
+        "pickup": {
+          "search": "Rechercher un point de retrait",
+          "intro": "Sélectionnez un point de retrait",
+          "no-result": "Aucun point de retrait disponible"
+        },
+        "no-method": "Aucune méthode de livraison sélectionnée",
+        "no-dropoff": "Aucun point de retrait sélectionné",
         "empty":"Aucune méthode de livraison n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat"
       }
     },

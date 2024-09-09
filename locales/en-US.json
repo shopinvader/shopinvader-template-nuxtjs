@@ -105,10 +105,16 @@
       "method": {
         "title": "Delivery method",
         "free": "Free",
+        "pickup": {
+          "search": "Search a pickup point",
+          "intro": "Select a pickup point",
+          "no-result": "No pickup point found"
+        },
         "intro": "Select a delivery method",
         "select": "pick this method",
         "continue": "Continue",
         "no-method": "No delivery method selected",
+        "no-dropoff": "No delivery point has been selected",
         "empty":"No delivery method is available for your basket, we are sorry for this inconvenience. Please contact us to finalize your purchase"
       }
     },
