@@ -1,6 +1,6 @@
 import { Category, type CategoryResult } from '#models'
 import { Service } from '#services'
-import { ElasticFetch } from '@shopinvader/fetch'
+import type { ElasticFetch } from '@shopinvader/fetch'
 import esb, { MultiMatchQuery } from 'elastic-builder'
 
 export class CategoryService extends Service {

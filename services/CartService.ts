@@ -1,17 +1,18 @@
+import type { Address, Product } from '#models'
 import {
-  Address,
   CartLine as CartLineModel,
   Cart as CartModel,
   DeliveryCarrier,
   PaymentData,
-  DeliveryPickupPoint
+  DeliveryPickupPoint,
+  Sale
 } from '#models'
 import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
 
 import { Service } from '#services'
 import type { ErpFetch } from '@shopinvader/fetch'
-import isEqual from 'lodash.isequal'
 import { storeToRefs } from 'pinia'
+import isEqual from '~/utils/IsEqual'
 
 class CartObserver {
   prevCartData: any
@@ -171,12 +172,12 @@ export class CartService extends Service {
       const countries = (await this.services?.settings?.get('countries')) || []
       if (countries?.length > 0) {
         if (cart.delivery.address) {
-          let address = cart.delivery.address
+          const address = cart.delivery.address
           cart.delivery.address.country =
             countries.find((c: any) => c.id === address?.country?.id) || null
         }
         if (cart.invoicing.address) {
-          let address = cart.delivery.address
+          const address = cart.delivery.address
           cart.invoicing.address.country =
             countries.find((c: any) => c.id === address?.country?.id) || null
         }
@@ -223,7 +224,6 @@ export class CartService extends Service {
    * @param {*} id cart line ID
    */
   deleteItem(line: CartLineModel) {
-    const cart = this.getCart()?.value || null
     if (line !== null) {
       const qty = line.qty * -1
       const productId: number | null = line?.productId || null

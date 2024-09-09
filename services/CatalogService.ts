@@ -1,6 +1,6 @@
 import { Category, Product, type CatalogResult } from '#models'
 import { Service } from '#services'
-import { ElasticFetch } from '@shopinvader/fetch'
+import type { ElasticFetch } from '@shopinvader/fetch'
 
 export class CatalogService extends Service {
   serviceName = 'catalog'

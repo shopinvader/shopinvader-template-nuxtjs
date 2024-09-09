@@ -54,8 +54,11 @@ export interface ShopinvaderConfig {
 export interface ShopinvaderProvidersList {
   // One erp provider
   erp: ErpFetch
-  // Many elastic providers
-  elastic: {
+  // Elastic providers
+  products: ElasticFetch
+  categories: ElasticFetch
+  elasticsearch: ElasticFetch
+  elasticAddons: {
     [key: string]: ElasticFetch
   }
 }

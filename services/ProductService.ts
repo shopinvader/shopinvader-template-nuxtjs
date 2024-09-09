@@ -1,7 +1,8 @@
 import { Product, type ProductResult, type VariantAttributes } from '#models'
 import { Service } from '#services'
-import { ElasticFetch, type ElasticQueryBody } from '@shopinvader/fetch'
-import esb, { Aggregation, MultiMatchQuery, Query, TermQuery } from 'elastic-builder'
+import type { ElasticFetch, ElasticQueryBody } from '@shopinvader/fetch'
+import type { Aggregation, Query } from 'elastic-builder'
+import esb, { MultiMatchQuery, TermQuery } from 'elastic-builder'
 
 export class ProductService extends Service {
   name = 'products'
@@ -110,7 +111,7 @@ export class ProductService extends Service {
   async getVariantsAggregation(urlKey: string, axes: VariantAttributes) {
     const aggs = []
     let i = 0
-    for (let axis in axes) {
+    for (const axis in axes) {
       const axesValues = Object.entries(axes).slice(0, i)
       let agg: Aggregation = esb
         .termsAggregation(axis, `variant_attributes.${axis}`)
@@ -148,7 +149,7 @@ export class ProductService extends Service {
     const result = await this.search(body.toJSON())
     const { aggregations, hits } = result
     const items: any = {}
-    for (let axis in axes) {
+    for (const axis in axes) {
       let axisValues = aggregations.variants[axis]
       if (axisValues?.[axis]) {
         axisValues = axisValues[axis]

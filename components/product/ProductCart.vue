@@ -79,7 +79,7 @@
   </aside-drawer>
 </template>
 <script lang="ts">
-import { CartLine, Product } from '#models'
+import type { CartLine, Product } from '#models'
 import type { PropType } from 'vue'
 export default {
   name: 'ProductCart',
@@ -152,8 +152,6 @@ export default {
         this.$emit('add', this.qty)
         cartService.addItem(this.product.id, this.qty)
         this.cartDrowerOpened = true
-        if (!this.line) {
-        }
       }
     },
     gotToCart() {
@@ -179,7 +177,7 @@ export default {
 .product-cart {
   @apply flex flex-row flex-wrap items-center justify-end gap-2;
   &__add {
-    @apply btn btn-primary px-14  text-white hover:btn-primary hover:shadow-2xl;
+    @apply btn btn-primary px-14 text-white hover:btn-primary hover:shadow-2xl;
     .add-label {
       @apply ml-2;
     }

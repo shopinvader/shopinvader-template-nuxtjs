@@ -4,7 +4,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { Sale } from '#models'
+import type { Sale } from '#models'
 const props = defineProps({
   sale: {
     type: Object as PropType<Sale>,
@@ -16,7 +16,7 @@ const props = defineProps({
 .status {
   @apply relative m-0 pl-4 text-sm;
   &:before {
-    @apply absolute left-0 top-1  block h-3 w-3 rounded-full bg-base-500;
+    @apply absolute left-0 top-1 block h-3 w-3 rounded-full bg-base-500;
     content: '';
   }
   &.state--cancel {

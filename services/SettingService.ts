@@ -1,6 +1,6 @@
 import { Settings } from '#models'
 import { Service } from '#services'
-import { ErpFetch } from '@shopinvader/fetch'
+import type { ErpFetch } from '@shopinvader/fetch'
 
 export class SettingService extends Service {
   name = 'settings'
@@ -26,13 +26,11 @@ export class SettingService extends Service {
       data = (await this.provider?.get('settings/all', [], null)) || {}
     } catch (e) {
       console.error('Error while fetching settings', e)
-    } finally {
-      return new Settings(data)
     }
+    return new Settings(data)
   }
 
   get(key: string): any {
     return this.options?.[key] || null
   }
 }
-

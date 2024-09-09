@@ -18,7 +18,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Category, type CategoryResult } from '#models'
+import type { Category, CategoryResult } from '#models'
 export default {
   name: 'AutocompleteCategory',
   events: ['click'],
@@ -31,8 +31,8 @@ export default {
 
   setup(props) {
     const localePath = useLocalePath()
-    let error = ref('')
-    let searchResults = reactive({
+    const error = ref('')
+    const searchResults = reactive({
       hits: [] as Category[],
       total: null as number | null
     } as CategoryResult)
