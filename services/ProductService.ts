@@ -1,17 +1,9 @@
 import { Product, type ProductResult, type VariantAttributes } from '#models'
-import { Service } from '#services'
-import type { ElasticFetch, ElasticQueryBody } from '@shopinvader/fetch'
 import type { Aggregation, Query } from 'elastic-builder'
 import esb, { MultiMatchQuery, TermQuery } from 'elastic-builder'
+import { ServiceElastic } from './ServiceElastic'
 
-export class ProductService extends Service {
-  name = 'products'
-  provider: ElasticFetch | null = null
-  constructor(provider: ElasticFetch) {
-    super()
-    this.provider = provider
-  }
-
+export class ProductService extends ServiceElastic {
   hits(hits: any[]): Product[] {
     return hits?.map((hit: any) => {
       const productVariants = hit?.inner_hits?.variants?.hits?.hits?.map(
@@ -25,9 +17,6 @@ export class ProductService extends Service {
   }
 
   async search(body: any): Promise<ProductResult> {
-    if (this.provider == null) {
-      throw new Error('No provider found for products')
-    }
     body.collapse = {
       field: 'url_key',
       inner_hits: [
@@ -37,7 +26,7 @@ export class ProductService extends Service {
         }
       ]
     }
-    const result = await this.provider?.search(body)
+    const result = await this.elasticSearch(body)
     const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
@@ -59,7 +48,7 @@ export class ProductService extends Service {
       .query(this.fullTextQuery(query))
       .size(limit)
 
-    const result = await this.provider?.search(body.toJSON() as ElasticQueryBody)
+    const result = await this.elasticSearch(body)
     const hits = this.hits(result?.hits?.hits || [])
     const aggregations = result?.aggregations || null
     const total = result?.hits?.total?.value || 0

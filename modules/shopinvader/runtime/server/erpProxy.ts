@@ -38,7 +38,9 @@ export default defineEventHandler(async (event) => {
             response.statusText
           )
           if (logLevel > 1) {
-            const body = await response.text()
+            // Need to clone the response to read the body, else it will be consumed
+            const copyResponse = response.clone()
+            const body = await copyResponse.text()
             console.log('[erpProxy] response body:', event.node.req.url, body)
           }
         }
@@ -46,6 +48,7 @@ export default defineEventHandler(async (event) => {
       }
     })
   } catch (error: any) {
+    console.log('[erpProxy] error:', error)
     return createError({
       statusCode: error?.response?.status,
       statusMessage: error?.message,

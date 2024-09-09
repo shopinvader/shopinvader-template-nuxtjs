@@ -1,18 +1,11 @@
 import { Address } from '#models'
-import { Service } from '#services'
-import type { ErpFetch } from '@shopinvader/fetch'
+import { ServiceErp } from './ServiceErp'
 
-export class AddressService extends Service {
-  provider: ErpFetch | null = null
-  addresses: Address[] | null = null
-  constructor(provider: ErpFetch) {
-    super()
-    this.provider = provider
-  }
+export class AddressService extends ServiceErp {
+  public endpoint: string = 'addresses'
+  public addresses: Address[] | null = null
+
   async getAll(): Promise<Address[] | null> {
-    if (this.provider == null) {
-      return null
-    }
     this.addresses = []
     const mainAddress = (await this.getMainAddress()) || null
     if (mainAddress) {
@@ -22,23 +15,25 @@ export class AddressService extends Service {
     this.addresses = this.addresses.concat(deliveryAddresses)
     return this.addresses
   }
+
   async fetchAddresses(type: string): Promise<Address[] | null> {
-    const results = (await this.provider?.get(`addresses/${type}`, {}, 'json')) || []
-    return await results.map((item: any) => this.jsonToModel({ ...item, type }))
+    const results = (await this.ofetch(this.urlEndpoint + '/' + type)) || []
+    return results.map((item: any) => this.jsonToModel({ ...item, type }))
   }
+
   async getMainAddress(): Promise<Address | null> {
-    const data = await this.provider?.get(`addresses/invoicing`, {}, 'json')
+    const data = await this.ofetch(this.urlEndpoint + '/invoicing')
     if (data?.[0]) {
       const item = {
         ...data[0],
         type: 'invoicing',
         main: true
       }
-
       return this.jsonToModel(item)
     }
     return null
   }
+
   /**
    * delete an address
    * @param Address address
@@ -48,7 +43,9 @@ export class AddressService extends Service {
     if (this.addresses == null) {
       this.addresses = (await this.getAll()) || []
     }
-    await this.provider?.delete(`addresses/${address.type}/${address.id}`, {}, {}, 'text')
+    await this.ofetch(this.urlEndpoint + '/' + address.type + 'address.id', {
+      method: 'DELETE'
+    })
     this.addresses = this.addresses.filter((item: Address) => item.id !== address.id)
     return this.addresses
   }
@@ -64,10 +61,12 @@ export class AddressService extends Service {
     if (this.addresses == null) {
       this.addresses = (await this.getAll()) || []
     }
-    const data = address.getJSONData()
-    const result: Address = await this.provider?.post(
-      `addresses/${address.type}/${address.id}`,
-      data
+    const result: Address = await this.ofetch(
+      this.urlEndpoint + '/' + address.type + '/' + address.id,
+      {
+        method: 'POST',
+        body: address.getJSONData()
+      }
     )
     const index = this.addresses.findIndex((item: Address) => item.id === address.id)
     this.addresses[index] = this.jsonToModel({
@@ -81,9 +80,10 @@ export class AddressService extends Service {
     if (this.addresses == null) {
       this.addresses = (await this.getAll()) || []
     }
-    const data = address.getJSONData()
-    const result = await this.provider?.post(`addresses/${address.type}`, data)
-
+    const result = await this.ofetch(this.urlEndpoint + '/' + address.type, {
+      method: 'POST',
+      body: address.getJSONData()
+    })
     this.addresses.push(
       this.jsonToModel({
         ...result,
@@ -92,22 +92,14 @@ export class AddressService extends Service {
     )
     return result
   }
-  normalizeString(str: string): string {
-    return str
-      ?.toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .trim()
-  }
+
   async search(queryString: string, type?: string): Promise<Address[]> {
     if (!this.addresses) {
       this.addresses = (await this.getAll()) || []
     }
-
     if (!queryString) {
       return this.addresses || ([] as Address[])
     }
-
     const normalizedQuery = this.normalizeString(queryString)
     return (
       this.addresses.filter((item: Address) => {
@@ -126,6 +118,15 @@ export class AddressService extends Service {
       }) || ([] as Address[])
     )
   }
+
+  normalizeString(str: string): string {
+    return str
+      ?.toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .trim()
+  }
+
   jsonToModel(json: any): Address {
     const address = new Address(json)
     if (this.services?.settings) {
