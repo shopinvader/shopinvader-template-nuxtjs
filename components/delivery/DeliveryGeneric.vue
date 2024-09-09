@@ -25,7 +25,12 @@
           {{ $t('error.generic') }}
         </div>
       </slot>
-      <slot name="dropoff" :delivery-carrier="deliveryCarrier" :on-select-pickup="selectPickup" :on-search-pickup="onSearchPickupPoint">
+      <slot
+        name="dropoff"
+        :delivery-carrier="deliveryCarrier"
+        :on-select-pickup="selectPickup"
+        :on-search-pickup="onSearchPickupPoint"
+      >
         <div v-if="deliveryCarrier?.withDropoffSite && selected" class="body__dropoff">
           <div class="dropoff">
             <div class="dropoff__title">
@@ -40,7 +45,12 @@
             <ul v-if="dropoffSites?.length > 0" class="dropoff__list">
               <li v-for="dropoff in dropoffSites" :key="dropoff.id">
                 <label>
-                  <input type="radio" :name='`dropoffsite-${deliveryCarrier.id}`' :value="dropoff.id" @change="selectPickup" />
+                  <input
+                    type="radio"
+                    :name="`dropoffsite-${deliveryCarrier.id}`"
+                    :value="dropoff.id"
+                    @change="selectPickup"
+                  />
                   {{ dropoff.name }}
                 </label>
               </li>
@@ -83,33 +93,42 @@ export default {
     const error = ref(false)
     const searchedName = ref<string | null>(null)
     const cartService = useShopinvaderService('cart')
-    const carrierService = useShopinvaderService("deliveryCarriers")
+    const carrierService = useShopinvaderService('deliveryCarriers')
     const dropoffSites = ref([] as DeliveryPickupPoint[])
 
     const onSearchPickupPoint = async () => {
       try {
         error.value = false
         dropoffSites.value = []
-        dropoffSites.value = await carrierService?.getDeliveryPickups(props.deliveryCarrier.id, searchedName.value || '')
-      } catch(e) {
+        dropoffSites.value = await carrierService?.getDeliveryPickups(
+          props.deliveryCarrier.id,
+          searchedName.value || ''
+        )
+      } catch (e) {
         console.error(e)
         error.value = true
       }
     }
 
-    watch(() => props.selected, async() => {
-      await onSearchPickupPoint()
-    })
+    watch(
+      () => props.selected,
+      async () => {
+        await onSearchPickupPoint()
+      }
+    )
 
-    watch(() => searchedName.value, async() => {
-      await onSearchPickupPoint()
-    })
+    watch(
+      () => searchedName.value,
+      async () => {
+        await onSearchPickupPoint()
+      }
+    )
 
     const selectPickup = async (dropoff: DeliveryPickupPoint) => {
       try {
         error.value = false
         await cartService.setPickupPoint(dropoff)
-      } catch(e) {
+      } catch (e) {
         console.error(e)
         error.value = true
       }
@@ -148,7 +167,7 @@ export default {
       &__dropoff {
         @apply flex items-center gap-2 text-sm text-gray-500;
         .dropoff {
-          @apply w-full flex flex-col gap-1 border-t pt-2 mt-2;
+          @apply mt-2 flex w-full flex-col gap-1 border-t pt-2;
           &__title {
             @apply font-bold;
           }
@@ -159,7 +178,7 @@ export default {
                 @apply label;
               }
               &__input {
-                @apply input input-sm input-bordered w-full max-w-xs;
+                @apply input input-bordered input-sm w-full max-w-xs;
               }
             }
           }
@@ -168,7 +187,7 @@ export default {
     }
   }
   &__price {
-    @apply flex text-right justify-end font-bold text-primary;
+    @apply flex justify-end text-right font-bold text-primary;
   }
 }
 </style>

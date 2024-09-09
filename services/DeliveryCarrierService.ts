@@ -1,6 +1,6 @@
-import { ErpFetch } from '@shopinvader/fetch'
 import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
 import { Service } from '#services'
+import { ErpFetch } from '@shopinvader/fetch'
 
 /**
  * Service for managing delivery carriers.
@@ -17,9 +17,9 @@ export class DeliveryCarrierService extends Service {
    * Retrieves all delivery carriers.
    * @returns A promise that resolves to an array of DeliveryCarrier objects.
    */
-  async getAll(uuid?:string | null): Promise<DeliveryCarrier[]> {
+  async getAll(uuid?: string | null): Promise<DeliveryCarrier[]> {
     let url = 'delivery_carriers'
-    if(uuid) {
+    if (uuid) {
       url = `${uuid}/delivery_carriers`
     }
     const data = await this.provider?.get(url, [], null)
@@ -28,8 +28,8 @@ export class DeliveryCarrierService extends Service {
     }
     return []
   }
-  async getDeliveryPickups(carrierId:number, name?: string): Promise<DeliveryPickupPoint[]> {
-    let query:any = {
+  async getDeliveryPickups(carrierId: number, name?: string): Promise<DeliveryPickupPoint[]> {
+    let query: any = {
       carrier_id: carrierId
     }
     if (name) {

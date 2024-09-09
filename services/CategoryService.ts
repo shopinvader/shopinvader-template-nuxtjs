@@ -1,7 +1,7 @@
-import { ElasticFetch } from '@shopinvader/fetch'
-import esb, { MultiMatchQuery } from 'elastic-builder'
 import { Category, type CategoryResult } from '#models'
 import { Service } from '#services'
+import { ElasticFetch } from '@shopinvader/fetch'
+import esb, { MultiMatchQuery } from 'elastic-builder'
 
 export class CategoryService extends Service {
   name = 'categories'
@@ -15,9 +15,7 @@ export class CategoryService extends Service {
       throw new Error('No provider found for categories')
     }
     const result = await this.provider?.search(body)
-    const hits = result?.hits?.hits?.map((hit: any) =>
-      this.jsonToModel(hit._source)
-    )
+    const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations }
@@ -60,11 +58,7 @@ export class CategoryService extends Service {
   async autocompleteSearch(query: string): Promise<CategoryResult> {
     const body = esb
       .requestBodySearch()
-      .query(
-        new MultiMatchQuery(['name', 'description'], query).type(
-          'phrase_prefix'
-        )
-      )
+      .query(new MultiMatchQuery(['name', 'description'], query).type('phrase_prefix'))
     return await this.search(body.toJSON())
   }
   jsonToModel(json: any): Category {

@@ -1,10 +1,11 @@
-import { Model,
-  SaleInvoice,
+import {
+  Model,
   SaleAmount,
-  SaleLine,
-  SalePaiement,
   SaleDelivery,
-  SaleInvoicing
+  SaleInvoice,
+  SaleInvoicing,
+  SaleLine,
+  SalePaiement
 } from '#models'
 
 export class Sale extends Model {
@@ -14,7 +15,7 @@ export class Sale extends Model {
   state: string
   stateProgress: number
   note: boolean
-  invoicing: SaleInvoicing
+  invoicing: SaleInvoicing | null
   invoices: SaleInvoice[]
   lines: SaleLine[] | []
   amount: SaleAmount | null
@@ -29,19 +30,19 @@ export class Sale extends Model {
     this.name = data?.name
     this.state = data?.state
     switch (this.state) {
-      case "cancel":
+      case 'cancel':
         this.stateProgress = 0
         break
-      case "pending":
+      case 'pending':
         this.stateProgress = 30
         break
-      case "processing":
+      case 'processing':
         this.stateProgress = 50
         break
-      case "delivery_partial":
+      case 'delivery_partial':
         this.stateProgress = 70
         break
-      case "delivery_full":
+      case 'delivery_full':
         this.stateProgress = 100
         break
       default:
@@ -50,14 +51,12 @@ export class Sale extends Model {
     }
     this.date = data && data?.date_order ? new Date(data.date_order) : null
     this.note = data?.note
-    this.invoicing = data?.invoicing ? new SaleInvoicing(data.invoicing) : []
+    this.invoicing = data?.invoicing ? new SaleInvoicing(data.invoicing as SaleInvoicing) : null
     this.invoices = []
     if (data && data.invoices) {
-      data.invoices.forEach((invoice: any) =>
-        this.invoices.push(new SaleInvoice(invoice))
-      )
+      data.invoices.forEach((invoice: any) => this.invoices.push(new SaleInvoice(invoice)))
     }
-    this.lines = Array.isArray(data?.lines) ? data.lines.map((l:any) => new SaleLine(l)) : []
+    this.lines = Array.isArray(data?.lines) ? data.lines.map((l: any) => new SaleLine(l)) : []
     this.amount = data.amount ? new SaleAmount(data.amount) : null
     this.delivery = data.delivery ? new SaleDelivery(data.delivery) : null
     this.customerRef = data?.customer_ref

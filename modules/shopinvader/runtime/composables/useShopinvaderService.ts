@@ -1,8 +1,9 @@
 /**
+ * Give access to the shopinvader services
  * useShopinvaderService
  * @param serviceName string
  */
-export const useShopinvaderService =  <K extends keyof ShopinvaderServiceList>(
+export const useShopinvaderService = <K extends keyof ShopinvaderServiceList>(
   serviceName: K
 ): ShopinvaderServiceList[K] => {
   if (!useNuxtApp()?.$shopinvader) {

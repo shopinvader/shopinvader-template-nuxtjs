@@ -29,11 +29,17 @@
           </div>
         </div>
         <template v-else>
-           <!--
+          <!--
             @slot Delivery carriers list
             @binding {Error} error
           -->
-          <slot name="items" :carriers="carriers" :selectedCarrier="selectedCarrier" :select-carrier="selectCarrier" :loading="loading">
+          <slot
+            name="items"
+            :carriers="carriers"
+            :selectedCarrier="selectedCarrier"
+            :select-carrier="selectCarrier"
+            :loading="loading"
+          >
             <component
               :is="component"
               v-for="{ carrier, component } of carriers"
@@ -54,14 +60,17 @@
       </slot>
       <div class="checkout-delivery__total">
         <!-- @slot Cart Total content -->
-        <slot name="total" :error="error" :loading="loading" :carriers="carriers" :selectedCarrier="selectedCarrier">
+        <slot
+          name="total"
+          :error="error"
+          :loading="loading"
+          :carriers="carriers"
+          :selectedCarrier="selectedCarrier"
+        >
           <cart-total>
             <template #footer>
               <template v-if="!loading">
-                <div
-                 v-if="!hasValidCarrier"
-                  class="no-delivery"
-                >
+                <div v-if="!hasValidCarrier" class="no-delivery">
                   <icon name="info" />
                   <span v-if="selectedCarrier?.withDropoffSite && !deliveryAddress?.isDropoffSite">
                     {{ $t('cart.delivery.method.no-dropoff') }}
@@ -69,13 +78,11 @@
                   <span v-else>
                     {{ $t('cart.delivery.method.no-method') }}
                   </span>
-
                 </div>
               </template>
-
               <button
                 type="button"
-                class="btn-secondary btn-block btn"
+                class="btn btn-secondary btn-block"
                 @click="next"
                 :disabled="!hasValidCarrier || loading"
               >
@@ -87,7 +94,7 @@
         </slot>
       </div>
       <div class="checkout-delivery__footer">
-        <button type="button" class="btn-ghost btn" @click="back">
+        <button type="button" class="btn btn-ghost" @click="back">
           <icon name="left"></icon>
           {{ $t('cart.back') }}
         </button>
@@ -105,9 +112,7 @@
               {{ selectedCarrier?.name }}
             </span>
           </div>
-          <div
-            v-if="deliveryAddress?.isDropoffSite"
-            class="method__dropoff">
+          <div v-if="deliveryAddress?.isDropoffSite" class="method__dropoff">
             {{ deliveryAddress }}
           </div>
         </div>
@@ -116,7 +121,7 @@
   </div>
 </template>
 <script lang="ts">
-import { DeliveryCarrier } from '#models'
+import type { DeliveryCarrier } from '#models'
 
 import DeliveryGeneric from '~/components/delivery/DeliveryGeneric.vue'
 import Spinner from '~/components/global/Spinner.vue'
@@ -152,7 +157,7 @@ export default defineNuxtComponent({
       required: true
     },
     deliveryComponents: {
-      type: Object as PropType<{[key: string]: Component}>,
+      type: Object as PropType<{ [key: string]: Component }>,
       default: () => ({})
     }
   },
@@ -209,12 +214,9 @@ export default defineNuxtComponent({
         this.error = null
         this.carriers = []
         if (cart?.value) {
-          const carriers = await cartService.getDeliveryCarrier() || []
+          const carriers = (await cartService.getDeliveryCarrier()) || []
           this.carriers =
             carriers.map((carrier: DeliveryCarrier) => {
-              const name =
-                carrier.code?.charAt(0).toUpperCase() +
-                carrier.code?.slice(1).toLowerCase()
               const component = this.deliveryComponents?.[carrier?.code] || DeliveryGeneric
               return {
                 component,
@@ -228,8 +230,7 @@ export default defineNuxtComponent({
         const selectedCarrier = cart?.value?.delivery?.method || null
         if (selectedCarrier) {
           this.selectedCarrier =
-            this.carriers?.find(({carrier}) => carrier.id == selectedCarrier.id)
-              ?.carrier || null
+            this.carriers?.find(({ carrier }) => carrier.id == selectedCarrier.id)?.carrier || null
         }
       } catch (e: any) {
         this.error = e?.message || e
@@ -250,7 +251,7 @@ export default defineNuxtComponent({
      */
     async selectCarrier(carrier: DeliveryCarrier) {
       try {
-        if(carrier?.id == this.selectedCarrier?.id) {
+        if (carrier?.id == this.selectedCarrier?.id) {
           return
         }
         this.error = null
@@ -278,9 +279,9 @@ export default defineNuxtComponent({
   &__empty {
     @apply col-span-3 md:col-span-2;
     .empty {
-      @apply flex flex-col items-center gap-4 max-w-md mx-auto text-center;
+      @apply mx-auto flex max-w-md flex-col items-center gap-4 text-center;
       .icon {
-        @apply text-error text-6xl;
+        @apply text-6xl text-error;
       }
     }
   }
@@ -289,13 +290,13 @@ export default defineNuxtComponent({
     .cart-total {
       &__footer {
         .no-delivery {
-          @apply flex items-center gap-1 text-sm pb-3;
+          @apply flex items-center gap-1 pb-3 text-sm;
         }
       }
     }
   }
   &__header {
-    @apply col-span-3 flex flex-col  justify-between;
+    @apply col-span-3 flex flex-col justify-between;
   }
   &__footer {
     @apply col-span-3 flex justify-between;
@@ -312,7 +313,7 @@ export default defineNuxtComponent({
       @apply grid w-full gap-2;
       grid-template: auto 2fr;
       &__icon {
-        @apply row-span-2 row-start-1 col-start-1 col-auto text-5xl text-primary;
+        @apply col-auto col-start-1 row-span-2 row-start-1 text-5xl text-primary;
       }
       &__title {
         @apply col-span-2;
@@ -323,7 +324,7 @@ export default defineNuxtComponent({
         }
       }
       &__dropoff {
-        @apply text-xs font-normal col-span-2 row-start-2;
+        @apply col-span-2 row-start-2 text-xs font-normal;
       }
     }
   }

@@ -1,10 +1,10 @@
-import { set } from 'lodash'
 import { defineStore } from 'pinia'
 export interface NotificationMessage {
   message: string
   title?: string
   type: 'success' | 'error' | 'info' | 'warning'
 }
+// store for notification messages
 const notification = defineStore('notification', {
   state: () => ({
     messages: [] as NotificationMessage[]

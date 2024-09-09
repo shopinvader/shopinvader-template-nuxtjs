@@ -1,5 +1,6 @@
 /**
  * Provide the list of URLs to be included in the sitemap
+ *  Todo: check that this is still called in the last version of @nuxtjs/sitemap
  */
 const getAllUrlKeys = async (index: string) => {
   const runtimeConfig = useRuntimeConfig()

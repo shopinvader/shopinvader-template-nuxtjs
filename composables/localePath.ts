@@ -1,12 +1,17 @@
-export const localePath = (path: string, locale?: string) => {
-  if (useNuxtApp()?.$localePath) {
-    return useNuxtApp()?.$localePath(path, locale) || null
+// return localized url for the given path
+export const localePath = (path: string, locale?: string): string => {
+  const { $localePath } = useNuxtApp()
+  if ($localePath) {
+    return $localePath(path, locale)
   }
-  return null
+  return path
 }
-export const $t = (locale: string, params?: any) => {
-  if (useNuxtApp()?.$t) {
-    return useNuxtApp()?.$t(locale, params) || null
+// return the translated string for the given key
+export const $t = (key: string, params?: any): string => {
+  const { $t } = useNuxtApp()
+  if ($t) {
+    const typedFct = $t as (key: string, params?: any) => string
+    return typedFct(key, params) || key
   }
-  return null
+  return key
 }

@@ -1,10 +1,6 @@
 <template>
   <div class="grid grid-cols-4 gap-4 py-3">
-    <ProductHit
-      v-for="product in products"
-      :key="product.id"
-      :product="product"
-    ></ProductHit>
+    <ProductHit v-for="product in products" :key="product.id || 0" :product="product"></ProductHit>
   </div>
   <div v-if="error" class="alert alert-error">
     {{ error }}

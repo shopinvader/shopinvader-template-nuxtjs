@@ -1,5 +1,4 @@
-
-export class User  {
+export class User {
   name: string | null = null
   login: string | null = null
   role: string | null = null

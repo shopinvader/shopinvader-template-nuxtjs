@@ -1,28 +1,32 @@
-import { ElasticFetch } from '@shopinvader/fetch'
 import { useRuntimeConfig } from '#app'
-import { ShopinvaderConfig, ShopinvaderProvidersList, ShopinvaderServiceList as ServiceList } from '../types/ShopinvaderConfig'
+import type {
+  ShopinvaderServiceList as ServiceList,
+  ShopinvaderConfig,
+  ShopinvaderProvidersList
+} from '../types/ShopinvaderConfig'
 import { initProviders } from './providers/index'
 
 import {
-  AuthOIDCService,
-  AuthCredentialService,
   AddressService,
+  AuthCredentialService,
+  AuthOIDCService,
   AuthService,
   CartService,
+  CatalogService,
+  CategoryService,
   CustomerService,
   DeliveryCarrierService,
+  PaymentService,
+  ProductService,
   SaleService,
   SettingService,
-  ProductService,
-  CategoryService,
-  CatalogService,
-  PaymentService,
   LeadsService
 } from '#services'
 
 declare global {
   interface ShopinvaderServiceList extends ServiceList {}
 }
+
 const isValidURL = (url: string) => {
   try {
     new URL(url)
@@ -31,6 +35,7 @@ const isValidURL = (url: string) => {
     return false
   }
 }
+
 export default defineNuxtPlugin(async (nuxtApp) => {
   const app = useNuxtApp()
   const shopinvaderConfig = useRuntimeConfig()?.public?.shopinvader as ShopinvaderConfig
@@ -38,44 +43,42 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     ...shopinvaderConfig
   }
   const url = config?.erp?.url || ''
-  if(!url || !isValidURL(url) ) {
+  if (!url || !isValidURL(url)) {
     const url = useRequestURL()
     config = {
       ...config,
       erp: {
         ...config?.erp,
-        url:  `${url.origin}/shopinvader/`
+        url: `${url.origin}/shopinvader/`
       }
     }
   }
 
   const isoLocale: string = app.$i18n?.localeProperties?.value?.iso || 'fr_fr'
+  //  ERP and Elastic providers (fetches)
   const providers = initProviders(config as ShopinvaderConfig, isoLocale)
-
-  const {
-    erp,
-    products,
-    categories,
-    elasticsearch
-  } = providers
+  const erp = providers.erp
+  const elasticProducts = providers.elastic.products
+  const elasticCategories = providers.elastic.categories
+  const elasticSearch = providers.elastic.search
 
   let auth: AuthService | null = null
   if (config?.auth?.type) {
     /** Auth Service */
     const profile = config.auth?.profile
     if (config.auth.type === 'oidc') {
+      // Todo: convert the erp:ErpFetch into an ErpFetchObservable
       auth = new AuthOIDCService(erp, profile)
     } else {
-      auth = new AuthCredentialService(erp, profile)
+      auth = new AuthCredentialService(erp, profile as AuthAPIConfig)
     }
   }
 
-  const services = {
+  const services: ShopinvaderServiceList = {
     auth,
-    config,
-    products: new ProductService(products as ElasticFetch),
-    categories: new CategoryService(categories as ElasticFetch),
-    catalog: new CatalogService(elasticsearch as ElasticFetch),
+    products: new ProductService(elasticProducts),
+    categories: new CategoryService(elasticCategories),
+    catalog: new CatalogService(elasticSearch),
     cart: new CartService(erp),
     settings: new SettingService(erp),
     addresses: new AddressService(erp),
@@ -86,10 +89,12 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     leads: new LeadsService(erp)
   }
 
+  // The following hook is defined in the module shopinvader (index.ts)
   await nuxtApp.callHook('shopinvader:services', services, providers, nuxtApp)
+  // Init all services when the app is mounted
   nuxtApp.hook('app:mounted', async (context) => {
-    if(services) {
-      for(let service of Object.values(services)) {
+    if (services) {
+      for (let service of Object.values(services)) {
         await service?.init?.(services)
       }
     }
@@ -104,12 +109,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
   }
 })
+
 declare global {
   interface Shopinvader {
     services: ShopinvaderServiceList
     providers: ShopinvaderProvidersList
   }
 }
+
 declare module '#app' {
   interface NuxtApp {
     $shopinvader: Shopinvader

@@ -145,7 +145,7 @@
         <div class="flex-grow">
           <slot name="actions" :address="model"></slot>
         </div>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" :disabled="submitted" class="btn btn-primary">
           <icon name="check" class="mr-2 h-5 w-5" />
           {{ $t('actions.validate') }}
         </button>

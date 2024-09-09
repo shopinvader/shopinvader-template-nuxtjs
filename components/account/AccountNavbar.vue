@@ -6,10 +6,10 @@
           <icon name="user-circle" class="text-5xl" />
         </div>
         <div class="intro__body">
-          <NuxtLink :to="localePath('account')" class="title">
+          <nuxt-link :to="localePath('account')" class="title">
             {{ $t('account.title') }}
-          </NuxtLink>
-          <div v-if="user" class="intro">{{ user?.displayName }}</div>
+          </nuxt-link>
+          <div v-if="user" class="intro">{{ user?.name }}</div>
         </div>
         <div class="intro__btn">
           <button class="btn-link text-white" @click="display = !display">
@@ -18,15 +18,11 @@
         </div>
       </div>
       <ul :class="{ 'content__list--shown': display }" class="content__list">
-        <li
-          v-for="page in pages"
-          :key="page.to"
-          :class="{ active: page.active }"
-        >
-          <NuxtLink :to="localePath(page.slug)">
+        <li v-for="page in pages" :key="page.slug" :class="{ active: page.active }">
+          <nuxt-link :to="localePath(page.slug)">
             <icon :name="page.icon" />
             {{ page.title }}
-          </NuxtLink>
+          </nuxt-link>
         </li>
         <slot name="extra" :pages="pages"></slot>
       </ul>
@@ -82,15 +78,7 @@ export default defineNuxtComponent({
     @apply h-full;
     .content {
       &__intro {
-        @apply flex w-full
-          bg-gradient-to-r
-          from-primary  to-primary/90
-          p-2
-          font-sans
-          text-white
-          lg:rounded-br-lg
-          lg:rounded-tl-lg
-          xl:px-4;
+        @apply flex w-full bg-gradient-to-r from-primary to-primary/90 p-2 font-sans text-white lg:rounded-br-lg lg:rounded-tl-lg xl:px-4;
         .intro {
           &__icon {
             @apply mr-2;
