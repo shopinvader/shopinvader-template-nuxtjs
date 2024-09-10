@@ -109,7 +109,9 @@ export class AuthCredentialService extends AuthService {
    * logout user
    */
   async logout(): Promise<any> {
-    await this.ofetch(this.urlEndpointAuth + '/logout')
+    await this.ofetch(this.urlEndpointAuth + '/logout', {
+      method: 'POST'
+    })
     await this.setUser(null)
   }
 
