@@ -4,10 +4,10 @@
     :class="{
       'method--selected': selected
     }"
-    @click="$emit('select', deliveryCarrier)"
+    @click="emit('select', deliveryCarrier)"
   >
     <div class="method__icon">
-      <icon name="solar:box-line-duotone" />
+      <icon name="carrier" />
     </div>
     <div class="method__body">
       <div class="body__title">
@@ -25,7 +25,12 @@
           {{ $t('error.generic') }}
         </div>
       </slot>
-      <slot name="dropoff" :delivery-carrier="deliveryCarrier" :on-select-pickup="selectPickup" :on-search-pickup="onSearchPickupPoint">
+      <slot
+        name="dropoff"
+        :delivery-carrier="deliveryCarrier"
+        :on-select-pickup="selectPickup"
+        :on-search-pickup="onSearchPickupPoint"
+      >
         <div v-if="deliveryCarrier?.withDropoffSite && selected" class="body__dropoff">
           <div class="dropoff">
             <div class="dropoff__title">
@@ -40,7 +45,12 @@
             <ul v-if="dropoffSites?.length > 0" class="dropoff__list">
               <li v-for="dropoff in dropoffSites" :key="dropoff.id">
                 <label>
-                  <input type="radio" :name='`dropoffsite-${deliveryCarrier.id}`' :value="dropoff.id" @change="selectPickup" />
+                  <input
+                    type="radio"
+                    :name="`dropoffsite-${deliveryCarrier.id}`"
+                    :value="dropoff.id"
+                    @change="selectPickup"
+                  />
                   {{ dropoff.name }}
                 </label>
               </li>
@@ -54,7 +64,7 @@
     </div>
     <div class="method__price">
       <template v-if="deliveryCarrier?.price && deliveryCarrier?.price > 0">
-        {{ $filter.currency(deliveryCarrier.price) }}
+        {{ formatCurrency(deliveryCarrier.price) }}
       </template>
       <template v-else>
         {{ $t('cart.delivery.method.free') }}
@@ -62,65 +72,68 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
+import { DeliveryPickupPoint, type DeliveryCarrier } from '#models'
 import type { PropType } from 'vue'
-import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
+import { formatCurrency } from '~/utils/StringHelper'
 
-export default {
-  name: 'DeliveryGeneric',
-  props: {
-    deliveryCarrier: {
-      type: Object as PropType<DeliveryCarrier>,
-      required: true
-    },
-    selected: {
-      type: Boolean,
-      required: false
-    }
+const emit = defineEmits(['select'])
+const props = defineProps({
+  deliveryCarrier: {
+    type: Object as PropType<DeliveryCarrier>,
+    required: true
   },
-  emits: ['select'],
-  setup(props) {
-    const error = ref(false)
-    const searchedName = ref<string | null>(null)
-    const cartService = useShopinvaderService('cart')
-    const carrierService = useShopinvaderService("deliveryCarriers")
-    const dropoffSites = ref([] as DeliveryPickupPoint[])
+  selected: {
+    type: Boolean,
+    required: false
+  }
+})
 
-    const onSearchPickupPoint = async () => {
-      try {
-        error.value = false
-        dropoffSites.value = []
-        dropoffSites.value = await carrierService?.getDeliveryPickups(props.deliveryCarrier.id, searchedName.value || '')
-      } catch(e) {
-        console.error(e)
-        error.value = true
-      }
+const error = ref(false)
+const searchedName = ref<string | null>(null)
+const cartService = useShopinvaderService('cart')
+const carrierService = useShopinvaderService('deliveryCarriers')
+const dropoffSites = ref([] as DeliveryPickupPoint[])
+
+const onSearchPickupPoint = async () => {
+  if (props.deliveryCarrier?.withDropoffSite) {
+    try {
+      error.value = false
+      dropoffSites.value = []
+      dropoffSites.value = await carrierService?.getDeliveryPickups(
+        props.deliveryCarrier.id,
+        searchedName.value || ''
+      )
+    } catch (e) {
+      console.error(e)
+      error.value = true
     }
+  }
+}
 
-    watch(() => props.selected, async() => {
+watch(
+  () => props.selected,
+  async () => {
+    if (props.deliveryCarrier?.withDropoffSite) {
       await onSearchPickupPoint()
-    })
-
-    watch(() => searchedName.value, async() => {
-      await onSearchPickupPoint()
-    })
-
-    const selectPickup = async (dropoff: DeliveryPickupPoint) => {
-      try {
-        error.value = false
-        await cartService.setPickupPoint(dropoff)
-      } catch(e) {
-        console.error(e)
-        error.value = true
-      }
     }
-    return {
-      dropoffSites,
-      searchedName,
-      onSearchPickupPoint,
-      selectPickup,
-      error
-    }
+  }
+)
+
+watch(
+  () => searchedName.value,
+  async () => {
+    await onSearchPickupPoint()
+  }
+)
+
+const selectPickup = async (dropoff: DeliveryPickupPoint) => {
+  try {
+    error.value = false
+    await cartService.setPickupPoint(dropoff)
+  } catch (e) {
+    console.error(e)
+    error.value = true
   }
 }
 </script>
@@ -131,7 +144,7 @@ export default {
     @apply border-2 border-primary shadow-lg;
   }
   &__icon {
-    @apply text-5xl text-primary;
+    @apply text-primary;
   }
   &__body {
     @apply w-full flex-grow;
@@ -148,7 +161,7 @@ export default {
       &__dropoff {
         @apply flex items-center gap-2 text-sm text-gray-500;
         .dropoff {
-          @apply w-full flex flex-col gap-1 border-t pt-2 mt-2;
+          @apply mt-2 flex w-full flex-col gap-1 border-t pt-2;
           &__title {
             @apply font-bold;
           }
@@ -168,7 +181,7 @@ export default {
     }
   }
   &__price {
-    @apply flex text-right justify-end font-bold text-primary;
+    @apply flex justify-end text-right font-bold text-primary;
   }
 }
 </style>

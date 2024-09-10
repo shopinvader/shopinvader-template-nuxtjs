@@ -9,11 +9,7 @@
               name="location"
               class="text-xl text-primary"
             ></icon>
-            <icon
-              v-else
-              name="user-circle"
-              class="text-xl text-primary"
-            ></icon>
+            <icon v-else name="user-circle" class="text-xl text-primary"></icon>
 
             <span class="mx-1">{{ address?.name }}</span>
           </div>
@@ -34,9 +30,7 @@
             <p v-if="address?.street2">{{ address?.street2 }}</p>
             <p>
               {{ address.zip }} {{ address.city }}
-              <span v-if="address.country">
-                - {{ address.country?.name }}
-              </span>
+              <span v-if="address.country"> - {{ address.country?.name }} </span>
             </p>
             <div class="pt-4">
               <p v-if="address.phone" class="flex gap-1">
@@ -69,13 +63,13 @@
   </div>
 </template>
 <script lang="ts">
+import type { Address } from '#models'
 import type { PropType } from 'vue'
-import { Address } from '~/models'
 import AddressFormVue from './AddressForm.vue'
 export default defineNuxtComponent({
   name: 'AddressCard',
   components: {
-    'address-form': AddressFormVue,
+    'address-form': AddressFormVue
   },
   props: {
     address: {
@@ -110,7 +104,7 @@ export default defineNuxtComponent({
   &__content {
     @apply py-3 pl-4;
     .content__warning {
-      @apply text-error flex items-center gap-1;
+      @apply flex items-center gap-1 text-error;
     }
   }
 }

@@ -1,15 +1,13 @@
 <template>
   <div class="search">
-    <div class="search__filters">
-      <button
-        type="button"
-        class="btn-outline btn lg:hidden"
-        @click="displayfilters = !displayfilters"
-      >
-        {{ $t('search.filter') }}
-      </button>
-      <div class="filters" :class="{ 'filters--active': displayfilters }">
+    <div class="search__filters" :class="{ 'search__filters--active': displayfilters }">
+      <div class="filters__container">
         <slot name="filters"></slot>
+      </div>
+      <div class="filters__action">
+        <button type="button" @click="displayfilters = false">
+          {{ $t('search.filter') }}
+        </button>
       </div>
     </div>
     <div class="search__results">
@@ -25,31 +23,53 @@
         <template v-else-if="items?.length > 0">
           <div class="search__header">
             <slot
-              name="pagination"
+              name="display-filters"
+              :sort="sort"
               :total="page.total"
               :from="page.from"
               :size="page.size"
+              :items="items"
             >
+              <div class="search__display-filters">
+                <button type="button" @click="displayfilters = true">
+                  {{ $t('search.filter') }}
+                </button>
+              </div>
+            </slot>
+            <slot
+              name="action"
+              :sort="sort"
+              :total="page.total"
+              :from="page.from"
+              :size="page.size"
+              :items="items"
+            ></slot>
+            <slot name="sort" :sort="sort" :sort-options="sortOptions">
+              <div class="search__sort">
+                <label class="sort__label">{{ $t('search.sort.label') }}</label>
+                <select v-model="sort" class="sort__select">
+                  <option v-for="option in sortOptions" :key="option.value" :value="option">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+            </slot>
+            <slot name="stats" :total="page.total" :from="page.from" :size="page.size">
               <div class="search__stats">
                 <div class="total">
                   <span class="text-sm">{{
                     $t('search.results.count', { count: page.total })
                   }}</span>
                 </div>
-              </div>
-            </slot>
-            <slot name="sort" :sort="sort" :sort-options="sortOptions">
-              <div class="search__sort">
-                <label class="sort__label">{{ $t('search.sort.label') }}</label>
-                <select v-model="sort" class="sort__select">
-                  <option
-                    v-for="option in sortOptions"
-                    :key="option.value"
-                    :value="option"
+                <div v-if="pagination" class="search__pagination">
+                  <search-pagination
+                    :total="page.total"
+                    :from="page.from"
+                    :size="page.size"
+                    @change="changePage($event)"
                   >
-                    {{ option.label }}
-                  </option>
-                </select>
+                  </search-pagination>
+                </div>
               </div>
             </slot>
           </div>
@@ -58,12 +78,7 @@
               <pre>{{ hit }}</pre>
             </div>
           </slot>
-          <slot
-            name="pagination"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-          >
+          <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
             <div v-if="pagination" class="search__pagination">
               <search-pagination
                 :total="page.total"
@@ -78,7 +93,11 @@
         <template v-else>
           <slot name="no-results" :total="total" :response="response">
             <div class="results__noresults">{{ $t('search.noresults') }}</div>
-            <product-history></product-history>
+            <client-only>
+              <div class="results__history">
+                <product-history></product-history>
+              </div>
+            </client-only>
           </slot>
         </template>
       </slot>
@@ -87,9 +106,10 @@
   </div>
 </template>
 <script lang="ts">
+import type { SearchSortItem } from '#models'
+import type { Query } from 'elastic-builder'
+import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
-import esb, { CardinalityAggregation, FilterAggregation, Query } from 'elastic-builder'
-import ProductHistory from '~/components/product/ProductHistory.vue'
 
 export interface Filter {
   name: string
@@ -97,18 +117,11 @@ export interface Filter {
   values: any[]
   setValues: (values: any[]) => void
   getValuesLabels: () => string
-  getFilterAggregation: (query: Query | null) => void
+  getFilterAggregation: (query: Query | null) => FilterAggregation
   getQueryAggregation: () => void
 }
-export interface SortItem {
-  label: string
-  value: string
-  order?: string
-}
+
 export default {
-  components: {
-    'product-history': ProductHistory
-  },
   props: {
     query: {
       type: Function,
@@ -116,6 +129,12 @@ export default {
       default: () => {
         return esb.matchAllQuery()
       }
+    },
+    suggesters: {
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      type: Array<Function>,
+      required: false,
+      default: null
     },
     size: {
       type: Number,
@@ -143,7 +162,7 @@ export default {
       default: null
     },
     sortOptions: {
-      type: Array as PropType<Array<SortItem>>,
+      type: Array as PropType<Array<SearchSortItem>>,
       default: () => {
         return []
       }
@@ -153,24 +172,23 @@ export default {
   async setup(props) {
     const route = useRoute()
     const router = useRouter()
-    const provider = useShopinvaderProviders('products')
-    if (provider === null) {
-      throw new Error('No provider found for products')
-    }
-    let error = ref(null)
-    let filters = reactive([] as Filter[])
-    let loading = ref(true)
-    let displayfilters = ref(false)
-    let sort = ref(props?.sortOptions[0] || (null as SortItem | null))
+    const error = ref<any>(null)
+    const filters = reactive([] as Filter[])
+    const loading = ref(true)
+    const displayfilters = ref(false)
+    const sort = ref(props?.sortOptions[0] || (null as SearchSortItem | null))
 
-    let page = reactive({
+    const page = reactive({
       size: props.size,
-      from: route.query.page?.toString() ? ((parseInt(route.query.page.toString())-1)*props.size): 0,
+      from: route.query.page?.toString()
+        ? (parseInt(route.query.page.toString()) - 1) * props.size
+        : 0,
       total: 0
     })
 
-    let response = ref({
+    const response = ref({
       aggregations: null,
+      suggestions: null,
       hits: null,
       total: 0
     })
@@ -190,10 +208,7 @@ export default {
       const must: any[] =
         filters
           .filter((filter: any) => {
-            return (
-              !excludedFilter.includes(filter.name) &&
-              filter.getQueryAggregation() !== null
-            )
+            return !excludedFilter.includes(filter.name) && filter.getQueryAggregation() !== null
           })
           .map((f) => f.getQueryAggregation()) || []
 
@@ -205,75 +220,89 @@ export default {
      * call getFilterAggregation function on each filter
      */
     const getFiltersAggs = () => {
-      return filters.map((filter: Filter) => {
-        const query: Query | null = getFiltersQuery([filter.name])
-        return filter?.getFilterAggregation(query)
-      })
-      .filter((agg) => agg !== null)
+      return filters
+        .map((filter: Filter) => {
+          const query: Query | null = getFiltersQuery([filter.name])
+          return filter?.getFilterAggregation(query) as unknown as CardinalityAggregation
+        })
+        .filter((agg) => agg !== null)
     }
 
     /**
-     * Search : search function get items from provider
+     * Search: search function get items from provider
      */
     interface SearchResponse {
       aggregations: any
       hits: any
       total: number
+      suggestions: any
     }
-    const fetchSearch = async ():Promise<SearchResponse> => {
+    const fetchSearch = async (): Promise<SearchResponse> => {
       if (typeof props?.provider !== 'function') {
         throw new Error('No provider function found')
       }
       const res = {
         aggregations: null,
         hits: null,
-        total: 0
-      }
-      let postFilter = getFiltersQuery()
-      let aggs: any[] = getFiltersAggs() || null
-      const body = esb
-        .requestBodySearch()
-        .query(props.query())
-        .size(page.size)
-        .from(page.from)
+        total: 0,
+        suggestions: null
+      } as SearchResponse
+      try {
+        error.value = null
+        const postFilter = getFiltersQuery()
+        const aggs: any[] = getFiltersAggs() || null
+        const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
 
-      if(props?.cardinalityField) {
-        let agg = new CardinalityAggregation('total', props.cardinalityField)
-        if(postFilter) {
-          agg = new FilterAggregation('total', postFilter).agg(agg)
+        // Add suggesters if any
+        if (props.suggesters) {
+          props.suggesters.forEach((suggester) => {
+            body.suggest(suggester())
+          })
         }
-        aggs.push(agg)
-      }
-      if (aggs !== null) {
-        body.aggs(aggs)
-      }
-      if (postFilter !== null) {
-        body.postFilter(postFilter)
-      }
-      if (sort.value !== null) {
-        body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
-      }
-      const { aggregations, hits, total } = await props?.provider(body.toJSON())
 
-      res.aggregations = aggregations || null
-      res.hits = hits
+        if (props.cardinalityField) {
+          let agg: CardinalityAggregation | FilterAggregation = new CardinalityAggregation(
+            'total',
+            props.cardinalityField
+          )
+          if (postFilter) {
+            agg = new FilterAggregation('total', postFilter).agg(agg)
+          }
+          aggs.push(agg)
+        }
+        if (aggs !== null) {
+          body.aggs(aggs)
+        }
+        if (postFilter !== null) {
+          body.postFilter(postFilter)
+        }
+        if (sort.value !== null) {
+          body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+        }
+        const fetchedData = await props?.provider(body.toJSON())
+        if (fetchedData) {
+          const { aggregations, hits, total, suggestions } = fetchedData
+          res.aggregations = aggregations || null
+          res.hits = hits
+          res.suggestions = suggestions
 
-      if(props.cardinalityField) {
-        res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
-      } else {
-        res.total = total || 0
+          if (props.cardinalityField) {
+            res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
+          } else {
+            res.total = total || 0
+          }
+        }
+      } catch (e: any) {
+        error.value = e?.message || e
       }
       return res
     }
-    const search = async() => {
+    const search = async () => {
       loading.value = true
-      const {
-        aggregations,
-        hits,
-        total
-      } = await fetchSearch()
+      const { aggregations, hits, total, suggestions } = await fetchSearch()
       response.value.aggregations = aggregations
       response.value.hits = hits
+      response.value.suggestions = suggestions
       page.total = total
       loading.value = false
     }
@@ -284,17 +313,20 @@ export default {
     const changePage = (from: number) => {
       page.from = from
       search()
-      if(window?.scrollTo) {
+      if (window?.scrollTo) {
         window.scrollTo(0, 0)
-        router.push({ query: { page: from/props.size +1 } })
+        router.push({ query: { page: from / props.size + 1 } })
       }
     }
 
     provide('search', search)
     provide('declareFilter', declareFilter)
-    provide('response', computed(() => {
-      return JSON.parse(JSON.stringify(response.value))
-    }))
+    provide(
+      'response',
+      computed(() => {
+        return JSON.parse(JSON.stringify(response.value))
+      })
+    )
     provide(
       'filters',
       computed(() => filters)
@@ -305,7 +337,7 @@ export default {
       return a
     })
 
-    if(data?.value) {
+    if (data?.value) {
       response.value.aggregations = data.value.aggregations
       response.value.hits = data.value.hits
       page.total = data.value.total
@@ -353,16 +385,29 @@ export default {
 .search {
   @apply flex min-h-screen flex-row flex-wrap;
   &__filters {
-    @apply w-full p-1 py-4 lg:w-1/4 xl:w-1/5;
+    @apply hidden w-full p-1 py-4 lg:flex lg:w-1/4 xl:w-1/5;
     .filters {
-      @apply hidden lg:block;
-      &--active {
-        @apply block;
+      &__action {
+        @apply hidden;
+      }
+      &__container {
+        @apply flex-1 overflow-auto;
+      }
+    }
+    &--active {
+      @apply left-0 top-0 z-50 flex h-screen w-screen flex-col bg-white max-lg:fixed;
+      .filters {
+        &__action {
+          @apply flex justify-center border-t pt-4;
+          button {
+            @apply btn btn-primary;
+          }
+        }
       }
     }
   }
   &__loading {
-    @apply flex min-h-screen  w-full items-center justify-center;
+    @apply flex min-h-screen w-full items-center justify-center;
   }
   &__results {
     @apply w-full px-4 lg:w-3/4 xl:w-4/5;
@@ -370,21 +415,33 @@ export default {
       &__noresults {
         @apply flex flex-col items-center justify-center py-32 text-xl;
       }
+      &___history {
+        @apply p-4;
+      }
     }
   }
   &__pagination {
     @apply py-5 text-center;
   }
   &__header {
-    @apply flex items-center justify-between;
+    @apply flex flex-wrap items-center justify-end gap-2 md:justify-between;
+    .search__pagination {
+      @apply py-0;
+    }
   }
   &__stats {
-    @apply py-5 text-center;
+    @apply flex w-full flex-grow flex-wrap items-center justify-between pb-4;
   }
   &__sort {
     @apply flex flex-row items-center;
     .sort__select {
-      @apply select-bordered select select-sm ml-2;
+      @apply select select-bordered select-sm ml-2;
+    }
+  }
+  &__display-filters {
+    @apply flex flex-1 justify-end lg:hidden;
+    button {
+      @apply btn btn-primary btn-sm px-10;
     }
   }
 }

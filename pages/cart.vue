@@ -5,38 +5,16 @@
     </template>
   </cart>
 </template>
-<script lang="ts">
-import CartVue from '~/components/cart/Cart.vue'
-import ProductHistory from '~/components/product/ProductHistory.vue'
-import { Cart } from '~~/models'
+<script lang="ts" setup>
+const i18n = useI18n()
+const localePath = useLocalePath()
+const router = useRouter()
 
-export default defineNuxtComponent({
-  name: 'Cart',
-
-  components: {
-    cart: CartVue,
-    'product-history': ProductHistory
-  },
-  computed: {
-    lineCount(): number {
-      return this.cart?.lines.length || 0
-    }
-  },
-  setup() {
-    const i18n = useI18n()
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    useHead({
-      title: i18n.t('cart.title'),
-      cart
-    })
-  },
-  methods: {
-    submit() {
-      const localePath = useLocalePath()
-      this.$router.push(localePath('/checkout'))
-    }
-  }
+useHead({
+  title: i18n.t('cart.title')
 })
+const submit = () => {
+  router.push(localePath('/checkout'))
+}
 </script>
 <style lang="scss"></style>

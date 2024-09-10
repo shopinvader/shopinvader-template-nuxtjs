@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar">
+  <nav class="navbar" :class="`navbar--${status}`">
     <ul class="navbar__level1">
       <li
         v-for="(level1, index) in categories"
@@ -12,37 +12,29 @@
         }"
         @mouseover="hoverIndex = level1.id"
         @mouseleave="hoverIndex = null"
-
       >
         <div class="item__link">
           <nuxt-link :to="localePath({ path: '/' + level1.urlKey })">
             {{ level1.name }}
           </nuxt-link>
-          <button type="button" class="btn btn-ghost btn-sm" @click="clickedIndex = clickedIndex == level1.id ? null : level1.id">
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm"
+            :aria-label="level1.name"
+            @click="clickedIndex = clickedIndex == level1.id ? null : level1.id"
+          >
             <icon name="right" />
           </button>
         </div>
-        <ul
-          v-if="level1.childs?.length > 0"
-          :tabindex="index"
-          class="item__level2"
-        >
-          <li
-            v-for="level2 in level1.childs"
-            :key="level2.id"
-            class="level2__item"
-          >
+        <ul v-if="level1.childs?.length > 0" :tabindex="index" class="item__level2">
+          <li v-for="level2 in level1.childs" :key="level2.id" class="level2__item">
             <div class="item__link">
               <nuxt-link :to="localePath({ path: '/' + level2.urlKey })">
                 {{ level2.name }}
               </nuxt-link>
             </div>
-            <ul v-if="level2?.childs?.length > 0" class="item__level3">
-              <li
-                v-for="level3 in level2.childs"
-                :key="level3.id"
-                class="level3__item"
-              >
+            <ul v-if="level2?.childs?.length && level2?.childs?.length > 0" class="item__level3">
+              <li v-for="level3 in level2.childs" :key="level3.id" class="level3__item">
                 <nuxt-link class="item__link" :to="localePath({ path: '/' + level3.urlKey })">
                   {{ level3.name }}
                 </nuxt-link>
@@ -54,60 +46,32 @@
     </ul>
   </nav>
 </template>
-<script lang="ts">
-import { Category } from '#models'
-
-export default defineNuxtComponent({
-  fetchKey: 'category',
-  data() {
-    return {
-      categories: [] as Category[]
-    }
-  },
-  async asyncData() {
-    let categories: Category[] = []
-    try {
-      const categoryService = useShopinvaderService('categories')
-      const result = await categoryService?.search({
-        size: 10,
-        query: {
-          term: {
-            level: 0
-          }
-        }
-      })
-      categories = result?.hits || []
-    } catch (error) {
-      categories = []
-      console.error(error)
-    }
-
-    return {
-      categories
-    }
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const hoverIndex = ref<number | null>(null)
-    const clickedIndex = ref<number | null>(null)
-    return {
-      localePath,
-      hoverIndex,
-      clickedIndex
-    }
+<script lang="ts" setup>
+const localePath = useLocalePath()
+const hoverIndex = ref<number | null>(null)
+const clickedIndex = ref<number | null>(null)
+const { data:categories, status } = await useLazyAsyncData(
+  'categories',
+  async () => {
+    const categoryService = useShopinvaderService('categories')
+    return await categoryService.getNavCategories()
   }
-})
+)
+
 </script>
 <style lang="scss">
 .drawer-content {
   .navbar {
-    @apply flex justify-start flex-1 p-0 relative;
+    &--pending {
+      @apply opacity-50 min-h-16;
+    }
+    @apply flex flex-1 justify-start p-0;
     .navbar__level1 {
       position: unset !important;
       .level1__item {
         @apply transition duration-150 ease-out hover:ease-in;
         & > .item__link {
-          @apply m-1 text-sm font-semibold  px-2 py-3;
+          @apply m-1 px-2 py-3 text-sm font-semibold;
           .btn {
             @apply hidden;
           }
@@ -117,20 +81,20 @@ export default defineNuxtComponent({
         }
         &--active {
           & > .item__link {
-            @apply bg-primary rounded-t-xl shadow-2xl text-white;
+            @apply rounded-t-xl bg-primary text-white shadow-2xl;
           }
           & > .item__level2 {
-            @apply flex flex-row flex-wrap absolute card card-body bg-primary -mt-2 text-white  z-[1] m-auto menu p-2 lg:p-4 xl:p-8 shadow-2xl  w-full -left-1/2 -right-1/2 min-h-[20vw];
+            @apply menu card card-body absolute -left-1/2 -right-1/2 z-[1] m-auto -mt-2 flex min-h-[20vw] w-full flex-row flex-wrap bg-primary p-2 text-white shadow-2xl lg:p-4 xl:p-8;
             a {
               @apply hover:text-white hover:underline;
             }
             .level2__item {
               & > .item__link {
-                @apply font-bold hover:text-white hover:underline;;
+                @apply font-bold hover:text-white hover:underline;
               }
             }
             .item__level3 {
-              @apply ml-0 pl-0 ;
+              @apply ml-0 pl-0;
             }
           }
         }
@@ -144,9 +108,9 @@ export default defineNuxtComponent({
     @apply h-screen min-w-[420px] overflow-auto;
     .navbar {
       ul.navbar__level1 {
-        @apply flex flex-col justify-center items-center w-full;
+        @apply flex w-full flex-col items-center justify-center;
         .level1__item {
-          @apply text-sm border-b py-1 w-full flex-grow;
+          @apply w-full flex-grow border-b py-1 text-sm;
           &:hover {
             @apply cursor-pointer;
           }
@@ -164,14 +128,14 @@ export default defineNuxtComponent({
               }
             }
             .item__level2 {
-              @apply flex flex-col border-l border-black pl-3 ;
+              @apply flex flex-col border-l border-black pl-3;
               .level2__item {
                 @apply border-b py-2;
               }
               ul {
                 @apply pl-3;
                 li {
-                  @apply py-2 ;
+                  @apply py-2;
                 }
               }
             }

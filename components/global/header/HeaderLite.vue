@@ -2,7 +2,7 @@
   <header class="header-lite">
     <div class="header-lite__content">
       <slot name="logo">
-        <a :href="localePath({ path: '/'}) ">
+        <a :href="localePath({ path: '/' })">
           <logo></logo>
         </a>
       </slot>

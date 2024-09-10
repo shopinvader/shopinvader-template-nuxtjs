@@ -5,4 +5,9 @@ node_modules
 .cache
 .output
 .env*
+.data
 dist
+models/index.ts
+models/originals.ts
+services/index.ts
+services/originals.ts

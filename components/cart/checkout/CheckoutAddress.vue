@@ -26,13 +26,16 @@
     </template>
     <template v-else>
       <div class="checkout-address__items">
-        <cart-address-delivery class="address" :editable="active">
-        </cart-address-delivery>
-        <cart-address-invoicing v-if="!sameAddresses" class="address" :editable="active"></cart-address-invoicing>
+        <cart-address-delivery class="address" :editable="active"> </cart-address-delivery>
+        <cart-address-invoicing
+          v-if="!sameAddresses"
+          class="address"
+          :editable="active"
+        ></cart-address-invoicing>
       </div>
       <div v-if="active" class="checkout-address__submit">
         <button
-          class="btn-secondary btn px-10"
+          class="btn btn-secondary px-10"
           :class="{ loading: loading }"
           type="submit"
           @click="submit"
@@ -46,7 +49,7 @@
   </div>
 </template>
 <script lang="ts">
-import { CartAddressDelivery, CartAddressInvoicing, AddressCard } from '#components'
+import { AddressCard, CartAddressDelivery, CartAddressInvoicing } from '#components'
 import { Address } from '#models'
 
 /**
@@ -96,11 +99,12 @@ export default defineNuxtComponent({
       return cart.value?.invoicing?.address || deliveryAddress.value
     })
 
-    onMounted(async ()=> {
-      if(!cart.value || !addressService) return
-      if(!cart.value?.hasValidAddresses()) {
+    onMounted(async () => {
+      if (!cart.value || !addressService) return
+      if (!cart.value?.hasValidAddresses()) {
         const addresses = await addressService.search('')
-        editAddress.value = addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
+        editAddress.value =
+          addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
       }
       loadingStep.value = false
     })
@@ -108,7 +112,7 @@ export default defineNuxtComponent({
     const submit = () => {
       try {
         loading.value = true
-        if(!cart.value || !cart.value?.hasValidAddresses()) {
+        if (!cart.value || !cart.value?.hasValidAddresses()) {
           setTimeout(() => {
             error.value = i18n.t('cart.address.warning')
             loading.value = false
@@ -130,7 +134,6 @@ export default defineNuxtComponent({
       const addressService = useShopinvaderService('addresses')
       if (addressService && address) {
         try {
-
           loading.value = true
           if (address.id) {
             editAddress.value = address = await addressService.update(address)
@@ -138,10 +141,10 @@ export default defineNuxtComponent({
             editAddress.value = address = await addressService.create(address)
           }
           await cartService.setAddress('delivery', address)
-          if(!cart.value?.invoicing?.address?.isValidAddress()) {
+          if (!cart.value?.invoicing?.address?.isValidAddress()) {
             await cartService.setAddress('invoicing', address)
           }
-          if(cart.value?.hasValidAddresses()) {
+          if (cart.value?.hasValidAddresses()) {
             emit('next')
           }
         } catch (e) {
@@ -176,26 +179,25 @@ export default defineNuxtComponent({
 .checkout-address {
   @apply flex flex-col gap-6;
   &__form {
-    @apply card card-body max-w-xl mx-auto;
+    @apply card card-body mx-auto w-full max-w-2xl bg-white;
   }
   &__items {
     @apply grid grid-cols-1 gap-6 lg:grid-cols-2;
 
     .address-card {
-      @apply shadow-none ;
+      @apply bg-white shadow-none;
       &__header {
         .title {
           @apply m-0 flex items-center gap-3 text-xl font-bold uppercase leading-none text-inherit;
         }
         .subtitle {
-          @apply text-lg pb-0 ml-8 pt-3;
+          @apply ml-8 pb-0 pt-3 text-lg;
         }
       }
 
       &__content {
         @apply ml-8 p-0;
       }
-
     }
   }
 
@@ -205,12 +207,12 @@ export default defineNuxtComponent({
         @apply border-0 bg-transparent;
 
         &__header {
-          @apply text-sm pb-0;
+          @apply pb-0 text-sm;
           .header__title {
-          .subtitle {
-            @apply font-sans text-sm font-normal;
+            .subtitle {
+              @apply font-sans text-sm font-normal;
+            }
           }
-        }
         }
         &__content {
           @apply text-sm;
@@ -223,5 +225,4 @@ export default defineNuxtComponent({
     @apply flex w-full flex-grow justify-end gap-6 py-4;
   }
 }
-
 </style>

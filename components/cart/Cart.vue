@@ -30,17 +30,14 @@
           <slot name="total" :cart="cart">
             <cart-total class="">
               <template #footer>
-                <div class="total__checkout" :class="{'tooltip tooltip-primary ':cart?.hasPendingTransactions}" :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')">
-                  <button
-                    type="button"
-                    class="checkout__btn"
-                    @click="!cart?.hasPendingTransactions && $emit('next')"
-                  >
+                <div
+                  class="total__checkout"
+                  :class="{ 'tooltip tooltip-primary': cart?.hasPendingTransactions }"
+                  :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')"
+                >
+                  <button type="button" class="checkout__btn" @click="onNextStep">
                     {{ $t('cart.summary.checkout') }}
-                    <icon
-                      name="right"
-                      class="text-lg"
-                    ></icon>
+                    <icon name="right" class="text-lg"></icon>
                   </button>
                 </div>
               </template>
@@ -71,63 +68,41 @@
     </client-only>
   </div>
 </template>
-<script lang="ts">
-import CartLines from '~/components/cart/CartLines.vue'
-import CartTotal from '~/components/cart/CartTotal.vue'
-import CartEmpty from '~/components/cart/CartEmpty.vue'
-import Spinner from '~/components/global/Spinner.vue'
-import { Cart } from '~~/models'
-let timer:any = null
-export default defineNuxtComponent({
-  name: 'Cart',
-  emits: {
-    /**  Emit when the user click on the next button */
-    next: () => true
-  },
-  components: {
-    'cart-lines': CartLines,
-    'cart-total': CartTotal,
-    'cart-empty': CartEmpty,
-    spinner: Spinner
-  },
-  computed: {
-    lineCount(): number {
-      return this.cart?.lines?.length || 0
-    }
-  },
-  setup() {
-    const i18n = useI18n()
-    const loading = ref(false)
-    const hasPendingTransactions = ref(false)
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    useHead({
-      title: i18n.t('cart.title')
-    })
-    return {
-      cart,
-      loading,
-      hasPendingTransactions,
-    }
-  },
-  watch: {
-    cart: {
-      handler(cart: Cart) {
-        const hasPendingTransactions = cart?.hasPendingTransactions || false
-        if (!hasPendingTransactions) {
-          this.hasPendingTransactions = false
-          if(timer) clearTimeout(timer)
-        } else {
-          timer = setTimeout(() => {
-            this.hasPendingTransactions = true
-          }, 2000);
-        }
+<script lang="ts" setup>
+import type { Cart } from '#models'
+const emits = defineEmits(['next'])
+const i18n = useI18n()
+const loading = ref(false)
+const hasPendingTransactions = ref(false)
+const cartService = useShopinvaderService('cart')
+const cart = cartService.getCart()
+let timer: any = null
 
-      },
-      immediate: true
+watch(
+  () => cart.value,
+  (c: Cart | null) => {
+    const pendingTransaction = c?.hasPendingTransactions || false
+    if (!pendingTransaction) {
+      hasPendingTransactions.value = false
+      if (timer) clearTimeout(timer)
+    } else {
+      timer = setTimeout(() => {
+        hasPendingTransactions.value = true
+      }, 2000)
     }
+  },
+  { immediate: true }
+)
+
+const lineCount = computed(() => cart?.value?.lines?.length || 0)
+const onNextStep = () => {
+  if (!hasPendingTransactions.value) {
+    emits('next')
   }
+}
 
+useHead({
+  title: i18n.t('cart.title')
 })
 </script>
 <style lang="scss">
@@ -147,29 +122,29 @@ export default defineNuxtComponent({
     }
   }
   &__lines {
-    @apply col-span-3 xl:col-span-2 row-span-2;
+    @apply col-span-3 row-span-2 xl:col-span-2;
     .cart-lines {
       @apply w-full;
     }
   }
   &__coupon {
-    @apply col-span-3 md:col-start-2 md:col-span-2 lg:col-start-3 lg:col-span-1;
+    @apply col-span-3 col-start-1 md:col-span-1 lg:col-start-2 xl:col-start-3;
     .total {
       &__checkout {
         @apply w-full;
         .checkout__btn {
-          @apply btn-secondary btn mt-6 w-full;
+          @apply btn btn-secondary mt-6 w-full;
         }
       }
     }
   }
   &__total {
-    @apply col-span-3 md:col-start-2 md:col-span-2 lg:col-start-3 lg:col-span-1;
+    @apply col-span-3 md:col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-3;
     .total {
       &__checkout {
         @apply w-full;
         .checkout__btn {
-          @apply btn-secondary btn mt-6 w-full;
+          @apply btn btn-secondary mt-6 w-full;
         }
       }
     }

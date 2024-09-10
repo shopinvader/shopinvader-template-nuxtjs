@@ -1,7 +1,7 @@
 <template>
   <div>
-    <RobotMeta />
     <div>
+      <NuxtLoadingIndicator color="#000"/>
       <NuxtLayout>
         <div>
           <NuxtPage />
@@ -11,15 +11,22 @@
   </div>
 </template>
 <script setup lang="ts">
-  defineRobotMeta()
-  const { origin } = useRequestURL()
-  const route = useRoute()
-  useHead({
-    link: [
-      {
-        rel: 'canonical',
-        href: `${origin}${route.path}`
-      },
-    ],
-  })
+const { origin } = useRequestURL()
+const route = useRoute()
+const canonical = ref(`${origin}${route.path}`)
+const { locale } = useI18n()
+watchEffect(() => {
+  canonical.value = `${origin}${route.path}`
+})
+useHead({
+  htmlAttrs: {
+    lang: locale
+  },
+  link: [
+    {
+      rel: 'canonical',
+      href: canonical.value
+    }
+  ]
+})
 </script>

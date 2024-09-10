@@ -11,11 +11,7 @@
           <icon name="history"></icon>
           <a @click="onQueryClick(item)">{{ item }}</a>
         </span>
-        <button
-          type="button"
-          @click="removeItem(item)"
-          class="btn-link text-black"
-        >
+        <button type="button" @click="removeItem(item)" class="btn-link text-black">
           <icon name="close-circle" class=""></icon>
         </button>
       </li>

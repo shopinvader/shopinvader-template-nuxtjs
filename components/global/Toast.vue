@@ -1,19 +1,19 @@
 <template>
   <div v-show="show" class="alert shadow-lg" :class="className">
-    <div class="flex items-start gap-1">
-      <icon :name="icon" class="cursor-pointer text-xl"></icon>
-      <div class="pt-1">
+    <div class="flex items-start gap-2">
+      <div class="inline-block pt-1">
+        <icon :name="icon" class="inline-block cursor-pointer pt-1 text-xl"></icon>
+      </div>
+      <div class="max-w-80 pt-1">
         <h3 class="font-bold">{{ title }}</h3>
-        <div class="text-xs">{{ message }}</div>
+        <div class="text-base">
+          {{ message }}
+        </div>
       </div>
     </div>
     <div class="flex-none">
-      <button class="btn-ghost btn btn-sm">
-        <icon
-          name="close"
-          class="cursor-pointer"
-          @click="show = false"
-        ></icon>
+      <button class="btn btn-ghost btn-sm">
+        <icon name="close" class="cursor-pointer" @click="show = false"></icon>
       </button>
     </div>
   </div>

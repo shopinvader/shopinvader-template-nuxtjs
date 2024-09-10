@@ -1,10 +1,10 @@
 <template>
-  <div v-if="auth?.type=='credentials'" >
+  <div v-if="auth?.type == 'credentials'">
     <slot name="register-thankyou">
       <div v-if="accountIsCreated" class="message">
         <div class="message__container">
           <div class="icon-wrapper">
-            <icon name="ic:outline-email" class="icon-wrapper__icon"> </icon>
+            <icon name="email" class="icon-wrapper__icon"> </icon>
           </div>
           <div class="text-content">
             {{ $t('account.register.notification_registration_thankyou') }}
@@ -48,8 +48,8 @@
       <slot name="register-form">
         <div class="register__form-wrapper">
           <form class="" @submit.prevent="createAccount">
-            <div class="form-control  max-md:col-span-2">
-              <label class="label required">
+            <div class="form-control max-md:col-span-2">
+              <label class="required label">
                 <span class="label-text">
                   {{ $t('account.address.firstname') }}
                 </span>
@@ -60,11 +60,11 @@
                 type="text"
                 required
                 :placeholder="$t('account.address.firstname')"
-                class="input-bordered input w-full "
+                class="input input-bordered w-full"
               />
             </div>
             <div class="form-control max-md:col-span-2">
-              <label class="label required">
+              <label class="required label">
                 <span class="label-text">
                   {{ $t('account.address.lastname') }}
                 </span>
@@ -75,11 +75,11 @@
                 type="text"
                 required
                 :placeholder="$t('account.address.lastname')"
-                class="input-bordered input w-full"
+                class="input input-bordered w-full"
               />
             </div>
-            <div class="form-control  w-full col-span-2">
-              <label class="label required">
+            <div class="form-control col-span-2 w-full">
+              <label class="required label">
                 <span class="label-text">
                   {{ $t('account.address.email') }}
                 </span>
@@ -90,7 +90,7 @@
                 type="email"
                 required
                 :placeholder="$t('account.address.email')"
-                class="input-bordered input w-full"
+                class="input input-bordered w-full"
                 :class="{ 'input-bordered-error': fieldError.login }"
                 @keyup="checkValidity('login', $event)"
               />
@@ -100,13 +100,14 @@
                 </span>
               </div>
             </div>
-            <div class="form-control w-full col-span-2">
-              <label class="label required">
+            <div class="form-control col-span-2 w-full">
+              <label class="required label">
                 <span class="label-text">
                   {{ $t('account.login.password') }}
                 </span>
               </label>
-              <div class="input-bordered input  w-full flex items-center"
+              <div
+                class="input input-bordered flex w-full items-center"
                 :class="{
                   'input-bordered-error': fieldError.password,
                   'input-disabled': loading
@@ -123,11 +124,12 @@
                   pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@#$%^&+=!?])[A-Za-z\d@#$%^&+=!?]{8,}$"
                   @keyup="checkValidity('password', $event)"
                 />
-                <button type="button" @click="passwordView = !passwordView" class="cursor-pointer text-lg">
-                  <icon
-                    class="view-icon"
-                    :name="passwordView ? 'view': 'hide'"
-                  />
+                <button
+                  type="button"
+                  @click="passwordView = !passwordView"
+                  class="cursor-pointer text-lg"
+                >
+                  <icon class="view-icon" :name="passwordView ? 'view' : 'hide'" />
                 </button>
               </div>
               <div class="label">
@@ -137,7 +139,7 @@
               </div>
             </div>
             <div class="form-control col-span-2">
-              <label class="label required flex justify-start gap-3">
+              <label class="required label flex justify-start gap-3">
                 <input
                   v-model="legals"
                   :disabled="loading"
@@ -158,21 +160,15 @@
                 </i18n-t>
               </label>
             </div>
-            <div v-if="error" class="text-center pt-2 w-full col-span-2 text-error">
+            <div v-if="error" class="col-span-2 w-full pt-2 text-center text-error">
               {{ $t('error.generic') }}
             </div>
-            <div class="flex justify-center py-4 w-full col-span-2">
-              <button
-                :readonly="!legals || loading"
-                type="submit"
-                class="btn btn-primary"
-              >
+            <div class="col-span-2 flex w-full justify-center py-4">
+              <button :readonly="!legals || loading" type="submit" class="btn btn-primary">
                 <span v-if="loading" class="loading loading-spinner"></span>
                 {{ $t('account.register.sign_up') }}
               </button>
-
             </div>
-
           </form>
         </div>
       </slot>
@@ -180,10 +176,7 @@
         <div class="register__footer">
           <p class="footer-text">
             <span>{{ $t('account.register.already_have_account') }}</span
-            ><nuxt-link
-              :to="localePath('/account/login')"
-              class="footer-text__link"
-            >
+            ><nuxt-link :to="localePath('/account/login')" class="footer-text__link">
               {{ $t('account.login.sign_in') }}
             </nuxt-link>
           </p>
@@ -216,24 +209,25 @@
 
   const localePath = useLocalePath()
   const auth = useShopinvaderService('auth')
-  const checkValidity = (input: "login" | "password", e: KeyboardEvent) => {
+  const checkValidity = (input: 'login' | 'password', e: KeyboardEvent) => {
     const target = e.target as HTMLInputElement
     const validity = target?.checkValidity()
     fieldError.value = {
       ...fieldError.value,
-      [input] : !validity || target?.value === ''
+      [input]: !validity || target?.value === ''
     }
   }
+
   const createAccount = async () => {
     loading.value = true
     error.value = false
     const auth = useShopinvaderService('auth')
     const notifications = useNotification()
     try {
-      if(legals.value === false) {
+      if (legals.value === false) {
         return
       }
-      await auth.registerUser(firstname.value +' '+lastname.value, password.value, login.value)
+      await auth.registerUser(firstname.value + ' ' + lastname.value, password.value, login.value)
       // Display success message
       accountIsCreated.value = true
     } catch (e) {
@@ -244,7 +238,6 @@
       loading.value = false
     }
   }
-
 </script>
 <style lang="scss">
 .message {
@@ -265,11 +258,11 @@
   }
 }
 .register {
-  @apply py-8 flex flex-wrap;
+  @apply flex flex-wrap py-8;
   &__catchphrases-wrapper {
-    @apply w-full md:w-1/2 ;
+    @apply w-full md:w-1/2;
     .wrapper-stye {
-      @apply rounded-3xl md:rounded-r-none bg-gray-100 px-8 py-20 lg:px-20;
+      @apply rounded-3xl bg-gray-100 px-8 py-20 md:rounded-r-none lg:px-20;
       .logo {
         @apply flex justify-start pb-4;
       }
@@ -294,9 +287,9 @@
     }
   }
   &__form-wrapper {
-    @apply w-full lg:p-8 md:w-1/2 card card-body md:rounded-l-none bg-white;
+    @apply card card-body w-full bg-white md:w-1/2 md:rounded-l-none lg:p-8;
     form {
-      @apply grid grid-cols-2 mx-auto lg:px-16 gap-2;
+      @apply mx-auto grid grid-cols-2 gap-2 lg:px-16;
     }
   }
   &__footer {

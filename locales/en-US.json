@@ -62,6 +62,14 @@
     },
     "discount": {
       "tag": "{discount}% Off"
+    },
+    "description": {
+      "title": "Description",
+      "link": "Read more"
+    },
+    "ref": "SKU.",
+    "variants": {
+      "count": "{count} variants available"
     }
   },
   "cart": {
@@ -115,7 +123,7 @@
         "continue": "Continue",
         "no-method": "No delivery method selected",
         "no-dropoff": "No delivery point has been selected",
-        "empty":"No delivery method is available for your basket, we are sorry for this inconvenience. Please contact us to finalize your purchase"
+        "empty": "No delivery method is available for your basket, we are sorry for this inconvenience. Please contact us to finalize your purchase"
       }
     },
     "summary": {
@@ -147,12 +155,12 @@
       "title": "Thank you",
       "intro": "Your order has been validated",
       "message": "You will receive an email with the details of your order. You can also find it in your account.",
-      "link":"View my orders",
+      "link": "View my orders",
       "pending": "Your order is pending payment",
       "retry": "Retry",
       "cancelled": {
         "title": "Payment failed",
-        "message": "The payment of your order was not successful, your order is not validated. You can try again using another payment method.",
+        "message": "The payment of your order was not successful, your order is not validated. You can try again using another payment method."
       }
     },
     "coupon": {
@@ -166,6 +174,7 @@
     "loading": "Loading...",
     "title": "My account",
     "logout": "Logout",
+    "no_user": "No user connected",
     "profile": {
       "title": "My personal information",
       "accountdata": "Your account profile",
@@ -186,7 +195,7 @@
       "password": "Password",
       "forgot_password": "Forgot password",
       "not_yet_account": "You don't have an account ?",
-      "password_requirements": "Password must be at least 8 characters long and contain at least one uppercase letter and one special character {'@#$%^&+=!?'}.",
+      "password_requirements": "Password must be at least 8 characters long and contain at least one uppercase letter, a number and one special character {'@#$%^&+=!?'}.",
       "create_account": "Create it now !",
       "sign_in": "Sign in"
     },
@@ -291,7 +300,7 @@
     "phone": "Phone number",
     "country": "Country",
     "noresult": "No address found",
-    "type" : {
+    "type": {
       "delivery": "Delivery address",
       "invoice": "Invoice address",
       "contact": "Contact address"
@@ -381,16 +390,16 @@
   "table": {
     "noresult": "No result found",
     "size": "Page size",
-    "count":"{count} result(s)"
+    "count": "{count} result(s)"
   },
-  "contact":{
-    "title":"Contact",
-    "message":"We will be glad to hear from you!",
-    "subject":"Subject",
-    "description":"Your message...",
-    "data_protection":"You accept our ",
+  "contact": {
+    "title": "Contact",
+    "message": "We will be glad to hear from you!",
+    "subject": "Subject",
+    "description": "Your message...",
+    "data_protection": "You accept our ",
     "data_policy": "Data protection policy",
-    "send":"Send",
+    "send": "Send",
     "attachment": "Attachment",
     "error": "An error occured, please try later or contact our support team.",
     "form_sent": {

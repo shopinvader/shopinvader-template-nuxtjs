@@ -3,17 +3,18 @@
     class="product-hit"
     :class="{
       'product-hit--inline': inline,
-      'product-hit--loading': !variant
+      'product-hit--loading': !variant,
+      [props.cssClass]: true
     }"
   >
     <slot name="header"></slot>
     <div class="product-hit__tag">
-      <slot name="tags">
+      <slot name="tags" :product="variant">
         <product-tags v-if="variant" :product="variant" />
       </slot>
     </div>
     <div class="product-hit__image">
-      <slot name="images" :images="variant?.images || null">
+      <slot name="images" :product="variant" :images="variant?.images || null">
         <product-image
           v-if="variant?.images && variant.images.length > 0"
           :image="variant.images[0]"
@@ -34,27 +35,22 @@
         </div>
         <div class="body__variants">
           <slot name="variants" :variants="variants">
-            <product-variants
-              v-if="variants && variants?.length > 1 && variants?.length < 8"
-              :variants="variants"
-              @select-variant="changeVariant"
-            />
+            <div v-if="variant?.variantCount && variant?.variantCount > 1">
+              {{ $t('product.variants.count', { count: variant?.variantCount }) }}
+            </div>
           </slot>
         </div>
         <div class="body__desc">
           <slot name="desc" :product="variant"></slot>
         </div>
         <div class="body__stock">
-          <slot name="product-stock">
-            <product-stock v-if="variant?.stock !== null" :stock="variant?.stock">
-            </product-stock>
+          <slot name="product-stock" :product="variant">
+            <product-stock v-if="variant?.stock !== null" :stock="variant?.stock"> </product-stock>
           </slot>
         </div>
         <div class="body__price">
-          <slot name="price" :price="price">
-            <product-price v-if="price !== null" :price="price">
-
-            </product-price>
+          <slot name="price" :product="variant" :price="price">
+            <product-price v-if="price !== null" :price="price"> </product-price>
           </slot>
         </div>
 
@@ -68,118 +64,98 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
+import type { Product, ProductPrice } from '#models'
 import type { PropType } from 'vue'
-import { Product, ProductPrice } from '#models'
-import ProductPriceVue from '~/components/product/ProductPrice.vue'
-import ProductImage from '~/components/product/ProductImage.vue'
-import ProductVariants from '~/components/product/ProductVariants.vue'
+const props = defineProps({
+  product: {
+    type: Object as PropType<Product>,
+    required: false,
+    default: null
+  },
+  inline: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  readonly: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  cssClass: {
+    type: String,
+    default: ''
+  }
+})
+const localePath = useLocalePath()
+const authService = useShopinvaderService('auth')
+const router = useRouter()
 
-export default {
-  name: 'ProductHit',
-  components: {
-    'product-price': ProductPriceVue,
-    'product-image': ProductImage,
-    'product-variants': ProductVariants
-  },
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: false
-    },
-    inline: {
-      type: Boolean,
-      required: false,
-      default: false
+const variant = ref((props.product as Product | null) || null) as Ref<Product | null>
+const variants = computed(() => variant.value?.variants || [])
+const linkPath = computed(() => {
+  const urlKey = props.product?.urlKey || null
+  const sku = props.product?.sku || null
+  if (urlKey) {
+    return localePath({
+      path: '/' + urlKey,
+      query: { sku }
+    })
+  }
+  return null
+})
 
-    },
-    readonly: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
-  setup() {
-    const localePath = useLocalePath()
-    return {
-      localePath
-    }
-  },
-  data() {
-    return {
-      variant: this.product as Product | null || null
-    }
-  },
-  computed: {
-    variants() {
-      return this.product?.variants || []
-    },
-    linkPath() {
-      const urlKey = this.product?.urlKey || null
-      const sku = this.product?.sku || null
-      if(urlKey) {
-        const localePath = useLocalePath()
-        return localePath({
-          path: '/' + urlKey,
-          query: { sku }
-        })
-      }
-      return null
-    },
-    price():ProductPrice | null {
-      const authService = useShopinvaderService('auth')
-      const user = authService.getUser()
-      const role = user?.value?.role as string || null
-      let price = this.variant?.pricesList?.['default'] || this.variant?.price || null
-      if(role !== null && this.variant?.pricesList?.[role]) {
-        price = this.variant?.pricesList?.[role]
-      }
-      return price
-    }
-  },
-  watch: {
-    product(product: Product, oldProduct: Product) {
-      if (product !== null) {
-        this.variant = product
-      } else if (oldProduct !== null && product == null) {
-        this.variant = null
-      }
-    }
-  },
+const price = computed(() => {
+  const user = authService?.getUser()
+  const role = (user?.value?.role as string) || null
+  let price = variant?.value?.pricesList?.['default'] || variant?.value?.price || null
+  if (role !== null && variant?.value?.pricesList?.[role]) {
+    price = variant?.value?.pricesList?.[role]
+  }
+  return price
+})
 
-  methods: {
-    linkToProduct() {
-      const $route = useRoute()
-      const path = this.linkPath || null
-      if(path) {
-        this.$router.push({
-          path,
-          query: { sku: this.variant?.sku }
-        })
-      }
-    },
-    changeVariant(variant: Product) {
-      this.variant = variant
+watch(
+  () => props.product,
+  (product: Product, oldProduct: Product) => {
+    if (product !== null) {
+      variant.value = product
+    } else if (oldProduct !== null && product == null) {
+      variant.value = null
     }
+  }
+)
+
+const linkToProduct = () => {
+  const path = linkPath.value || null
+  if (path) {
+    router.push({
+      path,
+      query: { sku: variant.value?.sku }
+    })
   }
 }
 </script>
 <style lang="scss">
 .product-hit {
-  @apply card flex h-full flex-col border p-2 duration-300 ease-in hover:z-10 hover:rounded-md hover:shadow-xl lg:p-3 relative;
+  @apply card card-bordered relative flex h-full flex-col p-2 duration-300 ease-in hover:rounded-md hover:shadow-xl lg:p-3;
   align-self: flex-end;
   flex-direction: column;
   align-items: stretch;
   &__tag {
-    @apply absolute top-2 left-1 z-10;
+    @apply absolute left-1 top-2 z-10;
   }
   &__image {
-    @apply aspect-square relative max-h-full cursor-pointer overflow-hidden;
+    @apply relative aspect-square max-h-full cursor-pointer overflow-hidden pb-2;
     .product-image {
-      @apply h-full w-full rounded-md py-2;
+      @apply h-full w-full rounded-md;
+      img {
+        @apply card h-full w-full object-contain transition-transform hover:scale-125;
+      }
     }
     .noimage {
-      @apply h-full w-full rounded-md bg-slate-50;
+      @apply card h-full w-full bg-slate-100;
     }
   }
 
@@ -187,7 +163,7 @@ export default {
     @apply card-body grow px-0 py-2 text-sm;
 
     .body__title {
-      @apply line-clamp-2 font-bold;
+      @apply line-clamp-2;
       flex-grow: 1;
       cursor: pointer;
     }
@@ -222,21 +198,16 @@ export default {
       }
     }
     .body__price {
+      .product-price {
+        @apply justify-start;
+        &__value {
+          @apply text-lg font-bold;
+        }
+      }
       @apply text-right;
     }
     .body__variants {
-      .variants {
-        @apply py-0;
-        &__hit {
-          @apply h-10 w-10 p-1;
-          .hit__image {
-            @apply p-1;
-          }
-          .hit__title {
-            @apply hidden;
-          }
-        }
-      }
+      @apply text-xs text-gray-600;
     }
   }
   &--inline {
@@ -245,7 +216,7 @@ export default {
       @apply w-1/5 md:w-1/6;
     }
     .product-hit__body {
-      @apply flex flex-col flex-wrap justify-between md:flex-row;
+      @apply flex flex-col flex-wrap justify-between pl-6 md:flex-row;
       .body__title {
         @apply md:order-1 md:w-1/3;
       }
@@ -253,10 +224,16 @@ export default {
         @apply md:order-3 md:w-2/3;
       }
       .body__price {
-        @apply text-right md:order-2 md:w-1/3 md:border-l md:p-3;
+        @apply md:order-2 md:w-1/3 md:border-l md:p-3;
+        .product-price {
+          @apply justify-end;
+        }
       }
       .body__actions {
-        @apply md:order-4 md:w-1/3 md:border-l md:p-3;
+        @apply md:order-5 md:w-1/3 md:p-3;
+      }
+      .body__stock {
+        @apply md:order-4 md:w-2/3;
       }
     }
   }
@@ -264,19 +241,19 @@ export default {
     .product-hit {
       &__image {
         .noimage {
-          @apply animate-pulse bg-gray-200 rounded-lg cursor-default;
+          @apply animate-pulse cursor-default rounded-lg bg-gray-200;
         }
       }
       &__body {
         .body {
           &__title {
-            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-2/3;
+            @apply h-3 w-2/3 animate-pulse cursor-default rounded-lg bg-gray-200;
           }
           &__desc {
-            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-full;
+            @apply h-3 w-full animate-pulse cursor-default rounded-lg bg-gray-200;
           }
           &__price {
-            @apply animate-pulse bg-gray-200 rounded-lg cursor-default h-3 w-1/3 items-end;
+            @apply h-3 w-1/3 animate-pulse cursor-default items-end rounded-lg bg-gray-200;
           }
         }
       }

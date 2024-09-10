@@ -1,7 +1,6 @@
+import type { $Fetch, FetchContext } from 'ofetch'
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
 import { AuthService } from '../AuthService'
-import type { ErpFetchObservable } from '~/modules/shopinvader'
-
 
 export interface AuthOIDCConfig {
   authority: string
@@ -13,129 +12,144 @@ export interface AuthOIDCConfig {
 }
 
 export class AuthOIDCService extends AuthService {
-  public type: string = 'oidc'
-  config: AuthOIDCConfig
-  client: UserManager
-  redirectUri: string
-  services: ShopinvaderServiceList
-  constructor(provider: ErpFetchObservable, config: AuthOIDCConfig) {
+  public override type: string = 'oidc'
+  private config: AuthOIDCConfig
+  private clientOIDC: UserManager | null = null
+  private redirectUri: string | null = null
 
-    super(provider)
+  constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthOIDCConfig) {
+    super(isoLocale, ofetch, baseUrl)
     this.config = config
-    if(!import.meta.env.SSR && provider) {
-      provider.onError((res:any) => {
-        /** Logout if get 401 API RESPONSE */
-        const user = this.getUser()?.value
-        if(user && res?.status == 401) {
-          this.logoutRedirect()
-        }
-      })
-    }
-
   }
-  public async init(services:ShopinvaderServiceList) {
+
+  override async init(services: ShopinvaderServiceList): Promise<any> {
+    super.init(services)
     this.services = services
     if (!import.meta.env.SSR) {
-
       const { origin } = useRequestURL()
-      this.redirectUri =  new URL(this.config.redirectUri, origin).href
-      this.client = new UserManager({
+      this.redirectUri = new URL(this.config.redirectUri, origin).href
+      this.clientOIDC = new UserManager({
         authority: this.config.authority,
         client_id: this.config.clientId,
         redirect_uri: this.redirectUri,
         response_type: this.config.responseType,
         scope: this.config.scope,
-        post_logout_redirect_uri: new URL(this.config.postLogoutRedirectUri, origin)
-          .href,
+        post_logout_redirect_uri: new URL(this.config.postLogoutRedirectUri, origin).href,
         userStore: new WebStorageStateStore({ store: window.localStorage }),
-        automaticSilentRenew: true,
+        automaticSilentRenew: true
       })
+      // Listen to OIDC events
       this.userLoaded = this.userLoaded.bind(this)
       this.userUnloaded = this.userUnloaded.bind(this)
+      this.clientOIDC.events.addUserLoaded(this.userLoaded)
+      this.clientOIDC.events.addUserUnloaded(this.userUnloaded)
 
-      this.client.events.addUserLoaded(this.userLoaded)
-      this.client.events.addUserUnloaded(this.userUnloaded)
       const query = window.location.search
-
-      let oidcUser = null
-      let loginReturn = query.includes('code=') && query.includes('state=')
+      const loginReturn = query.includes('code=') && query.includes('state=')
       try {
-        if(loginReturn) {
-          oidcUser = await this.client.signinCallback()
-        } else if(this.getSession()) {
+        if (loginReturn) {
+          await this.clientOIDC.signinCallback()
+        } else if (this.getSession()) {
           await this.fetchUser()
         }
-      } catch(e) {
+      } catch (e) {
         await this.userUnloaded()
         console.error(e)
       } finally {
         // Use replaceState to redirect the user away and remove the querystring parameters
         if (loginReturn) {
           setTimeout(() => {
-            window.history.replaceState({}, document.title, window.location.pathname);
+            window.history.replaceState({}, document.title, window.location.pathname)
           }, 300)
         }
       }
+    }
+    return Promise.resolve()
+  }
 
+  getConfig(): any {
+    return this.config
+  }
+
+  // Interceptors to be added in the app fetcher
+  interceptorOnRequest({ options }: FetchContext): void | Promise<void> {
+    if (this.getUser()) {
+      // Add credentials to the request
+      options.credentials = 'include'
     }
   }
-  async userLoaded() {
-    try {
-      let oidcUser = await this.client.getUser()
-      const headers = {
-        Authorization: `Bearer ${oidcUser?.access_token}`
+  interceptorOnResponseError({ response }: FetchContext): void | Promise<void> {
+    if (!import.meta.env.SSR) {
+      if (response?.status === 401) {
+        // The user is not authenticated anymore
+        this.logoutRedirect()
       }
-      await this.provider?.post("signin", [], { headers }, '')
-      await this.fetchUser()
-    } catch (e) {
-      console.error(e)
-      await this.userUnloaded()
-      await this.client.signoutSilentCallback()
-      throw showError({ statusCode: 500, fatal: true})
     }
+  }
 
-  }
-  async userUnloaded() {
-    try {
-      await this.provider?.post("signout", [], {}, '')
-    } catch (e) {
-      console.error(e)
-    }
-  }
-  async loginRedirect(url?:string): Promise<any> {
+  async loginRedirect(url?: string): Promise<any> {
     const query = window.location.search
-
     const { host, protocol } = useRequestURL()
     const redirectURI = new URL(url || '', `${protocol}//${host}`).href
     let user = false
     try {
       user = this.getSession() ? await this.fetchUser() : false
-      if(!user) {
-        let loginReturn = query.includes('code=') && query.includes('state=')
-        if (this.client && !loginReturn) {
-          await this.client.signinRedirect({ redirect_uri: redirectURI })
+      if (!user) {
+        const loginReturn = query.includes('code=') && query.includes('state=')
+        if (this.clientOIDC && !loginReturn) {
+          await this.clientOIDC.signinRedirect({ redirect_uri: redirectURI })
         } else {
           throw new Error('User not loaded')
         }
       }
     } finally {
-      if(user) {
+      if (user) {
         const domaine = `${protocol}//${host}`
-        let options = {external: true}
-        if(url?.includes(domaine)) {
-          options = {external: false}
+        let options = { external: true }
+        if (url?.includes(domaine)) {
+          options = { external: false }
           url = url.replace(domaine, '')
         }
-        navigateTo(url, options)
+        await navigateTo(url, options)
       }
     }
   }
-  async logoutRedirect(): Promise<any> {
-    const user = await this.client.getUser()
-    if (this.client && user) {
-      await this.setUser(false)
-      await this.client.signoutRedirect()
+
+  async logoutRedirect(_page?: string): Promise<any> {
+    if (!this.clientOIDC) {
+      throw new Error('Client not initialized')
+    }
+    const user = await this.clientOIDC.getUser()
+    if (this.clientOIDC && user) {
+      await this.setUser(null)
+      await this.clientOIDC.signoutRedirect()
     }
   }
 
+  async userLoaded() {
+    if (!this.clientOIDC) {
+      throw new Error('Client not initialized')
+    }
+    try {
+      const oidcUser = await this.clientOIDC.getUser()
+      const headers = {
+        Authorization: `Bearer ${oidcUser?.access_token}`
+      }
+      await this.ofetch(this.urlEndpointAuth + '/signin', { method: 'POST', headers })
+      await this.fetchUser()
+    } catch (e) {
+      console.log(e)
+      await this.userUnloaded()
+      await this.clientOIDC.signoutSilentCallback()
+      throw showError({ statusCode: 500, fatal: true })
+    }
+  }
+
+  async userUnloaded() {
+    try {
+      await this.ofetch(this.urlEndpointAuth + '/signout', { method: 'POST' })
+    } catch (e) {
+      console.error(e)
+    }
+  }
 }

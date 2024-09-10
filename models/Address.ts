@@ -1,4 +1,4 @@
-import { State, Title, Country, Model } from '#models'
+import { Country, Model, State, Title } from '#models'
 
 export interface AddressAccess {
   read: boolean
@@ -37,7 +37,7 @@ export class Address extends Model {
     this.title = data?.title ? new Title(data.title) : null
     this.addressType = data?.address_type || null
     this.city = data?.city || null
-    this.country = data?.country ? new Country(data.country) :  new Country({id: data.country_id})
+    this.country = data?.country ? new Country(data.country) : new Country({ id: data.country_id })
     this.displayName = data?.display_name || null
     this.isCompany = data?.is_company || null
     this.mobile = data?.mobile || null
@@ -61,11 +61,13 @@ export class Address extends Model {
       update: true
     }
   }
-  toString(): string {
-    return `${this.name}, ${this.street} ${this.street2 || ''} - ${this.zip} ${this.city} ${this.country?.name || ''}`
+  override toString(): string {
+    return `${this.name}, ${this.street} ${this.street2 || ''} - ${this.zip} ${this.city} ${
+      this.country?.name || ''
+    }`
   }
   isValidAddress(): boolean {
-    if(this.isDropoffSite) {
+    if (this.isDropoffSite) {
       return true
     }
     const requiredFields = [this.name, this.street, this.zip, this.city]
@@ -74,7 +76,7 @@ export class Address extends Model {
     })
   }
   getJSONData(): any {
-    let data:any = {
+    let data: any = {
       name: this.name,
       street: this.street,
       street2: this.street2,
@@ -86,19 +88,19 @@ export class Address extends Model {
       vat: this.vat || '',
       state_id: null
     }
-    if(this.country?.id) {
+    if (this.country?.id) {
       data = {
         ...data,
         country_id: this.country?.id
       }
     }
-    if(this.state?.id) {
+    if (this.state?.id) {
       data = {
         ...data,
         state_id: this.state?.id
       }
     }
-    if(this.title?.id) {
+    if (this.title?.id) {
       data = {
         ...data,
         title_id: this.title?.id
@@ -106,9 +108,4 @@ export class Address extends Model {
     }
     return data
   }
-}
-
-export interface AddressResult {
-  size: number
-  data: Address[]
 }

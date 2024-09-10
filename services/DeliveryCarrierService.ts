@@ -1,35 +1,29 @@
-import { ErpFetch } from '@shopinvader/fetch'
 import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
-import { Service } from '#services'
+import { BaseServiceErp } from './BaseServiceErp'
 
 /**
  * Service for managing delivery carriers.
  */
-export class DeliveryCarrierService extends Service {
-  name = 'deliveryCarriers'
-  provider: ErpFetch | null = null
-  constructor(provider: ErpFetch) {
-    super()
-    this.provider = provider
-  }
+export class DeliveryCarrierService extends BaseServiceErp {
+  public override endpoint: string = '' // We must cheat here because on service does not start with the entrypoint
 
   /**
    * Retrieves all delivery carriers.
    * @returns A promise that resolves to an array of DeliveryCarrier objects.
    */
-  async getAll(uuid?:string | null): Promise<DeliveryCarrier[]> {
-    let url = 'delivery_carriers'
-    if(uuid) {
-      url = `${uuid}/delivery_carriers`
+  async getAll(uuid?: string | null): Promise<DeliveryCarrier[]> {
+    let url = '/delivery_carriers'
+    if (uuid) {
+      url = '/' + uuid + '/delivery_carriers'
     }
-    const data = await this.provider?.get(url, [], null)
+    const data = await this.ofetch(this.urlEndpoint + url)
     if (Array.isArray(data)) {
       return data.map((item: any) => new DeliveryCarrier(item))
     }
     return []
   }
-  async getDeliveryPickups(carrierId:number, name?: string): Promise<DeliveryPickupPoint[]> {
-    let query:any = {
+  async getDeliveryPickups(carrierId: number, name?: string): Promise<DeliveryPickupPoint[]> {
+    let query: any = {
       carrier_id: carrierId
     }
     if (name) {
@@ -38,7 +32,7 @@ export class DeliveryCarrierService extends Service {
         name
       }
     }
-    const data = await this.provider?.get(`delivery_pickups`, query, null)
+    const data = await this.ofetch(`delivery_pickups`, { query })
     if (Array.isArray(data)) {
       return data.map((item: any) => new DeliveryPickupPoint(item))
     }

@@ -1,17 +1,19 @@
 <template>
-  <div class="grid grid-cols-4 gap-4 py-3">
-    <ProductHit
-      v-for="product in products"
-      :key="product.id"
-      :product="product"
-    ></ProductHit>
-  </div>
-  <div v-if="error" class="alert alert-error">
-    {{ error }}
+  <div>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 py-3">
+      <ProductHit
+        v-for="product in products"
+        :key="product.id || 0"
+        :product="product"
+      ></ProductHit>
+    </div>
+    <div v-if="error" class="alert alert-error">
+      {{ error }}
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { Product } from '~/models'
+import type { Product } from '#models'
 let error: any = null
 let products: Product[] = []
 try {

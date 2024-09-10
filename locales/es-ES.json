@@ -67,6 +67,14 @@
     },
     "discount": {
       "tag": "{discount}% de descuento"
+    },
+    "description": {
+      "title": "Descripción",
+      "link": "Ver más"
+    },
+    "ref": "Ref.",
+    "variants": {
+      "count": "{count} modelos disponibles"
     }
   },
   "cart": {
@@ -119,7 +127,7 @@
         },
         "no-method": "No se ha seleccionado ningún método de envío",
         "no-dropoff": "No se ha seleccionado ningún punto de entrega",
-        "empty":"No hay ningún método de entrega disponible para su carrito, sentimos las molestias. Póngase en contacto con nosotros para finalizar su compra"
+        "empty": "No hay ningún método de entrega disponible para su carrito, sentimos las molestias. Póngase en contacto con nosotros para finalizar su compra"
       }
     },
     "summary": {
@@ -156,8 +164,7 @@
       "retry": "Inténtalo de nuevo",
       "cancelled": {
         "title": "Pago fallido",
-        "message": "El pago de su pedido no se ha realizado correctamente, su pedido no está validado. Puede intentarlo de nuevo utilizando otro método de pago.",
-
+        "message": "El pago de su pedido no se ha realizado correctamente, su pedido no está validado. Puede intentarlo de nuevo utilizando otro método de pago."
       }
     },
     "coupon": {
@@ -171,6 +178,7 @@
     "loading": "Cargando...",
     "title": "Mi cuenta",
     "logout": "Cerrar sesión",
+    "no_user": "No sesión iniciada",
     "profile": {
       "title": "Información de mi cuenta",
       "accountdata": "Mi Perfil",
@@ -192,7 +200,7 @@
       "password": "Contraseña",
       "forgot_password": "¿Olvidaste tu contraseña?",
       "not_yet_account": "¿No tienes una cuenta?",
-      "password_requirements": "La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula y un carácter especial {'@#$%^&+=!?'}.",
+      "password_requirements": "La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula, un número y un carácter especial {'@#$%^&+=!?'}.",
       "create_account": "Crear una cuenta",
       "sign_in": "Iniciar sesión"
     },
@@ -276,7 +284,7 @@
   "actions": {
     "modify": "Modificar",
     "update": "Actualizar",
-    "create": "Crear" ,
+    "create": "Crear",
     "validate": "Validar",
     "close": "Cerrar"
   },
@@ -364,16 +372,16 @@
   "table": {
     "noresult": "Sin resultados",
     "size": "Nombre de resultados por página",
-    "count":"{count} resultado(s)"
+    "count": "{count} resultado(s)"
   },
-  "contact":{
-    "title":"Contacto",
-    "message":"Póngase en contacto con nosotros a través del siguiente formulario",
-    "subject":"Asunto",
-    "description":"Mensaje...",
-    "data_protection":"Usted acepta nuestra ",
+  "contact": {
+    "title": "Contacto",
+    "message": "Póngase en contacto con nosotros a través del siguiente formulario",
+    "subject": "Asunto",
+    "description": "Mensaje...",
+    "data_protection": "Usted acepta nuestra ",
     "data_policy": "Política de protección de datos personales",
-    "send":"Enviar",
+    "send": "Enviar",
     "attachment": "Adjunto",
     "error": "Se ha producido un error al enviar el formulario. Por favor, inténtelo de nuevo.",
     "form_sent": {

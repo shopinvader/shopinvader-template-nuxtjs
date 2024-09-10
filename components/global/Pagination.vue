@@ -1,29 +1,19 @@
 <template>
   <div class="pagination">
-    <button v-if="currentPage > 1" class="join-item btn btn-sm" @click="changePage(1)">
-      «
-    </button>
-    <button
-      v-if="currentPage > 1"
-      class="join-item btn btn-sm"
-      @click="changePage(page - 1)"
-    >
+    <button v-if="currentPage > 1" class="pagination__btn" @click="changePage(1)">«</button>
+    <button v-if="currentPage > 1" class="pagination__btn" @click="changePage(page - 1)">
       ‹
     </button>
     <button
       v-for="p in pages"
       :key="p"
-      class="join-item btn btn-sm"
-      :class="{ 'btn-active': p === page }"
+      class="pagination__btn"
+      :class="{ 'pagination__btn--active': p === page }"
       @click="changePage(p)"
     >
       {{ p }}
     </button>
-    <button
-      v-if="currentPage < count"
-      class="join-item btn btn-sm"
-      @click="changePage(page + 1)"
-    >
+    <button v-if="currentPage < count" class="pagination__btn" @click="changePage(page + 1)">
       ›
     </button>
   </div>
@@ -51,7 +41,7 @@ export default {
       return Math.ceil(this.total / this.size)
     },
     pages(): number[] {
-      let pages = []
+      const pages = []
       for (let i = this.currentPage - 2; i < this.currentPage; i++) {
         if (i > 0) {
           pages.push(i)
@@ -79,8 +69,11 @@ export default {
 <style lang="scss">
 .pagination {
   @apply join gap-1;
-  .btn-active {
-    @apply text-white bg-primary;
+  &__btn {
+    @apply join-item btn btn-sm rounded-md;
+    &--active {
+      @apply btn-active;
+    }
   }
 }
 </style>

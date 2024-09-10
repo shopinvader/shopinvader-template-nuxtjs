@@ -1,22 +1,24 @@
 <template>
-  <form class="w-full" @submit="save">
-    <div class="flex w-full flex-wrap">
-      <div v-for="title in titles" :key="title.id" class="form-control">
-        <label class="label cursor-pointer">
-          <input
-            v-model="model.title"
-            type="radio"
-            name="title"
-            class="radio"
-            :value="title"
-            :disabled="submitted"
-          />
-          <span class="label-text pl-2">{{ title.name }}</span>
-        </label>
+  <form class="address-form" @submit="save">
+    <slot name="title" :address="model" :titles="titles" :submitted="submitted">
+      <div class="address-form__title">
+        <div v-for="title in titles" :key="title.id" class="title__control">
+          <label class="label">
+            <input
+              v-model="model.title"
+              type="radio"
+              name="title"
+              class="radio"
+              :value="title"
+              :disabled="submitted"
+            />
+            <span class="label-text pl-2">{{ title.name }}</span>
+          </label>
+        </div>
       </div>
-    </div>
+    </slot>
     <slot name="name" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full">
+      <div class="address-form__name">
         <label class="required label">
           <span class="label-text">
             {{ $t('account.address.name') }}
@@ -27,12 +29,12 @@
           :disabled="submitted"
           type="text"
           required
-          class="input input-bordered w-full"
+          class="input w-full"
         />
       </div>
     </slot>
     <slot name="street" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full">
+      <div class="address-form__street">
         <label class="required label">
           <span class="label-text">
             {{ $t('account.address.street') }}
@@ -43,25 +45,20 @@
           required
           :disabled="submitted"
           type="text"
-          class="input input-bordered w-full"
+          class="input w-full"
         />
       </div>
     </slot>
     <slot name="street2" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full">
+      <div class="address-form__street2">
         <label class="label">
           <span class="label-text">{{ $t('account.address.street2') }}</span>
         </label>
-        <input
-          v-model="model.street2"
-          :disabled="submitted"
-          type="text"
-          class="input input-bordered w-full"
-        />
+        <input v-model="model.street2" :disabled="submitted" type="text" class="input w-full" />
       </div>
     </slot>
     <slot name="city" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2">
+      <div class="address-form__zip">
         <label class="required label">
           <span class="label-text">{{ $t('account.address.zip') }}</span>
         </label>
@@ -70,10 +67,10 @@
           required
           :disabled="submitted"
           type="text"
-          class="input input-bordered w-full md:max-w-xs"
+          class="input w-full"
         />
       </div>
-      <div class="form-control inline-block w-full md:w-2/3">
+      <div class="address-form__city">
         <label class="required label">
           <span class="label-text">{{ $t('account.address.city') }}</span>
         </label>
@@ -82,21 +79,18 @@
           required
           :disabled="submitted"
           type="text"
-          class="input input-bordered w-full"
+          class="input w-full"
         />
       </div>
     </slot>
     <slot name="country" :address="model" :submitted="submitted" :countries="countries">
-      <div
-        v-if="countries.length > 0"
-        class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2"
-      >
+      <div v-if="countries.length > 0" class="address-form__country">
         <label class="required label">
           <span class="label-text">{{ $t('account.address.country') }}</span>
         </label>
         <select
           v-model="model.country"
-          class="select select-bordered w-full max-w-xs"
+          class="select w-full max-w-xs"
           :disabled="submitted"
           required
         >
@@ -108,7 +102,7 @@
       </div>
     </slot>
     <slot name="phone" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2">
+      <div class="address-form__phone">
         <label class="label">
           <span class="label-text">
             <icon name="phone" />
@@ -119,12 +113,12 @@
           v-model="model.phone"
           :disabled="submitted"
           type="phone"
-          class="input input-bordered w-full md:max-w-xs"
+          class="input w-full md:max-w-xs"
         />
       </div>
     </slot>
     <slot name="mobile" :address="model" :submitted="submitted">
-      <div class="form-control inline-block w-full md:w-1/2 md:max-w-xs">
+      <div class="address-form__mobile">
         <label class="label">
           <span class="label-text">
             <icon name="mobile" />
@@ -135,7 +129,7 @@
           v-model="model.mobile"
           :disabled="submitted"
           type="mobile"
-          class="input input-bordered w-full md:max-w-xs"
+          class="input w-full md:max-w-xs"
         />
       </div>
     </slot>
@@ -145,7 +139,7 @@
         <div class="flex-grow">
           <slot name="actions" :address="model"></slot>
         </div>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" :disabled="submitted" class="btn btn-primary">
           <icon name="check" class="mr-2 h-5 w-5" />
           {{ $t('actions.validate') }}
         </button>
@@ -154,11 +148,11 @@
   </form>
 </template>
 <script lang="ts" setup>
-import { type PropType } from 'vue'
-import { Address } from '~/models'
+import { Address } from '#models'
+
 const props = defineProps({
   address: {
-    type: Object as PropType<Address> | null,
+    type: Address,
     required: false,
     default: () => {
       return new Address({})
@@ -166,7 +160,7 @@ const props = defineProps({
   }
 })
 const emit = defineEmits(['saved'])
-const settings = useShopinvaderService('settings')?.options
+const settings = useShopinvaderService('settings')?.values
 const countries = settings?.countries || []
 const titles = settings?.titles || []
 const model = ref(new Address({})) as Ref<Address>
@@ -188,8 +182,69 @@ watch(
  */
 const save = (e: Event) => {
   e.preventDefault()
-  e.stopPropagation()
   submitted.value = true
   emit('saved', model.value)
 }
 </script>
+<style lang="scss">
+.address-form {
+  @apply w-full;
+  .label {
+    @apply cursor-pointer;
+    &.required {
+      .label-text {
+        &:after {
+          @apply inline pr-1 text-error;
+          content: '*';
+        }
+      }
+    }
+  }
+  .input {
+    @apply input-bordered;
+  }
+  .select {
+    @apply select-bordered;
+  }
+  .label {
+    .label-text {
+      @apply flex items-center gap-1;
+      .icon {
+        @apply h-4 w-4;
+      }
+    }
+  }
+  &__title {
+    @apply flex w-full flex-wrap;
+    .title {
+      &__control {
+        @apply form-control;
+      }
+    }
+  }
+  &__name {
+    @apply form-control inline-block w-full;
+  }
+  &__street {
+    @apply form-control inline-block w-full;
+  }
+  &__street2 {
+    @apply form-control inline-block w-full;
+  }
+  &__zip {
+    @apply form-control inline-block w-full md:w-1/3 md:max-w-xs md:pr-2;
+  }
+  &__city {
+    @apply form-control inline-block w-full md:w-2/3;
+  }
+  &__country {
+    @apply form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2;
+  }
+  &__phone {
+    @apply form-control inline-block w-full md:w-1/2 md:max-w-xs md:pr-2;
+  }
+  &__mobile {
+    @apply form-control inline-block w-full md:w-1/2 md:max-w-xs;
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-   <address-card class="cart-address-delivery" :address="deliveryAddress">
+  <address-card class="cart-address-delivery" :address="deliveryAddress">
     <template #header>
       <slot name="header" :address="deliveryAddress">
         <h2 class="title">
@@ -27,12 +27,8 @@
       </div>
       <div class="cart-address-delivery__footer">
         <div class="address-selector">
-          <slot name="action" onOpen>
-            <button
-              type="button"
-              class="btn btn-outline btn-primary btn-sm"
-              @click="onOpen"
-            >
+          <slot name="action" on-open>
+            <button type="button" class="btn btn-primary btn-outline btn-sm" @click="onOpen">
               <span class="pl-1">
                 {{ $t('cart.address.select') }}
               </span>
@@ -41,7 +37,7 @@
           <aside-drawer
             :open="opened"
             @close="onClose"
-            classContent="cart-address-delivery__aside"
+            class-content="cart-address-delivery__aside"
           >
             <template #header>
               <div class="aside__header">
@@ -54,7 +50,7 @@
                   <div class="aside__button">
                     <button
                       type="button"
-                      class="btn btn-sm btn-primary"
+                      class="btn btn-primary btn-sm"
                       @click="onUpdateAddress(address)"
                     >
                       {{ $t('cart.address.pick') }}
@@ -72,11 +68,10 @@
       </slot>
     </template>
   </address-card>
-
 </template>
 <script lang="ts">
-import { Address } from '#models'
 import { AddressList } from '#components'
+import type { Address } from '#models'
 
 export default defineNuxtComponent({
   events: ['close', 'open'],
@@ -91,7 +86,7 @@ export default defineNuxtComponent({
       default: true
     }
   },
-  setup(props) {
+  setup(_props) {
     const opened = ref(false)
     const cartService = useShopinvaderService('cart')
     const cart = cartService?.getCart()
@@ -99,15 +94,15 @@ export default defineNuxtComponent({
       return cart.value?.delivery?.address || null
     })
 
-    return  {
+    return {
       deliveryAddress,
       opened,
       cart
     }
   },
   methods: {
-    async onUpdateAddress(address:Address | null) {
-      if(!address) return null
+    async onUpdateAddress(address: Address | null) {
+      if (!address) return null
       const cartService = useShopinvaderService('cart')
       await cartService.setAddress('delivery', address)
       this.onClose()
@@ -129,7 +124,6 @@ export default defineNuxtComponent({
 })
 </script>
 <style lang="scss">
-
 .cart-address-delivery {
   &__same-address {
     @apply text-right text-sm text-gray-500 pt-4 pb-2;

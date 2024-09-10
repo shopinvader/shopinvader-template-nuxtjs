@@ -5,7 +5,7 @@
       <slot name="top"></slot>
       <div class="content" :class="classContent">
         <div class="content__button">
-          <label :for="name" class="btn-ghost btn-square btn">
+          <label :for="name" class="btn btn-square btn-ghost">
             <slot name="button"></slot>
           </label>
         </div>
@@ -26,7 +26,7 @@
             <slot name="header"></slot>
           </div>
           <div class="header__close">
-            <label :for="name" class="btn-ghost btn-square btn">
+            <label :for="name" class="btn btn-square btn-ghost">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -68,9 +68,12 @@ export default {
   setup() {
     const isOpen = ref(false)
     const router = useRouter()
-    watch(() => router.currentRoute.value, () => {
-      isOpen.value = false
-    })
+    watch(
+      () => router.currentRoute.value,
+      () => {
+        isOpen.value = false
+      }
+    )
 
     return {
       isOpen
@@ -80,7 +83,7 @@ export default {
 </script>
 <style lang="scss">
 .aside-menu.drawer {
-  @apply h-auto  transition duration-1000 ease-in;
+  @apply h-auto transition duration-1000 ease-in;
   overflow: visible;
   .drawer-content {
     overflow-y: visible;
@@ -94,9 +97,6 @@ export default {
       &__menu {
         @apply hidden flex-1 lg:flex;
       }
-      &__content {
-        @apply flex;
-      }
     }
     .nav > :where(li) > :where(ul) {
       @apply hidden;
@@ -104,7 +104,7 @@ export default {
   }
   .drawer-toggle {
     &:checked ~ .drawer-side {
-      @apply fixed top-0 h-screen w-screen md:w-[400px] border shadow;
+      @apply fixed top-0 h-screen w-screen border shadow md:w-[400px];
     }
   }
   .drawer-side {

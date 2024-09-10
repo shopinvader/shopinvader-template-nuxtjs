@@ -2,21 +2,18 @@
   <slot v-if="state !== null" name="stock-status">
     <div class="stock-status">
       <div v-if="state == 'in_stock'" class="stock-status__available">
-        <icon name="check" class="stock-icon " />
+        <icon name="check" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.available') }}</span>
       </div>
-      <div v-else-if="state == 'in_limited'" class="stock-status__ending ">
+      <div v-else-if="state == 'in_limited'" class="stock-status__ending">
         <icon name="attention" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.ending_soon') }}</span>
       </div>
-      <div v-else-if="state == 'resupplying'" class="stock-status__ending ">
+      <div v-else-if="state == 'resupplying'" class="stock-status__ending">
         <icon name="attention" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.resupplying') }}</span>
       </div>
-      <div
-        v-else-if="state == 'out_of_stock'"
-        class=" stock-status__out-of-stock"
-      >
+      <div v-else-if="state == 'out_of_stock'" class="stock-status__out-of-stock">
         <icon name="entypo:cycle" class="stock-icon" />
         <span class="stock-text">{{ $t('product.stock.not_available') }}</span>
       </div>
@@ -24,8 +21,8 @@
   </slot>
 </template>
 <script lang="ts">
-import type { PropType } from 'vue'
 import type { ProductStock } from '#models'
+import type { PropType } from 'vue'
 
 export default {
   name: 'ProductStock',
@@ -46,7 +43,7 @@ export default {
       }
       return state
     },
-    qty():number | null  {
+    qty(): number | null {
       return this.stock?.global?.qty || null
     }
   }
@@ -54,43 +51,42 @@ export default {
 </script>
 <style lang="scss">
 .stock-status {
-  &__available{
-    @apply  text-primary max-w-max text-sm py-1;
-      .stock-icon {
-        @apply text-success text-xl inline mr-1;
-      }
-      .stock-text {
-        @apply text-neutral;
-      }
+  &__available {
+    @apply max-w-max py-1 text-sm text-primary;
+    .stock-icon {
+      @apply mr-1 inline text-xl text-success;
+    }
+    .stock-text {
+      @apply text-neutral;
+    }
   }
   &__ending {
-    @apply text-primary max-w-max  text-sm py-1;
+    @apply max-w-max py-1  text-sm text-primary;
 
     .stock-icon {
-        @apply text-error text-xl inline mr-1;
-      }
-      .stock-text {
-        @apply text-error;
-      }
+      @apply mr-1 inline text-xl text-error;
+    }
+    .stock-text {
+      @apply text-error;
+    }
   }
-  &__resupplying{
-    @apply text-info max-w-max  text-sm py-1;
+  &__resupplying {
+    @apply max-w-max py-1  text-sm text-info;
     .stock-icon {
-        @apply text-error text-xl inline mr-1;
-      }
-      .stock-text {
-        @apply text-error;
-      }
+      @apply mr-1 inline text-xl text-error;
+    }
+    .stock-text {
+      @apply text-error;
+    }
   }
-  &__out-of-stock{
-    @apply text-primary max-w-max  text-sm py-1;
+  &__out-of-stock {
+    @apply max-w-max py-1  text-sm text-primary;
     .stock-icon {
-        @apply text-error text-xl inline mr-1;
-      }
-      .stock-text {
-        @apply text-error;
-      }
+      @apply mr-1 inline text-xl text-error;
+    }
+    .stock-text {
+      @apply text-error;
+    }
   }
-
 }
 </style>

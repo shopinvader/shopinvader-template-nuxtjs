@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="cartline"
-    :class="{ 'cartline--pending': hasPendingTransactions }"
-  >
+  <div class="cartline" :class="{ 'cartline--pending': hasPendingTransactions }">
     <div class="cartline__image">
       <!--
         @slot Cart line's image content
@@ -34,10 +31,7 @@
         -->
         <slot name="title" :line="line">
           <template v-if="product">
-            <nuxt-link
-              class="title"
-              :to="localePath({ path: '/' + product.urlKey })"
-            >
+            <nuxt-link class="title" :to="localePath('/' + product.urlKey)">
               {{ product?.model?.name || product?.name }}
             </nuxt-link>
             <ul class="shortTitle">
@@ -52,7 +46,7 @@
             </div>
           </template>
         </slot>
-        <slot name="stock" :stock="stock">
+        <slot name="stock" :stock="product?.stock">
           <product-stock v-if="product?.stock" :stock="product?.stock" />
         </slot>
       </div>
@@ -65,7 +59,7 @@
         <slot name="qty" :line="line" v-if="amount.total >= 0">
           <div class="label">
             {{ $t('cart.line.quantity') }}
-            <span v-if="readonly">{{ line?.qty }}</span>
+            <span v-if="readonly === true">{{ line?.qty }}</span>
           </div>
           <div class="value">
             <cart-line-qty v-if="!readonly" :line="line"></cart-line-qty>
@@ -83,7 +77,7 @@
         <button
           v-if="!readonly"
           type="button"
-          class="btn-link btn-xs btn p-0 text-xs"
+          class="btn btn-link btn-xs p-0 text-xs"
           :title="$t('cart.line.delete')"
           @click="deleteLine"
         >
@@ -102,14 +96,11 @@
             {{ $t('cart.line.total') }}
           </div>
           <div class="value">
-            <div
-              v-if="line.amount.discountTotal !== 0"
-              class="price__original"
-            >
-              {{ $filter.currency(amount.totalWithoutDiscount) }}
+            <div v-if="line.amount.discountTotal !== 0" class="price__original">
+              {{ formatCurrency(amount.totalWithoutDiscount) }}
             </div>
             <div class="price__value">
-              {{ $filter.currency(amount.total) }}
+              {{ formatCurrency(amount.total) }}
             </div>
           </div>
         </slot>
@@ -125,10 +116,11 @@
   </div>
 </template>
 <script lang="ts">
+import { CartLine, CartLineAmount } from '#models'
 import type { PropType } from 'vue'
-import { CartLineAmount, CartLine } from '~/models'
-import CartLineQtyVue from './CartLineQty.vue'
+import { formatCurrency } from '~/utils/StringHelper'
 import ProductImageVue from '../product/ProductImage.vue'
+import CartLineQtyVue from './CartLineQty.vue'
 
 /**
  * Display a line of the cart
@@ -143,17 +135,13 @@ export default defineNuxtComponent({
     'cart-line-qty': CartLineQtyVue
   },
   props: {
-    /**
-     * The cart line to display
-     */
+    // The cart line to display
     line: {
       type: Object as PropType<CartLine>,
       required: true,
       default: null
     },
-    /**
-     * If the line is readonly (can't be modified)
-     */
+    // If the line is readonly (can't be modified)
     readonly: {
       type: Boolean,
       required: false,
@@ -172,7 +160,8 @@ export default defineNuxtComponent({
   setup() {
     const localePath = useLocalePath()
     return {
-      localePath
+      localePath,
+      formatCurrency
     }
   },
   computed: {
@@ -180,7 +169,7 @@ export default defineNuxtComponent({
       return this.line?.amount || new CartLineAmount({})
     },
     product() {
-      return this.line?.product || false
+      return this.line?.product || null
     },
     hasPendingTransactions() {
       return this.line?.hasPendingTransactions || false
@@ -214,7 +203,7 @@ export default defineNuxtComponent({
 
 <style lang="scss">
 .cartline {
-  @apply card card-bordered card-side  mb-2 flex justify-center  p-3 sm:flex-nowrap;
+  @apply card card-bordered card-side mb-2 flex justify-center p-3 sm:flex-nowrap;
   &--pending {
     .cartline__content {
       .content__price .value {
@@ -240,7 +229,7 @@ export default defineNuxtComponent({
           @apply flex-row text-sm font-bold uppercase md:line-clamp-1;
         }
         .shortTitle {
-          @apply flex  divide-x divide-solid text-xs text-gray-500;
+          @apply flex divide-x divide-solid text-xs text-gray-500;
           li {
             @apply px-2 first:pl-0 last:pr-0;
           }
@@ -250,7 +239,7 @@ export default defineNuxtComponent({
         @apply col-span-4 max-sm:order-first md:col-span-3;
       }
       &__qty {
-        @apply col-span-3 flex flex-col text-sm sm:col-span-2  md:col-span-1 md:row-span-2;
+        @apply col-span-3 flex flex-col text-sm sm:col-span-2 md:col-span-1 md:row-span-2;
         .cart-line-qty {
           @apply h-10 w-full p-0;
           .input-qty {
@@ -262,7 +251,7 @@ export default defineNuxtComponent({
                   @apply h-full w-8 text-base;
                 }
                 &__input {
-                  @apply h-full  text-center text-base font-normal;
+                  @apply h-full text-center text-base font-normal;
                 }
               }
             }
@@ -273,7 +262,7 @@ export default defineNuxtComponent({
         @apply flex flex-col items-center justify-between gap-2 pt-2 text-sm md:flex-row;
         .price {
           &__value {
-            @apply pb-0 text-lg font-bold text-secondary leading-3;
+            @apply pb-0 text-lg font-bold leading-3 text-secondary;
           }
           &__tax {
             @apply text-xs font-normal text-gray-500;

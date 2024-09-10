@@ -7,7 +7,7 @@
   "search": {
     "noresults": "Aucun résultat",
     "filter": "Filtrer",
-    "results":{
+    "results": {
       "count": "{count} résultat(s)"
     },
     "sort": {
@@ -30,6 +30,10 @@
       "queries": "Mes recherches récentes",
       "clear": "Effacer",
       "seeall": "Voir tout"
+    },
+    "display_mode": {
+      "grid": "Mosaïque",
+      "list": "Liste"
     }
   },
   "filters": {
@@ -62,6 +66,14 @@
     },
     "discount": {
       "tag": "SOLDES - { discount }%"
+    },
+    "description": {
+      "title": "Description",
+      "link": "Voir la description complète"
+    },
+    "ref": "Ref.",
+    "variants": {
+      "count": "{count} models disponibles"
     }
   },
   "cart": {
@@ -121,7 +133,7 @@
         },
         "no-method": "Aucune méthode de livraison sélectionnée",
         "no-dropoff": "Aucun point de retrait sélectionné",
-        "empty":"Aucune méthode de livraison n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat"
+        "empty": "Aucune méthode de livraison n'est disponible pour votre panier, nous sommes désolés pour ce désagrément. Veuillez nous contacter pour finaliser votre achat"
       }
     },
     "summary": {
@@ -137,7 +149,7 @@
 
       "same-address": {
         "title": "Adresse de livraison et de facturation",
-        "label": "Adresse de facturation identique à l'adresse de livraison",
+        "label": "Adresse de facturation identique à l'adresse de livraison"
       },
       "shipping": {
         "title": "Adresse de livraison"
@@ -154,7 +166,7 @@
       "title": "Merci !",
       "intro": "Votre commande a bien été validée.",
       "message": "Vous allez recevoir un email de confirmation de commande. Vous pouvez suivre l'état de votre commande dans votre compte.",
-      "link":"Voir mes commandes",
+      "link": "Voir mes commandes",
       "pending": "Votre commande est en attente de paiement",
       "retry": "Réessayer",
       "cancelled": {
@@ -175,6 +187,7 @@
     "loading": "Chargement...",
     "title": "Mon compte",
     "logout": "Déconnexion",
+    "no_user": "Vous n'êtes pas connecté",
     "profile": {
       "title": "Mon profil",
       "accountdata": "Mes informations de compte",
@@ -196,7 +209,7 @@
       "password": "Mot de passe",
       "forgot_password": "Mot de passe oublié ?",
       "not_yet_account": "Vous n'avez pas encore de compte ?",
-      "password_requirements": "Le mot de passe doit contenir au moins 8 caractères et contenir au moins une majuscule et un caractère spécial {'@#$%^&+=!?'}.",
+      "password_requirements": "Le mot de passe doit contenir au moins 8 caractères et contenir au moins une majuscule, un chiffre ainsi qu'un caractère spécial {'@#$%^&+=!?'}.",
       "create_account": "Créer un compte !",
       "sign_in": "Se connecter"
     },
@@ -279,7 +292,6 @@
         "error": "Impossible de supprimer l'adresse",
         "success": "Adresse supprimée"
       }
-
     },
     "quotations": "Mes devis",
     "invoices": "Mes factures",
@@ -292,7 +304,7 @@
   "actions": {
     "modify": "Modifier",
     "update": "Actualiser",
-    "create": "Créer " ,
+    "create": "Créer ",
     "validate": "Valider",
     "delete": "Supprimer",
     "close": "Fermer"
@@ -306,7 +318,7 @@
     "phone": "Téléphone",
     "country": "Pays",
     "noresult": "Aucune adresse",
-    "type" : {
+    "type": {
       "delivery": "Adresse de livraison",
       "invoice": "Adresse de facturation",
       "contact": "Adresse de contact"
@@ -397,16 +409,16 @@
   "table": {
     "noresult": "Aucun résultat",
     "size": "Nombre de résultats par page",
-    "count":"{count} resultat(s)"
+    "count": "{count} resultat(s)"
   },
-  "contact":{
-    "title":"Contact",
-    "message":"Contactez-nous via le formulaire ci-dessous",
-    "subject":"Sujet",
-    "description":"Votre message...",
-    "data_protection":"Vous accéptez notre ",
+  "contact": {
+    "title": "Contact",
+    "message": "Contactez-nous via le formulaire ci-dessous",
+    "subject": "Sujet",
+    "description": "Votre message...",
+    "data_protection": "Vous accéptez notre ",
     "data_policy": "Politique de protection de données personnelles",
-    "send":"Envoyer",
+    "send": "Envoyer",
     "attachment": "Pièce jointe",
     "error": "Une erreur est survenue lors de l'envoi du formulaire.",
     "form_sent": {

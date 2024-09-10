@@ -9,8 +9,8 @@
     </div>
     <div class="checkout-payment__items">
       <template v-if="!loading && paymentData">
-        <slot name="items" :cart="cart" :paymentData="paymentData">
-          <payment-method-list :paymentData="paymentData"></payment-method-list>
+        <slot name="items" :cart="cart" :payment-data="paymentData">
+          <payment-method-list :payment-data="paymentData"></payment-method-list>
         </slot>
       </template>
       <template v-else-if="loading">
@@ -33,7 +33,7 @@
       </slot>
     </div>
     <div class="checkout-payment__footer">
-      <button type="button" class="btn-ghost btn" @click="back">
+      <button type="button" class="btn btn-ghost" @click="back">
         <icon name="left"></icon>
         {{ $t('cart.back') }}
       </button>
@@ -42,19 +42,11 @@
 </template>
 <script lang="ts">
 import { PaymentGeneric } from '#components'
-import { PaymentData, PaymentMethod } from '#models'
+import type { PaymentData, PaymentMethod } from '#models'
 
 interface PaymentWithComponent extends PaymentMethod {
   component: any
   method: PaymentMethod
-}
-const importPaymentComponent = (name: string) => {
-  name = name.charAt(0).toUpperCase() + name.slice(1)
-  return defineAsyncComponent(() =>
-    import(`../../payment/Payment${name}.vue`).catch(() => {
-      return PaymentGeneric
-    })
-  )
 }
 
 /**
@@ -71,7 +63,7 @@ export default defineNuxtComponent({
     back: () => true
   },
   components: {
-    'payment-generic': PaymentGeneric,
+    'payment-generic': PaymentGeneric
   },
   props: {
     active: {
@@ -86,9 +78,7 @@ export default defineNuxtComponent({
 
     back() {
       this.$emit('back')
-    },
-
-
+    }
   },
 
   async setup() {
@@ -104,11 +94,10 @@ export default defineNuxtComponent({
     try {
       error.value = null
       methods.value = []
-      if(!paymentService) {
+      if (!paymentService) {
         throw new Error('Payment service not available')
       }
       paymentData.value = await cartService.getPayable()
-
     } catch (e: any) {
       console.error(e)
       error.value = e
@@ -116,11 +105,7 @@ export default defineNuxtComponent({
       loading.value = false
     }
 
-
-
-    onMounted(async () => {
-
-    })
+    onMounted(async () => {})
     return {
       cart,
       paymentData,
@@ -150,10 +135,10 @@ export default defineNuxtComponent({
     }
   }
   &__items {
-    @apply col-span-full md:col-span-2 flex flex-col justify-start gap-2;
+    @apply col-span-full flex flex-col justify-start gap-2 md:col-span-2;
   }
   &__error {
-    @apply col-span-full md:col-span-1 alert alert-error;
+    @apply alert alert-error col-span-full md:col-span-1;
   }
   &__total {
     @apply col-span-full md:col-span-1;

@@ -1,127 +1,151 @@
-import { storeToRefs } from 'pinia'
-import { ErpFetch } from '@shopinvader/fetch'
-import { Service } from '#services'
 import { User } from '#models'
+import mitt from 'mitt'
 import nuxtStorage from 'nuxt-storage'
+import type { $Fetch, FetchContext } from 'ofetch'
+import { storeToRefs } from 'pinia'
+import { BaseServiceLocalized } from './BaseServiceLocalized'
 
-export abstract class AuthService extends Service {
-  provider: ErpFetch | null = null
-  callbacksUserLoaded: any[] = []
-  callbacksUserUnLoaded: any[] = []
-  type: string = ''
-  loaded: boolean = false
-  storage: any = null
-  abstract loginRedirect(page?:string): Promise<any>
-  abstract logoutRedirect(page?:string): Promise<any>
-  constructor(provider: ErpFetch) {
-    super()
-    this.provider = provider
+export interface AuthUserCredential {
+  login: string
+  mail_verified: boolean
+  name: string
+  role: string
+  has_agent: boolean
+  has_market: boolean
+}
+
+type AuthEvents = {
+  'user:loaded': User
+  'user:unloaded': User | null
+}
+
+export abstract class AuthService extends BaseServiceLocalized {
+  // Api
+  public ofetch: $Fetch
+  public baseUrl: string
+  public authEndpoint: string = ''
+  public userEndpoint: string = 'customer'
+  public urlEndpointAuth: string = ''
+  public urlEndpointUser: string = ''
+  // Bus
+  public readonly bus = mitt<AuthEvents>()
+  // Local data
+  public type: string = ''
+  public loaded: boolean = false
+  private storage: any = null
+
+  abstract getConfig(): any
+  abstract loginRedirect(url?: string): Promise<any>
+  abstract logoutRedirect(url?: string): Promise<any>
+  // Add those to the fetcher
+  abstract interceptorOnRequest({ request, options }: FetchContext): void | Promise<void>
+  abstract interceptorOnResponseError({
+    request,
+    response,
+    options
+  }: FetchContext): void | Promise<void>
+
+  constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string) {
+    super(isoLocale)
+    this.ofetch = ofetch
+    this.baseUrl = baseUrl
     this.storage = nuxtStorage?.localStorage
   }
-  abstract init(services:ShopinvaderServiceList): Promise<any>
-  getUser(): Ref<User | boolean | null> {
+
+  override init(services: ShopinvaderServiceList): Promise<any> {
+    super.init(services)
+    this.urlEndpointAuth = this.buildUrlEndpoint(this.baseUrl, this.authEndpoint)
+    this.urlEndpointUser = this.buildUrlEndpoint(this.baseUrl, this.userEndpoint)
+    return Promise.resolve()
+  }
+
+  buildUrlEndpoint(baseUrl: string, entrypoint: string): string {
+    const url = (baseUrl.endsWith('/') ? baseUrl : baseUrl + '/') + entrypoint
+    return url.endsWith('/') ? url.slice(0, -1) : url
+  }
+
+  getUser(): Ref<User | null> {
     const store = this.store()
     const { user } = storeToRefs(store)
     return user
   }
+
   async fetchUser(): Promise<any> {
     let user = null
     try {
-      const profile = await this.provider?.get("customer", [], null)
-      if(profile) {
+      const profile = await this.ofetch(this.urlEndpointUser)
+      if (profile) {
         user = this.setUser(profile)
       }
     } catch (e) {
       this.setUser(null)
       throw e
-    } finally {
-      return user
     }
+    return user
   }
-  async saveUser(profile:User):Promise<User | null> {
-    let user = null
-    try {
-      const json = profile.getJSONData()
-      user = await this.provider?.post("customer", json)
-    } catch (e) {
-      console.error(e)
-      user = null
-      throw e
-    } finally {
-      user = await this.setUser(user)
-      return user
-    }
+
+  async saveUser(profile: User): Promise<User | null> {
+    const json = profile.getJSONData()
+    const res = await this.ofetch<User>(this.urlEndpointUser, { method: 'POST', body: json })
+    return await this.setUser(res)
   }
-  async setUser(data: any): Promise<User | null> {
+
+  async setUser(data: AuthUserCredential | User | null): Promise<User | null> {
     const store = this.store()
-    if(data) {
+    if (data) {
       const user: User | null = data ? new User(data) : null
       store.setUser(user)
       this.setSession(user !== null)
       if (user !== null) {
-        for (const callback of this.callbacksUserLoaded) {
-          if (typeof callback == 'function') {
-            await callback(user)
-          }
-        }
+        this.bus.emit('user:loaded', user)
       } else {
-
-        for (const callback of this.callbacksUserUnLoaded) {
-          if (typeof callback == 'function') {
-            await callback(user)
-          }
-        }
+        this.bus.emit('user:unloaded', user)
       }
       return user || null
     } else {
       store.setUser(null)
       this.setSession(null)
-      for (const callback of this.callbacksUserUnLoaded) {
-        if (typeof callback == 'function') {
-          await callback(null)
-        }
-      }
+      this.bus.emit('user:unloaded', null)
       return null
     }
   }
-  /**
-   * Register a callback function to be called when the user is loaded
-   * @param callback function
-   */
-  onUserLoaded(callback: (user: User) => void) {
-    this.callbacksUserLoaded.push(callback)
-  }
-  /**
-   * Register a callback function to be called when the user is unloaded
-   * @param callback
-   */
-  onUserUnLoaded(callback: (user: User) => void) {
-    this.callbacksUserUnLoaded.push(callback)
-  }
-  setSession(value: boolean) {
-    if(value) {
+
+  setSession(value: boolean | null) {
+    if (value) {
       this.storage?.setData?.('auth_user', value, 10, 'd')
     } else {
       this.storage?.removeItem?.('auth_user')
     }
   }
+
   async registerUser(
     name: string,
     password: string,
     login: string
-  ): Promise<{ success: boolean}> {
-    let request = { success: false }
+  ): Promise<AuthUserCredential | null> {
+    let request = null
     if (login && password && name) {
-      request = await this.provider?.post('auth/register', {
-        name,
-        login,
-        password
+      request = await this.ofetch(this.urlEndpointAuth + '/register', {
+        method: 'POST',
+        body: {
+          name,
+          login,
+          password
+        }
       })
     }
-    return request || { success: false }
+    return request
   }
+
   getSession(): boolean {
     return this.storage?.getData('auth_user') || false
   }
-  abstract getConfig():void
+
+  /**
+   * checkRegisterToken : Check the token for the customer registration
+   */
+  async checkRegisterToken(_token: string): Promise<boolean> {
+    // TODO: implement the checkRegisterToken method
+    return false
+  }
 }

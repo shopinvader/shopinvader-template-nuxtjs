@@ -1,32 +1,22 @@
-import { ElasticFetch } from '@shopinvader/fetch'
-import esb, { Aggregation, MultiMatchQuery, Query, TermQuery } from 'elastic-builder'
 import { Product, type ProductResult, type VariantAttributes } from '#models'
-import { Service } from '#services'
+import type { Aggregation, Query } from 'elastic-builder'
+import esb, { MultiMatchQuery, TermQuery } from 'elastic-builder'
+import { BaseServiceElastic } from './BaseServiceElastic'
 
-export class ProductService extends Service {
-  name = 'products'
-  provider: ElasticFetch | null = null
-  constructor(provider: ElasticFetch) {
-    super()
-    this.provider = provider
-  }
-
-  hits(hits: any[]) {
+export class ProductService extends BaseServiceElastic {
+  hits(hits: any[]): Product[] {
     return hits?.map((hit: any) => {
-      const variants = hit?.inner_hits?.variants?.hits?.hits?.map(
+      const productVariants = hit?.inner_hits?.variants?.hits?.hits?.map(
         (variant: any) => variant._source
       )
       return this.jsonToModel({
         ...hit._source,
-        ...{ variants }
+        ...{ variants: productVariants }
       })
     })
   }
 
   async search(body: any): Promise<ProductResult> {
-    if (this.provider == null) {
-      throw new Error('No provider found for products')
-    }
     body.collapse = {
       field: 'url_key',
       inner_hits: [
@@ -36,29 +26,22 @@ export class ProductService extends Service {
         }
       ]
     }
-    const result = await this.provider?.search(body)
+    const result = await this.elasticSearch(body)
     const hits = this.hits(result?.hits?.hits || [])
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
-
-    return { hits, total, aggregations }
+    const suggestions = result?.suggest || null
+    return { hits, total, aggregations, suggestions }
   }
 
   fullTextQuery(query: string): Query {
-    return esb.boolQuery().must([
-      new MultiMatchQuery(['name', 'description'], query).type(
-        'phrase_prefix'
-      )
-    ])
-    .should([
-      esb.termQuery('main', true)
-    ])
+    return esb
+      .boolQuery()
+      .must([new MultiMatchQuery(['name', 'description'], query).type('phrase_prefix')])
+      .should([esb.termQuery('main', true)])
   }
 
-  async autocompleteSearch(
-    query: string,
-    limit: number
-  ): Promise<ProductResult> {
+  async autocompleteSearch(query: string, limit: number): Promise<ProductResult> {
     const body = esb
       .requestBodySearch()
       .collapse('url_key', esb.innerHits('variants').size(100), 4)
@@ -66,7 +49,7 @@ export class ProductService extends Service {
       .query(this.fullTextQuery(query))
       .size(limit)
 
-    const result = await this.provider?.search(body.toJSON())
+    const result = await this.elasticSearch(body)
     const hits = this.hits(result?.hits?.hits || [])
     const aggregations = result?.aggregations || null
     const total = result?.hits?.total?.value || 0
@@ -75,7 +58,6 @@ export class ProductService extends Service {
   }
 
   /**
-   *
    * @param field
    * @param value
    * @returns
@@ -87,8 +69,8 @@ export class ProductService extends Service {
     return this.search(body)
   }
 
-  getAll(): Promise<ProductResult> {
-    const body = { query: { match_all: {} } }
+  getAll(maxSize = 100): Promise<ProductResult> {
+    const body = { query: { match_all: {} }, size: maxSize }
     return this.search(body)
   }
 
@@ -116,16 +98,19 @@ export class ProductService extends Service {
     return null
   }
 
-  async getVariantsAggregation(urlKey:string, axes:VariantAttributes) {
+  async getVariantsAggregation(urlKey: string, axes: VariantAttributes) {
     const aggs = []
-    let i =0
-    for(let axis in axes) {
+    let i = 0
+    for (const axis in axes) {
       const axesValues = Object.entries(axes).slice(0, i)
-      let agg:Aggregation = esb.termsAggregation(axis, `variant_attributes.${axis}`).size(1000).order('_term', 'asc')
-      if(axesValues?.length > 0) {
-        const query = esb.boolQuery().must(
-          axesValues.map(([key, value]) =>  esb.termQuery(`variant_attributes.${key}`, value))
-        )
+      let agg: Aggregation = esb
+        .termsAggregation(axis, `variant_attributes.${axis}`)
+        .size(1000)
+        .order('_term', 'asc')
+      if (axesValues?.length > 0) {
+        const query = esb
+          .boolQuery()
+          .must(axesValues.map(([key, value]) => esb.termQuery(`variant_attributes.${key}`, value)))
         agg = esb.filterAggregation(axis, query).agg(agg)
       }
       aggs.push(agg)
@@ -136,32 +121,33 @@ export class ProductService extends Service {
       .collapse('url_key', esb.innerHits('variants').size(0), 4)
       .query(new TermQuery('url_key', urlKey))
       .postFilter(
-        esb.nestedQuery()
-        .path('variant_attributes')
-        .query(
-          esb.boolQuery()
-          .must(
-            Object.entries(axes).map(([key, value]) =>  esb.termQuery(`variant_attributes.${key}`, value))
+        esb
+          .nestedQuery()
+          .path('variant_attributes')
+          .query(
+            esb
+              .boolQuery()
+              .must(
+                Object.entries(axes).map(([key, value]) =>
+                  esb.termQuery(`variant_attributes.${key}`, value)
+                )
+              )
           )
-        )
       )
-      .agg(
-        esb.nestedAggregation('variants', 'variant_attributes').aggs(aggs)
-      )
+      .agg(esb.nestedAggregation('variants', 'variant_attributes').aggs(aggs))
       .size(1)
     const result = await this.search(body.toJSON())
     const { aggregations, hits } = result
-    const items:any = {}
-    for(let axis in axes) {
-
+    const items: any = {}
+    for (const axis in axes) {
       let axisValues = aggregations.variants[axis]
-      if(axisValues?.[axis]) {
+      if (axisValues?.[axis]) {
         axisValues = axisValues[axis]
       }
-      items[axis] = axisValues?.buckets?.map((bucket:any) => bucket.key) || []
+      items[axis] = axisValues?.buckets?.map((bucket: any) => bucket.key) || []
     }
     return {
-      axes:items,
+      axes: items,
       product: hits?.[0] || null
     }
   }

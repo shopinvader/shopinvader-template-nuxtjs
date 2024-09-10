@@ -18,7 +18,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Category, type CategoryResult } from '#models'
+import type { Category, CategoryResult } from '#models'
 export default {
   name: 'AutocompleteCategory',
   events: ['click'],
@@ -31,8 +31,8 @@ export default {
 
   setup(props) {
     const localePath = useLocalePath()
-    let error = ref('')
-    let searchResults = reactive({
+    const error = ref('')
+    const searchResults = reactive({
       hits: [] as Category[],
       total: null as number | null
     } as CategoryResult)
@@ -40,11 +40,8 @@ export default {
     const onSearch = async (query: string) => {
       try {
         const categoryService = useShopinvaderService('categories')
-
         if (categoryService) {
-          const { hits, total } =
-            (await categoryService.autocompleteSearch(query)) || null
-
+          const { hits, total } = (await categoryService.autocompleteSearch(query, 6)) || null
           searchResults.hits = hits
           searchResults.total = total
         }
@@ -74,7 +71,7 @@ export default {
 .autocomplete-category {
   @apply flex flex-wrap gap-2 p-2;
   &__hit {
-    @apply badge-outline badge my-1;
+    @apply badge badge-outline my-1;
   }
 }
 </style>

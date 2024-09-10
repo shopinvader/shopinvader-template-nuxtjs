@@ -1,7 +1,7 @@
-import { ErpFetch } from "@shopinvader/fetch";
-import { AuthService } from "../AuthService";
-import { localePath, navigateTo } from "#imports";
-import { User } from "~/models";
+import { localePath, navigateTo } from '#imports'
+import type { $Fetch, FetchContext } from 'ofetch'
+import type { User } from '~/models'
+import { AuthService, type AuthUserCredential } from '../AuthService'
 
 export interface AuthAPIConfig {
   loginPage: string
@@ -14,32 +14,55 @@ export interface AuthAPIConfig {
  * @extends AuthService
  */
 export class AuthCredentialService extends AuthService {
-  public config: AuthAPIConfig
-  public type: string = "credentials"
-  constructor(provider: ErpFetch, config: AuthAPIConfig) {
-    super(provider)
+  override type: string = 'credentials'
+  override authEndpoint: string = 'auth'
+  private config: AuthAPIConfig
+
+  constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthAPIConfig) {
+    super(isoLocale, ofetch, baseUrl)
     this.config = config
     this.config = {
       ...config,
       loginPage: localePath(config.loginPage) as string,
       logoutPage: localePath(config.logoutPage) as string
     }
-
   }
-  async init() {
-    if(this.getSession()) {
+
+  override init(services: ShopinvaderServiceList): Promise<any> {
+    super.init(services)
+    if (this.getSession()) {
       this.profile()
     } else {
       this.setUser(null)
     }
     this.logoutRedirect = this.logoutRedirect.bind(this)
-    this.userLoaded()
-    this.store().$onAction(({ name, args, store }) => {
+    this.store().$onAction(async ({ name, args, store }) => {
       const { user } = store
-      if (name == 'setUser' && args[0]?.login !== user?.login && args[0]?.login == null) {
-        navigateTo(this.config.loginPage)
+      if (name == 'setUser' && args[0]?.login !== (user as User)?.login && args[0]?.login == null) {
+        await navigateTo(this.config.loginPage)
       }
     })
+    return Promise.resolve()
+  }
+
+  getConfig(): any {
+    return this.config
+  }
+
+  // Interceptors to be added in the app fetcher
+  interceptorOnRequest({ options }: FetchContext): void | Promise<void> {
+    if (this.getUser()) {
+      // Add credentials to the request
+      options.credentials = 'include'
+    }
+  }
+  interceptorOnResponseError({ response }: FetchContext): void | Promise<void> {
+    if (!import.meta.env.SSR) {
+      if (response?.status === 401) {
+        // The user is not authenticated anymore
+        this.logoutRedirect()
+      }
+    }
   }
 
   /**
@@ -47,21 +70,17 @@ export class AuthCredentialService extends AuthService {
    * @param target
    * @returns
    */
-  loginRedirect(target: string): Promise<any> {
-    return new Promise(() => {
-      if(!this.getUser()?.value) {
-        navigateTo(this.config.loginPage)
-      } else {
-        navigateTo(target || this.config.logoutPage)
-      }
-    })
+  async loginRedirect(target: string) {
+    return !this.getUser()?.value
+      ? navigateTo(this.config.loginPage)
+      : navigateTo(target || this.config.logoutPage)
   }
 
   /**
    * logout page redirection
    * @param target page relative URI
    */
-  async logoutRedirect(page?: string | undefined): Promise<any> {
+  async logoutRedirect(_page?: string | undefined): Promise<any> {
     await this.logout()
     /** Redirection done via store $subscribe */
   }
@@ -71,10 +90,13 @@ export class AuthCredentialService extends AuthService {
    * @param login
    * @param password
    */
-  async login(login: string, password: string): Promise<{ login:string }> {
+  async login(login: string, password: string) {
     try {
-      const data = await this.provider?.post("auth/login", { login, password })
-      if(data?.login) {
+      const data = await this.ofetch(this.urlEndpointAuth + '/login', {
+        method: 'POST',
+        body: { login, password }
+      })
+      if (data?.login) {
         await this.profile()
       }
     } catch (error) {
@@ -87,7 +109,9 @@ export class AuthCredentialService extends AuthService {
    * logout user
    */
   async logout(): Promise<any> {
-    await this.provider?.post("auth/logout", {})
+    await this.ofetch(this.urlEndpointAuth + '/logout', {
+      method: 'POST'
+    })
     await this.setUser(null)
   }
 
@@ -98,36 +122,45 @@ export class AuthCredentialService extends AuthService {
    * @param login
    * @returns
    */
-  async registerUser(
+  override async registerUser(
     name: string,
     password: string,
     login: string
-  ): Promise<{ login: string } | boolean> {
-    let request = false
+  ): Promise<AuthUserCredential | null> {
+    let request = null
     if (login && password && name) {
-      request = await this.provider?.post('auth/register', {
-        name,
-        login,
-        password
+      request = await this.ofetch(this.urlEndpointAuth + '/register', {
+        method: 'POST',
+        body: {
+          name,
+          login,
+          password
+        }
       })
     }
-    return request || false
+    return request
   }
 
   /**
    * Reset request password link
    * @param data
    */
-  async resetPassword(login: string): Promise<{login :string}> {
-    return await this.provider?.post("auth/request_reset_password", {login})
+  async resetPassword(login: string): Promise<any> {
+    return await this.ofetch(this.urlEndpointAuth + '/request_reset_password', {
+      method: 'POST',
+      body: { login }
+    })
   }
 
   /**
    * Define a new password
    * @param data
    */
-  async setPassword(token: string, password: string): Promise<{login :string}> {
-    return await this.provider?.post("auth/set_password", { token, password })
+  async setPassword(token: string, password: string): Promise<AuthUserCredential> {
+    return await this.ofetch(this.urlEndpointAuth + '/set_password', {
+      method: 'POST',
+      body: { token, password }
+    })
   }
 
   /**
@@ -137,38 +170,22 @@ export class AuthCredentialService extends AuthService {
   async profile(): Promise<User | null> {
     let profile = null
     try {
-      profile = await this.provider?.get("auth/profile", [], null)
-      if(profile?.login) {
+      profile = await this.ofetch(this.urlEndpointAuth + '/profile')
+      if (profile?.login) {
         this.setUser(profile)
-
       } else {
         this.setUser(null)
       }
-
-    } catch(error) {
+    } catch (error) {
       this.setUser(null)
     }
     return profile
   }
-
-  getConfig() {
-    return this.config
-  }
-
-  userLoaded() {
-    const $fetch = this.provider?._fetch
-    if ($fetch && this.provider && !import.meta.env.SSR) {
-      this.provider._fetch = async (url: string, options: any) => {
-        const response = await $fetch(url, options)
-        if(response?.status === 401) {
-          this.logoutRedirect()
-        }
-        return response
-      }
-    }
-  }
   async validateEmail(token: string): Promise<any> {
-    return await this.provider?.post("auth/validate_email", { token })
+    return await this.ofetch(this.urlEndpointAuth + '/validate_email', {
+      method: 'POST',
+      body: { token }
+    })
   }
 
 }

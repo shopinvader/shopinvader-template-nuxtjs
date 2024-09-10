@@ -1,104 +1,131 @@
-import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
 const dir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
+  nitro: {
+    compressPublicAssets: true,
+    minify: true
+  },
+
+  delayHydration: {
+    mode: 'init'
+  },
+
   app: {
     head: {
+      templateParams: {
+        separator: '|',
+        siteName: 'Shopinvader Demo'
+      },
+      titleTemplate: '%s %separator %siteName',
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
-  css: ["~/assets/css/main.scss"],
+
+  css: ['~/assets/css/main.scss'],
+
   runtimeConfig: {
-    basicAuth: process.env.NUXT_BASIC_AUTH || "",
+    // Serveur-side only configuration
+    basicAuth: process.env.NUXT_BASIC_AUTH || '',
     shopinvader: {
       erp: {
         proxy: {
-          auth: process.env.NUXT_SHOPINVADER_ERP_PROXY_AUTH || "",
-          url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || "",
-        },
-      },
+          auth: process.env.NUXT_SHOPINVADER_ERP_PROXY_AUTH || '',
+          url: process.env.NUXT_SHOPINVADER_ERP_PROXY_URL || '',
+          logLevel: Number(process.env.NUXT_SHOPINVADER_ERP_PROXY_LOGLEVEL) || 0
+        }
+      }
     },
+    // Client-side and server-side configuration
     public: {
-      theme: {
-        logo: process.env.VUE_APP_LOGO_URL || ''
-      },
       shopinvader: {
         erp: {
-          key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || "",
-          url: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_URL || "",
-          default_role: "default",
+          key: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_KEY || '',
+          url: process.env.NUXT_PUBLIC_SHOPINVADER_ERP_URL || '',
+          default_role: 'default'
         },
         auth: {
-          type: process.env.NUXT_PUBLIC_SHOPINVADER_AUTH_TYPR || "credentials",
+          type: process.env.NUXT_PUBLIC_SHOPINVADER_AUTH_TYPR || 'credentials',
           profile: {
-            loginPage: "/account/login",
-            logoutPage: "/",
+            loginPage: '/account/login',
+            logoutPage: '/'
           }
         },
-        endpoint: "shopinvader",
+        endpoint: 'shopinvader',
         elasticsearch: {
-          url: process.env.NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_URL || "",
+          url: process.env.NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_URL || '',
           indices: {
-            products:
-              process.env
-                .NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_PRODUCTS ||
-              "",
-            categories:
-              process.env
-                .NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_CATEGORIES ||
-              "",
-          },
-        },
-      },
-    },
+            products: process.env.NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_PRODUCTS || '',
+            categories: process.env.NUXT_PUBLIC_SHOPINVADER_ELASTICSEARCH_INDICES_CATEGORIES || ''
+          }
+        }
+      }
+    }
   },
+
   modules: [
-    "nuxt-delay-hydration",
-    "nuxt-icon",
+    '@nuxtjs/critters',
+    '@nuxt/icon',
     '@nuxtjs/tailwindcss',
-    'nuxt-simple-robots',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',
     '@vueuse/motion/nuxt',
     '@nuxt/image',
-    "@nuxtjs/sitemap"
+    '@nuxt/eslint',
+    '@nuxt/fonts',
+    '@nuxtjs/sitemap',
+    'nuxt-schema-org',
+    'nuxt-delay-hydration',
+    '@nuxt/content',
+    '@nuxtjs/robots',
+    '@nuxtjs/seo'
   ],
+
   piniaPersistedstate: {
     cookieOptions: {
       sameSite: 'strict'
     },
     storage: 'localStorage'
   },
-  delayHydration: {
-    mode: "mount",
 
+  image: {
+    format: ['webp']
   },
+
   pages: true,
+
   sitemap: {
-    sources: ["/api/_sitemap-urls"],
+    sources: ['/api/_sitemap-urls'],
     exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
+
+  critters: {
+    config: {
+      preload: 'swap'
+    }
+  },
+
   i18n: {
     locales: [
       {
         code: 'en',
-        iso: 'en_us',
+        language: 'en_us',
         file: 'en-US.json',
         name: 'English',
         icon: 'circle-flags:uk'
       },
       {
         code: 'es',
-        iso: 'es_es',
+        language: 'es_es',
         file: 'es-ES.json',
         name: 'Español',
         icon: 'circle-flags:es'
       },
       {
         code: 'fr',
-        iso: 'fr_fr',
+        language: 'fr_fr',
         file: 'fr-FR.json',
         name: 'Français',
         icon: 'circle-flags:fr'
@@ -109,14 +136,27 @@ export default defineNuxtConfig({
     langDir: 'locales',
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: 'i18n_redirected',
+      alwaysRedirect: true
+    }
   },
+
   build: {
     transpile: ['@shopinvader/cart']
   },
+
   devtools: {
-    enabled: false
+    enabled: true
   },
+
   routeRules: {
+    '/': {
+      index: true,
+      ssr: true,
+      swr: 60 * 60
+    },
     '/account/**': {
       index: false,
       ssr: false
@@ -132,6 +172,19 @@ export default defineNuxtConfig({
     '/search': {
       index: true,
       ssr: false
-    },
-  }
+    }
+  },
+
+  site: {
+    url: 'https://example.com',
+    name: 'My Website'
+  },
+
+  fonts: {
+    providers: {
+      google: {}
+    }
+  },
+
+  compatibilityDate: '2024-07-22'
 })

@@ -1,68 +1,35 @@
-@tailwind base;
 @tailwind components;
-@tailwind utilities;
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('/fonts/Montserrat-Light.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/Montserrat-Regular.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('/fonts/Montserrat-SemiBold.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('/fonts/Montserrat-Bold.woff2') format('woff2');
-}
 
 @layer components {
-.heading {
-    @apply font-heading uppercase font-bold
+  .heading {
+    @apply font-heading font-bold uppercase;
   }
-}
 
-h2,
-.h2 {
+  h2,
+  .h2 {
+    @apply mb-5 mt-0 font-heading text-3xl leading-tight text-primary;
+  }
 
-  @apply font-heading leading-tight text-3xl mt-0 mb-5 text-primary;
-}
+  h1,
+  .h1 {
+    @apply mb-5 mt-0 font-heading text-4xl leading-tight text-primary;
+  }
 
-h1,
-.h1 {
-  @apply font-heading leading-tight text-4xl mt-0 mb-5 text-primary;
-}
-
-.backdrop {
-  @apply backdrop-blur-sm fixed top-0 left-0 z-20 h-screen w-screen bg-gray-900/20;
-}
-
-body {
-  @apply antialiased;
-}
-
-.form-control {
-  .label, label {
-    &.required {
-      .label-text {
-        &:after {
-          @apply text-error inline pr-1;
-          content: "*";
-
+  .backdrop {
+    @apply fixed left-0 top-0 z-20 h-screen w-screen bg-gray-900/20 backdrop-blur-sm;
+  }
+  .icon {
+    font-size: 24px;
+  }
+  .form-control {
+    .label,
+    label {
+      &.required {
+        .label-text {
+          &:after {
+            @apply inline pr-1 text-error;
+            content: '*';
+          }
         }
       }
     }

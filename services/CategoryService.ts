@@ -1,29 +1,22 @@
-import { ElasticFetch } from '@shopinvader/fetch'
-import esb, { MultiMatchQuery } from 'elastic-builder'
 import { Category, type CategoryResult } from '#models'
-import { Service } from '#services'
+import esb, { MultiMatchQuery } from 'elastic-builder'
+import { BaseServiceElastic } from './BaseServiceElastic'
 
-export class CategoryService extends Service {
-  name = 'categories'
-  provider: ElasticFetch | null = null
-  constructor(provider: ElasticFetch) {
-    super()
-    this.provider = provider
+export class CategoryService extends BaseServiceElastic {
+  navCategories: Category[] | null = null
+
+  override async init(services: ShopinvaderServiceList) {
+    this.services = services
   }
   async search(body: any): Promise<CategoryResult> {
-    if (this.provider == null) {
-      throw new Error('No provider found for categories')
-    }
-    const result = await this.provider?.search(body)
-    const hits = result?.hits?.hits?.map((hit: any) =>
-      this.jsonToModel(hit._source)
-    )
+    const result = await this.elasticSearch(body)
+    const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))
     const total = result?.hits?.total?.value || 0
     const aggregations = result?.aggregations || null
     return { hits, total, aggregations }
   }
+
   /**
-   *
    * @param field
    * @param value
    * @returns
@@ -45,8 +38,8 @@ export class CategoryService extends Service {
     return this.search(body)
   }
 
-  getAll(): Promise<CategoryResult> {
-    const body = { query: { match_all: {} } }
+  getAll(maxSize = 100): Promise<CategoryResult> {
+    const body = { query: { match_all: {} }, size: maxSize }
     return this.search(body)
   }
 
@@ -57,16 +50,30 @@ export class CategoryService extends Service {
     }
     return null
   }
-  async autocompleteSearch(query: string): Promise<CategoryResult> {
+
+  async autocompleteSearch(query: string, limit: number): Promise<CategoryResult> {
     const body = esb
       .requestBodySearch()
-      .query(
-        new MultiMatchQuery(['name', 'description'], query).type(
-          'phrase_prefix'
-        )
-      )
+      .query(new MultiMatchQuery(['name', 'description'], query).type('phrase_prefix'))
+      .size(limit)
     return await this.search(body.toJSON())
   }
+
+  async getNavCategories(): Promise<Category[]> {
+    if (this.navCategories == null) {
+      const result = await this?.search({
+        size: 20,
+        query: {
+          term: {
+            level: 0
+          }
+        }
+      })
+      this.navCategories = result?.hits || []
+    }
+    return this.navCategories || []
+  }
+
   jsonToModel(json: any): Category {
     return new Category(json)
   }

@@ -1,14 +1,14 @@
 <template>
   <div class="container flex flex-col gap-6 p-10">
-    <div class="card shadow rounded-xl">
+    <div class="card rounded-xl shadow">
       <div class="card-body">
         <div class="card-title">
           <h2>API</h2>
         </div>
-        <p>API URL: {{ data?.erp.api_url }}</p>
+        <p>API URL: {{ data?.erp.url }}</p>
       </div>
     </div>
-    <div class="card shadow rounded-xl">
+    <div class="card rounded-xl shadow">
       <div class="card-body">
         <div class="card-title">
           <h2>Elastic</h2>
@@ -20,7 +20,7 @@
           </a>
         </p>
         <div>
-          <table class="table w-100">
+          <table class="w-100 table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -28,7 +28,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(name, index) in data?.elasticsearch.indices">
+              <tr v-for="(name, index) in data?.elasticsearch.indices" :key="index">
                 <td>{{ name }}</td>
                 <td>{{ index }}</td>
               </tr>
@@ -44,10 +44,10 @@
 </template>
 <script setup lang="ts">
 definePageMeta({
-  layout: false,
+  layout: false
 })
-let {data } = await useAsyncData(async ({ $shopinvader }) => {
+const { data } = await useAsyncData(async () => {
   const config = await useRuntimeConfig()?.shopinvader
-  return  config
+  return config
 })
 </script>

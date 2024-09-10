@@ -1,14 +1,10 @@
 <template>
   <div class="line">
     <div class="line__image">
-      <slot
-        v-if="line?.product?.images"
-        name="image"
-        :images="line.product?.images || null"
-      >
+      <slot v-if="line?.product?.images" name="image" :images="line.product?.images || null">
         <product-image
           v-if="line?.product?.images?.length > 0"
-          :image="line?.product.images[0]"
+          :image="line?.product.images[0] as ProductImageSet"
           class="product-hit__image"
           @click="linkToProduct()"
         >
@@ -24,7 +20,7 @@
           <slot name="content" :line="line">
             <div v-if="line?.product?.urlKey">
               <nuxt-link
-                :to="localePath({path:`/${line.product.urlKey}`})"
+                :to="localePath('/' + line.product.urlKey)"
                 target="_blank"
                 class="underline"
               >
@@ -35,73 +31,64 @@
         </div>
         <div class="content__qty">
           <slot name="qty" :line="line">
-            {{ $t('sale.quantity', {qty:line.qty}) }}
+            {{ $t('sale.quantity', { qty: line.qty }) }}
           </slot>
         </div>
       </div>
       <div class="content__price">
         <slot name="price" :line="line">
           <div class="value">
-            <div
-              v-if="line.amount.discountTotal !== 0"
-              class="price__original"
-            >
-              {{ $filter.currency(line.amount.totalWithoutDiscount) }}
+            <div v-if="line.amount.discountTotal !== 0" class="price__original">
+              {{ formatCurrency(line.amount.totalWithoutDiscount) }}
             </div>
             <div class="price__value">
-              {{ $filter.currency(line.amount.total) }}
+              {{ formatCurrency(line.amount.total) }}
             </div>
           </div>
         </slot>
       </div>
       <div class="content__actions">
-        <slot name="actions" :line="line">
-        </slot>
+        <slot name="actions" :line="line"> </slot>
       </div>
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
+import type { ProductImageSet, SaleLine } from '#models'
 import type { PropType } from 'vue'
-import { SaleLine } from '#models'
+import { formatCurrency } from '~/utils/StringHelper'
 
-export default defineNuxtComponent({
-  name: 'SaleLine',
-  props: {
-    line: {
-      type: Object as PropType<SaleLine>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const toggle = ref(false)
-    const localePath = useLocalePath()
-    return {
-      localePath,
-      toggle
-    }
+const props = defineProps({
+  line: {
+    type: Object as PropType<SaleLine>,
+    required: true
   }
 })
+const localePath = useLocalePath()
+const router = useRouter()
+
+const linkToProduct = () => {
+  router.push({ path: `/${props.line.product.urlKey}` })
+}
 </script>
 <style lang="scss">
 .line {
-  @apply  flex flex-wrap items-start md:items-center rounded-lg border-2 p-3;
+  @apply flex flex-wrap items-start rounded-lg border-2 p-3 md:items-center;
   &__image {
-    @apply px-4 lg:mb-0 w-16 h-16 lg:w-24 lg:h-24 bg-base-100 flex justify-center items-center;
+    @apply flex h-16 w-16 items-center justify-center bg-base-100 px-4 lg:mb-0 lg:h-24 lg:w-24;
   }
   &__content {
-    @apply flex flex-grow w-9/12 justify-between px-4 lg:w-9/12;
+    @apply flex w-9/12 flex-grow justify-between px-4 lg:w-9/12;
     .content {
       &__text {
-        @apply flex flex-col flex-grow;
+        @apply flex flex-grow flex-col;
       }
       &__header {
-        @apply  font-heading;
+        @apply font-heading;
       }
       &__title {
         .title {
-          @apply flex-grow  text-gray-500;
+          @apply flex-grow text-gray-500;
         }
       }
       &__content {
@@ -125,7 +112,7 @@ export default defineNuxtComponent({
         }
       }
       &__actions {
-        @apply flex flex-row p-2 items-end justify-between md:items-center;
+        @apply flex flex-row items-end justify-between p-2 md:items-center;
       }
     }
   }

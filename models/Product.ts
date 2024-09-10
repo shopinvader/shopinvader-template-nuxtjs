@@ -1,21 +1,14 @@
 import {
-  ProductModel,
+  Model,
   ProductCategory,
   ProductImageSet,
-  ProductPrice,
   ProductLinks,
-  type ProductStock,
-  type ProductPriceList,
+  ProductModel,
+  ProductPrice,
   Product as ProductVariant,
-  Model
+  type ProductPriceList,
+  type ProductStock
 } from '#models'
-
-export interface ProductResult {
-  hits: Product[]
-  total: number
-  aggregations?: any
-  suggestions?: any
-}
 
 export interface VariantAttributes {
   [key: string]: string | number
@@ -74,21 +67,21 @@ export class Product extends Model {
   stock: ProductStock | null
   role: string
 
-  constructor(data: any, role?:string ) {
+  constructor(data: any, role?: string) {
     super(data)
 
     this.role = role || 'default'
     this.id = data?.id || null
     this.model = new ProductModel(data?.model)
     this.urlKey = data?.url_key || null
-    this.redirectUrlKey = Array.isArray(data?.redirect_url_key)? data?.redirect_url_key : []
+    this.redirectUrlKey = Array.isArray(data?.redirect_url_key) ? data?.redirect_url_key : []
     this.main = data?.main || false
     this.shortDescription = data?.short_description || null
     this.description = data?.description || null
     this.name = data?.name || null
     this.shortName = data?.short_name || null
     this.seoTitle = data?.seo_title || null
-    if(!this.seoTitle) {
+    if (!this.seoTitle) {
       this.seoTitle = this.name
     }
 
@@ -98,18 +91,14 @@ export class Product extends Model {
     this.metaKeywords = data.meta_keywords || null
     let metaDescription = data?.meta_description || null
 
-    if(!metaDescription) {
-      metaDescription = [
-        this.seoTitle,
-        this.shortDescription,
-        this.description
-      ]
-      .filter((item) => item)
-      .join(', ')
-      .replaceAll(/(<([^>]+)>)/gi, '')
-      .replaceAll(/(\r\n|\n|\r)/gm, " ")
-      .replaceAll(/\s+/g, ' ')
-      .substring(0, 255)
+    if (!metaDescription) {
+      metaDescription = [this.seoTitle, this.shortDescription, this.description]
+        .filter((item) => item)
+        .join(', ')
+        .replaceAll(/(<([^>]+)>)/gi, '')
+        .replaceAll(/(\r\n|\n|\r)/gm, ' ')
+        .replaceAll(/\s+/g, ' ')
+        .substring(0, 255)
     }
 
     this.metaDescription = metaDescription
@@ -125,15 +114,15 @@ export class Product extends Model {
 
     /** Product prices */
     const priceLists = Object.entries(data?.price_by_pricelist || data?.prices || data?.price || {})
-    if(priceLists?.length > 0) {
+    if (priceLists?.length > 0) {
       this.pricesList = {}
-      for(let [key, value] of priceLists) {
+      for (const [key, value] of priceLists) {
         this.pricesList[key] = new ProductPrice(value)
       }
     }
-    if(data?.price) {
-      this.price = new ProductPrice(data?.price) || null
-    } else if(this.pricesList?.[this.role]) {
+    if (data?.price) {
+      this.price = new ProductPrice(data?.price)
+    } else if (this.pricesList?.[this.role]) {
       /* fallback to default price */
       this.price = this.pricesList[this.role]
     }
@@ -157,11 +146,9 @@ export class Product extends Model {
 
     /** Product variant selector */
     if (Array.isArray(data?.variant_selector)) {
-      this.variantSelector = data?.variant_selector.map(
-        (variantSelector: any) => {
-          return new ProductVariantSelector(variantSelector)
-        }
-      )
+      this.variantSelector = data?.variant_selector.map((variantSelector: any) => {
+        return new ProductVariantSelector(variantSelector)
+      })
     }
   }
 }

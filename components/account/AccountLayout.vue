@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <client-only fallbackTag="div">
-      <template #fallback>
-        <div class="account-layout__loading">
-          <spinner />
-        </div>
-      </template>
-      <div v-if="user" class="account-layout">
+  <client-only fallback-tag="div">
+    <template #fallback>
+      <div class="account-layout__loading">
+        <spinner />
+      </div>
+    </template>
+    <div class="account-layout">
+      <template v-if="user">
         <slot v-if="navbar" name="navbar">
           <account-navbar
             v-if="items && items?.length > 0"
@@ -16,10 +16,10 @@
           >
             <template #extra="{ pages }">
               <li v-if="pages.length > 0" class="extra">
-                <nuxt-link :to="localePath('account-logout')">
-                  <icon name="logout" />
+                <button @click="logout" class="head__logout">
+                  <icon name="logout" class="" />
                   {{ $t('account.logout') }}
-                </nuxt-link>
+                </button>
               </li>
             </template>
           </account-navbar>
@@ -38,7 +38,7 @@
                   <h1 class="head__title">
                     {{ currentPage?.title }}
                   </h1>
-                  <button class="head__logout" @click="logout">
+                  <button @click="logout" class="head__logout">
                     <icon name="logout" class="" />
                     {{ $t('account.logout') }}
                   </button>
@@ -47,92 +47,89 @@
             </slot>
           </div>
           <div v-if="!loading" class="main__content">
-            <slot  name="content" :items="items"></slot>
+            <slot name="content" :items="items"></slot>
           </div>
-          <div v-else="loading" class="main__loading">
-            <spinner/>
+          <div v-else class="main__loading">
+            <spinner />
           </div>
         </div>
-      </div>
-    </client-only>
-  </div>
+      </template>
+      <template v-else-if="!loading">
+        <div class="account-layout__no-user">
+          <p>{{ $t('account.no_user') }}</p>
+          <button @click="login" class="btn btn-primary">
+            {{ $t('account.login.title') }}
+          </button>
+        </div>
+      </template>
+    </div>
+  </client-only>
 </template>
-
-<script lang="ts">
-import type { User } from '#models'
-
-export default defineNuxtComponent({
-  name: 'AccountLayout',
-  props: {
-    slug: {
-      required: false,
-      type: String,
-      default: ''
-    },
-    navbar: {
-      required: false,
-      type: Boolean,
-      default: true
-    }
+<script lang="ts" setup>
+const props = defineProps({
+  slug: {
+    type: String,
+    required: true
   },
-  setup() {
-    const loading = ref(false)
-    const auth = useShopinvaderService('auth')
-    const user = auth.getUser()
-    const localePath = useLocalePath()
-    const logout = () => {
-      loading.value = true
-      try {
-        auth.logoutRedirect()
-      } catch (error) {
-        console.error(error)
-      } finally {
-        loading.value = false
-      }
-    }
-
-    return {
-      localePath,
-      logout,
-      loading,
-      auth,
-      user
-    }
-  },
-  data() {
-    return {
-      items: [
-        {
-          title: this.$t('account.profile.title'),
-          icon: 'profile',
-          slug: 'account-profile'
-        },
-        {
-          title: this.$t('account.address.title'),
-          icon: 'addresses',
-          slug: 'account-addresses'
-        },
-        {
-          title: this.$t('account.sales.title'),
-          icon: 'sales',
-          slug: 'account-sales'
-        }
-      ]
-    }
-  },
-  computed: {
-    currentPage() {
-      return this.items.find((item) => item.slug === this.slug) || null
-    }
+  navbar: {
+    type: Boolean,
+    default: true
   }
 })
-</script>
+const auth = useShopinvaderService('auth')
+const localePath = useLocalePath()
+const { t } = useI18n()
 
+const loading = ref(false)
+const user = auth?.getUser()
+const items = ref([
+  {
+    title: t('account.profile.title'),
+    icon: 'profile',
+    slug: 'account-profile'
+  },
+  {
+    title: t('account.address.title'),
+    icon: 'addresses',
+    slug: 'account-addresses'
+  },
+  {
+    title: t('account.sales.title'),
+    icon: 'sales',
+    slug: 'account-sales'
+  }
+])
+const login = async () => {
+  loading.value = true
+  try {
+    const localePath = useLocalePath()
+    await auth?.loginRedirect(localePath({ name: 'account' }))
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
+}
+const logout = async () => {
+  if (!auth) return console.error('Auth service not found')
+  loading.value = true
+  try {
+    await auth.logoutRedirect()
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
+  }
+}
+const currentPage = computed(() => {
+  return items.value.find((item) => item.slug === props.slug) || null
+})
+</script>
 <style lang="scss">
 .account-layout {
   @apply w-full gap-1 lg:flex;
   &__loading {
-    @apply flex justify-center items-center h-32;
+    @apply flex h-96 items-center justify-center;
   }
   &__navbar {
     @apply lg:w-1/3 lg:p-3 xl:w-1/4;
@@ -141,20 +138,20 @@ export default defineNuxtComponent({
     @apply w-full;
     .main {
       &__head {
-        @apply flex items-start sm:items-center gap-2 border-b p-3 text-xl max-sm:shadow md:pb-3 lg:text-3xl;
+        @apply flex items-start gap-2 border-b p-3 text-xl max-sm:shadow sm:items-center md:pb-3 lg:text-3xl;
         .head {
-          @apply flex flex-wrap justify-between w-full gap-2 sm:items-center;
+          @apply flex w-full flex-wrap justify-between gap-2 sm:items-center;
           &__icon {
             @apply text-2xl md:text-4xl;
           }
           &__title {
-            @apply flex-1 m-0 p-0 text-lg sm:text-xl md:text-4xl;
+            @apply m-0 flex-1 p-0 text-lg sm:text-xl md:text-4xl;
           }
           &__back {
             @apply cursor-pointer text-primary lg:hidden;
           }
           &__logout {
-            @apply btn max-sm:hidden sm:btn-sm btn-primary;
+            @apply btn btn-primary sm:btn-sm max-sm:hidden;
           }
         }
       }
@@ -162,9 +159,12 @@ export default defineNuxtComponent({
         @apply container mx-auto min-h-screen p-3;
       }
       &__loading {
-        @apply flex justify-center items-center min-h-36 pt-10;
+        @apply flex min-h-36 items-center justify-center pt-10;
       }
     }
+  }
+  &__no-user {
+    @apply flex min-h-64 w-full flex-col items-center justify-center gap-2 text-center;
   }
 }
 </style>
