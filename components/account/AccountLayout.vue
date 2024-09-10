@@ -16,10 +16,10 @@
           >
             <template #extra="{ pages }">
               <li v-if="pages.length > 0" class="extra">
-                <nuxt-link :to="localePath('account-logout')">
-                  <icon name="logout" />
+                <button @click="logout" class="head__logout">
+                  <icon name="logout" class="" />
                   {{ $t('account.logout') }}
-                </nuxt-link>
+                </button>
               </li>
             </template>
           </account-navbar>
@@ -129,7 +129,7 @@ const currentPage = computed(() => {
 .account-layout {
   @apply w-full gap-1 lg:flex;
   &__loading {
-    @apply flex h-32 items-center justify-center;
+    @apply flex h-96 items-center justify-center;
   }
   &__navbar {
     @apply lg:w-1/3 lg:p-3 xl:w-1/4;
