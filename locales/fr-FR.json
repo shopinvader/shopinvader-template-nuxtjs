@@ -209,7 +209,7 @@
       "password": "Mot de passe",
       "forgot_password": "Mot de passe oublié ?",
       "not_yet_account": "Vous n'avez pas encore de compte ?",
-      "password_requirements": "Le mot de passe doit contenir au moins 8 caractères et contenir au moins une majuscule et un caractère spécial {'@#$%^&+=!?'}.",
+      "password_requirements": "Le mot de passe doit contenir au moins 8 caractères et contenir au moins une majuscule, un chiffre ainsi qu'un caractère spécial {'@#$%^&+=!?'}.",
       "create_account": "Créer un compte !",
       "sign_in": "Se connecter"
     },

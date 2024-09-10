@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="grid grid-cols-5 gap-4 py-3">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 py-3">
       <ProductHit
         v-for="product in products"
         :key="product.id || 0"

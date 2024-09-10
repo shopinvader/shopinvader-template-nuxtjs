@@ -200,7 +200,7 @@
       "password": "Contraseña",
       "forgot_password": "¿Olvidaste tu contraseña?",
       "not_yet_account": "¿No tienes una cuenta?",
-      "password_requirements": "La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula y un carácter especial {'@#$%^&+=!?'}.",
+      "password_requirements": "La contraseña debe tener al menos 8 caracteres y contener al menos una letra mayúscula, un número y un carácter especial {'@#$%^&+=!?'}.",
       "create_account": "Crear una cuenta",
       "sign_in": "Iniciar sesión"
     },

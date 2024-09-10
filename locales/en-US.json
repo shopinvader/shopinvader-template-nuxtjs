@@ -195,7 +195,7 @@
       "password": "Password",
       "forgot_password": "Forgot password",
       "not_yet_account": "You don't have an account ?",
-      "password_requirements": "Password must be at least 8 characters long and contain at least one uppercase letter and one special character {'@#$%^&+=!?'}.",
+      "password_requirements": "Password must be at least 8 characters long and contain at least one uppercase letter, a number and one special character {'@#$%^&+=!?'}.",
       "create_account": "Create it now !",
       "sign_in": "Sign in"
     },
