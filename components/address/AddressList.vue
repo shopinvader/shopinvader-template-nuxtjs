@@ -165,6 +165,7 @@ const deleteAddress = async (address: Address) => {
       searchAddress(searchQuery.value)
     } catch (e) {
       console.error(e)
+      saveError.value = t('account.address.save.error')
       notifications.addError(t('account.address.delete.error'))
     } finally {
       loading.value = false

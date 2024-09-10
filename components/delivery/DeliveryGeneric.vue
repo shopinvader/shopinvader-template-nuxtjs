@@ -96,23 +96,27 @@ const carrierService = useShopinvaderService('deliveryCarriers')
 const dropoffSites = ref([] as DeliveryPickupPoint[])
 
 const onSearchPickupPoint = async () => {
-  try {
-    error.value = false
-    dropoffSites.value = []
-    dropoffSites.value = await carrierService?.getDeliveryPickups(
-      props.deliveryCarrier.id,
-      searchedName.value || ''
-    )
-  } catch (e) {
-    console.error(e)
-    error.value = true
+  if (props.deliveryCarrier?.withDropoffSite) {
+    try {
+      error.value = false
+      dropoffSites.value = []
+      dropoffSites.value = await carrierService?.getDeliveryPickups(
+        props.deliveryCarrier.id,
+        searchedName.value || ''
+      )
+    } catch (e) {
+      console.error(e)
+      error.value = true
+    }
   }
 }
 
 watch(
   () => props.selected,
   async () => {
-    await onSearchPickupPoint()
+    if (props.deliveryCarrier?.withDropoffSite) {
+      await onSearchPickupPoint()
+    }
   }
 )
 
@@ -140,7 +144,7 @@ const selectPickup = async (dropoff: DeliveryPickupPoint) => {
     @apply border-2 border-primary shadow-lg;
   }
   &__icon {
-    @apply text-5xl text-primary;
+    @apply text-primary;
   }
   &__body {
     @apply w-full flex-grow;
@@ -168,7 +172,7 @@ const selectPickup = async (dropoff: DeliveryPickupPoint) => {
                 @apply label;
               }
               &__input {
-                @apply input input-bordered input-sm w-full max-w-xs;
+                @apply input input-sm input-bordered w-full max-w-xs;
               }
             }
           }

@@ -183,7 +183,7 @@ onMounted(() => {
 
 const changeVariant = (product: Product) => {
   const item = new Product({
-    ...product,
+    ...product.data,
     variants: props.product.variants
   })
   variant.value = item

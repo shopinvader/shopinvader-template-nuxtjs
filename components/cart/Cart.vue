@@ -128,7 +128,7 @@ useHead({
     }
   }
   &__coupon {
-    @apply col-span-3 md:col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-3;
+    @apply col-span-3 col-start-1 md:col-span-1 lg:col-start-2 xl:col-start-3;
     .total {
       &__checkout {
         @apply w-full;

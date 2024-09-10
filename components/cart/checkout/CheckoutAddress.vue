@@ -179,13 +179,13 @@ export default defineNuxtComponent({
 .checkout-address {
   @apply flex flex-col gap-6;
   &__form {
-    @apply card card-body mx-auto max-w-xl;
+    @apply card card-body mx-auto w-full max-w-2xl bg-white;
   }
   &__items {
     @apply grid grid-cols-1 gap-6 lg:grid-cols-2;
 
     .address-card {
-      @apply shadow-none bg-white;
+      @apply bg-white shadow-none;
       &__header {
         .title {
           @apply m-0 flex items-center gap-3 text-xl font-bold uppercase leading-none text-inherit;

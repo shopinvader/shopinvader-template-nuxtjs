@@ -92,7 +92,7 @@ const cart = cartService.getCart()
       @apply p-0;
     }
     .mention {
-      @apply w-full flex-grow text-sm text-gray-600;
+      @apply flex w-full flex-grow items-center gap-1 text-sm text-gray-600;
     }
   }
   &__discount {
