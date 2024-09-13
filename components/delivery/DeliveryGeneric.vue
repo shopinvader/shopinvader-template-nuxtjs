@@ -73,7 +73,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { DeliveryPickupPoint, type DeliveryCarrier } from '#models'
+import { type DeliveryPickupPoint, type DeliveryCarrier } from '#models'
 import type { PropType } from 'vue'
 import { formatCurrency } from '~/utils/StringHelper'
 

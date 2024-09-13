@@ -32,7 +32,7 @@ export class DeliveryCarrierService extends BaseServiceErp {
         name
       }
     }
-    const data = await this.ofetch(`delivery_pickups`, { query })
+    const data = await this.ofetch(`${this.urlEndpoint}delivery_pickups`, { query })
     if (Array.isArray(data)) {
       return data.map((item: any) => new DeliveryPickupPoint(item))
     }

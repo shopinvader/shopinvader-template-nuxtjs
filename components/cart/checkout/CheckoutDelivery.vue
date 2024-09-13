@@ -196,7 +196,9 @@ export default defineNuxtComponent({
   },
   methods: {
     next() {
-      this.$emit('next')
+      if (this.hasValidCarrier) {
+        this.$emit('next')
+      }
     },
     back() {
       this.$emit('back')
@@ -236,8 +238,11 @@ export default defineNuxtComponent({
       } finally {
         this.loading = false
         if (this.carriers.length == 1) {
-          await this.selectCarrier(this.carriers[0]?.carrier)
-          this.$emit('next')
+          const { carrier = null } = this.carriers[0]
+          if (carrier) {
+            await this.selectCarrier(carrier)
+            this.next()
+          }
         } else if (this.carriers.length > 1 && !this.selectedCarrier) {
           await this.selectCarrier(this.carriers[0]?.carrier)
         }
