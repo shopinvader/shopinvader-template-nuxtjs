@@ -106,7 +106,7 @@ export class ProductService extends BaseServiceElastic {
       let agg: Aggregation = esb
         .termsAggregation(axis, `variant_attributes.${axis}`)
         .size(1000)
-        .order('_term', 'asc')
+        .order('_key', 'asc')
       if (axesValues?.length > 0) {
         const query = esb
           .boolQuery()

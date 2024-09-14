@@ -139,7 +139,7 @@ export default {
     const getFilterAggregation = (query: Query | null): FilterAggregation => {
       // Initialize the main aggregation with terms aggregation based on provided props
       const agg: Aggregation = new TermsAggregation(props.name, props.field)
-        .order('_term', 'asc') // Order the aggregation by term in ascending order
+        .order('_key', 'asc') // Order the aggregation by term in ascending order
         .size(sizeQuery.value) // Set the size of the aggregation based on reactive sizeQuery value
       // If a transformQuery function is provided in props, apply it to modify the query
       if (props.transformQuery !== null) {

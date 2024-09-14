@@ -157,7 +157,7 @@ const getFilterAggregation = (query: Query | null): FilterAggregation => {
       }
       aggs.push(
         new FilterAggregation(`lvl${i}`, filterQuery).aggregations([
-          new TermsAggregation('items', props.field).order('_term', 'asc').size(sizeQuery.value)
+          new TermsAggregation('items', props.field).order('_key', 'asc').size(sizeQuery.value)
         ])
       )
     }
