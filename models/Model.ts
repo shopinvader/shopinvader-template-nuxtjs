@@ -1,3 +1,5 @@
+import deepCopy from '~/utils/DeepCopy'
+
 export interface Record {
   [field: string]: any
 }
@@ -8,10 +10,12 @@ export class Model {
   constructor(data: any) {
     this.data = data
   }
+
   toJSON() {
     return { ...this.data }
   }
+
   public clone<T>(): T {
-    return Object.create(this) as T;
+    return deepCopy(this as unknown) as T
   }
 }
