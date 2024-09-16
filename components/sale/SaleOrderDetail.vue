@@ -11,8 +11,8 @@
       </button>
     </template>
   </sale-detail>
-  <div class="sale__loading">
-    <spinner v-if="loading" />
+  <div v-if="loading" class="sale__loading">
+    <spinner />
   </div>
 </template>
 <script setup lang="ts">
