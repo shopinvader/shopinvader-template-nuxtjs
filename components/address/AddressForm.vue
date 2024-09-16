@@ -170,7 +170,7 @@ watch(
   () => props.address,
   (address) => {
     if (address) {
-      model.value = address.clone() || new Address({})
+      model.value = address.clone<Address>() || new Address({})
     }
   },
   { immediate: true }
