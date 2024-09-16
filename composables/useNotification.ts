@@ -28,14 +28,16 @@ const notification = defineStore('notification', {
     ) {
       const appConfig = useAppConfig()
       const nDuration = duration ? duration : appConfig?.notifications?.duration || 5000
-      this.messages.push({
+      const newMessage: NotificationMessage = {
         message,
         type: type,
         title
-      })
-      const index = this.messages.length - 1
+      }
+      // Add the message to the list to be displayed
+      this.messages.push(newMessage)
       setTimeout(() => {
-        this.messages.splice(index, 1)
+        // Remove the message after the duration
+        this.messages.splice(this.messages.indexOf(newMessage), 1)
       }, nDuration)
     }
   }
