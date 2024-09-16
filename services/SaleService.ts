@@ -35,12 +35,12 @@ export class SaleService extends BaseServiceErp {
   }
 
   download(id: number): Promise<Blob> | null {
-    return this.ofetch(`${this.urlEndpoint}/${id}/download'`, { responseType: 'blob' }) || null
+    return this.ofetch(`${this.urlEndpoint}/${id}/download`, { responseType: 'blob' }) || null
   }
 
   downloadInvoice(id: number): Promise<Blob> | null {
     return (
-      this.ofetch(`${this.urlEndpointInvoice}/${id}/download'`, { responseType: 'blob' }) || null
+      this.ofetch(`${this.urlEndpointInvoice}/${id}/download`, { responseType: 'blob' }) || null
     )
   }
 
