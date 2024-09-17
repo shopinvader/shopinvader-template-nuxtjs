@@ -22,7 +22,7 @@
       </div>
       <slot name="error" :error="error">
         <div v-if="selected && error" class="body__error">
-          {{ $t('error.generic') }}
+          {{ t('error.generic') }}
         </div>
       </slot>
       <slot name="dropoff" :delivery-carrier="deliveryCarrier" :on-select-pickup="selectPickup">
@@ -38,19 +38,19 @@
         {{ formatCurrency(deliveryCarrier.price) }}
       </template>
       <template v-else>
-        {{ $t('cart.delivery.method.free') }}
+        {{ t('cart.delivery.method.free') }}
       </template>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
 import type { PropType } from 'vue'
-import { type DeliveryPickupPoint, type DeliveryCarrier } from '#models'
+import type { DeliveryPickupPoint, DeliveryCarrier } from '#models'
 import { formatCurrency } from '~/utils/StringHelper'
 import DeliveryPickupSelector from './DeliveryPickupSelector.vue'
 
 const emit = defineEmits(['select'])
-const props = defineProps({
+defineProps({
   deliveryCarrier: {
     type: Object as PropType<DeliveryCarrier>,
     required: true
@@ -60,7 +60,7 @@ const props = defineProps({
     required: false
   }
 })
-
+const { t } = useI18n()
 const error = ref(false)
 const cartService = useShopinvaderService('cart')
 

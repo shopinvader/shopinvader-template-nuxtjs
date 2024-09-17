@@ -345,9 +345,15 @@ export class CartService extends BaseServiceErp {
   }
 
   async setPickupPoint(pickupPoint: DeliveryPickupPoint): Promise<CartModel | null> {
-    const data: any = await this.ofetch(`${this.urlEndpoint}/current/set_public_delivery_pickup`, {
+    let url = `${this.urlEndpoint}/current/set_public_delivery_pickup`
+    let body = pickupPoint.toJSON()
+    if (pickupPoint?.id) {
+      url = `${this.urlEndpoint}/current/set_pickup`
+      body = { pickup_site_id: pickupPoint.id }
+    }
+    const data: any = await this.ofetch(url, {
       method: 'POST',
-      body: pickupPoint.toJSON()
+      body
     })
     if (data?.id) {
       this.setCart(new CartModel(data))

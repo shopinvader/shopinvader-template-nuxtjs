@@ -2,15 +2,15 @@
   <div v-if="carrier?.withDropoffSite" class="delivery-pickup">
     <div v-if="error" class="delivery-pickup__error">
       <icon name="error" />
-      {{ $t('error.generic') }}
+      {{ t('error.generic') }}
     </div>
     <div class="delivery-pickup__content">
       <div class="content__title">
-        {{ $t('cart.delivery.method.pickup.intro') }}
+        {{ t('cart.delivery.method.pickup.intro') }}
       </div>
       <label class="content__search">
         <div class="search__label">
-          {{ $t('cart.delivery.method.pickup.search') }}
+          {{ t('cart.delivery.method.pickup.search') }}
         </div>
         <input type="text" class="search__input" v-model="searchedName" />
       </label>
@@ -34,14 +34,17 @@
           </label>
         </li>
       </ul>
-      <div v-if="dropoffSites?.length === 0">
-        {{ $t('cart.delivery.method.pickup.no-result') }}
+      <div v-else-if="dropoffSites?.length === 0 && !loading" class="content__no-result">
+        {{ t('cart.delivery.method.pickup.no-result') }}
+      </div>
+      <div v-else class="content__loading">
+        <spinner />
       </div>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
+import type { DeliveryCarrier, DeliveryPickupPoint } from '#models'
 
 const emit = defineEmits(['select'])
 const props = defineProps({
@@ -50,14 +53,16 @@ const props = defineProps({
     required: true
   }
 })
+const { t } = useI18n()
 const carrierService = useShopinvaderService('deliveryCarriers')
-
 const dropoffSites = ref([] as DeliveryPickupPoint[])
 const error = ref(false)
+const loading = ref(false)
 const searchedName = ref<string | null>(null)
 const onSearchPickupPoint = async () => {
   if (props.carrier?.withDropoffSite) {
     try {
+      loading.value = true
       error.value = false
       dropoffSites.value = []
       dropoffSites.value =
@@ -65,6 +70,8 @@ const onSearchPickupPoint = async () => {
     } catch (e) {
       console.error(e)
       error.value = true
+    } finally {
+      loading.value = false
     }
   }
 }
@@ -105,6 +112,12 @@ watch(
             @apply input input-sm input-bordered w-full max-w-xs;
           }
         }
+      }
+      &__no-result {
+        @apply py-2;
+      }
+      &__loading {
+        @apply flex justify-center py-2;
       }
       &__list {
         @apply my-3 max-h-64 overflow-auto border px-3;
