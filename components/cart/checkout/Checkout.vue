@@ -12,10 +12,10 @@
       <div v-if="cart?.hasPendingTransactions" class="checkout__pending">
         <!-- @slot Pending state and warning message content  -->
         <slot name="pending">
-          <h1>{{ $t('cart.pending.title') }}</h1>
-          <p>{{ $t('cart.pending.checkout') }}</p>
+          <h1>{{ t('cart.pending.title') }}</h1>
+          <p>{{ t('cart.pending.checkout') }}</p>
           <nuxt-link :to="localePath('/cart')" class="btn btn-primary">
-            {{ $t('cart.pending.back') }}
+            {{ t('cart.pending.back') }}
           </nuxt-link>
         </slot>
       </div>
@@ -32,13 +32,13 @@
                   'step--done': index + 1 < currentStepIndex,
                   'step--active': index + 1 == currentStepIndex
                 }"
-                @click="goToStep(index)"
+                @click="goToStep(index + 1)"
               >
                 <span class="step__index">
                   <icon name="check" v-if="index + 1 < currentStepIndex" />
                   <template v-else>{{ index + 1 }}</template>
                 </span>
-                <span class="step__title"> {{ step.title }} </span>
+                <span class="step__title"> {{ step.title }}</span>
               </li>
             </ul>
           </slot>
@@ -54,17 +54,17 @@
             </div>
             <div class="cart__body">
               <nuxt-link class="body__title" :to="localePath('/cart')">
-                {{ $t('cart.title') }}
+                {{ t('cart.title') }}
               </nuxt-link>
               <span class="body__count">
-                {{ $t('cart.line.count', { count: lineCount }) }}
+                {{ t('cart.line.count', { count: lineCount }) }}
               </span>
             </div>
             <div class="cart__end">
               <button
                 type="button"
                 class="btn btn-circle btn-ghost"
-                :title="displayCart ? $t('cart.line.hide') : $t('cart.line.view')"
+                :title="displayCart ? t('cart.line.hide') : t('cart.line.view')"
                 @click="displayCart = !displayCart"
               >
                 <icon name="down" class="text-lg" :rotate="displayCart && '180deg'" />
@@ -96,7 +96,7 @@
                 ]"
               >
                 <div v-if="step.title" class="checkout-step__header">
-                  <div class="header" @click="goToStep(index)">
+                  <div class="header" @click="goToStep(index + 1)">
                     <div class="header__name">
                       <span class="name__index">
                         <icon name="check" v-if="index < currentStepIndex" />
@@ -113,7 +113,7 @@
                         class="btn btn-ghost"
                         @click="goToStep(index)"
                       >
-                        {{ $t('cart.edit') }}
+                        {{ t('cart.edit') }}
                       </button>
                     </div>
                   </div>
@@ -148,7 +148,7 @@
     </div>
   </client-only>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import {
   CartCheckoutAddress,
   CartCheckoutDelivery,
@@ -172,165 +172,157 @@ interface checkoutStep {
  * Each step is a component.
  * a checkoutStep need to have a name, a title, a component and a position.
  */
-export default defineNuxtComponent({
-  name: 'Checkout',
-  emits: ['change', 'next', 'back'],
-  components: {
-    'checkout-login': CartCheckoutLogin,
-    CartEmpty: CartEmpty,
-    spinner: Spinner
-  },
-  props: {
-    /**
-     * Checkout steps.
-     * Used to override or merge component in the default steps list.
-     * Step position is used to sort the steps and add new component between default steps.
-     */
-    steps: {
-      type: Array as PropType<checkoutStep[]>,
-      default: () => []
-    },
-    /**
-     * Merge steps.
-     * If true, steps will be merged with default steps.
-     * If false, only steps will be used.
-     */
-    mergeSteps: {
-      type: Boolean,
-      default: true
-    }
-  },
-  setup(props) {
-    const localePath = useLocalePath()
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService?.getCart() || ref(null)
-    const i18n = useI18n()
-    const displayCart = ref(false)
 
-    /** Default steps of the checkout funnel */
-    const defaultSteps: checkoutStep[] = [
-      {
-        name: 'login',
-        title: null,
-        component: CartCheckoutLogin,
-        position: 0
-      },
-      {
-        name: 'address',
-        title: i18n.t('cart.address.title'),
-        component: CartCheckoutAddress,
-        position: 100
-      },
-      {
-        name: 'delivery',
-        title: i18n.t('cart.delivery.method.title'),
-        component: CartCheckoutDelivery,
-        position: 200
-      },
-      {
-        name: 'payment',
-        title: i18n.t('cart.payment.title'),
-        component: CartCheckoutPayment,
-        position: 300
-      }
-    ]
-    /** Merge props steps with default steps */
-    let checkoutSteps = [...defaultSteps]
-    if (props.mergeSteps) {
-      checkoutSteps = [...defaultSteps, ...props.steps]
-        .reduce((steps, item) => {
-          steps[item?.position] = item
-          return steps
-        }, [] as checkoutStep[])
-        .filter((step) => step?.component)
-    } else if (props.steps) {
-      checkoutSteps = props.steps
-    }
-    const currentStepIndex = ref(0 as number)
-    const maxStepIndex = ref(0 as number)
-    return {
-      maxStepIndex,
-      currentStepIndex,
-      checkoutSteps,
-      cart,
-      displayCart,
-      localePath
-    }
+const emit = defineEmits(['next', 'back', 'change'])
+const props = defineProps({
+  /**
+   * Checkout steps.
+   * Used to override or merge component in the default steps list.
+   * Step position is used to sort the steps and add new component between default steps.
+   */
+  steps: {
+    type: Array as PropType<checkoutStep[]>,
+    default: () => []
   },
-  computed: {
-    displayedSteps() {
-      /** Get steps with title */
-      return this.checkoutSteps.filter((step) => step?.title)
-    },
-    lineCount() {
-      return this.cart?.lines?.length || 0
-    }
-  },
-  watch: {
-    currentStepIndex(currentStepIndex) {
-      const step = this.checkoutSteps[currentStepIndex] || null
-      const title = this.$t('cart.title')
-      if (step) {
-        this.scrollToStep(step.position)
-        useHead({
-          title: `${step.title} - ${title}`
-        })
-      }
-    }
-  },
-  methods: {
-    /**
-     * Go to the previous step
-     */
-    back() {
-      this.currentStepIndex - 1 < 0 ? (this.currentStepIndex = 0) : this.currentStepIndex--
-      this.$emit('back', { currentStepIndex: this.currentStepIndex })
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      })
-    },
-    /**
-     * Go to the next step
-     */
-    next() {
-      this.currentStepIndex + 1 < 0 ? (this.currentStepIndex = 0) : this.currentStepIndex++
-      if (this.maxStepIndex < this.currentStepIndex) {
-        this.maxStepIndex = this.currentStepIndex
-      }
-      if (this.currentStepIndex === this.checkoutSteps.length) {
-        this.$emit('next', { currentStepIndex: this.currentStepIndex })
-      }
-    },
-    /**
-     * go to a specific step
-     * @param step
-     */
-    goToStep(step: number) {
-      this.$emit('change')
-      if (step > this.maxStepIndex) return
-      this.currentStepIndex = step
-    },
-    scrollToStep(step: number) {
-      const el = document.querySelector(`#step-${step}`)
-      if (el) {
-        setTimeout(() => {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        }, 900)
-      }
-    },
-    change() {
-      this.$emit('change')
-    }
+  /**
+   * Merge steps.
+   * If true, steps will be merged with default steps.
+   * If false, only steps will be used.
+   */
+  mergeSteps: {
+    type: Boolean,
+    default: true
   }
 })
+
+const localePath = useLocalePath()
+const cartService = useShopinvaderService('cart')
+const cart = cartService?.getCart() || ref(null)
+const { t } = useI18n()
+const displayCart = ref(false)
+
+/** Default steps of the checkout funnel */
+const defaultSteps: checkoutStep[] = [
+  {
+    name: 'login',
+    title: null,
+    component: CartCheckoutLogin,
+    position: 0
+  },
+  {
+    name: 'address',
+    title: t('cart.address.title'),
+    component: CartCheckoutAddress,
+    position: 100
+  },
+  {
+    name: 'delivery',
+    title: t('cart.delivery.method.title'),
+    component: CartCheckoutDelivery,
+    position: 200
+  },
+  {
+    name: 'payment',
+    title: t('cart.payment.title'),
+    component: CartCheckoutPayment,
+    position: 300
+  }
+]
+/** Merge props steps with default steps */
+let checkoutSteps = [...defaultSteps]
+if (props.mergeSteps) {
+  checkoutSteps = [...defaultSteps, ...props.steps]
+    .reduce((steps, item) => {
+      steps[item?.position] = item
+      return steps
+    }, [] as checkoutStep[])
+    .filter((step) => step?.component)
+} else if (props.steps) {
+  checkoutSteps = props.steps
+}
+const currentStepIndex = ref(0 as number)
+const maxStepIndex = ref(0 as number)
+const displayedSteps = computed(() => {
+  /** Get steps with title */
+  return checkoutSteps.filter((step) => step?.title)
+})
+
+const lineCount = computed(() => {
+  return cart?.value?.lines?.length || 0
+})
+
+watch(currentStepIndex, (currentStepIndex) => {
+  const step = checkoutSteps[currentStepIndex] || null
+  const title = t('cart.title')
+  if (step) {
+    scrollToStep(step.position)
+    useHead({
+      title: `${step.title} - ${title}`
+    })
+  }
+})
+/**
+ * Go to the previous step
+ */
+const back = () => {
+  if (currentStepIndex.value - 1 < 0) {
+    currentStepIndex.value = 0
+  } else {
+    currentStepIndex.value--
+  }
+  emit('back', { currentStepIndex: currentStepIndex.value })
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+}
+
+/**
+ * Go to the next step
+ */
+const next = () => {
+  if (currentStepIndex.value + 1 < 0) {
+    currentStepIndex.value = 0
+  } else {
+    currentStepIndex.value++
+  }
+  if (maxStepIndex.value < currentStepIndex.value) {
+    maxStepIndex.value = currentStepIndex.value
+  }
+  if (currentStepIndex.value === checkoutSteps.length) {
+    emit('next', { currentStepIndex: currentStepIndex.value })
+  }
+}
+
+/**
+ * go to a specific step
+ * @param step
+ */
+const goToStep = (step: number) => {
+  emit('change')
+  if (step > maxStepIndex.value) return
+  currentStepIndex.value = step
+}
+
+const scrollToStep = (step: number) => {
+  const el = document.querySelector(`#step-${step}`)
+  if (el) {
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 900)
+  }
+}
+
+const change = () => {
+  emit('change')
+}
 </script>
 
 <style lang="scss">
 .checkout {
   @apply p-4;
   &__header {
-    @apply sticky left-0 top-0 z-10 hidden w-full border-b py-4 md:block bg-gray-50;
+    @apply sticky left-0 top-0 z-10 hidden w-full border-b bg-gray-50 py-4 md:block;
     .checkout-stepper {
       @apply flex w-full flex-row justify-center md:gap-8;
 
@@ -338,8 +330,9 @@ export default defineNuxtComponent({
         @apply flex items-center justify-center gap-2 font-light uppercase text-gray-400;
         &--done,
         &--active {
+          @apply cursor-pointer;
           .step__index {
-            @apply  font-bold text-primary;
+            @apply font-bold text-primary;
           }
           .step__title {
             @apply text-primary;
