@@ -6,7 +6,7 @@
       </div>
       <div class="filters__action">
         <button type="button" @click="displayfilters = false">
-          {{ $t('search.filter') }}
+          {{ t('search.filter') }}
         </button>
       </div>
     </div>
@@ -32,7 +32,7 @@
             >
               <div class="search__display-filters">
                 <button type="button" @click="displayfilters = true">
-                  {{ $t('search.filter') }}
+                  {{ t('search.filter') }}
                 </button>
               </div>
             </slot>
@@ -45,8 +45,8 @@
               :items="items"
             ></slot>
             <slot name="sort" :sort="sort" :sort-options="sortOptions">
-              <div class="search__sort">
-                <label class="sort__label">{{ $t('search.sort.label') }}</label>
+              <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
+                <label class="sort__label">{{ t('search.sort.label') }}</label>
                 <select v-model="sort" class="sort__select">
                   <option v-for="option in sortOptions" :key="option.value" :value="option">
                     {{ option.label }}
@@ -58,7 +58,7 @@
               <div class="search__stats">
                 <div class="total">
                   <span class="text-sm">{{
-                    $t('search.results.count', { count: page.total })
+                    t('search.results.count', { count: page.total })
                   }}</span>
                 </div>
                 <div v-if="pagination" class="search__pagination">
@@ -92,7 +92,7 @@
         </template>
         <template v-else>
           <slot name="no-results" :total="total" :response="response">
-            <div class="results__noresults">{{ $t('search.noresults') }}</div>
+            <div class="results__noresults">{{ t('search.noresults') }}</div>
             <client-only>
               <div class="results__history">
                 <product-history></product-history>
@@ -105,7 +105,7 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { SearchSortItem } from '#models'
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
@@ -121,265 +121,243 @@ export interface Filter {
   getQueryAggregation: () => void
 }
 
-export default {
-  props: {
-    query: {
-      type: Function,
-      required: false,
-      default: () => {
-        return esb.matchAllQuery()
-      }
-    },
-    suggesters: {
-      // eslint-disable-next-line @typescript-eslint/ban-types
-      type: Array<Function>,
-      required: false,
-      default: null
-    },
-    size: {
-      type: Number,
-      default: 40
-    },
-    transformResult: {
-      type: Function,
-      required: false,
-      default: null
-    },
-    provider: {
-      type: Function,
-      required: true
-    },
-    pagination: {
-      type: Boolean,
-      default: false
-    },
-    fetchOnServer: {
-      type: Boolean,
-      default: true
-    },
-    cardinalityField: {
-      type: String,
-      default: null
-    },
-    sortOptions: {
-      type: Array as PropType<Array<SearchSortItem>>,
-      default: () => {
-        return []
-      }
+const props = defineProps({
+  query: {
+    type: Function,
+    required: false,
+    default: () => {
+      return esb.matchAllQuery()
     }
   },
-
-  async setup(props) {
-    const route = useRoute()
-    const router = useRouter()
-    const error = ref<any>(null)
-    const filters = reactive([] as Filter[])
-    const loading = ref(true)
-    const displayfilters = ref(false)
-    const sort = ref(props?.sortOptions[0] || (null as SearchSortItem | null))
-
-    const page = reactive({
-      size: props.size,
-      from: route.query.page?.toString()
-        ? (parseInt(route.query.page.toString()) - 1) * props.size
-        : 0,
-      total: 0
-    })
-
-    const response = ref({
-      aggregations: null,
-      suggestions: null,
-      hits: null,
-      total: 0
-    })
-
-    /**
-     * declareFilter declare a new filter on the searchBase component
-     * @param filter Filter
-     */
-    const declareFilter = (filter: Filter) => {
-      filters.push(filter)
+  suggesters: {
+    type: Array<() => esb.PhraseSuggester>,
+    required: false,
+    default: null
+  },
+  size: {
+    type: Number,
+    default: 40
+  },
+  transformResult: {
+    type: Function,
+    required: false,
+    default: null
+  },
+  provider: {
+    type: Function,
+    required: true
+  },
+  pagination: {
+    type: Boolean,
+    default: false
+  },
+  fetchOnServer: {
+    type: Boolean,
+    default: true
+  },
+  cardinalityField: {
+    type: String,
+    default: null
+  },
+  sortOptions: {
+    type: Array as PropType<Array<SearchSortItem>>,
+    default: () => {
+      return []
     }
+  }
+})
 
-    /**
-     * getFiltersQuery return the query for all filters declared except the list passed as parameter
-     */
-    const getFiltersQuery = (excludedFilter: string[] = []) => {
-      const must: any[] =
-        filters
-          .filter((filter: any) => {
-            return !excludedFilter.includes(filter.name) && filter.getQueryAggregation() !== null
-          })
-          .map((f) => f.getQueryAggregation()) || []
+const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+const error = ref<any>(null)
+const filters = reactive([] as Filter[])
+const loading = ref(true)
+const displayfilters = ref(false)
+const sort = ref(props?.sortOptions[0] || (null as SearchSortItem | null))
+const page = reactive({
+  size: props.size,
+  from: route.query.page?.toString() ? (parseInt(route.query.page.toString()) - 1) * props.size : 0,
+  total: 0
+})
+const response = ref({
+  aggregations: null,
+  suggestions: null,
+  hits: null,
+  total: 0
+})
+const items = computed(() => {
+  if (typeof props.transformResult == 'function') {
+    return props.transformResult(response)
+  }
+  return response?.value.hits || []
+})
+const total = computed(() => {
+  return response?.value.total
+})
 
-      return must.length > 0 ? esb.boolQuery().must(must) : null
-    }
+/**
+ * declareFilter declare a new filter on the searchBase component
+ * @param filter Filter
+ */
+const declareFilter = (filter: Filter) => {
+  filters.push(filter)
+}
 
-    /**
-     * getFiltersAggregation return the aggregation for all filters declared
-     * call getFilterAggregation function on each filter
-     */
-    const getFiltersAggs = () => {
-      return filters
-        .map((filter: Filter) => {
-          const query: Query | null = getFiltersQuery([filter.name])
-          return filter?.getFilterAggregation(query) as unknown as CardinalityAggregation
-        })
-        .filter((agg) => agg !== null)
-    }
-
-    /**
-     * Search: search function get items from provider
-     */
-    interface SearchResponse {
-      aggregations: any
-      hits: any
-      total: number
-      suggestions: any
-    }
-    const fetchSearch = async (): Promise<SearchResponse> => {
-      if (typeof props?.provider !== 'function') {
-        throw new Error('No provider function found')
-      }
-      const res = {
-        aggregations: null,
-        hits: null,
-        total: 0,
-        suggestions: null
-      } as SearchResponse
-      try {
-        error.value = null
-        const postFilter = getFiltersQuery()
-        const aggs: any[] = getFiltersAggs() || null
-        const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
-
-        // Add suggesters if any
-        if (props.suggesters) {
-          props.suggesters.forEach((suggester) => {
-            body.suggest(suggester())
-          })
-        }
-
-        if (props.cardinalityField) {
-          let agg: CardinalityAggregation | FilterAggregation = new CardinalityAggregation(
-            'total',
-            props.cardinalityField
-          )
-          if (postFilter) {
-            agg = new FilterAggregation('total', postFilter).agg(agg)
-          }
-          aggs.push(agg)
-        }
-        if (aggs !== null) {
-          body.aggs(aggs)
-        }
-        if (postFilter !== null) {
-          body.postFilter(postFilter)
-        }
-        if (sort.value !== null) {
-          body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
-        }
-        const fetchedData = await props?.provider(body.toJSON())
-        if (fetchedData) {
-          const { aggregations, hits, total, suggestions } = fetchedData
-          res.aggregations = aggregations || null
-          res.hits = hits
-          res.suggestions = suggestions
-
-          if (props.cardinalityField) {
-            res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
-          } else {
-            res.total = total || 0
-          }
-        }
-      } catch (e: any) {
-        error.value = e?.message || e
-      }
-      return res
-    }
-    const search = async () => {
-      loading.value = true
-      const { aggregations, hits, total, suggestions } = await fetchSearch()
-      response.value.aggregations = aggregations
-      response.value.hits = hits
-      response.value.suggestions = suggestions
-      page.total = total
-      loading.value = false
-    }
-    /**
-     * changePage
-     * @param from
-     */
-    const changePage = (from: number) => {
-      page.from = from
-      search()
-      if (window?.scrollTo) {
-        window.scrollTo(0, 0)
-        router.push({ query: { page: from / props.size + 1 } })
-      }
-    }
-
-    provide('search', search)
-    provide('declareFilter', declareFilter)
-    provide(
-      'response',
-      computed(() => {
-        return JSON.parse(JSON.stringify(response.value))
+/**
+ * getFiltersQuery return the query for all filters declared except the list passed as parameter
+ */
+const getFiltersQuery = (excludedFilter: string[] = []) => {
+  const must: any[] =
+    filters
+      .filter((filter: any) => {
+        return !excludedFilter.includes(filter.name) && filter.getQueryAggregation() !== null
       })
-    )
-    provide(
-      'filters',
-      computed(() => filters)
-    )
+      .map((f) => f.getQueryAggregation()) || []
 
-    const { data } = await useAsyncData(async () => {
-      const a = await fetchSearch()
-      return a
+  return must.length > 0 ? esb.boolQuery().must(must) : null
+}
+
+/**
+ * getFiltersAggregation return the aggregation for all filters declared
+ * call getFilterAggregation function on each filter
+ */
+const getFiltersAggs = () => {
+  return filters
+    .map((filter: Filter) => {
+      const query: Query | null = getFiltersQuery([filter.name])
+      return filter?.getFilterAggregation(query) as unknown as CardinalityAggregation
     })
+    .filter((agg) => agg !== null)
+}
 
-    if (data?.value) {
-      response.value.aggregations = data.value.aggregations
-      response.value.hits = data.value.hits
-      page.total = data.value.total
-      loading.value = false
+/**
+ * Search: search function get items from provider
+ */
+interface SearchResponse {
+  aggregations: any
+  hits: any
+  total: number
+  suggestions: any
+}
+const fetchSearch = async (): Promise<SearchResponse> => {
+  if (typeof props?.provider !== 'function') {
+    throw new Error('No provider function found')
+  }
+  const res = {
+    aggregations: null,
+    hits: null,
+    total: 0,
+    suggestions: null
+  } as SearchResponse
+  try {
+    error.value = null
+    const postFilter = getFiltersQuery()
+    const aggs: any[] = getFiltersAggs() || null
+    const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
+
+    // Add suggesters if any
+    if (props.suggesters) {
+      props.suggesters.forEach((suggester) => {
+        body.suggest(suggester())
+      })
     }
 
-    return {
-      response,
-      filters,
-      page,
-      loading,
-      displayfilters,
-      sort,
-      error,
-      changePage,
-      search
-    }
-  },
-  computed: {
-    items(): any[] {
-      if (typeof this.transformResult == 'function') {
-        return this.transformResult(this.response)
+    if (props.cardinalityField) {
+      let agg: CardinalityAggregation | FilterAggregation = new CardinalityAggregation(
+        'total',
+        props.cardinalityField
+      )
+      if (postFilter) {
+        agg = new FilterAggregation('total', postFilter).agg(agg)
       }
-      return this?.response?.hits || []
-    },
-    total(): any {
-      return this?.response?.total
+      aggs.push(agg)
     }
-  },
+    if (aggs !== null) {
+      body.aggs(aggs)
+    }
+    if (postFilter !== null) {
+      body.postFilter(postFilter)
+    }
+    if (sort.value !== null) {
+      body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+    }
+    const fetchedData = await props?.provider(body.toJSON())
+    if (fetchedData) {
+      const { aggregations, hits, total, suggestions } = fetchedData
+      res.aggregations = aggregations || null
+      res.hits = hits
+      res.suggestions = suggestions
 
-  watch: {
-    sort: {
-      handler: function () {
-        this.search()
-      },
-      deep: true
+      if (props.cardinalityField) {
+        res.total = aggregations?.total?.total?.value || aggregations?.total?.value || 0
+      } else {
+        res.total = total || 0
+      }
     }
-  },
-  mounted() {
-    this.search()
+  } catch (e: any) {
+    error.value = e?.message || e
+  }
+  return res
+}
+const search = async () => {
+  loading.value = true
+  const { aggregations, hits, total, suggestions } = await fetchSearch()
+  response.value.aggregations = aggregations
+  response.value.hits = hits
+  response.value.suggestions = suggestions
+  page.total = total
+  loading.value = false
+}
+/**
+ * changePage
+ * @param from
+ */
+const changePage = (from: number) => {
+  page.from = from
+  search()
+  if (window?.scrollTo) {
+    window.scrollTo(0, 0)
+    router.push({ query: { page: from / props.size + 1 } })
   }
 }
+
+provide('search', search)
+provide('declareFilter', declareFilter)
+provide(
+  'response',
+  computed(() => {
+    return JSON.parse(JSON.stringify(response.value))
+  })
+)
+provide(
+  'filters',
+  computed(() => filters)
+)
+
+const { data } = await useAsyncData(async () => {
+  const a = await fetchSearch()
+  return a
+})
+
+if (data?.value) {
+  response.value.aggregations = data.value.aggregations
+  response.value.hits = data.value.hits
+  page.total = data.value.total
+  loading.value = false
+}
+
+watch(
+  () => sort.value,
+  async () => {
+    await search()
+  },
+  { deep: true }
+)
+
+onMounted(async () => {
+  await search()
+})
 </script>
 <style lang="scss" scoped>
 .search {

@@ -9,9 +9,9 @@
     class="search-product"
     :sort-options="
       sortOptions || [
-        { label: $t('search.sort.relevance'), value: '_score', order: 'desc' },
-        { label: $t('search.sort.name_asc'), value: 'name.sortable' },
-        { label: $t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
+        { label: t('search.sort.relevance'), value: '_score', order: 'desc' },
+        { label: t('search.sort.name_asc'), value: 'name.sortable' },
+        { label: t('search.sort.name_desc'), value: 'name.sortable', order: 'desc' }
       ]
     "
   >
@@ -35,7 +35,7 @@
           :class="{ 'btn--selected': displayMode == 'grid' }"
         >
           <icon name="product-grid"></icon>
-          {{ $t('search.display_mode.grid') }}
+          {{ t('search.display_mode.grid') }}
         </button>
         <button
           @click="displayMode = 'list'"
@@ -43,7 +43,7 @@
           :class="{ 'btn--selected': displayMode == 'list' }"
         >
           <icon name="product-list"></icon>
-          {{ $t('search.display_mode.list') }}
+          {{ t('search.display_mode.list') }}
         </button>
       </div>
     </template>
@@ -80,7 +80,7 @@
   </search-base>
 </template>
 <script lang="ts" setup>
-import { type SearchSortItem } from '#models'
+import type { SearchSortItem } from '#models'
 import esb from 'elastic-builder'
 
 const displayMode = ref('grid')
@@ -98,8 +98,7 @@ defineProps({
     }
   },
   suggesters: {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    type: Array<Function>,
+    type: Array<() => esb.PhraseSuggester>,
     required: false,
     default: null
   },
@@ -111,6 +110,7 @@ defineProps({
     }
   }
 })
+const { t } = useI18n()
 </script>
 <style lang="scss">
 .search-product {
