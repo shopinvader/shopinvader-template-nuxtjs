@@ -13,7 +13,6 @@
         <search-product-category-items
           v-if="data?.items?.length > 0"
           :items="data.items"
-          :selected-item="data.selected"
           @select="selectItem"
         />
       </template>
@@ -22,8 +21,8 @@
         class="btn btn-link btn-xs pt-3"
         @click="displayAll"
       >
-        <span v-if="sizeQuery == size">{{ $t('search.filters.all') }}</span>
-        <span v-else>{{ $t('search.filters.reduce') }}</span>
+        <span v-if="sizeQuery == size">{{ t('search.filters.all') }}</span>
+        <span v-else>{{ t('search.filters.reduce') }}</span>
       </button>
     </slot>
     <slot name="footer" :items="data.items" :size="size" :total="data?.total"> </slot>
@@ -113,6 +112,8 @@ const props = defineProps({
     default: null
   }
 })
+
+const { t } = useI18n()
 const router = useRouter()
 const opened = ref(!props.close)
 const sizeQuery = ref(props.size)
@@ -282,7 +283,7 @@ watch(
         if (!isEqualValues) {
           setValues(values)
         }
-      } catch (e) {
+      } catch {
         const query = { ...currentRoute.query }
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete query[props.urlParam]
@@ -335,7 +336,8 @@ watch(
           if (props.nestedPath) {
             item.count = null
           } else {
-            item.count = item?.[props.name + '_cardinality']?.value || item?.count || 0
+            const facet: any = item // Remove its typing to avoid TS error
+            item.count = facet?.[props.name + '_cardinality']?.value || item?.count || 0
           }
         }
       }

@@ -54,7 +54,7 @@ import {
 } from 'elastic-builder'
 import { inject, reactive } from 'vue'
 import isEqual from '~/utils/IsEqual'
-import { type Filter } from './SearchBase.vue'
+import type { Filter } from './SearchBase.vue'
 interface FacetItem {
   key: string
   label: string
