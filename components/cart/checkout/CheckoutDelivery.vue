@@ -5,7 +5,7 @@
         <!-- @slot Header content -->
         <slot name="header">
           <p>
-            {{ $t('cart.delivery.method.intro') }}
+            {{ t('cart.delivery.method.intro') }}
           </p>
         </slot>
       </div>
@@ -18,14 +18,14 @@
           <slot name="error" :error="error">
             <div v-if="error" class="alert">
               <icon name="error" class="text-error" />
-              {{ $t('error.generic') }}
+              {{ t('error.generic') }}
             </div>
           </slot>
         </div>
         <div v-else-if="!loading && carriers.length == 0" class="checkout-delivery__empty">
           <div class="empty">
             <icon name="error" />
-            {{ $t('cart.delivery.method.empty') }}
+            {{ t('cart.delivery.method.empty') }}
           </div>
         </div>
         <template v-else>
@@ -73,10 +73,10 @@
                 <div v-if="!hasValidCarrier" class="no-delivery">
                   <icon name="info" />
                   <span v-if="selectedCarrier?.withDropoffSite && !deliveryAddress?.isDropoffSite">
-                    {{ $t('cart.delivery.method.no-dropoff') }}
+                    {{ t('cart.delivery.method.no-dropoff') }}
                   </span>
                   <span v-else>
-                    {{ $t('cart.delivery.method.no-method') }}
+                    {{ t('cart.delivery.method.no-method') }}
                   </span>
                 </div>
               </template>
@@ -86,7 +86,7 @@
                 @click="next"
                 :disabled="!hasValidCarrier || loading"
               >
-                {{ $t('cart.delivery.method.continue') }}
+                {{ t('cart.delivery.method.continue') }}
                 <icon name="right" />
               </button>
             </template>
@@ -96,7 +96,7 @@
       <div class="checkout-delivery__footer">
         <button type="button" class="btn btn-ghost" @click="back">
           <icon name="left"></icon>
-          {{ $t('cart.back') }}
+          {{ t('cart.back') }}
         </button>
       </div>
     </template>
@@ -107,7 +107,7 @@
             <icon name="carrier" />
           </div>
           <div class="method__title">
-            {{ $t('cart.delivery.method.title') }} :
+            {{ t('cart.delivery.method.title') }} :
             <span class="title__name">
               {{ selectedCarrier?.name }}
             </span>
@@ -120,7 +120,7 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { DeliveryCarrier } from '#models'
 import { DeliveryGeneric, Spinner } from '#components'
 import CartTotal from '../CartTotal.vue'
@@ -128,145 +128,134 @@ interface CarrierWithComponent extends DeliveryCarrier {
   component: any
   carrier: DeliveryCarrier
 }
-
+const emit = defineEmits({
+  /** Emit to go to the next step */
+  next: () => true,
+  /** Emit to go back to the previous step */
+  back: () => true
+})
 /**
  * Checkout delivery step.
  * This component is used in the Checkout funnel.
  * Use to select the shipping mode.
  */
-export default defineNuxtComponent({
-  name: 'CheckoutDelivery',
-  emits: {
-    /** Emit to go to the next step */
-    next: () => true,
-    /** Emit to go back to the previous step */
-    back: () => true
+const props = defineProps({
+  /**
+   * Is the current step of the checkout process
+   */
+  active: {
+    type: Boolean,
+    required: true
   },
-  components: {
-    'cart-total': CartTotal,
-    spinner: Spinner
-  },
-  props: {
-    /**
-     * Is the current step of the checkout process
-     */
-    active: {
-      type: Boolean,
-      required: true
-    },
-    deliveryComponents: {
-      type: Object as PropType<{ [key: string]: Component }>,
-      default: () => ({})
-    }
-  },
-  setup() {
-    const i18n = useI18n()
-    const cartService = useShopinvaderService('cart')
-    const cart = cartService.getCart()
-    const selectedCarrier = ref(null as DeliveryCarrier | null)
-    const carriers = ref([] as CarrierWithComponent[])
-    const error = ref(null as string | null)
-    const loading = ref(false)
-    const hasValidCarrier = computed(() => {
-      if (selectedCarrier?.value) {
-        // Check if the selected carrier is a pickup carrier
-        if (selectedCarrier?.value?.withDropoffSite) {
-          return cart?.value?.delivery?.address?.isDropoffSite
-        }
-        return true
-      }
-      return false
-    })
-    const deliveryAddress = computed(() => {
-      return cart?.value?.delivery?.address
-    })
-
-    return {
-      loading,
-      i18n,
-      error,
-      carriers,
-      selectedCarrier,
-      deliveryAddress,
-      hasValidCarrier
-    }
-  },
-  async mounted() {
-    await this.fetchCarriers()
-  },
-  methods: {
-    next() {
-      this.$emit('next')
-    },
-    back() {
-      this.$emit('back')
-    },
-    /**
-     * Get the list of shipping mode available for the current cart.
-     */
-    async fetchCarriers() {
-      const cartService = useShopinvaderService('cart')
-      const cart = cartService.getCart()
-      try {
-        this.loading = true
-        this.error = null
-        this.carriers = []
-        if (cart?.value) {
-          const carriers = (await cartService.getDeliveryCarrier()) || []
-          this.carriers =
-            carriers.map((carrier: DeliveryCarrier) => {
-              const component = this.deliveryComponents?.[carrier?.code] || DeliveryGeneric
-              return {
-                component,
-                carrier
-              } as CarrierWithComponent
-            }) || []
-        } else {
-          throw new Error(this.i18n.t('error.generic'))
-        }
-
-        const selectedCarrier = cart?.value?.delivery?.method || null
-        if (selectedCarrier) {
-          this.selectedCarrier =
-            this.carriers?.find(({ carrier }) => carrier.id == selectedCarrier.id)?.carrier || null
-        }
-      } catch (e: any) {
-        this.error = e?.message || e
-        console.error(e)
-      } finally {
-        this.loading = false
-        if (this.carriers.length == 1) {
-          await this.selectCarrier(this.carriers[0]?.carrier)
-          this.$emit('next')
-        } else if (this.carriers.length > 1 && !this.selectedCarrier) {
-          await this.selectCarrier(this.carriers[0]?.carrier)
-        }
-      }
-    },
-    /**
-     * Change the delivery carrier of the current cart
-     * @param carrier
-     */
-    async selectCarrier(carrier: DeliveryCarrier) {
-      try {
-        if (carrier?.id == this.selectedCarrier?.id) {
-          return
-        }
-        this.error = null
-        this.selectedCarrier = carrier
-        this.loading = true
-        const cartService = useShopinvaderService('cart')
-        await cartService.setDeliveryCarrier(carrier.id)
-      } catch (e: any) {
-        this.selectedCarrier = null
-        this.error = e?.message || e
-        throw e
-      } finally {
-        this.loading = false
-      }
-    }
+  deliveryComponents: {
+    type: Object as PropType<{ [key: string]: Component }>,
+    default: () => ({})
   }
 })
+
+const { t } = useI18n()
+const cartService = useShopinvaderService('cart')
+const cart = cartService.getCart()
+const selectedCarrier = ref(null as DeliveryCarrier | null)
+const carriers = ref([] as CarrierWithComponent[])
+const error = ref(null as string | null)
+const loading = ref(false)
+
+const hasValidCarrier = computed(() => {
+  if (selectedCarrier?.value) {
+    // Check if the selected carrier is a pickup carrier
+    if (selectedCarrier?.value?.withDropoffSite) {
+      return cart?.value?.delivery?.address?.isDropoffSite
+    }
+    return true
+  }
+  return false
+})
+const deliveryAddress = computed(() => {
+  return cart?.value?.delivery?.address
+})
+
+onMounted(async () => {
+  await fetchCarriers()
+})
+
+const next = () => {
+  if (hasValidCarrier.value) {
+    emit('next')
+  }
+}
+
+const back = () => {
+  emit('back')
+}
+
+/**
+ * Get the list of shipping mode available for the current cart.
+ */
+const fetchCarriers = async () => {
+  const cartService = useShopinvaderService('cart')
+  const cart = cartService.getCart()
+  try {
+    loading.value = true
+    error.value = null
+    carriers.value = []
+    if (cart?.value) {
+      const res = (await cartService.getDeliveryCarrier()) || []
+      carriers.value =
+        res.map((carrier: DeliveryCarrier) => {
+          const component = props.deliveryComponents?.[carrier?.code] || DeliveryGeneric
+          return {
+            component,
+            carrier
+          } as CarrierWithComponent
+        }) || []
+    } else {
+      throw new Error(t('error.generic'))
+    }
+
+    const cartCarrier = cart?.value?.delivery?.method || null
+    if (cartCarrier) {
+      selectedCarrier.value =
+        carriers.value?.find(({ carrier }) => carrier.id == cartCarrier.id)?.carrier || null
+    }
+  } catch (e: any) {
+    error.value = e?.message || e
+    console.error(e)
+  } finally {
+    loading.value = false
+    if (carriers.value.length == 1) {
+      const { carrier = null } = carriers.value[0]
+      if (carrier && !carrier?.withDropoffSite) {
+        await selectCarrier(carrier)
+        next()
+      }
+    } else if (carriers.value.length > 1 && !selectedCarrier.value) {
+      await selectCarrier(carriers.value[0]?.carrier)
+    }
+  }
+}
+/**
+ * Change the delivery carrier of the current cart
+ * @param carrier
+ */
+const selectCarrier = async (carrier: DeliveryCarrier) => {
+  try {
+    if (carrier?.id == selectedCarrier.value?.id) {
+      return
+    }
+    error.value = null
+    selectedCarrier.value = carrier
+    loading.value = true
+    const cartService = useShopinvaderService('cart')
+    await cartService.setDeliveryCarrier(carrier.id)
+  } catch (e: any) {
+    selectedCarrier.value = null
+    error.value = e?.message || e
+    throw e
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 <style lang="scss">
 .checkout-delivery {
@@ -308,8 +297,8 @@ export default defineNuxtComponent({
   &__summary {
     @apply col-span-3 md:col-span-2;
     .method {
-      @apply grid w-full gap-2;
-      grid-template: auto 2fr;
+      @apply grid w-full gap-2 hover:shadow-none;
+      grid-template-columns: auto 2fr;
       &__icon {
         @apply col-auto col-start-1 row-span-2 row-start-1 text-5xl text-primary;
       }
@@ -322,7 +311,7 @@ export default defineNuxtComponent({
         }
       }
       &__dropoff {
-        @apply col-span-2 row-start-2 text-xs font-normal;
+        @apply col-span-2 text-xs font-normal;
       }
     }
   }
