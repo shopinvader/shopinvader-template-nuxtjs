@@ -35,7 +35,7 @@
             <address-form
               v-if="model"
               :address="model"
-              @saved="(e) => onUpdateAddress(e)"
+              @submit="(e) => onUpdateAddress(e)"
             ></address-form>
           </template>
         </aside-drawer>
