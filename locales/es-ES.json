@@ -341,7 +341,11 @@
       "address": " Dirección de facturación"
     },
     "delivery": {
-      "address": "Dirección de entrega"
+      "address": "Dirección de entrega",
+      "pickings": {
+        "link": "Siga mi orden",
+        "title": "Seguimiento de pedidos"
+      }
     },
     "amount": {
       "total": "Total",
@@ -360,6 +364,10 @@
       "estimating": "Esperando presupuesto",
       "estimated": "Para confirmar"
     }
+  },
+  "picking": {
+    "tracking": "Número de seguimiento",
+    "deiveryDate": "Fecha de entrega"
   },
   "payment": {
     "select": "Seleccionar",

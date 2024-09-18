@@ -377,7 +377,11 @@
       "address": "Adresse de facturation"
     },
     "delivery": {
-      "address": "Adresse de livraison"
+      "address": "Adresse de livraison",
+      "pickings": {
+        "link": "Suivre ma commande",
+        "title": "Suivi de commande"
+      }
     },
     "amount": {
       "discount": "Remise",
@@ -397,6 +401,10 @@
       "estimating": "En attente d'estimation",
       "estimated": "À confirmer"
     }
+  },
+  "picking": {
+    "tracking": "Numéro de suivi",
+    "deiveryDate": "Date de livraison"
   },
   "payment": {
     "select": "Payer",
