@@ -1,33 +1,46 @@
 <template>
   <div v-if="product !== null" class="product-cart" :class="cssClass">
-    <slot name="input" :product="product" :qty="qty">
+    <slot
+      name="input"
+      :product="product"
+      :qty="qty"
+      :on-update-qty="updateQty"
+      :disabled-add-to-cart="isDisabledAddToCart"
+    >
       <input-qty
-        v-if="!disabledAddToCart"
+        v-if="!isDisabledAddToCart"
         class="product-cart__input"
         @change="updateQty"
       ></input-qty>
     </slot>
-    <slot name="add" :product="product" :qty="qty">
+    <slot
+      name="add"
+      :product="product"
+      :qty="qty"
+      :on-add-to-cart="addToCart"
+      :on-update-qty="updateQty"
+      :disabled-add-to-cart="isDisabledAddToCart"
+    >
       <button
         type="button"
         class="product-cart__add"
-        :disabled="disabledAddToCart"
+        :disabled="isDisabledAddToCart"
         @click="addToCart"
       >
-        <div v-if="!disabledAddToCart" class="add-icon">
+        <div v-if="!isDisabledAddToCart" class="add-icon">
           <icon name="cart" class="text-xl lg:text-2xl" />
           <icon name="ic:outline-plus" class="add-icon__plus" />
         </div>
         <span class="add-label">
-          {{ label || $t('product.cart.add') }}
+          {{ label || t('product.cart.add') }}
         </span>
       </button>
     </slot>
-    <slot name="count" :count="line?.qty">
-      <div v-if="line && !disabledAddToCart" class="product-cart__count">
-        {{ $t('cart.line.count', { count: line?.qty || 0 }) }}
+    <slot name="count" :count="line?.qty" :is-disabled-add-to-cart="isDisabledAddToCart">
+      <div v-if="line && !isDisabledAddToCart" class="product-cart__count">
+        {{ t('cart.line.count', { count: line?.qty || 0 }) }}
         <nuxt-link class="text-secondary underline" :to="localePath('cart') || 'cart'">
-          {{ $t('cart.link') }}
+          {{ t('cart.link') }}
         </nuxt-link>
       </div>
     </slot>
@@ -40,7 +53,7 @@
   >
     <template #header>
       <div class="cart-confirmation__header">
-        {{ $t('cart.title') }}
+        {{ t('cart.title') }}
       </div>
     </template>
     <template #content>
@@ -48,7 +61,7 @@
         <slot name="addedtocart-content" :line="line" class="content">
           <div class="content__title">
             <icon name="check" class="icon" />
-            {{ $t('cart.confirmation') }}
+            {{ t('cart.confirmation') }}
           </div>
           <cart-line v-if="line" class="content__line" :line="line" :readonly="true"> </cart-line>
           <product-links
@@ -57,7 +70,7 @@
             :links="product.links?.crossLink || []"
           >
             <template #head>
-              <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
+              <h2 class="text-xl">{{ t('product.cross_selling.title') }}</h2>
             </template>
           </product-links>
         </slot>
@@ -67,114 +80,94 @@
       <div class="cart-confirmation__footer">
         <slot name="addedtocart-footer" :line="line">
           <button type="button" class="btn-back" @click="closeDrawer">
-            {{ $t('cart.continue') }}
+            {{ t('cart.continue') }}
           </button>
           <button @click="gotToCart" class="btn-checkout">
             <icon name="cart"></icon>
-            {{ $t('cart.checkout') }}
+            {{ t('cart.checkout') }}
           </button>
         </slot>
       </div>
     </template>
   </aside-drawer>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { CartLine, Product } from '#models'
 import type { PropType } from 'vue'
-export default {
-  name: 'ProductCart',
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: true
-    },
-    disableWhenNoStock: {
-      type: Boolean,
-      default: true
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    label: {
-      type: String,
-      default: null
-    },
-    cssClass: {
-      type: String,
-      default: ''
-    }
+const { t } = useI18n()
+const localePath = useLocalePath()
+const emit = defineEmits({
+  /**  Emit when the quantity is updated */
+  update: (_qty: number) => true,
+  /** Emit when the product is added to the cart */
+  add: (_qty: number) => true
+})
+const props = defineProps({
+  product: {
+    type: Object as PropType<Product>,
+    required: true
   },
-  emits: {
-    /**  Emit when the quantity is updated */
-    update: (_qty: number) => true,
-    /** Emit when the product is added to the cart */
-    add: (_qty: number) => true
+  disableWhenNoStock: {
+    type: Boolean,
+    default: true
   },
-  data() {
-    return {
-      cartDrowerOpened: false as boolean,
-      qty: 1 as number
-    }
+  disabled: {
+    type: Boolean,
+    default: false
   },
-  computed: {
-    line(): CartLine | null {
-      const cartService = useShopinvaderService('cart')
-      const cart = cartService.getCart()
-      return (
-        cart?.value?.lines?.find((line: CartLine) => line.productId === this.product.id) || null
-      )
-    },
-    stockState(): string | null {
-      return this.product?.stock?.global?.state || null
-    },
-    lines(): CartLine[] {
-      const cartService = useShopinvaderService('cart')
-      const cart = cartService.getCart()
-      return cart?.value?.lines as CartLine[]
-    },
-    /**
-     * Check if the product has stock
-     */
-    disabledAddToCart(): boolean {
-      if (!this.disableWhenNoStock || !this.product.stock) {
-        return false
-      }
-      if (this.disabled) {
-        return true
-      }
-      return this?.stockState === 'out_of_stock'
-    }
+  label: {
+    type: String,
+    default: null
   },
-  methods: {
-    addToCart() {
-      if (this.disabledAddToCart) {
-        return false
-      }
-      const cartService = useShopinvaderService('cart')
-      if (cartService && this.product?.id !== null) {
-        this.$emit('add', this.qty)
-        cartService.addItem(this.product.id, this.qty)
-        this.cartDrowerOpened = true
-      }
-    },
-    gotToCart() {
-      this.closeDrawer()
-      const router = useRouter()
-      const localePath = useLocalePath()
-      router.push(localePath('cart'))
-    },
-    closeDrawer(): void {
-      this.cartDrowerOpened = false
-    },
-    updateQty(qty: number) {
-      if (this.disabledAddToCart) {
-        return false
-      }
-      this.qty = qty
-      this.$emit('update', qty)
-    }
+  cssClass: {
+    type: String,
+    default: ''
   }
+})
+const cartDrowerOpened = ref(false)
+const qty = ref(1)
+const cartService = useShopinvaderService('cart')
+const line = computed(() => {
+  const cart = cartService.getCart()
+  return cart?.value?.lines?.find((line: CartLine) => line.productId === props.product.id) || null
+})
+const stockState = computed(() => props.product?.stock?.global?.state || null)
+const isDisabledAddToCart = computed(() => {
+  if (!props.disableWhenNoStock || !props.product.stock) {
+    return false
+  }
+  if (props.disabled) {
+    return true
+  }
+  return stockState.value === 'out_of_stock'
+})
+const addToCart = () => {
+  if (isDisabledAddToCart.value) {
+    return false
+  }
+  if (cartService && props.product?.id !== null) {
+    emit('add', qty.value)
+    cartService.addItem(props.product.id, qty.value)
+    cartDrowerOpened.value = true
+  }
+}
+const gotToCart = () => {
+  closeDrawer()
+  const router = useRouter()
+  const localePath = useLocalePath()
+  router.push(localePath('cart'))
+}
+
+const closeDrawer = () => {
+  cartDrowerOpened.value = false
+}
+
+const updateQty = (value: number) => {
+  if (isDisabledAddToCart.value) {
+    return false
+  }
+  qty.value = value
+  emit('update', value)
 }
 </script>
 <style lang="scss">
