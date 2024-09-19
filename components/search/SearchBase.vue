@@ -358,14 +358,14 @@ const search = async () => {
 
 /**
  * changePage: display results from the given page number
- * @param from: page number
+ * @param from: position of the first item to display
  */
-const changePage = (from: number) => {
+const changePage = async (from: number) => {
   page.from = from
-  search()
+  await search()
   if (window?.scrollTo) {
     window.scrollTo(0, 0)
-    router.push({ query: { page: from / props.size + 1 } })
+    router.push({ query: { ...route.query, page: from / props.size + 1 } })
   }
 }
 
@@ -380,6 +380,14 @@ watch(
     await search()
   },
   { deep: true }
+)
+
+watch(
+  () => props.size,
+  async () => {
+    page.size = props.size
+    await changePage(0)
+  }
 )
 
 onMounted(async () => {
