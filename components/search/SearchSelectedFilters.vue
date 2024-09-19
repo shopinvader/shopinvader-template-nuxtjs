@@ -1,5 +1,5 @@
 <template>
-  <div class="searchSelectedFilters">
+  <div class="searchSelectedFilters" v-if="activeFilters.length > 0">
     <button
       v-for="filter in activeFilters"
       :key="filter.name"
@@ -16,7 +16,7 @@
   </div>
 </template>
 <script lang="ts">
-import { type Filter } from './SearchBase.vue'
+import type { Filter } from './SearchBase.vue'
 export default {
   name: 'SearchSelectedFilters',
   setup() {
@@ -42,7 +42,7 @@ export default {
 </script>
 <style lang="scss">
 .searchSelectedFilters {
-  @apply flex gap-2 px-6 py-4;
+  @apply flex flex-wrap gap-2 px-6 py-4;
   &-button {
     @apply btn btn-outline btn-primary btn-xs pl-4;
   }

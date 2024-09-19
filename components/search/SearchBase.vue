@@ -1,19 +1,32 @@
 <template>
   <div class="search">
+    <!------------------------------------------------>
+    <!-- Filters at left (as aside on small screen) -->
     <div class="search__filters" :class="{ 'search__filters--active': displayfilters }">
       <div class="filters__container">
+        <!-- @slot to display all available filters. Please do fill it in your calling component! -->
         <slot name="filters"></slot>
       </div>
       <div class="filters__action">
-        <button type="button" @click="displayfilters = false">
+        <!-- Displayed in small screen only to close the list of filters -->
+        <button type="button" @click="doSetDisplayFilters(false)">
           {{ t('search.filter') }}
         </button>
       </div>
     </div>
+    <!--------------------------------------------------->
+    <!-- Results at right (fullscreen on small screen) -->
     <div class="search__results">
-      <slot name="header"></slot>
+      <!-- @slot on top of the result part. Best place to display a title. -->
+      <slot
+        name="header"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+      ></slot>
+      <!-- @slot displaying results -->
       <slot name="results" :items="items" :total="total" :response="response">
         <template v-if="loading">
+          <!-- @slot to display the loading animation -->
           <slot name="loading">
             <div class="search__loading">
               <search-loader></search-loader>
@@ -22,6 +35,7 @@
         </template>
         <template v-else-if="items?.length > 0">
           <div class="search__header">
+            <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
             <slot
               name="display-filters"
               :sort="sort"
@@ -29,13 +43,17 @@
               :from="page.from"
               :size="page.size"
               :items="items"
+              :do-change-page="changePage"
+              :do-set-display-filters="doSetDisplayFilters"
             >
               <div class="search__display-filters">
-                <button type="button" @click="displayfilters = true">
+                <!-- Displayed in small screen only to show the list of filters as aside. -->
+                <button type="button" @click="doSetDisplayFilters(true)">
                   {{ t('search.filter') }}
                 </button>
               </div>
             </slot>
+            <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
             <slot
               name="action"
               :sort="sort"
@@ -43,7 +61,10 @@
               :from="page.from"
               :size="page.size"
               :items="items"
+              :do-change-page="changePage"
+              :do-set-display-filters="doSetDisplayFilters"
             ></slot>
+            <!-- @slot to display the sort select if sort options are available. -->
             <slot name="sort" :sort="sort" :sort-options="sortOptions">
               <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
                 <label class="sort__label">{{ t('search.sort.label') }}</label>
@@ -54,7 +75,15 @@
                 </select>
               </div>
             </slot>
-            <slot name="stats" :total="page.total" :from="page.from" :size="page.size">
+            <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
+            <slot
+              name="stats"
+              :total="page.total"
+              :from="page.from"
+              :size="page.size"
+              :do-change-page="changePage"
+              :do-set-display-filters="doSetDisplayFilters"
+            >
               <div class="search__stats">
                 <div class="total">
                   <span class="text-sm">{{
@@ -73,12 +102,20 @@
               </div>
             </slot>
           </div>
+          <!-- @slot to display the results. Please do fill it in your calling component! -->
           <slot name="items" :items="items" :total="total" :response="response">
             <div v-for="hit in items" :key="hit.id">
               <pre>{{ hit }}</pre>
             </div>
           </slot>
-          <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
+          <!-- @slot to display the pagination at the bottom of the page.-->
+          <slot
+            name="pagination"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :change-page="changePage"
+          >
             <div v-if="pagination" class="search__pagination">
               <search-pagination
                 :total="page.total"
@@ -91,6 +128,7 @@
           </slot>
         </template>
         <template v-else>
+          <!-- @slot to display the "no results" message and the product history. -->
           <slot name="no-results" :total="total" :response="response">
             <div class="results__noresults">{{ t('search.noresults') }}</div>
             <client-only>
@@ -101,6 +139,7 @@
           </slot>
         </template>
       </slot>
+      <!-- @slot at the bottom of the result part -->
       <slot name="footer"></slot>
     </div>
   </div>
@@ -135,6 +174,7 @@ const props = defineProps({
     default: null
   },
   size: {
+    // pageSize
     type: Number,
     default: 40
   },
@@ -196,6 +236,10 @@ const total = computed(() => {
   return response?.value.total
 })
 
+const doSetDisplayFilters = (show: boolean) => {
+  displayfilters.value = show
+}
+
 /**
  * declareFilter declare a new filter on the searchBase component
  * @param filter Filter
@@ -240,6 +284,7 @@ interface SearchResponse {
   total: number
   suggestions: any
 }
+
 const fetchSearch = async (): Promise<SearchResponse> => {
   if (typeof props?.provider !== 'function') {
     throw new Error('No provider function found')
@@ -300,6 +345,7 @@ const fetchSearch = async (): Promise<SearchResponse> => {
   }
   return res
 }
+
 const search = async () => {
   loading.value = true
   const { aggregations, hits, total, suggestions } = await fetchSearch()
@@ -309,9 +355,10 @@ const search = async () => {
   page.total = total
   loading.value = false
 }
+
 /**
- * changePage
- * @param from
+ * changePage: display results from the given page number
+ * @param from: page number
  */
 const changePage = (from: number) => {
   page.from = from
@@ -322,6 +369,24 @@ const changePage = (from: number) => {
   }
 }
 
+const { data } = await useAsyncData(async () => {
+  const a = await fetchSearch()
+  return a
+})
+
+watch(
+  () => sort.value,
+  async () => {
+    await search()
+  },
+  { deep: true }
+)
+
+onMounted(async () => {
+  await search()
+})
+
+// Provide some methods and data to the other components (to be injected)
 provide('search', search)
 provide('declareFilter', declareFilter)
 provide(
@@ -335,29 +400,12 @@ provide(
   computed(() => filters)
 )
 
-const { data } = await useAsyncData(async () => {
-  const a = await fetchSearch()
-  return a
-})
-
 if (data?.value) {
   response.value.aggregations = data.value.aggregations
   response.value.hits = data.value.hits
   page.total = data.value.total
   loading.value = false
 }
-
-watch(
-  () => sort.value,
-  async () => {
-    await search()
-  },
-  { deep: true }
-)
-
-onMounted(async () => {
-  await search()
-})
 </script>
 <style lang="scss" scoped>
 .search {
