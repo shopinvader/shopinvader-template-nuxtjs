@@ -7,7 +7,7 @@
           <ul>
             <li>
               <nuxt-link :to="localePath({ path: '/' })">
-                {{ $t('navbar.home') }}
+                {{ t('navbar.home') }}
               </nuxt-link>
             </li>
             <li v-for="category in breadcrumbs" :key="category.id">
@@ -49,7 +49,7 @@
         <div class="content__header">
           <div class="content__ref">
             <!-- @slot Ref content -->
-            <slot name="ref" :variant="variant"> {{ $t('product.ref') }} {{ variant.sku }} </slot>
+            <slot name="ref" :variant="variant"> {{ t('product.ref') }} {{ variant.sku }} </slot>
           </div>
           <!-- @slot Header content -->
           <slot name="header" :variant="variant">
@@ -69,11 +69,14 @@
           <slot name="short-description" :variant="variant">
             <div v-if="variant.shortDescription" v-html="variant.shortDescription"></div>
             <nuxt-link to="#description" class="py-2">
-              {{ $t('product.description.link') }}
+              {{ t('product.description.link') }}
             </nuxt-link>
           </slot>
         </div>
-        <div class="content__variants">
+        <div
+          class="content__variants"
+          v-if="variants !== null && variants.length > 1"
+        >
           <!-- @slot Variants content -->
           <slot
             name="variants"
@@ -125,7 +128,7 @@
     <div class="product-detail__description" id="description">
       <!-- @slot Description content -->
       <slot name="description" :variant="variant">
-        <h2>{{ $t('product.description.title') }}</h2>
+        <h2>{{ t('product.description.title') }}</h2>
         <div v-html="variant.description" class="prose-sm prose max-w-none"></div>
       </slot>
     </div>
@@ -134,12 +137,12 @@
       <slot name="links" :variant="variant">
         <product-links v-if="variant" :links="variant.links?.crossLink || []">
           <template #head>
-            <h2 class="text-xl">{{ $t('product.cross_selling.title') }}</h2>
+            <h2 class="text-xl">{{ t('product.cross_selling.title') }}</h2>
           </template>
         </product-links>
         <product-links v-if="variant" :links="variant?.links?.upLink || []">
           <template #head>
-            <h2 class="text-xl">{{ $t('product.up_selling.title') }}</h2>
+            <h2 class="text-xl">{{ t('product.up_selling.title') }}</h2>
           </template>
         </product-links>
       </slot>
@@ -161,6 +164,7 @@
 import type { ProductCategory, ProductPrice } from '#models'
 import { Product } from '#models'
 import { useHistoryStore } from '~/stores/history'
+
 const props = defineProps({
   product: {
     type: Object as PropType<Product>,
@@ -171,6 +175,8 @@ const props = defineProps({
     default: ''
   }
 })
+
+const { t } = useI18n()
 const localePath = useLocalePath()
 const variant = ref<Product>(props.product)
 const router = useRouter()
