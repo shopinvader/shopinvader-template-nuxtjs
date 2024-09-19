@@ -75,11 +75,7 @@
         </div>
         <div
           class="content__variants"
-          v-if="
-            variant.variantCount > 5 ||
-            variants === null ||
-            (variants !== null && variants.length > 1)
-          "
+          v-if="variants !== null && variants.length > 1"
         >
           <!-- @slot Variants content -->
           <slot
