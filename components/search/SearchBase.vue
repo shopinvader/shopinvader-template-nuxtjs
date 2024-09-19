@@ -395,7 +395,11 @@ onMounted(async () => {
 })
 
 // Provide some methods and data to the other components (to be injected)
-provide('search', search)
+provide('search', () => {
+  // Reset the page to 0 when a new search is performed due to a filter change
+  page.from = 0
+  search()
+})
 provide('declareFilter', declareFilter)
 provide(
   'response',
