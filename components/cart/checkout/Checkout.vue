@@ -20,23 +20,23 @@
         </slot>
       </div>
       <template v-else-if="lineCount > 0">
-        <div v-if="currentStepIndex != null" class="checkout__header">
+        <div v-if="activeStep != null" class="checkout__header">
           <!-- @slot Header content  -->
           <slot name="header" :displayed-steps="displayedSteps">
             <ul class="checkout-stepper">
               <li
-                v-for="(step, index) in displayedSteps"
+                v-for="step in displayedSteps"
                 :key="step.name"
                 class="step"
                 :class="{
-                  'step--done': index + 1 < currentStepIndex,
-                  'step--active': index + 1 == currentStepIndex
+                  'step--done': step.done,
+                  'step--active': step.active
                 }"
-                @click="goToStep(index + 1)"
+                @click="goToStep(step)"
               >
                 <span class="step__index">
-                  <icon name="check" v-if="index + 1 < currentStepIndex" />
-                  <template v-else>{{ index + 1 }}</template>
+                  <icon name="check" v-if="step.done" />
+                  <template v-else>{{ step.index }}</template>
                 </span>
                 <span class="step__title"> {{ step.title }}</span>
               </li>
@@ -84,23 +84,23 @@
           <slot name="body" :steps="checkoutSteps" :current-step-index="currentStepIndex">
             <div class="checkout-steps">
               <div
-                v-for="(step, index) in checkoutSteps"
+                v-for="step in checkoutSteps"
                 :key="step.name"
                 :id="'step-' + step.position"
                 :class="[
                   'checkout-step',
                   {
-                    'checkout-step--done': index < currentStepIndex,
-                    'checkout-step--active': index == currentStepIndex
+                    'checkout-step--done': step.done,
+                    'checkout-step--active': step.active
                   }
                 ]"
               >
                 <div v-if="step.title" class="checkout-step__header">
-                  <div class="header" @click="goToStep(index + 1)">
+                  <div class="header" @click="goToStep(step)">
                     <div class="header__name">
                       <span class="name__index">
-                        <icon name="check" v-if="index < currentStepIndex" />
-                        <template v-else>{{ index + 1 }}</template>
+                        <icon name="check" v-if="step.done" />
+                        <template v-else>{{ step.index }}</template>
                       </span>
                       <span class="name__title">
                         {{ step.title }}
@@ -108,10 +108,10 @@
                     </div>
                     <div class="header__icon">
                       <button
-                        v-if="index < currentStepIndex"
+                        v-if="step.done"
                         type="button"
                         class="btn btn-ghost"
-                        @click="goToStep(index)"
+                        @click="goToStep(step)"
                       >
                         {{ t('cart.edit') }}
                       </button>
@@ -122,8 +122,8 @@
                   <slot :name="`step-${step.name}`">
                     <component
                       :is="step.component"
-                      v-if="index <= currentStepIndex"
-                      :active="index == currentStepIndex"
+                      v-if="step.active || step.done"
+                      :active="step.active"
                       @back="back"
                       @next="next"
                       @change="change"
@@ -163,6 +163,10 @@ interface checkoutStep {
   title: string | null
   component: Component
   position: number
+  done?: boolean
+  active?: boolean
+  index?: number
+  id?: number
 }
 
 /**
@@ -229,48 +233,76 @@ const defaultSteps: checkoutStep[] = [
   }
 ]
 /** Merge props steps with default steps */
-let checkoutSteps = [...defaultSteps]
+let items = [...defaultSteps]
 if (props.mergeSteps) {
-  checkoutSteps = [...defaultSteps, ...props.steps]
+  items = [...defaultSteps, ...props.steps]
     .reduce((steps, item) => {
       steps[item?.position] = item
       return steps
     }, [] as checkoutStep[])
     .filter((step) => step?.component)
 } else if (props.steps) {
-  checkoutSteps = props.steps
+  items = props.steps
 }
-const currentStepIndex = ref(0 as number)
-const maxStepIndex = ref(0 as number)
+let index = 0
+items = items.map((step, i) => {
+  index = step?.title ? index + 1 : index
+  return {
+    ...step,
+    id: i,
+    index
+  }
+})
+const activeStep = ref(items[0])
+const checkoutSteps = computed(() => {
+  return items.map((step) => {
+    return {
+      ...step,
+      done: step.position < activeStep.value?.position,
+      active: step.id === activeStep.value?.id
+    }
+  })
+})
+
 const displayedSteps = computed(() => {
   /** Get steps with title */
-  return checkoutSteps.filter((step) => step?.title)
+  return checkoutSteps.value.filter((step) => step?.title)
 })
 
 const lineCount = computed(() => {
   return cart?.value?.lines?.length || 0
 })
 
-watch(currentStepIndex, (currentStepIndex) => {
-  const step = checkoutSteps[currentStepIndex] || null
-  const title = t('cart.title')
-  if (step) {
-    scrollToStep(step.position)
-    useHead({
-      title: `${step.title} - ${title}`
-    })
-  }
+const currentStepIndex = computed(() => {
+  return checkoutSteps.value.findIndex((step) => step.active)
 })
+
+watch(
+  () => activeStep.value,
+  (step, prevStep) => {
+    if (step && prevStep !== step) {
+      scrollToStep(step.position)
+      const title = t('cart.title')
+      scrollToStep(step.position)
+      useHead({
+        title: `${step.title} - ${title}`
+      })
+    }
+  },
+  { deep: true }
+)
 /**
  * Go to the previous step
  */
 const back = () => {
-  if (currentStepIndex.value - 1 < 0) {
-    currentStepIndex.value = 0
-  } else {
-    currentStepIndex.value--
+  let currentStepIndex = checkoutSteps.value.findIndex((step) => step.active)
+  if (currentStepIndex - 1 < 0) {
+    currentStepIndex = 0
+  } else if (checkoutSteps.value[currentStepIndex - 1]) {
+    currentStepIndex--
   }
-  emit('back', { currentStepIndex: currentStepIndex.value })
+  activeStep.value = checkoutSteps.value[currentStepIndex]
+  emit('back', { currentStepIndex })
   window.scrollTo({
     top: 0,
     behavior: 'smooth'
@@ -281,16 +313,16 @@ const back = () => {
  * Go to the next step
  */
 const next = () => {
-  if (currentStepIndex.value + 1 < 0) {
-    currentStepIndex.value = 0
-  } else {
-    currentStepIndex.value++
+  let currentStepIndex = checkoutSteps.value.findIndex((step) => step.active)
+  if (currentStepIndex + 1 < 0) {
+    currentStepIndex = 0
+  } else if (checkoutSteps.value[currentStepIndex + 1]) {
+    currentStepIndex++
   }
-  if (maxStepIndex.value < currentStepIndex.value) {
-    maxStepIndex.value = currentStepIndex.value
-  }
-  if (currentStepIndex.value === checkoutSteps.length) {
-    emit('next', { currentStepIndex: currentStepIndex.value })
+  activeStep.value = checkoutSteps.value[currentStepIndex]
+
+  if (currentStepIndex === checkoutSteps.value.length) {
+    emit('next', { currentStepIndex })
   }
 }
 
@@ -298,14 +330,16 @@ const next = () => {
  * go to a specific step
  * @param step
  */
-const goToStep = (step: number) => {
+const goToStep = (value: checkoutStep) => {
   emit('change')
-  if (step > maxStepIndex.value) return
-  currentStepIndex.value = step
+  const step = checkoutSteps.value.find((s) => s.id == value.id)
+  if (step && value.done) {
+    activeStep.value = step
+  }
 }
 
-const scrollToStep = (step: number) => {
-  const el = document.querySelector(`#step-${step}`)
+const scrollToStep = (position: number) => {
+  const el = document.querySelector(`#step-${position}`)
   if (el) {
     setTimeout(() => {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' })

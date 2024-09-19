@@ -62,7 +62,7 @@ export class AddressService extends BaseServiceErp {
       this.addresses = (await this.getAll()) || []
     }
     const result: Address = await this.ofetch(
-      this.urlEndpoint + '/' + address.type + '/' + address.id,
+      this.urlEndpoint + '/' + (address.type || 'invoicing') + '/' + address.id,
       {
         method: 'POST',
         body: address.getJSONData()

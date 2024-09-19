@@ -159,7 +159,7 @@ const props = defineProps({
     }
   }
 })
-const emit = defineEmits(['saved'])
+const emit = defineEmits(['submit'])
 const settings = useShopinvaderService('settings')?.values
 const countries = settings?.countries || []
 const titles = settings?.titles || []
@@ -177,13 +177,13 @@ watch(
 )
 
 /**
- * emit the saved event
+ * emit the submit event
  * @param e
  */
 const save = (e: Event) => {
   e.preventDefault()
   submitted.value = true
-  emit('saved', model.value)
+  emit('submit', model.value)
 }
 </script>
 <style lang="scss">

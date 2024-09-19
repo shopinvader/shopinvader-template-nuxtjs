@@ -11,15 +11,15 @@
     <template v-if="editAddress && active">
       <slot name="create-address" :cart="cart">
         <div class="checkout-address__form">
-          <h2>{{ $t('cart.address.shipping.title') }}</h2>
+          <h2>{{ t('cart.address.shipping.title') }}</h2>
           <address-form
             v-if="editAddress"
-            @saved="saveAddress"
+            @submit="saveAddress"
             class="address"
             :address="editAddress"
           ></address-form>
           <button class="btn btn-link" @click="editAddress = null">
-            {{ $t('cart.back') }}
+            {{ t('cart.back') }}
           </button>
         </div>
       </slot>
@@ -41,15 +41,14 @@
           @click="submit"
           :disabled="loading"
         >
-          {{ $t('cart.address.continue') }}
+          {{ t('cart.address.continue') }}
           <icon name="right" class="text-lg"></icon>
         </button>
       </div>
     </template>
   </div>
 </template>
-<script lang="ts">
-import { AddressCard, CartAddressDelivery, CartAddressInvoicing } from '#components'
+<script lang="ts" setup>
 import { Address } from '#models'
 
 /**
@@ -57,123 +56,114 @@ import { Address } from '#models'
  * This component is used in the Checkout funnel.
  * Use to select cart delivery and invoice addresses.
  */
-export default defineNuxtComponent({
-  name: 'cart-address',
-  emits: {
-    /** Emit to go to the next step */
-    next: () => true,
-    /** Emit to go back to the previous step */
-    back: () => true
-  },
-  components: {
-    'address-card': AddressCard,
-    'cart-address-delivery': CartAddressDelivery,
-    'cart-address-invoicing': CartAddressInvoicing
-  },
-  props: {
-    /**
-     * Is the current step of the checkout process
-     */
-    active: {
-      type: Boolean,
-      required: true
-    }
-  },
-  async setup(props, { emit }) {
-    const i18n = useI18n()
-    const auth = useShopinvaderService('auth')
-    const cartService = useShopinvaderService('cart')
-    const addressService = useShopinvaderService('addresses')
-    const editAddress = ref(null as Address | null)
-    const cart = cartService.getCart()
-    const sameAddresses = computed(() => {
-      return cart.value?.hasSameAddress()
-    })
-    const loading = ref(false)
-    const loadingStep = ref(true)
-    const error = ref(null as string | null)
-    const deliveryAddress = computed(() => {
-      return cart.value?.delivery?.address || new Address({})
-    })
-    const invoicingAddress = computed(() => {
-      return cart.value?.invoicing?.address || deliveryAddress.value
-    })
+const emit = defineEmits({
+  /** Emit to go to the next step */
+  next: () => true,
+  /** Emit to go back to the previous step */
+  back: () => true
+})
+const props = defineProps({
+  /**
+   * Is the current step of the checkout process
+   */
+  active: {
+    type: Boolean,
+    required: true
+  }
+})
 
-    onMounted(async () => {
+const { t } = useI18n()
+const auth = useShopinvaderService('auth')
+const cartService = useShopinvaderService('cart')
+const addressService = useShopinvaderService('addresses')
+const editAddress = ref(null as Address | null)
+const cart = cartService.getCart()
+const sameAddresses = computed(() => {
+  return cart.value?.hasSameAddress()
+})
+const loading = ref(false)
+const loadingStep = ref(true)
+const error = ref(null as string | null)
+
+const deliveryAddress = computed(() => {
+  return cart.value?.delivery?.address || new Address({})
+})
+
+onMounted(async () => {
+  if (!cart.value || !addressService) return
+  if (!cart.value?.hasValidAddresses()) {
+    const addresses = await addressService.search('')
+    editAddress.value =
+      addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
+  }
+  loadingStep.value = false
+})
+
+const submit = () => {
+  try {
+    loading.value = true
+    if (!cart.value || !cart.value?.hasValidAddresses()) {
+      setTimeout(() => {
+        error.value = t('cart.address.warning')
+        loading.value = false
+      }, 1000)
+    } else {
+      emit('next')
+    }
+  } catch (e: any) {
+    error.value = e?.message || e
+    loading.value = false
+  } finally {
+    loading.value = false
+  }
+}
+
+watch(
+  () => props.active,
+  async (active, oldValue) => {
+    if (active !== oldValue && active) {
       if (!cart.value || !addressService) return
       if (!cart.value?.hasValidAddresses()) {
         const addresses = await addressService.search('')
         editAddress.value =
           addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
+      } else {
+        editAddress.value = null
       }
-      loadingStep.value = false
-    })
-
-    const submit = () => {
-      try {
-        loading.value = true
-        if (!cart.value || !cart.value?.hasValidAddresses()) {
-          setTimeout(() => {
-            error.value = i18n.t('cart.address.warning')
-            loading.value = false
-          }, 1000)
-        } else {
-          emit('next')
-        }
-      } catch (e: any) {
-        error.value = e?.message || e
-        loading.value = false
-      } finally {
-        loading.value = false
-      }
-    }
-
-    /** Check if the customer is logged */
-    const user = auth?.getUser()
-    const saveAddress = async (address: Address) => {
-      const addressService = useShopinvaderService('addresses')
-      if (addressService && address) {
-        try {
-          loading.value = true
-          if (address.id) {
-            editAddress.value = address = await addressService.update(address)
-          } else {
-            editAddress.value = address = await addressService.create(address)
-          }
-          await cartService.setAddress('delivery', address)
-          if (!cart.value?.invoicing?.address?.isValidAddress()) {
-            await cartService.setAddress('invoicing', address)
-          }
-          if (cart.value?.hasValidAddresses()) {
-            emit('next')
-          }
-        } catch (e) {
-          console.error(e)
-          editAddress.value = null
-          setTimeout(() => {
-            editAddress.value = address
-          }, 100)
-          error.value = i18n.t('account.address.save.error')
-        } finally {
-          loading.value = false
-        }
-      }
-    }
-    return {
-      error,
-      cart,
-      loading,
-      loadingStep,
-      sameAddresses,
-      submit,
-      saveAddress,
-      deliveryAddress,
-      invoicingAddress,
-      editAddress,
-      user
     }
   }
-})
+)
+/** Check if the customer is logged */
+const user = auth?.getUser()
+const saveAddress = async (address: Address) => {
+  const addressService = useShopinvaderService('addresses')
+  if (addressService && address) {
+    try {
+      loading.value = true
+      if (address.id) {
+        editAddress.value = address = await addressService.update(address)
+      } else {
+        editAddress.value = address = await addressService.create(address)
+      }
+      await cartService.setAddress('delivery', address)
+      if (!cart.value?.invoicing?.address?.isValidAddress()) {
+        await cartService.setAddress('invoicing', address)
+      }
+      if (cart.value?.hasValidAddresses()) {
+        emit('next')
+      }
+    } catch (e) {
+      console.error(e)
+      editAddress.value = null
+      setTimeout(() => {
+        editAddress.value = address
+      }, 100)
+      error.value = t('account.address.save.error')
+    } finally {
+      loading.value = false
+    }
+  }
+}
 </script>
 <style lang="scss">
 .checkout-address {

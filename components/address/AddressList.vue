@@ -93,7 +93,7 @@
         <div v-if="saveError" class="alert alert-error">
           {{ saveError }}
         </div>
-        <address-form v-if="editedAddress" :address="editedAddress" @saved="saveAddress">
+        <address-form v-if="editedAddress" :address="editedAddress" @submit="saveAddress">
           <template #actions>
             <button type="button" class="btn btn-outline" @click="editedAddress = null">
               {{ $t('actions.close') }}
