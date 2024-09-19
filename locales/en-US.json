@@ -359,7 +359,11 @@
       "address": "Invoicing address"
     },
     "delivery": {
-      "address": "Delivery address"
+      "address": "Delivery address",
+      "pickings": {
+        "link": "Tracking link",
+        "title": "Tracking"
+      }
     },
     "amount": {
       "total": "Total",
@@ -378,6 +382,10 @@
       "estimating": "Waiting for estimate",
       "estimated": "To confirm"
     }
+  },
+  "picking": {
+    "tracking": "Tracking number",
+    "deiveryDate": "Delivery date"
   },
   "payment": {
     "select": "Select",

@@ -4,7 +4,7 @@
       <slot name="header" :sale="sale">
         <div class="header__number" v-if="sale.name">
           <div class="label">
-            {{ $t('sale.name') }}
+            {{ t('sale.name') }}
           </div>
           <div class="value">
             {{ sale.name }}
@@ -12,10 +12,10 @@
         </div>
         <div class="header__date" v-if="sale.date">
           <div class="label">
-            {{ $t('sale.date') }}
+            {{ t('sale.date') }}
           </div>
           <div class="value">
-            {{ sale.date.toLocaleDateString($i18n.locale) }}
+            {{ sale.date.toLocaleDateString(locale) }}
           </div>
         </div>
         <div class="header__content">
@@ -24,7 +24,7 @@
         <div v-if="sale.customerRef" class="header__customerRef">
           <slot name="customerRef" :sale="sale">
             <div class="label">
-              {{ $t('sale.customerRef') }}
+              {{ t('sale.customerRef') }}
             </div>
             <div class="value">
               {{ sale.customerRef }}
@@ -34,9 +34,17 @@
         <div class="header__state">
           <slot name="state" :sale="sale">
             <div class="label">
-              {{ $t('sale.state') }}
+              {{ t('sale.state') }}
             </div>
             <sale-status :sale="sale" />
+          </slot>
+        </div>
+        <div class="header__pickings">
+          <slot name="pickings" :sale="sale">
+            <div class="label">
+              {{ t('sale.delivery.pickings.title') }}
+            </div>
+            <sale-picking :sale="sale" />
           </slot>
         </div>
         <div class="header__action">
@@ -62,7 +70,7 @@
           <template #header>
             <div>
               <icon name="location" />
-              {{ $t('sale.delivery.address') }}
+              {{ t('sale.delivery.address') }}
             </div>
             <div class="">{{ sale?.delivery?.address?.name }}</div>
           </template>
@@ -73,7 +81,7 @@
           <template #header>
             <div>
               <icon name="billing"></icon>
-              {{ $t('sale.invoicing.address') }}
+              {{ t('sale.invoicing.address') }}
             </div>
             <div class="">{{ sale?.invoicing?.address?.name }}</div>
           </template>
@@ -92,7 +100,7 @@
         <slot name="note" :sale="sale">
           <div v-if="sale.note" class="note">
             <div class="label">
-              {{ $t('sale.note') }}
+              {{ t('sale.note') }}
             </div>
             <div class="value">
               {{ sale.note }}
@@ -105,7 +113,7 @@
           <div class="mb-10">
             <div v-if="sale?.amount?.discountTotal !== 0" class="total__item">
               <span class="font-medium">
-                {{ $t('sale.amount.discount') }}
+                {{ t('sale.amount.discount') }}
               </span>
               <span class="font-heading font-bold">
                 - {{ formatCurrency(sale?.amount?.discountTotal || 0) }}
@@ -113,7 +121,7 @@
             </div>
             <div class="total__item">
               <span class="font-medium">
-                {{ $t('sale.amount.untaxed') }}
+                {{ t('sale.amount.untaxed') }}
               </span>
               <span class="font-heading font-bold">
                 {{ formatCurrency(sale?.amount?.untaxed || 0) }}
@@ -121,7 +129,7 @@
             </div>
             <div class="total__item">
               <span class="font-medium">
-                {{ $t('sale.amount.tax') }}
+                {{ t('sale.amount.tax') }}
               </span>
               <span class="font-heading font-bold">
                 {{ formatCurrency(sale?.amount?.tax || 0) }}
@@ -129,7 +137,7 @@
             </div>
             <div class="total__item">
               <span class="font-medium">
-                {{ $t('sale.amount.total') }}
+                {{ t('sale.amount.total') }}
               </span>
               <span class="font-heading font-bold">
                 {{ formatCurrency(sale?.amount?.total || 0) }}
@@ -151,6 +159,7 @@ defineProps({
     required: true
   }
 })
+const { t, locale } = useI18n()
 </script>
 <style lang="scss">
 .sale {
@@ -161,6 +170,7 @@ defineProps({
       &__number,
       &__date,
       &__customerRef,
+      &__pickings,
       &__state {
         @apply text-left;
         .label {
