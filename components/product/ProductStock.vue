@@ -14,11 +14,11 @@
         <span class="stock-text">{{ t('product.stock.resupplying') }}</span>
       </div>
       <div v-else-if="state == 'out_of_stock'" class="stock-status__out-of-stock">
-        <icon name="entypo:cycle" class="stock-icon" />
+        <icon name="mdi:package-variant-remove" class="stock-icon" />
         <span class="stock-text">{{ t('product.stock.not_available') }}</span>
       </div>
       <div v-else-if="state == 'soon_available'" class="stock-status__soon_available">
-        <icon name="ph:clock" class="stock-icon" />
+        <icon name="hugeicons:package-process" class="stock-icon" />
         <span class="stock-text">{{ t('product.stock.soon_available') }}</span>
       </div>
     </div>
@@ -55,7 +55,7 @@ const qty = computed<number | null>(() => {
   &__available {
     @apply flex max-w-max py-1 text-sm text-primary;
     .stock-icon {
-      @apply mr-1 inline text-xl text-success;
+      @apply mr-2 inline text-xl text-success;
     }
     .stock-text {
       @apply text-neutral;
@@ -64,7 +64,7 @@ const qty = computed<number | null>(() => {
   &__ending {
     @apply flex max-w-max items-center py-1 text-sm text-primary;
     .stock-icon {
-      @apply mr-1 inline text-xl text-error;
+      @apply mr-2 inline text-xl text-error;
     }
     .stock-text {
       @apply text-error;
@@ -73,7 +73,7 @@ const qty = computed<number | null>(() => {
   &__resupplying {
     @apply flex max-w-max py-1 text-sm text-info;
     .stock-icon {
-      @apply mr-1 inline-block text-xl text-error;
+      @apply mr-2 inline-block text-xl text-error;
     }
     .stock-text {
       @apply text-error;
@@ -82,7 +82,7 @@ const qty = computed<number | null>(() => {
   &__out-of-stock {
     @apply flex max-w-max py-1 text-sm text-primary;
     .stock-icon {
-      @apply mr-1 inline text-xl text-error;
+      @apply mr-2 inline text-xl text-error;
     }
     .stock-text {
       @apply text-error;
@@ -91,7 +91,7 @@ const qty = computed<number | null>(() => {
   &__soon_available {
     @apply flex max-w-max py-1 text-sm text-primary;
     .stock-icon {
-      @apply mr-1 inline text-xl text-error;
+      @apply mr-2 inline text-xl text-error;
     }
     .stock-text {
       @apply text-error;
