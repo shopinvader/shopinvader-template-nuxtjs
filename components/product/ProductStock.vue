@@ -17,6 +17,10 @@
         <icon name="entypo:cycle" class="stock-icon" />
         <span class="stock-text">{{ t('product.stock.not_available') }}</span>
       </div>
+      <div v-else-if="state == 'soon_available'" class="stock-status__soon_available">
+        <icon name="ph:clock" class="stock-icon" />
+        <span class="stock-text">{{ t('product.stock.soon_available') }}</span>
+      </div>
     </div>
   </slot>
 </template>
@@ -49,7 +53,7 @@ const qty = computed<number | null>(() => {
 <style lang="scss">
 .stock-status {
   &__available {
-    @apply max-w-max py-1 text-sm text-primary;
+    @apply flex max-w-max py-1 text-sm text-primary;
     .stock-icon {
       @apply mr-1 inline text-xl text-success;
     }
@@ -59,7 +63,6 @@ const qty = computed<number | null>(() => {
   }
   &__ending {
     @apply flex max-w-max items-center py-1 text-sm text-primary;
-
     .stock-icon {
       @apply mr-1 inline text-xl text-error;
     }
@@ -68,7 +71,7 @@ const qty = computed<number | null>(() => {
     }
   }
   &__resupplying {
-    @apply max-w-max py-1 text-sm text-info;
+    @apply flex max-w-max py-1 text-sm text-info;
     .stock-icon {
       @apply mr-1 inline-block text-xl text-error;
     }
@@ -77,7 +80,16 @@ const qty = computed<number | null>(() => {
     }
   }
   &__out-of-stock {
-    @apply max-w-max py-1 text-sm text-primary;
+    @apply flex max-w-max py-1 text-sm text-primary;
+    .stock-icon {
+      @apply mr-1 inline text-xl text-error;
+    }
+    .stock-text {
+      @apply text-error;
+    }
+  }
+  &__soon_available {
+    @apply flex max-w-max py-1 text-sm text-primary;
     .stock-icon {
       @apply mr-1 inline text-xl text-error;
     }

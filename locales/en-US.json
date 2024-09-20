@@ -58,7 +58,8 @@
       "available": "In stock",
       "resupplying": "Resupplying",
       "ending_soon": "in limited stock",
-      "not_available": "Item out of stock"
+      "not_available": "Item out of stock",
+      "soon_available": "Soon available"
     },
     "discount": {
       "tag": "{discount}% Off"

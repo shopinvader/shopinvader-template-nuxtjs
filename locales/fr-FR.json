@@ -62,7 +62,8 @@
       "resupplying": "Réapprovisionnement en cours",
       "available": "En stock",
       "ending_soon": "Bientôt épuisé",
-      "not_available": "Indisponible"
+      "not_available": "Indisponible",
+      "soon_available": "Bientôt disponible"
     },
     "discount": {
       "tag": "SOLDES - { discount }%"
