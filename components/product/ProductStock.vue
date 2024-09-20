@@ -21,6 +21,9 @@
         <icon name="hugeicons:package-process" class="stock-icon" />
         <span class="stock-text">{{ t('product.stock.soon_available') }}</span>
       </div>
+      <div v-else class="stock-status__unknown">
+        <span class="stock-text">{{ state }}</span>
+      </div>
     </div>
   </slot>
 </template>
@@ -95,6 +98,12 @@ const qty = computed<number | null>(() => {
     }
     .stock-text {
       @apply text-error;
+    }
+  }
+  &__unknown {
+    @apply flex max-w-max py-1 text-sm;
+    .stock-text {
+      @apply text-neutral;
     }
   }
 }
