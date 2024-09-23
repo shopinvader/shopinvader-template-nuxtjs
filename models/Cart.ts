@@ -38,12 +38,13 @@ export class Cart extends Model {
     this.uuid = data?.uuid
     this.name = data?.name
     this.date = new Date(data?.date)
-    let lines = []
+    this.lines = []
     if (Array.isArray(data?.lines)) {
-      lines = data?.lines?.map((l: any) => new CartLine(l)) || []
+      /* Exclude delivery line from cart lines */
+      const dataLines = data?.lines?.filter((l: any) => !l?.is_delivery) || []
+      this.lines = dataLines?.map((l: any) => new CartLine(l)) || []
     }
-    this.lines = lines
-    this.linesCount = Cart.getLinesCount(lines)
+    this.linesCount = Cart.getLinesCount(this.lines)
     if (data?.amount?.total_without_shipping_without_discount) {
       this.linesAmount = new CartLinesAmount({
         total: data?.amount?.total_without_shipping_without_discount,
@@ -51,7 +52,7 @@ export class Cart extends Model {
         tax: data?.amount?.tax_without_shipping
       })
     } else {
-      this.linesAmount = Cart.getLinesAmount(lines)
+      this.linesAmount = Cart.getLinesAmount(this.lines)
     }
     this.loaded = false
     this.amount = new CartAmount(data?.amount || {})
