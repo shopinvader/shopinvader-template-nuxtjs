@@ -15,6 +15,8 @@ export class CartLine extends Model {
   product: Product | null
   unitPrice: CartLineUnitPrice
   options: any[] | null
+  isDelivery: boolean
+
   /** Fill fields with data from the Json provided by ElasticSearch */
   constructor(data: any) {
     super(data)
@@ -31,5 +33,6 @@ export class CartLine extends Model {
     this.hasPendingTransactions = data?.hasPendingTransactions || false
     this.product = null
     this.options = data?.options || null
+    this.isDelivery = data?.is_delivery || false
   }
 }

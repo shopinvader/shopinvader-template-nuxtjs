@@ -3,8 +3,8 @@ import {
   CartLine as CartLineModel,
   Cart as CartModel,
   DeliveryCarrier,
-  PaymentData,
   DeliveryPickupPoint,
+  PaymentData,
   Sale
 } from '#models'
 import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
