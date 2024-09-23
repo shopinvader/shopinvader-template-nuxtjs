@@ -72,6 +72,7 @@
 </template>
 <script lang="ts" setup>
 import { formatCurrency } from '~/utils/StringHelper'
+const { t } = useI18n()
 /**
  * Display the cart's total
  * This component is used in the component Cart and in sereral checkout steps.
