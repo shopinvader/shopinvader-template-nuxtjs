@@ -122,8 +122,7 @@
 </template>
 <script lang="ts" setup>
 import type { DeliveryCarrier } from '#models'
-import { DeliveryGeneric, Spinner } from '#components'
-import CartTotal from '../CartTotal.vue'
+import { DeliveryGeneric, Spinner, CartTotal } from '#components'
 interface CarrierWithComponent extends DeliveryCarrier {
   component: any
   carrier: DeliveryCarrier
