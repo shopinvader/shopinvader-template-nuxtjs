@@ -15,7 +15,7 @@ export class Cart extends Model {
   id: number
   uuid: string
   linesAmount: CartLinesAmount
-  linesCount: number
+  linesCount: number = 0
   lines: CartLine[]
   date: Date
   loaded: boolean
@@ -40,11 +40,8 @@ export class Cart extends Model {
     this.date = new Date(data?.date)
     this.lines = []
     if (Array.isArray(data?.lines)) {
-      /* Exclude delivery line from cart lines */
-      const dataLines = data?.lines?.filter((l: any) => !l?.is_delivery) || []
-      this.lines = dataLines?.map((l: any) => new CartLine(l)) || []
+      Cart.setLines(this, data?.lines?.map((l: any) => new CartLine(l)) || [])
     }
-    this.linesCount = Cart.getLinesCount(this.lines)
     if (data?.amount?.total_without_shipping_without_discount) {
       this.linesAmount = new CartLinesAmount({
         total: data?.amount?.total_without_shipping_without_discount,
@@ -68,7 +65,6 @@ export class Cart extends Model {
     let total = 0
     let untaxed = 0
     let tax = 0
-
     for (const item of lines) {
       total += item.amount.total
       untaxed += item.amount.untaxed
@@ -88,13 +84,16 @@ export class Cart extends Model {
   }
 
   static setLines(cart: Cart, lines: CartLine[]) {
-    cart.lines = lines
+    // Exclude delivery line from cart lines
+    cart.lines = lines.filter((l: CartLine) => l?.isDelivery === false) || []
     cart.linesCount = Cart.getLinesCount(lines)
   }
+
   hasValidAddresses() {
     const addresses = [this.invoicing?.address || null, this.delivery?.address || null]
     return addresses.every((address: Address | null) => address && address?.isValidAddress())
   }
+
   hasSameAddress() {
     return this.invoicing?.address?.id === this.delivery?.address?.id
   }
