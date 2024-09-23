@@ -1,8 +1,9 @@
-import type { Address, DeliveryPickupPoint, Product } from '#models'
+import type { Address, Product } from '#models'
 import {
   CartLine as CartLineModel,
   Cart as CartModel,
   DeliveryCarrier,
+  DeliveryPickupPoint,
   PaymentData,
   Sale
 } from '#models'
@@ -183,14 +184,14 @@ export class CartService extends BaseServiceErp {
     return cart
   }
 
-  addTransaction(id: number, qty: number) {
+  addTransaction(id: number, qty: number, options?: any) {
     if (id != null && qty != null && !isNaN(qty)) {
-      this.cart.addTransaction(new CartTransaction(id, qty, undefined))
+      this.cart.addTransaction(new CartTransaction(id, qty, undefined, options || null))
     }
   }
 
-  applyDeltaOnItem(productId: number, delta: number) {
-    this.addTransaction(productId, delta)
+  applyDeltaOnItem(productId: number, delta: number, options?: any) {
+    this.addTransaction(productId, delta, options || null)
   }
 
   /**
@@ -199,8 +200,8 @@ export class CartService extends BaseServiceErp {
    * @param {*} options Options
    * @returns Promise
    */
-  addItem(productId: number, qty: number) {
-    this.addTransaction(productId, qty || 1)
+  addItem(productId: number, qty: number, options?: any) {
+    this.addTransaction(productId, qty || 1, options || null)
   }
 
   /**
@@ -214,7 +215,7 @@ export class CartService extends BaseServiceErp {
     if (line !== null) {
       const originalQty = line?.qty || 0
       qty -= originalQty
-      this.addTransaction(productId, qty)
+      this.addTransaction(productId, qty, line?.options || null)
     }
   }
 
@@ -227,7 +228,7 @@ export class CartService extends BaseServiceErp {
       const qty = line.qty * -1
       const productId: number | null = line?.productId || null
       if (productId !== null) {
-        this.addTransaction(productId, qty)
+        this.addTransaction(productId, qty, line?.options || null)
       }
     }
   }
@@ -326,6 +327,8 @@ export class CartService extends BaseServiceErp {
           body: { code }
         })
       }
+    } catch (e) {
+      throw e
     } finally {
       if (cartData?.id) {
         this.setCart(new CartModel(cartData))
