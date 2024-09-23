@@ -45,7 +45,8 @@
         </div>
         <div class="body__stock">
           <slot name="product-stock" :product="variant">
-            <product-stock v-if="variant?.stock !== null" :stock="variant?.stock"> </product-stock>
+            <product-stock v-if="variant && variant?.stock !== null" :stock="variant?.stock">
+            </product-stock>
           </slot>
         </div>
         <div class="body__price">
