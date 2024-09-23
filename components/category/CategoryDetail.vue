@@ -75,14 +75,14 @@ const query = () => {
   if (props?.category?.id !== null) {
     const id = props.category.id + '' // convert to string
     query = esb
-      .nestedQuery()
-      .path('categories')
-      .query(
+      .boolQuery()
+      .must([
         esb
-          .boolQuery()
-          .must([esb.matchQuery('categories.id', id)])
-          .should(esb.termQuery('main', true))
-      )
+          .nestedQuery()
+          .path('categories')
+          .query(esb.boolQuery().must([esb.matchQuery('categories.id', id)]))
+      ])
+      .should(esb.termQuery('main', true))
   }
   return query
 }

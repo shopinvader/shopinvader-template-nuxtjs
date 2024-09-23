@@ -171,6 +171,10 @@ watch(
   (address) => {
     if (address) {
       model.value = address.clone<Address>() || new Address({})
+      if (model.value?.country?.id) {
+        model.value.country =
+          countries.find((c) => c.id === model.value.country?.id || null) || model.value.country
+      }
     }
   },
   { immediate: true }

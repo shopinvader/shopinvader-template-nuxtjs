@@ -18,7 +18,7 @@
           {{ t('picking.deiveryDate') }}
           <div class="value">{{ picking.deliveryDate?.toLocaleDateString(locale) }}</div>
         </div>
-        <div class="content__tracking">
+        <div v-if="picking.trackingReference" class="content__tracking">
           {{ t('picking.tracking') }}
           <div class="value">{{ picking.trackingReference }}</div>
         </div>
