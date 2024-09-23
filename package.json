@@ -4,7 +4,7 @@
   "author": "Akretion",
   "license": "MIT",
   "type": "module",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "private": true,
   "scripts": {
     "build": "nuxt build",
