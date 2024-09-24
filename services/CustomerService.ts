@@ -22,4 +22,10 @@ export class CustomerService extends BaseServiceErp {
     }
     return null
   }
+
+  async resetPassword(): Promise<void> {
+    await this.ofetch(this.urlEndpoint + '/reset_password', {
+      method: 'POST'
+    })
+  }
 }

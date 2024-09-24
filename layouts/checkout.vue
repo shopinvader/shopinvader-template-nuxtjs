@@ -11,14 +11,9 @@
     </main>
     <footer-main></footer-main>
     <navbar-bottom class="md:hidden"></navbar-bottom>
-    <notifications-vue></notifications-vue>
+    <Notifications />
   </div>
 </template>
-<script lang="ts" setup>
-definePageMeta({
-  layout: false
-})
-</script>
 <style lang="scss">
 main {
   @apply container mx-auto flex-grow;
