@@ -12,6 +12,8 @@ export class SaleLine extends Model {
   amount: SaleAmount
   discount: SaleDiscount | null
   unitPrice: SaleUnitPrice
+  isDelivery: boolean
+
   constructor(data: any) {
     super(data)
     this.id = data?.id
@@ -25,5 +27,6 @@ export class SaleLine extends Model {
     this.amount = new SaleAmount(data.amount || {})
     this.unitPrice = new SaleUnitPrice(data.unit_price || {})
     this.discount = data.discount ? new SaleDiscount(data.discount) : null
+    this.isDelivery = data?.is_delivery || false
   }
 }
