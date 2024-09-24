@@ -6,13 +6,13 @@
           <div class="form-control">
             <label class="label">
               <span class="label-text">
-                {{ $t('account.address.search') }}
+                {{ t('account.address.search') }}
               </span>
             </label>
             <label class="input-group">
               <input
                 type="text"
-                :placeholder="$t('account.address.search')"
+                :placeholder="t('account.address.search')"
                 class="input input-bordered"
                 v-model="searchQuery"
                 @input="searchAddress(searchQuery)"
@@ -25,12 +25,12 @@
         </div>
         <div>
           <template v-if="addresses.length > 0">
-            {{ $t('account.address.count', { count: addresses.length }) }}
+            {{ t('account.address.count', { count: addresses.length }) }}
           </template>
         </div>
         <button type="button" class="btn btn-primary btn-sm" @click="createAddress">
           <icon name="plus" class="text-lg"></icon>
-          {{ $t('actions.create') }}
+          {{ t('actions.create') }}
         </button>
       </slot>
     </div>
@@ -43,11 +43,11 @@
       <template v-else-if="loading">
         <spinner :size="20"></spinner>
         <div class="pr-3 text-xl">
-          {{ $t('account.loading') }}
+          {{ t('account.loading') }}
         </div>
       </template>
       <template v-else-if="addresses.length == 0">
-        {{ $t('account.address.noresult') }}
+        {{ t('account.address.noresult') }}
       </template>
       <div v-else class="list__content">
         <div class="content__items">
@@ -64,7 +64,7 @@
               <button
                 v-if="address.access?.delete"
                 class="btn btn-circle btn-primary btn-sm"
-                :title="$t('actions.delete')"
+                :title="t('actions.delete')"
                 @click="deleteAddress(address)"
               >
                 <icon name="delete" class="text-lg text-white"></icon>
@@ -72,7 +72,7 @@
               <button
                 v-if="address.access?.update"
                 class="btn btn-circle btn-primary btn-sm"
-                :title="$t('actions.update')"
+                :title="t('actions.update')"
                 @click="editedAddress = address"
               >
                 <icon name="edit" class="text-lg"></icon>
@@ -87,7 +87,7 @@
     </div>
     <aside-drawer :open="editedAddress !== null" @close="editedAddress = null">
       <template #header>
-        <div class="text-2xl">{{ $t('account.address.edit') }}</div>
+        <div class="text-2xl">{{ t('account.address.edit') }}</div>
       </template>
       <template #content>
         <div v-if="saveError" class="alert alert-error">
@@ -96,7 +96,7 @@
         <address-form v-if="editedAddress" :address="editedAddress" @submit="saveAddress">
           <template #actions>
             <button type="button" class="btn btn-outline" @click="editedAddress = null">
-              {{ $t('actions.close') }}
+              {{ t('actions.close') }}
             </button>
           </template>
         </address-form>
@@ -114,6 +114,7 @@ defineProps({
     default: null
   }
 })
+const { t } = useI18n()
 const saveError = ref(null) as Ref<string | null>
 const errors = ref([]) as Ref<string[]>
 const addresses = ref([]) as Ref<Address[]>
@@ -122,7 +123,6 @@ const count = ref(0)
 const loading = ref(false)
 const searchQuery = ref('')
 const auth = useShopinvaderService('auth')
-const { t } = useI18n()
 const user = auth?.getUser()
 
 onMounted(async () => {
@@ -199,9 +199,9 @@ const saveAddress = async (address: Address) => {
   }
 }
 const createAddress = () => {
-  editedAddress.value = new Address({
-    type: 'delivery'
-  })
+  const address = new Address({})
+  address.type = 'delivery'
+  editedAddress.value = address
 }
 </script>
 <style lang="scss">
