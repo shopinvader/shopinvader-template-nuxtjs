@@ -1,152 +1,154 @@
 <template>
-  <client-only>
-    <template #fallback>
-      <!-- @slot Content before component loading  -->
-      <slot name="loading">
-        <div class="checkout__loading">
-          <spinner></spinner>
-        </div>
-      </slot>
-    </template>
-    <div v-if="checkoutSteps.length > 0" class="checkout">
-      <div v-if="cart?.hasPendingTransactions" class="checkout__pending">
-        <!-- @slot Pending state and warning message content  -->
-        <slot name="pending">
-          <h1>{{ t('cart.pending.title') }}</h1>
-          <p>{{ t('cart.pending.checkout') }}</p>
-          <nuxt-link :to="localePath('/cart')" class="btn btn-primary">
-            {{ t('cart.pending.back') }}
-          </nuxt-link>
+  <div>
+    <client-only>
+      <template #fallback>
+        <!-- @slot Content before component loading  -->
+        <slot name="loading">
+          <div class="checkout__loading">
+            <spinner></spinner>
+          </div>
         </slot>
-      </div>
-      <template v-else-if="lineCount > 0">
-        <div v-if="activeStep != null" class="checkout__header">
-          <!-- @slot Header content  -->
-          <slot name="header" :displayed-steps="displayedSteps">
-            <ul class="checkout-stepper">
-              <li
-                v-for="step in displayedSteps"
-                :key="step.name"
-                class="step"
-                :class="{
-                  'step--done': step.done,
-                  'step--active': step.active
-                }"
-                @click="goToStep(step)"
-              >
-                <span class="step__index">
-                  <icon name="check" v-if="step.done" />
-                  <template v-else>{{ step.index }}</template>
-                </span>
-                <span class="step__title"> {{ step.title }}</span>
-              </li>
-            </ul>
+      </template>
+      <div v-if="checkoutSteps.length > 0" class="checkout">
+        <div v-if="cart?.hasPendingTransactions" class="checkout__pending">
+          <!-- @slot Pending state and warning message content  -->
+          <slot name="pending">
+            <h1>{{ t('cart.pending.title') }}</h1>
+            <p>{{ t('cart.pending.checkout') }}</p>
+            <nuxt-link :to="localePath('/cart')" class="btn btn-primary">
+              {{ t('cart.pending.back') }}
+            </nuxt-link>
           </slot>
         </div>
-        <div class="checkout__cart">
-          <!--
+        <template v-else-if="lineCount > 0">
+          <div v-if="activeStep != null" class="checkout__header">
+            <!-- @slot Header content  -->
+            <slot name="header" :displayed-steps="displayedSteps">
+              <ul class="checkout-stepper">
+                <li
+                  v-for="step in displayedSteps"
+                  :key="step.name"
+                  class="step"
+                  :class="{
+                    'step--done': step.done,
+                    'step--active': step.active
+                  }"
+                  @click="goToStep(step)"
+                >
+                  <span class="step__index">
+                    <icon name="check" v-if="step.done" />
+                    <template v-else>{{ step.index }}</template>
+                  </span>
+                  <span class="step__title"> {{ step.title }}</span>
+                </li>
+              </ul>
+            </slot>
+          </div>
+          <div class="checkout__cart">
+            <!--
             @slot Cart summary content
             @binding {Cart} cart - cart
           -->
-          <slot name="cart" :cart="cart">
-            <div class="cart__icon">
-              <icon name="solar:cart-3-bold-duotone" />
-            </div>
-            <div class="cart__body">
-              <nuxt-link class="body__title" :to="localePath('/cart')">
-                {{ t('cart.title') }}
-              </nuxt-link>
-              <span class="body__count">
-                {{ t('cart.line.count', { count: lineCount }) }}
-              </span>
-            </div>
-            <div class="cart__end">
-              <button
-                type="button"
-                class="btn btn-circle btn-ghost"
-                :title="displayCart ? t('cart.line.hide') : t('cart.line.view')"
-                @click="displayCart = !displayCart"
-              >
-                <icon name="down" class="text-lg" :rotate="displayCart && '180deg'" />
-              </button>
-            </div>
-            <div v-if="displayCart" class="cart__lines">
-              <cart-lines :lines="cart?.lines" :readonly="true"></cart-lines>
-            </div>
-          </slot>
-        </div>
-        <div class="checkout__body">
-          <!--
+            <slot name="cart" :cart="cart">
+              <div class="cart__icon">
+                <icon name="solar:cart-3-bold-duotone" />
+              </div>
+              <div class="cart__body">
+                <nuxt-link class="body__title" :to="localePath('/cart')">
+                  {{ t('cart.title') }}
+                </nuxt-link>
+                <span class="body__count">
+                  {{ t('cart.line.count', { count: lineCount }) }}
+                </span>
+              </div>
+              <div class="cart__end">
+                <button
+                  type="button"
+                  class="btn btn-circle btn-ghost"
+                  :title="displayCart ? t('cart.line.hide') : t('cart.line.view')"
+                  @click="displayCart = !displayCart"
+                >
+                  <icon name="down" class="text-lg" :rotate="displayCart && '180deg'" />
+                </button>
+              </div>
+              <div v-if="displayCart" class="cart__lines">
+                <cart-lines :lines="cart?.lines" :readonly="true"></cart-lines>
+              </div>
+            </slot>
+          </div>
+          <div class="checkout__body">
+            <!--
             @slot Checkout steps content
             @binding {CheckoutStep[]} steps - checkout steps
             @binding {number} currentStepIndex - current step index
           -->
-          <slot name="body" :steps="checkoutSteps" :current-step-index="currentStepIndex">
-            <div class="checkout-steps">
-              <div
-                v-for="step in checkoutSteps"
-                :key="step.name"
-                :id="'step-' + step.position"
-                :class="[
-                  'checkout-step',
-                  {
-                    'checkout-step--done': step.done,
-                    'checkout-step--active': step.active
-                  }
-                ]"
-              >
-                <div v-if="step.title" class="checkout-step__header">
-                  <div class="header" @click="goToStep(step)">
-                    <div class="header__name">
-                      <span class="name__index">
-                        <icon name="check" v-if="step.done" />
-                        <template v-else>{{ step.index }}</template>
-                      </span>
-                      <span class="name__title">
-                        {{ step.title }}
-                      </span>
-                    </div>
-                    <div class="header__icon">
-                      <button
-                        v-if="step.done"
-                        type="button"
-                        class="btn btn-ghost"
-                        @click="goToStep(step)"
-                      >
-                        {{ t('cart.edit') }}
-                      </button>
+            <slot name="body" :steps="checkoutSteps" :current-step-index="currentStepIndex">
+              <div class="checkout-steps">
+                <div
+                  v-for="step in checkoutSteps"
+                  :key="step.name"
+                  :id="'step-' + step.position"
+                  :class="[
+                    'checkout-step',
+                    {
+                      'checkout-step--done': step.done,
+                      'checkout-step--active': step.active
+                    }
+                  ]"
+                >
+                  <div v-if="step.title" class="checkout-step__header">
+                    <div class="header" @click="goToStep(step)">
+                      <div class="header__name">
+                        <span class="name__index">
+                          <icon name="check" v-if="step.done" />
+                          <template v-else>{{ step.index }}</template>
+                        </span>
+                        <span class="name__title">
+                          {{ step.title }}
+                        </span>
+                      </div>
+                      <div class="header__icon">
+                        <button
+                          v-if="step.done"
+                          type="button"
+                          class="btn btn-ghost"
+                          @click="goToStep(step)"
+                        >
+                          {{ t('cart.edit') }}
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="checkout-step__component" :class="`step-${step.name}`">
-                  <slot :name="`step-${step.name}`">
-                    <component
-                      :is="step.component"
-                      v-if="step.active || step.done"
-                      :active="step.active"
-                      @back="back"
-                      @next="next"
-                      @change="change"
-                    ></component>
-                  </slot>
+                  <div class="checkout-step__component" :class="`step-${step.name}`">
+                    <slot :name="`step-${step.name}`">
+                      <component
+                        :is="step.component"
+                        v-if="step.active || step.done"
+                        :active="step.active"
+                        @back="back"
+                        @next="next"
+                        @change="change"
+                      ></component>
+                    </slot>
+                  </div>
                 </div>
               </div>
-            </div>
+            </slot>
+          </div>
+        </template>
+        <div v-else class="checkout__empty">
+          <!-- @slot Empty cart content  -->
+          <slot name="empty">
+            <CartEmpty></CartEmpty>
           </slot>
         </div>
-      </template>
-      <div v-else class="checkout__empty">
-        <!-- @slot Empty cart content  -->
-        <slot name="empty">
-          <CartEmpty></CartEmpty>
-        </slot>
+        <div class="checkout__footer">
+          <!-- @slot Footer content  -->
+          <slot name="footer"></slot>
+        </div>
       </div>
-      <div class="checkout__footer">
-        <!-- @slot Footer content  -->
-        <slot name="footer"></slot>
-      </div>
-    </div>
-  </client-only>
+    </client-only>
+  </div>
 </template>
 <script lang="ts" setup>
 import {
