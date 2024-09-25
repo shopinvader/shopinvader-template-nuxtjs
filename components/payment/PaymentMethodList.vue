@@ -62,35 +62,31 @@
         <div v-else class="payment-list__empty">
           <icon name="error" class="empty__icon" />
           <div class="empty__label">
-            {{ $t('cart.payment.empty') }}
+            {{ t('cart.payment.empty') }}
           </div>
         </div>
         <div class="payment-list__submit">
           <div class="terms-optin">
             <label>
               <input type="checkbox" v-model="legals" class="checkbox" required />
-              <i18n-t
-                tag="span"
-                keypath="payment.legals.intro"
-                class="label-text pl-1"
-              >
+              <i18n-t tag="span" keypath="payment.legals.intro" class="label-text pl-1">
                 <template #link>
                   <NuxtLinkLocale to="/legals/terms" class="text-nuxt-lightgreen">
-                    {{ $t('payment.legals.link') }}
+                    {{ t('payment.legals.link') }}
                   </NuxtLinkLocale>
                 </template>
               </i18n-t>
             </label>
           </div>
-          <div :class="{ 'tooltip': !legals }" :data-tip="!legals ? $t('payment.legals.help') : ''">
+          <div :class="{ tooltip: !legals }" :data-tip="!legals ? t('payment.legals.help') : ''">
             <button
               v-if="modes?.length > 0"
               type="submit"
               class="btn"
-              :class="{ 'btn-primary': selectedPaymentMethod }"
+              :class="{ 'btn-primary': selectedPaymentMethod && legals }"
               :disabled="!selectedPaymentMethod || !legals"
             >
-              {{ $t('payment.select', { amount: paymentData.amountFormatted }) }}
+              {{ t('payment.select', { amount: paymentData.amountFormatted }) }}
             </button>
           </div>
         </div>
@@ -116,6 +112,7 @@ const props = defineProps({
     required: true
   }
 })
+const { t } = useI18n()
 const PaymentGeneric = resolveComponent('PaymentGeneric')
 
 const importPaymentComponent = async (name: string) => {
@@ -240,7 +237,7 @@ const createTransaction = async () => {
     .terms-optin {
       @apply form-control;
       label {
-        @apply cursor-pointer label;
+        @apply label cursor-pointer;
       }
       a {
         @apply underline;
