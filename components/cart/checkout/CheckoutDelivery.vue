@@ -121,8 +121,8 @@
   </div>
 </template>
 <script lang="ts" setup>
+import { CartTotal, DeliveryGeneric, Spinner } from '#components'
 import type { DeliveryCarrier } from '#models'
-import { DeliveryGeneric, Spinner, CartTotal } from '#components'
 interface CarrierWithComponent extends DeliveryCarrier {
   component: any
   carrier: DeliveryCarrier
@@ -156,7 +156,7 @@ const { t } = useI18n()
 const cartService = useShopinvaderService('cart')
 const cart = cartService.getCart()
 const selectedCarrier = ref(null as DeliveryCarrier | null)
-const carriers = ref([] as CarrierWithComponent[])
+const carriers = shallowRef([] as CarrierWithComponent[])
 const error = ref(null as string | null)
 const loading = ref(false)
 
