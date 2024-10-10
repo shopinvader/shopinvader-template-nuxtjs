@@ -61,7 +61,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const loading = ref(true)
 const lastSale = ref(null) as Ref<Sale | null>
-const status = ref('') as Ref<string>
+const status = ref<string | null>('')
 const pendingMessage = ref('') as Ref<string>
 const cartService = useShopinvaderService('cart')
 useHead({
@@ -69,12 +69,12 @@ useHead({
 })
 onMounted(async () => {
   try {
+    const route = useRoute()
+    status.value = (route?.query?.status as string) || null
     loading.value = true
     lastSale.value = (await cartService?.getLastSale()) || null
-    const route = useRoute()
-    if (route.query?.status) {
-      status.value = route.query.status as string
-    } else {
+
+    if (!status.value) {
       if (!lastSale.value?.id) {
         const router = useRouter()
         router.push(localePath('/cart'))
