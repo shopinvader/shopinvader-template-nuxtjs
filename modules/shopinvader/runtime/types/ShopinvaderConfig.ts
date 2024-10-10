@@ -1,8 +1,7 @@
-import type { $Fetch } from 'ofetch'
 import type {
+  AddressService,
   AuthAPIConfig,
   AuthOIDCConfig,
-  AddressService,
   AuthService,
   CartService,
   CatalogService,
@@ -15,6 +14,7 @@ import type {
   SaleService,
   SettingService
 } from '#services'
+import type { $Fetch, FetchOptions, FetchResponse, ResponseType } from 'ofetch'
 
 export interface ShopinvaderProxyConfig {
   url: string
@@ -71,4 +71,31 @@ export interface ShopinvaderServiceList {
   deliveryCarriers: DeliveryCarrierService | null
   payment: PaymentService | null
   leads: LeadsService | null
+}
+
+export interface oFetchInterceptors {
+  onRequest: ((context: {
+    request: RequestInfo
+    options: FetchOptions<ResponseType>
+  }) => Promise<void> | void)[]
+  onRequestError: ((context: {
+    request: RequestInfo
+    options: FetchOptions<ResponseType>
+    error: Error
+  }) => Promise<void> | void)[]
+  onResponse: ((context: {
+    request: RequestInfo
+    options: FetchOptions<ResponseType>
+    response: FetchResponse<ResponseType>
+  }) => Promise<void> | void)[]
+  onResponseError: ((context: {
+    request: RequestInfo
+    options: FetchOptions<ResponseType>
+    response: FetchResponse<ResponseType>
+  }) => Promise<void> | void)[]
+}
+
+export interface ShopinvaderFetcherInterceptors {
+  erpFetch: oFetchInterceptors
+  elasticFetch: oFetchInterceptors
 }

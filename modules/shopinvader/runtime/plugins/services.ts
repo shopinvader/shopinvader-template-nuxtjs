@@ -10,16 +10,17 @@ import {
   CategoryService,
   CustomerService,
   DeliveryCarrierService,
+  LeadsService,
   PaymentService,
   ProductService,
   SaleService,
-  SettingService,
-  LeadsService
+  SettingService
 } from '#services'
 import { ofetch } from 'ofetch'
 import type {
   ShopinvaderServiceList as ServiceList,
   ShopinvaderConfig,
+  ShopinvaderFetcherInterceptors,
   ShopinvaderFetchersList
 } from '../types/ShopinvaderConfig'
 
@@ -79,17 +80,84 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   let auth: AuthService | null = null
 
   // Services need fetchers, build default ones
+
+  // Allow the app to add interceptors to the fetchers
+  const oFetchInterceptors: ShopinvaderFetcherInterceptors = {
+    elasticFetch: {
+      onRequest: [],
+      onRequestError: [],
+      onResponse: [],
+      onResponseError: []
+    },
+    erpFetch: {
+      onRequest: [],
+      onRequestError: [],
+      onResponse: [],
+      onResponseError: []
+    }
+  }
+  // Add standard interceptors to the fetchers
+  oFetchInterceptors.erpFetch.onRequest.push(async ({ request, options }) => {
+    auth?.interceptorOnRequest({ request, options })
+  })
+  oFetchInterceptors.erpFetch.onResponseError.push(({ request, response, options }) => {
+    auth?.interceptorOnResponseError({ request, response, options })
+  })
+  // Let the app add its own interceptors
+  await nuxtApp.callHook(
+    'shopinvader:fetchers_interceptors',
+    oFetchInterceptors,
+    shopinvaderConfig,
+    nuxtApp
+  )
+  // Create the fetchers with the interceptors
   const fetchers: ShopinvaderFetchersList = {
-    elasticFetch: ofetch.create({}),
-    erpFetch: ofetch.create({
+    elasticFetch: ofetch.create({
       async onRequest({ request, options }) {
-        auth?.interceptorOnRequest({ request, options })
+        for (const interceptor of oFetchInterceptors.elasticFetch.onRequest) {
+          await interceptor({ request, options })
+        }
+      },
+      async onRequestError({ request, options, error }) {
+        for (const interceptor of oFetchInterceptors.elasticFetch.onRequestError) {
+          await interceptor({ request, options, error })
+        }
+      },
+      async onResponse({ request, options, response }) {
+        for (const interceptor of oFetchInterceptors.elasticFetch.onResponse) {
+          await interceptor({ request, options, response })
+        }
       },
       async onResponseError({ request, response, options }) {
-        auth?.interceptorOnResponseError({ request, response, options })
+        for (const interceptor of oFetchInterceptors.elasticFetch.onResponseError) {
+          await interceptor({ request, response, options })
+        }
+      }
+    }),
+    erpFetch: ofetch.create({
+      async onRequest({ request, options }) {
+        for (const interceptor of oFetchInterceptors.erpFetch.onRequest) {
+          await interceptor({ request, options })
+        }
+      },
+      async onRequestError({ request, options, error }) {
+        for (const interceptor of oFetchInterceptors.erpFetch.onRequestError) {
+          await interceptor({ request, options, error })
+        }
+      },
+      async onResponse({ request, options, response }) {
+        for (const interceptor of oFetchInterceptors.erpFetch.onResponse) {
+          await interceptor({ request, options, response })
+        }
+      },
+      async onResponseError({ request, response, options }) {
+        for (const interceptor of oFetchInterceptors.erpFetch.onResponseError) {
+          await interceptor({ request, response, options })
+        }
       }
     })
   }
+
   // Let the child replace fetchers with theirs if needed
   await nuxtApp.callHook('shopinvader:fetchers', fetchers, shopinvaderConfig, nuxtApp)
 
