@@ -3,7 +3,7 @@
     <template #header>
       <h2 class="title">
         <icon name="billing"></icon>
-        {{ $t('cart.address.billing.title') }}
+        {{ t('cart.address.billing.title') }}
       </h2>
       <div class="subtitle">
         {{ invoicingAddress?.name }}
@@ -15,27 +15,28 @@
           <div class="cart-address-invoicing__btn">
             <button class="btn" @click="onOpen">
               <icon name="edit"></icon>
-              <span class="pl-1">{{ $t('account.address.edit') }}</span>
+              <span class="pl-1">{{ t('account.address.edit') }}</span>
             </button>
           </div>
         </slot>
         <aside-drawer :open="opened" @close="onClose" class-content="cart-address-invoicing__aside">
           <template #header>
             <div class="aside__header">
-              {{ $t('cart.address.billing.title') }}
+              {{ t('cart.address.billing.title') }}
             </div>
           </template>
           <template #content>
             <div v-if="hasSameAddresses" class="alert-same-address">
               <icon name="warning"></icon>
               <span>
-                {{ $t('cart.address.billing.warning_same') }}
+                {{ t('cart.address.billing.warning_same') }}
               </span>
             </div>
             <address-form
               v-if="model"
               :address="model"
               @submit="(e) => onUpdateAddress(e)"
+              @cancel="onClose"
             ></address-form>
           </template>
         </aside-drawer>
@@ -53,6 +54,7 @@ defineProps({
     default: true
   }
 })
+const { t } = useI18n()
 const opened = ref(false)
 const addressService = useShopinvaderService('addresses')
 const cartService = useShopinvaderService('cart')
