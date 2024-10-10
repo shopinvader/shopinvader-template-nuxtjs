@@ -8,7 +8,11 @@ import {
 } from '@nuxt/kit'
 
 import type { Router } from 'vue-router'
-import type { ShopinvaderConfig, ShopinvaderFetchersList } from './runtime/types/ShopinvaderConfig'
+import type {
+  ShopinvaderConfig,
+  ShopinvaderFetcherInterceptors,
+  ShopinvaderFetchersList
+} from './runtime/types/ShopinvaderConfig'
 import { useShopinvaderLogger } from './runtime/utils/logger'
 
 import type { HookResult, Nuxt } from 'nuxt/schema'
@@ -23,6 +27,11 @@ declare module '#app' {
   // Define additional runtime hooks
   interface RuntimeNuxtHooks {
     'shopinvader:loaded': (nuxt: Nuxt) => HookResult
+    'shopinvader:fetchers_interceptors': (
+      interceptors: ShopinvaderFetcherInterceptors,
+      shopinvaderConfig: ShopinvaderConfig,
+      ctx: unknown
+    ) => HookResult
     'shopinvader:fetchers': (
       fetchers: ShopinvaderFetchersList,
       shopinvaderConfig: ShopinvaderConfig,
