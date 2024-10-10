@@ -41,6 +41,7 @@ export class AuthOIDCService extends AuthService {
       // Listen to OIDC events
       this.userLoaded = this.userLoaded.bind(this)
       this.userUnloaded = this.userUnloaded.bind(this)
+      // Note: the 'addUserLoaded' event is raised when a user session has been established or re-established.
       this.clientOIDC.events.addUserLoaded(this.userLoaded)
       this.clientOIDC.events.addUserUnloaded(this.userUnloaded)
 
@@ -127,6 +128,8 @@ export class AuthOIDCService extends AuthService {
   }
 
   async userLoaded() {
+    // Warning: this method is not aonly called when the user logs in
+    //          but ALSO when the user session is re-established (automaticSilentRenew).
     if (!this.clientOIDC) {
       throw new Error('Client not initialized')
     }
