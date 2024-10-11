@@ -3,6 +3,7 @@ import mitt from 'mitt'
 import nuxtStorage from 'nuxt-storage'
 import type { $Fetch, FetchContext } from 'ofetch'
 import { storeToRefs } from 'pinia'
+import isEqual from '~/utils/IsEqual'
 import { BaseServiceLocalized } from './BaseServiceLocalized'
 
 export interface AuthUserCredential {
@@ -75,7 +76,13 @@ export abstract class AuthService extends BaseServiceLocalized {
     try {
       const profile = await this.ofetch(this.urlEndpointUser)
       if (profile) {
-        user = this.setUser(profile)
+        // Avoid to set the user if it's the same, else it will trigger "watch" everywhere in the app.
+        // This is needed because the OIDC service calls this method even on automatic session refresh.
+        const currentUser = this.getUser()
+        const newUser = new User(profile)
+        if (!isEqual(currentUser.value, newUser)) {
+          user = this.setUser(profile)
+        }
       }
     } catch (e) {
       this.setUser(null)

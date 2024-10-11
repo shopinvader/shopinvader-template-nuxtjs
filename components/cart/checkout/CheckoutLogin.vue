@@ -39,8 +39,9 @@ export default defineNuxtComponent({
     })
     watch(
       () => user?.value,
-      (value) => {
-        if (value instanceof User) {
+      (newValue, oldValue) => {
+        if (newValue instanceof User && oldValue == null) {
+          // User was not logged in before but now is
           success()
         }
       }
