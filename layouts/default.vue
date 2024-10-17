@@ -1,10 +1,10 @@
 <template>
-  <div id="app">
+  <div id="app" class="layout-default">
     <div id="header-target"></div>
     <slot name="header">
       <HeaderMain />
     </slot>
-    <main>
+    <main class="">
       <slot name="body"> </slot>
       <slot></slot>
     </main>
@@ -17,8 +17,10 @@
 </template>
 <script lang="ts" setup></script>
 <style lang="scss">
-main {
-  @apply container mx-auto flex-grow;
+.layout-default {
+  main {
+    @apply container mx-auto flex-grow;
+  }
 }
 
 #app {
