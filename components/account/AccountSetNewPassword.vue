@@ -37,7 +37,7 @@
                 required
                 :disabled="loading"
                 :type="newPasswordView ? 'text' : 'password'"
-                :placeholder="newPasswordView ? '' : '*************'"
+                autocomplete="new-password"
               />
             </div>
             <div class="pswd-view">
@@ -67,7 +67,7 @@
                 required
                 :disabled="loading"
                 :type="repeatPasswordView ? 'text' : 'password'"
-                :placeholder="repeatPasswordView ? '' : '*************'"
+                autocomplete="off"
               />
             </div>
             <div class="pswd-view">
