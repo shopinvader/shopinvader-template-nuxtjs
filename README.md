@@ -168,6 +168,7 @@ Install all packages requested by the ShopInvader template:
 npm i -D ts-morph 
 npm i -D sass-embedded
 npm i -D daisyui@latest
+npm i -D prettier-plugin-tailwindcss
 npm i pinia -f
 npm i pinia-plugin-persistedstate
 npm i @pinia-plugin-persistedstate/nuxt
