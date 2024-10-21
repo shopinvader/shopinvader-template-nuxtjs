@@ -180,11 +180,7 @@ export default defineNuxtConfig({
     name: 'My Website'
   },
 
-  fonts: {
-    providers: {
-      google: {}
-    }
-  },
+  fonts: {},
 
   compatibilityDate: '2024-07-22'
 })
