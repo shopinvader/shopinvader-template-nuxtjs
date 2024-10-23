@@ -1,5 +1,5 @@
 import { Category, Product, type CatalogResult } from '#models'
-import { BaseServiceElastic } from './BaseServiceElastic'
+import { BaseServiceElastic } from '#services'
 
 export class CatalogService extends BaseServiceElastic {
   async search(body: any): Promise<CatalogResult> {

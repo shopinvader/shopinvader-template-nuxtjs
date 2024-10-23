@@ -1,6 +1,6 @@
 import { Category, type CategoryResult } from '#models'
+import { BaseServiceElastic } from '#services'
 import esb, { MultiMatchQuery } from 'elastic-builder'
-import { BaseServiceElastic } from './BaseServiceElastic'
 
 export class CategoryService extends BaseServiceElastic {
   navCategories: Category[] | null = null

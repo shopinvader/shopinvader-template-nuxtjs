@@ -1,5 +1,5 @@
 import { DeliveryCarrier, DeliveryPickupPoint } from '#models'
-import { BaseServiceErp } from './BaseServiceErp'
+import { BaseServiceErp } from '#services'
 
 /**
  * Service for managing delivery carriers.

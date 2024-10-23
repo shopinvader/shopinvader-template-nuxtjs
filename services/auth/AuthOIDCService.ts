@@ -1,6 +1,6 @@
+import { AuthService } from '#services'
 import type { $Fetch, FetchContext } from 'ofetch'
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
-import { AuthService } from '../AuthService'
 
 export interface AuthOIDCConfig {
   authority: string
