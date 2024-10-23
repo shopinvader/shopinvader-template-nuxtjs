@@ -1,6 +1,6 @@
-import type { $Fetch } from 'ofetch'
 import { Lead, type LeadsResult } from '#models'
-import { BaseServiceLocalized } from './BaseServiceLocalized'
+import { BaseServiceLocalized } from '#services'
+import type { $Fetch } from 'ofetch'
 
 
 export class LeadsService extends BaseServiceLocalized {

@@ -1,4 +1,4 @@
-import { BaseService } from './BaseService'
+import { BaseService } from '#services'
 
 export class BaseServiceLocalized extends BaseService {
   currentIsoLocale: string = 'fr_fr'
