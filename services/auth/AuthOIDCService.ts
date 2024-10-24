@@ -1,6 +1,6 @@
-import { AuthService } from '#services'
 import type { $Fetch, FetchContext } from 'ofetch'
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
+import { AuthService } from '../AuthService'
 
 export interface AuthOIDCConfig {
   authority: string
@@ -12,10 +12,10 @@ export interface AuthOIDCConfig {
 }
 
 export class AuthOIDCService extends AuthService {
-  public override type: string = 'oidc'
-  private config: AuthOIDCConfig
-  private clientOIDC: UserManager | null = null
-  private redirectUri: string | null = null
+  override type: string = 'oidc'
+  config: AuthOIDCConfig
+  clientOIDC: UserManager | null = null
+  redirectUri: string | null = null
 
   constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthOIDCConfig) {
     super(isoLocale, ofetch, baseUrl)
@@ -24,7 +24,6 @@ export class AuthOIDCService extends AuthService {
 
   override async init(services: ShopinvaderServiceList): Promise<any> {
     super.init(services)
-    this.services = services
     if (!import.meta.env.SSR) {
       const { origin } = useRequestURL()
       this.redirectUri = new URL(this.config.redirectUri, origin).href
@@ -39,11 +38,9 @@ export class AuthOIDCService extends AuthService {
         automaticSilentRenew: true
       })
       // Listen to OIDC events
-      this.userLoaded = this.userLoaded.bind(this)
-      this.userUnloaded = this.userUnloaded.bind(this)
       // Note: the 'addUserLoaded' event is raised when a user session has been established or re-established.
-      this.clientOIDC.events.addUserLoaded(this.userLoaded)
-      this.clientOIDC.events.addUserUnloaded(this.userUnloaded)
+      this.clientOIDC.events.addUserLoaded(this.userLoaded.bind(this))
+      this.clientOIDC.events.addUserUnloaded(this.userUnloaded.bind(this))
 
       const query = window.location.search
       const loginReturn = query.includes('code=') && query.includes('state=')

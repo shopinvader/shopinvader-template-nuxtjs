@@ -1,10 +1,10 @@
 import { User } from '#models'
-import { BaseServiceLocalized } from '#services'
 import mitt from 'mitt'
 import nuxtStorage from 'nuxt-storage'
 import type { $Fetch, FetchContext } from 'ofetch'
 import { storeToRefs } from 'pinia'
 import isEqual from '~/utils/IsEqual'
+import { BaseServiceLocalized } from './BaseServiceLocalized'
 
 export interface AuthUserCredential {
   login: string
