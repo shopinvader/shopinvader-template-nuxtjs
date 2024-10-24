@@ -2,7 +2,7 @@
   <div class="checkout-validated">
     <template v-if="status == 'cancelled' || status == 'unknown'">
       <div class="checkout-validated__title">
-        <icon name="error" class="mr-2 text-6xl text-error" />
+        <icon name="error" />
         <span class="text-black">
           {{ $t('cart.validated.cancelled.title') }}
         </span>
@@ -61,7 +61,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const loading = ref(true)
 const lastSale = ref(null) as Ref<Sale | null>
-const status = ref('') as Ref<string>
+const status = ref<string | null>('')
 const pendingMessage = ref('') as Ref<string>
 const cartService = useShopinvaderService('cart')
 useHead({
@@ -69,12 +69,12 @@ useHead({
 })
 onMounted(async () => {
   try {
+    const route = useRoute()
+    status.value = (route?.query?.status as string) || null
     loading.value = true
     lastSale.value = (await cartService?.getLastSale()) || null
-    const route = useRoute()
-    if (route.query?.status) {
-      status.value = route.query.status as string
-    } else {
+
+    if (!status.value) {
       if (!lastSale.value?.id) {
         const router = useRouter()
         router.push(localePath('/cart'))
@@ -95,7 +95,10 @@ onMounted(async () => {
 .checkout-validated {
   @apply my-10 flex flex-col items-center justify-center gap-6 py-16;
   &__title {
-    @apply font-heading text-2xl text-primary lg:text-6xl;
+    @apply flex items-center gap-2 font-heading text-2xl text-primary lg:text-6xl;
+    .icon {
+      @apply h-14 w-14 text-error;
+    }
   }
   &__intro {
     @apply flex items-center gap-2 text-center text-lg lg:text-2xl;
