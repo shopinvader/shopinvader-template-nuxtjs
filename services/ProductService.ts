@@ -1,7 +1,7 @@
 import { Product, type ProductResult, type VariantAttributes } from '#models'
+import { BaseServiceElastic } from '#services'
 import type { Aggregation, Query } from 'elastic-builder'
 import esb, { MultiMatchQuery, TermQuery } from 'elastic-builder'
-import { BaseServiceElastic } from './BaseServiceElastic'
 
 export class ProductService extends BaseServiceElastic {
   hits(hits: any[]): Product[] {

@@ -1,6 +1,6 @@
 import type { PaymentData } from '#models'
 import { PaymentMethod, PaymentTransaction } from '#models'
-import { BaseServiceErp } from './BaseServiceErp'
+import { BaseServiceErp } from '#services'
 
 /**
  * PaymentService

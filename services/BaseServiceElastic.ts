@@ -1,5 +1,5 @@
+import { BaseServiceLocalized } from '#services'
 import type { $Fetch } from 'ofetch'
-import { BaseServiceLocalized } from './BaseServiceLocalized'
 
 export class BaseServiceElastic extends BaseServiceLocalized {
   ofetch: $Fetch

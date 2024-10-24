@@ -1,6 +1,6 @@
 import { Sale } from '#models'
 import type { ProductService } from '#services'
-import { BaseServiceErp } from './BaseServiceErp'
+import { BaseServiceErp } from '#services'
 
 // Service to fetch Sales
 export class SaleService extends BaseServiceErp {
