@@ -1,5 +1,5 @@
 import { Settings } from '#models'
-import { BaseServiceErp } from './BaseServiceErp'
+import { BaseServiceErp } from '#services'
 
 export class SettingService extends BaseServiceErp {
   public override endpoint: string = 'settings'

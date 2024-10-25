@@ -1,5 +1,5 @@
 import { Address } from '#models'
-import { BaseServiceErp } from './BaseServiceErp'
+import { BaseServiceErp } from '#services'
 
 export class CustomerService extends BaseServiceErp {
   public override endpoint: string = 'customer'

@@ -1,17 +1,20 @@
-import type { Address, Product } from '#models'
+import type {
+  Address,
+  DeliveryPickupPoint,
+  Product
+} from '#models'
 import {
   CartLine as CartLineModel,
   Cart as CartModel,
   DeliveryCarrier,
-  DeliveryPickupPoint,
   PaymentData,
   Sale
 } from '#models'
+import { BaseServiceErp } from '#services'
 import { Cart, CartTransaction, WebStorageCartStorage } from '@shopinvader/cart'
 import type { $Fetch } from 'ofetch'
 import { storeToRefs } from 'pinia'
 import isEqual from '~/utils/IsEqual'
-import { BaseServiceErp } from './BaseServiceErp'
 
 class CartObserver {
   prevCartData: any
@@ -327,8 +330,6 @@ export class CartService extends BaseServiceErp {
           body: { code }
         })
       }
-    } catch (e) {
-      throw e
     } finally {
       if (cartData?.id) {
         this.setCart(new CartModel(cartData))

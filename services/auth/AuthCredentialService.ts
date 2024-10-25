@@ -1,7 +1,7 @@
 import { localePath, navigateTo } from '#imports'
+import type { User } from '#models'
+import { AuthService, type AuthUserCredential } from '#services'
 import type { $Fetch, FetchContext } from 'ofetch'
-import type { User } from '~/models'
-import { AuthService, type AuthUserCredential } from '../AuthService'
 
 export interface AuthAPIConfig {
   loginPage: string
@@ -176,7 +176,7 @@ export class AuthCredentialService extends AuthService {
       } else {
         this.setUser(null)
       }
-    } catch (error) {
+    } catch {
       this.setUser(null)
     }
     return profile
