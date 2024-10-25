@@ -405,7 +405,7 @@
   },
   "picking": {
     "tracking": "Numéro de suivi",
-    "deiveryDate": "Date de livraison"
+    "deliveryDate": "Date de livraison"
   },
   "payment": {
     "select": "Payer",
