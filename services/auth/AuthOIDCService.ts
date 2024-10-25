@@ -38,10 +38,11 @@ export class AuthOIDCService extends AuthService {
         automaticSilentRenew: true
       })
       // Listen to OIDC events
+      this.userLoaded = this.userLoaded.bind(this)
+      this.userUnloaded = this.userUnloaded.bind(this)
       // Note: the 'addUserLoaded' event is raised when a user session has been established or re-established.
-      this.clientOIDC.events.addUserLoaded(this.userLoaded.bind(this))
-      this.clientOIDC.events.addUserUnloaded(this.userUnloaded.bind(this))
-
+      this.clientOIDC.events.addUserLoaded(this.userLoaded)
+      this.clientOIDC.events.addUserUnloaded(this.userUnloaded)
       const query = window.location.search
       const loginReturn = query.includes('code=') && query.includes('state=')
       try {
