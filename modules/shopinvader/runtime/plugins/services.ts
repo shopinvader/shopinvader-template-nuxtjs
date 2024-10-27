@@ -209,11 +209,17 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   await nuxtApp.callHook('shopinvader:services', services, fetchers, shopinvaderConfig, nuxtApp)
 
   // Add Auth interceptors to the fetchers
-  oFetchInterceptors.erpFetch.onRequest.push(async ({ request, options }) => {
-    services.auth?.interceptorOnRequest({ request, options })
+  oFetchInterceptors.elasticFetch.onRequest.push(async ({ request, options }) => {
+    await services.auth?.interceptorOnRequest({ request, options })
   })
-  oFetchInterceptors.erpFetch.onResponseError.push(({ request, response, options }) => {
-    services.auth?.interceptorOnResponseError({ request, response, options })
+  oFetchInterceptors.elasticFetch.onResponseError.push(async ({ request, response, options }) => {
+    await services.auth?.interceptorOnResponseError({ request, response, options })
+  })
+  oFetchInterceptors.erpFetch.onRequest.push(async ({ request, options }) => {
+    await services.auth?.interceptorOnRequest({ request, options })
+  })
+  oFetchInterceptors.erpFetch.onResponseError.push(async ({ request, response, options }) => {
+    await services.auth?.interceptorOnResponseError({ request, response, options })
   })
 
   // Init all services when the app is mounted
