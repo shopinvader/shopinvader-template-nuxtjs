@@ -73,26 +73,30 @@ export interface ShopinvaderServiceList {
   leads: LeadsService | null
 }
 
+export type oFetchRequestCtx = {
+  request: RequestInfo
+  options: FetchOptions
+}
+export type oFetchRequestErrorCtx = {
+  request: RequestInfo
+  options: FetchOptions
+  error: Error
+}
+export type oFetchResponseCtx = {
+  request: RequestInfo
+  options: FetchOptions
+  response: FetchResponse<ResponseType>
+}
+export type oFetchResponseErrorCtx = {
+  request: RequestInfo
+  options: FetchOptions
+  response: FetchResponse<ResponseType>
+}
 export interface oFetchInterceptors {
-  onRequest: ((context: {
-    request: RequestInfo
-    options: FetchOptions<ResponseType>
-  }) => Promise<void> | void)[]
-  onRequestError: ((context: {
-    request: RequestInfo
-    options: FetchOptions<ResponseType>
-    error: Error
-  }) => Promise<void> | void)[]
-  onResponse: ((context: {
-    request: RequestInfo
-    options: FetchOptions<ResponseType>
-    response: FetchResponse<ResponseType>
-  }) => Promise<void> | void)[]
-  onResponseError: ((context: {
-    request: RequestInfo
-    options: FetchOptions<ResponseType>
-    response: FetchResponse<ResponseType>
-  }) => Promise<void> | void)[]
+  onRequest: ((ctx: oFetchRequestCtx) => Promise<void>)[]
+  onRequestError: ((ctx: oFetchRequestErrorCtx) => Promise<void>)[]
+  onResponse: ((ctx: oFetchResponseCtx) => Promise<void>)[]
+  onResponseError: ((ctx: oFetchResponseErrorCtx) => Promise<void>)[]
 }
 
 export interface ShopinvaderFetcherInterceptors {

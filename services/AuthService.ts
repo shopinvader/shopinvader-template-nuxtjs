@@ -1,8 +1,12 @@
 import { User } from '#models'
 import mitt from 'mitt'
 import nuxtStorage from 'nuxt-storage'
-import type { $Fetch, FetchContext } from 'ofetch'
+import type { $Fetch } from 'ofetch'
 import { storeToRefs } from 'pinia'
+import type {
+  oFetchRequestCtx,
+  oFetchResponseErrorCtx
+} from '~/modules/shopinvader/runtime/types/ShopinvaderConfig'
 import isEqual from '~/utils/IsEqual'
 import { BaseServiceLocalized } from './BaseServiceLocalized'
 
@@ -39,12 +43,10 @@ export abstract class AuthService extends BaseServiceLocalized {
   abstract loginRedirect(url?: string): Promise<any>
   abstract logoutRedirect(url?: string): Promise<any>
   // Add those to the fetcher
-  abstract interceptorOnRequest({ request, options }: FetchContext): void | Promise<void>
-  abstract interceptorOnResponseError({
-    request,
-    response,
-    options
-  }: FetchContext): void | Promise<void>
+  abstract erpInterceptorOnRequest(ctx: oFetchRequestCtx): Promise<void>
+  abstract erpInterceptorOnResponseError(ctx: oFetchResponseErrorCtx): Promise<void>
+  abstract elasticInterceptorOnRequest(ctx: oFetchRequestCtx): Promise<void>
+  abstract elasticInterceptorOnResponseError(ctx: oFetchResponseErrorCtx): Promise<void>
 
   constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string) {
     super(isoLocale)
