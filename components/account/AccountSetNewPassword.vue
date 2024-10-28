@@ -23,6 +23,20 @@
       </div>
     </div>
     <form v-else @submit.prevent="onSubmit" class="reset-form">
+      <input-password v-model="newPassword" :disabled="loading">
+        <template #label>
+          {{ t('account.reset.new_password') }}
+        </template>
+      </input-password>
+      <input-password
+        v-model="repeatNewPassword"
+        label="account.reset.new_password"
+        :disabled="loading"
+      >
+        <template #label>
+          {{ t('account.reset.repeat_new_password') }}
+        </template>
+      </input-password>
       <div class="reset-form__row">
         <label class="" for="newPassword">
           {{ t('account.reset.new_password') }}

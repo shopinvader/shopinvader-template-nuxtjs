@@ -124,7 +124,7 @@ const submit = async (e: Event) => {
     }
   }
   &__error {
-    @apply pl-4 text-sm text-error;
+    @apply py-3 pl-4 text-left text-sm text-error;
   }
 
   .reset-btn {
