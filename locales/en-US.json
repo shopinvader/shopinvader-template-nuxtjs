@@ -386,7 +386,7 @@
   },
   "picking": {
     "tracking": "Tracking number",
-    "deiveryDate": "Delivery date"
+    "deliveryDate": "Delivery date"
   },
   "payment": {
     "select": "Select",

@@ -368,7 +368,7 @@
   },
   "picking": {
     "tracking": "Número de seguimiento",
-    "deiveryDate": "Fecha de entrega"
+    "deliveryDate": "Fecha de entrega"
   },
   "payment": {
     "select": "Seleccionar",

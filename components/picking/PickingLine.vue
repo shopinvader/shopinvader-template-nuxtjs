@@ -15,7 +15,7 @@
     <div class="picking-line__content">
       <slot name="ref" :picking="picking">
         <div class="content__date">
-          {{ t('picking.deiveryDate') }}
+          {{ t('picking.deliveryDate') }}
           <div class="value">{{ picking.deliveryDate?.toLocaleDateString(locale) }}</div>
         </div>
         <div v-if="picking.trackingReference" class="content__tracking">

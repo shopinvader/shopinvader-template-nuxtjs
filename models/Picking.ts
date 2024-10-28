@@ -6,7 +6,6 @@ export class Picking extends Model {
   name: string
   deliveryDate: Date | null
   trackingReference: string | null
-  deiveryDate: Date | null
   carrier: DeliveryCarrier | null
   constructor(data: any) {
     super(data)

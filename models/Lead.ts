@@ -1,6 +1,4 @@
-import { Model } from './Model'
-import { Country } from './Country'
-
+import { Model, Country } from '#models'
 
 export class Lead extends Model {
   subject: string | null
@@ -31,7 +29,7 @@ export class Lead extends Model {
     this.description = data?.description || null
   }
   getJSONData(): any {
-    let description = [
+    const description = [
       this.name,
       this.company,
       this.street,
@@ -42,8 +40,7 @@ export class Lead extends Model {
       this.mobile,
       '--',
       this.description
-
-    ].join("\n")
+    ].join('\n')
     return {
       subject: this.subject || '',
       email: this.email,
@@ -56,4 +53,3 @@ export interface LeadsResult {
   size: number
   data: Lead[]
 }
-
