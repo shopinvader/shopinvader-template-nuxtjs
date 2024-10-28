@@ -77,8 +77,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   // Build services
   // --------------
-  let auth: AuthService | null = null
-
+  
   // Services need fetchers, build default ones
 
   // Allow the app to add interceptors to the fetchers
@@ -96,13 +95,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       onResponseError: []
     }
   }
-  // Add standard interceptors to the fetchers
-  oFetchInterceptors.erpFetch.onRequest.push(async ({ request, options }) => {
-    auth?.interceptorOnRequest({ request, options })
-  })
-  oFetchInterceptors.erpFetch.onResponseError.push(({ request, response, options }) => {
-    auth?.interceptorOnResponseError({ request, response, options })
-  })
+
   // Let the app add its own interceptors
   await nuxtApp.callHook(
     'shopinvader:fetchers_interceptors',
@@ -175,6 +168,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   const elasticAllIndexesNames: string[] = Object.values(elasticIndexes)
 
   // Create the auth service, depending on the config
+  let auth: AuthService | null = null
   if (shopinvaderConfig?.auth?.type) {
     const authConfig = shopinvaderConfig.auth?.profile
     if (shopinvaderConfig.auth.type === 'oidc') {
@@ -211,8 +205,22 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     services.settings.setValues(new Settings(settings))
   }
 
-  // Let the child add custom services or replace the default ones
+  // Let the child App add custom services or replace the default ones
   await nuxtApp.callHook('shopinvader:services', services, fetchers, shopinvaderConfig, nuxtApp)
+
+  // Add Auth interceptors to the fetchers
+  oFetchInterceptors.elasticFetch.onRequest.push(async ({ request, options }) => {
+    await services.auth?.interceptorOnRequest({ request, options })
+  })
+  oFetchInterceptors.elasticFetch.onResponseError.push(async ({ request, response, options }) => {
+    await services.auth?.interceptorOnResponseError({ request, response, options })
+  })
+  oFetchInterceptors.erpFetch.onRequest.push(async ({ request, options }) => {
+    await services.auth?.interceptorOnRequest({ request, options })
+  })
+  oFetchInterceptors.erpFetch.onResponseError.push(async ({ request, response, options }) => {
+    await services.auth?.interceptorOnResponseError({ request, response, options })
+  })
 
   // Init all services when the app is mounted
   // -----------------------------------------
