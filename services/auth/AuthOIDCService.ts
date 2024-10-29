@@ -1,5 +1,9 @@
-import type { $Fetch, FetchContext } from 'ofetch'
+import type { $Fetch } from 'ofetch'
 import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
+import type {
+  oFetchRequestCtx,
+  oFetchResponseErrorCtx
+} from '~/modules/shopinvader/runtime/types/ShopinvaderConfig'
 import { AuthService } from '../AuthService'
 
 export interface AuthOIDCConfig {
@@ -70,19 +74,26 @@ export class AuthOIDCService extends AuthService {
   }
 
   // Interceptors to be added in the app fetcher
-  interceptorOnRequest({ options }: FetchContext): void | Promise<void> {
+  async erpInterceptorOnRequest(ctx: oFetchRequestCtx): Promise<void> {
     if (this.getUser()) {
-      // Add credentials to the request
-      options.credentials = 'include'
+      // Add credentials to the request because we switched from OIDC token authentification
+      // to HTTP Cookie Authentification when signin and HTTP Cookies are not sent by default.
+      ctx.options.credentials = 'include'
     }
   }
-  interceptorOnResponseError({ response }: FetchContext): void | Promise<void> {
+  async erpInterceptorOnResponseError(ctx: oFetchResponseErrorCtx): Promise<void> {
     if (!import.meta.env.SSR) {
-      if (response?.status === 401) {
+      if (ctx.response?.status === 401) {
         // The user is not authenticated anymore
-        this.logoutRedirect()
+        await this.logoutRedirect()
       }
     }
+  }
+  async elasticInterceptorOnRequest(): Promise<void> {
+    // Nothing to do
+  }
+  async elasticInterceptorOnResponseError(): Promise<void> {
+    // Nothing to do
   }
 
   async loginRedirect(url?: string): Promise<any> {
