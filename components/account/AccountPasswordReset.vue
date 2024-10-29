@@ -4,17 +4,17 @@
       <slot name="head">
         <div class="reset-heading">
           <h2 class="reset-heading__title">
-            {{ $t('account.reset.reset_pswd') }}
+            {{ t('account.reset.reset_pswd') }}
           </h2>
           <p class="reset-heading__description">
-            {{ $t('account.reset.description') }}
+            {{ t('account.reset.description') }}
           </p>
         </div>
       </slot>
       <form @submit.prevent="submit">
         <div class="reset-form">
           <div class="reset-form__row">
-            <label class="" for="email">{{ $t('account.address.email') }}</label>
+            <label class="" for="email">{{ t('account.address.email') }}</label>
             <input
               id="email"
               v-model="login"
@@ -23,26 +23,25 @@
               @keyup="checkValidity($event)"
               required
               placeholder="Enter email address"
+              :disabled="loading"
             />
           </div>
-          <div class="reset-form__error" v-if="error.login">
-            {{ $t('error.login.email') }}
+          <div class="reset-form__error">
+            <slot name="error" :error="error" :loading="loading">
+              <div class="" v-if="error.auth">
+                {{ error.auth }}
+              </div>
+            </slot>
           </div>
           <div class="w-full p-3">
             <div class="reset-btn">
               <div class="reset-btn__wrapper">
-                <button type="submit" class="">
-                  {{ $t('account.reset.reset_btn') }}
+                <button type="submit" class="" :disabled="loading">
+                  <span v-if="loading" class="loading loading-spinner"></span>
+                  {{ t('account.reset.reset_btn') }}
                 </button>
               </div>
             </div>
-          </div>
-          <div class="w-full p-3">
-            <slot name="footer">
-              <div class="footer-error" v-if="error.auth">
-                {{ error.auth }}
-              </div>
-            </slot>
           </div>
         </div>
       </form>
@@ -50,13 +49,13 @@
     <div v-else class="reset-success">
       <slot name="success">
         <h2 class="reset-success__title">
-          {{ $t('account.reset.reset_pswd') }}
+          {{ t('account.reset.reset_pswd') }}
         </h2>
-        {{ $t('account.reset.reset_success') }}
+        {{ t('account.reset.reset_success') }}
         <div>
           <nuxt-link :to="localePath('account')" class="btn btn-primary">
             <icon name="left" />
-            {{ $t('btn.back') }}
+            {{ t('btn.back') }}
           </nuxt-link>
         </div>
       </slot>
@@ -65,16 +64,17 @@
 </template>
 <script lang="ts" setup>
 import type { AuthCredentialService } from '#services'
+const { t } = useI18n()
 const login = ref('')
 const successMessage = ref(false)
 const error = reactive({
-  auth: null,
+  auth: null as string | null,
   login: false
 })
 const localePath = useLocalePath()
 const auth = useShopinvaderService('auth') as AuthCredentialService
 const route = useRoute()
-
+const loading = ref(false)
 onMounted(() => {
   login.value = route?.query?.login?.toString() || ''
 })
@@ -87,6 +87,7 @@ const checkValidity = (e: KeyboardEvent) => {
 
 const submit = async (e: Event) => {
   const auth = useShopinvaderService('auth') as AuthCredentialService
+  loading.value = true
   if (login.value) {
     error.auth = null
     try {
@@ -97,7 +98,10 @@ const submit = async (e: Event) => {
       login.value = ''
     } catch (e: any) {
       console.error(e)
-      error.auth = e?.message || $t('error.login.unable_to_login')
+      const msg = erpApiGetErrorMessagesAsStr(e.data)
+      error.auth = msg || t('error.generic')
+    } finally {
+      loading.value = false
     }
   }
 }
@@ -106,7 +110,7 @@ const submit = async (e: Event) => {
 .reset-heading {
   @apply mb-10 text-center;
   &__title {
-    @apply mb-4 text-4xl tracking-tight text-black md:text-5xl;
+    @apply mb-4 text-2xl tracking-tight text-black md:text-4xl;
   }
   &__description {
     @apply text-gray-500;
@@ -135,9 +139,6 @@ const submit = async (e: Event) => {
         @apply btn btn-primary;
       }
     }
-  }
-  .footer-error {
-    @apply rounded-3xl border border-error p-4 text-center text-gray-600;
   }
 }
 .reset-success {
