@@ -1,6 +1,6 @@
 <template>
-  <label class="form-control w-full">
-    <div class="label">
+  <label class="input-password">
+    <div class="input-password__label">
       <span class="label-text">
         <slot name="label"></slot>
       </span>
@@ -8,7 +8,7 @@
         <slot name="label-alt"></slot>
       </span>
     </div>
-    <div class="input input-bordered flex items-center gap-2">
+    <div class="input-password__input" :class="{ 'input-password__input--error': error }">
       <input
         v-model="model"
         :id="id"
@@ -17,33 +17,32 @@
         :type="fieldView ? 'text' : 'password'"
         :required="required"
         :placeholder="fieldView ? '' : placeholder"
-        class="grow"
         :minlength="minlength"
-        :pattern="pattern"
+        autocomplete="new-password"
         @blur="checkValidity"
         @focus="checkValidity"
         @input="(e) => onInput"
         @keyup="(e) => emit('input', e)"
         @keydown="(e) => emit('input', e)"
       />
-      <button type="button" @click="fieldView = !fieldView" class="btn btn-square btn-ghost">
+      <button type="button" @click="fieldView = !fieldView" class="input__btn">
         <icon class="view-icon" :name="fieldView ? 'view' : 'hide'" />
       </button>
     </div>
-    <div class="label">
-      <span class="label-text-alt">
-        <slot name="label-bottom-left" :error="error">
-          {{ error }}
+    <div class="input-password__footer">
+      <span class="footer__error">
+        <slot name="error" :error="error">
+          <template v-if="error">{{ t('error.login.password') }}</template>
         </slot>
       </span>
       <span class="label-text-alt">
-        <slot name="label-bottom-right"></slot>
+        <slot name="label-bottom"></slot>
       </span>
     </div>
   </label>
 </template>
 <script lang="ts" setup>
-const emit = defineEmits(['keyup', 'keydown', 'input', 'error'])
+const emit = defineEmits(['valid', 'input'])
 const props = defineProps({
   disabled: {
     type: Boolean,
@@ -75,24 +74,57 @@ const props = defineProps({
     default: true
   }
 })
+const { t } = useI18n()
 const fieldView = ref(false)
 const error = ref(false)
 const model = defineModel({
   default: '',
   type: String
 })
-const checkValidity = (e: KeyboardEvent) => {
+let timer: NodeJS.Timeout | null = null
+const checkValidity = () => {
+  error.value = false
+  emit('input', model.value)
   const validity = model.value.match(new RegExp(props.pattern))
+
+  if (!model.value) {
+    return
+  }
   error.value = !validity
-  if (error.value) {
-    emit('error', e)
-  } else {
-    emit('input', e)
+  emit('valid', !error.value)
+}
+checkValidity()
+watch(model, () => {
+  error.value = false
+  if (timer) clearTimeout(timer)
+  timer = setTimeout(() => {
+    checkValidity()
+  }, 400)
+})
+</script>
+<style lang="scss">
+.input-password {
+  @apply form-control w-full;
+  &__label {
+    @apply label;
+  }
+  &__input {
+    @apply input input-bordered flex items-center gap-2;
+    input {
+      @apply grow;
+      &--error {
+        @apply input-error;
+      }
+    }
+    .input__btn {
+      @apply btn btn-square btn-ghost;
+    }
+  }
+  &__footer {
+    @apply label;
+    .footer__error {
+      @apply label-text-alt text-xs text-error;
+    }
   }
 }
-const onInput = (e: KeyboardEvent) => {
-  setTimeout(() => {
-    checkValidity(e)
-  }, 3000)
-}
-</script>
+</style>

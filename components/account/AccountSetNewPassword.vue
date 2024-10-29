@@ -1,7 +1,7 @@
 <template>
   <div v-if="auth?.type == 'credentials'">
     <slot name="head">
-      <div v-if="!successMessage" class="reset-heading">
+      <div v-if="!success" class="reset-heading">
         <h2 class="reset-heading__title">
           {{ t('account.reset.set_new_pswd_title') }}
         </h2>
@@ -10,110 +10,53 @@
         </p>
       </div>
     </slot>
-    <div v-if="successMessage" class="reset-success">
-      <div class="flex items-center gap-1">
+    <div v-if="success" class="reset-success">
+      <div class="reset-success__message">
         <icon name="check" class="text-success" />
         {{ t('account.reset.set_new_pswd_success') }}
       </div>
-      <div>
-        <nuxt-link :to="localePath('/account/login')" class="btn btn-link">
-          {{ t('account.reset.set_new_pswd_success_link') }}
-          <icon name="right" />
-        </nuxt-link>
-      </div>
+      <nuxt-link :to="localePath('/account/login')" class="reset-success__link">
+        {{ t('account.reset.set_new_pswd_success_link') }}
+        <icon name="right" />
+      </nuxt-link>
     </div>
     <form v-else @submit.prevent="onSubmit" class="reset-form">
-      <input-password v-model="newPassword" :disabled="loading">
+      <input-password
+        v-model="password"
+        :disabled="loading"
+        @valid="(e:boolean) => (error.password = e)"
+      >
         <template #label>
           {{ t('account.reset.new_password') }}
         </template>
       </input-password>
       <input-password
-        v-model="repeatNewPassword"
+        v-model="repeatPassword"
         label="account.reset.new_password"
         :disabled="loading"
+        @valid="(e:boolean) => (error.repeatPassword = e)"
       >
         <template #label>
           {{ t('account.reset.repeat_new_password') }}
         </template>
+        <template #error>
+          <template v-if="repeatPassword && password !== repeatPassword">
+            {{ t('error.reset.pasword_missmatch') }}
+          </template>
+        </template>
       </input-password>
-      <div class="reset-form__row">
-        <label class="" for="newPassword">
-          {{ t('account.reset.new_password') }}
-        </label>
-        <div class="pswd-container">
-          <div class="pswd-container__wrapper">
-            <div class="pswd-input">
-              <input
-                id="newPassword"
-                v-model="newPassword"
-                class=""
-                required
-                :disabled="loading"
-                :type="newPasswordView ? 'text' : 'password'"
-                autocomplete="new-password"
-              />
-            </div>
-            <div class="pswd-view">
-              <button
-                type="button"
-                @click="newPasswordView = !newPasswordView"
-                class="btn btn-link"
-              >
-                <icon class="view-icon" :name="newPasswordView ? 'view' : 'hide'" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="reset-form__row">
-        <label class="" for="repeatNewPassword">
-          {{ t('account.reset.repeat_new_password') }}
-        </label>
-        <div class="pswd-container">
-          <div class="pswd-container__wrapper">
-            <div class="pswd-input">
-              <input
-                id="repeatNewPassword"
-                v-model="repeatNewPassword"
-                @keyup="checkValidity()"
-                class=""
-                required
-                :disabled="loading"
-                :type="repeatPasswordView ? 'text' : 'password'"
-                autocomplete="off"
-              />
-            </div>
-            <div class="pswd-view">
-              <button
-                type="button"
-                @click="repeatPasswordView = !repeatPasswordView"
-                class="btn btn-link"
-              >
-                <icon class="view-icon" :name="repeatPasswordView ? 'view' : 'hide'" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="reset-form__error" v-if="error.newPassword">
-        {{ error.newPassword }}
+      <div class="reset-form__error">
+        <slot v-if="error.auth" name="error">
+          {{ error.auth }}
+        </slot>
       </div>
       <div class="reset-form__submit">
-        <div class="reset-btn">
-          <div class="reset-btn__wrapper">
-            <button type="submit" class="" :disabled="loading">
-              <span v-if="loading" class="loading loading-spinner"></span>
-              {{ t('actions.validate') }}
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="w-full p-3">
-        <slot name="footer">
-          <div class="footer-error" v-if="error.auth">
-            {{ error.auth }}
-          </div>
+        <slot name="submit" :error="error" :loading="loading">
+          <button type="submit" class="submit__btn" :disabled="loading">
+            <span v-if="loading" class="loading loading-spinner"></span>
+            <icon v-else name="check" />
+            {{ t('actions.validate') }}
+          </button>
         </slot>
       </div>
     </form>
@@ -121,44 +64,45 @@
 </template>
 <script lang="ts" setup>
 import type { AuthCredentialService } from '#services'
-const newPasswordView = ref(false)
-const repeatPasswordView = ref(false)
-const successMessage = ref(false)
-const newPassword = ref(null)
-const repeatNewPassword = ref(null)
+const emits = defineEmits(['success', 'error'])
 const loading = ref(false)
+const success = ref(false)
+const password = ref('')
+const repeatPassword = ref('')
 const error = reactive({
   auth: null as string | null,
-  newPassword: null as string | null
+  password: false,
+  repeatPassword: false
 })
 
 const { t } = useI18n()
 const route = useRoute()
 const localePath = useLocalePath()
 const auth = useShopinvaderService('auth') as unknown as AuthCredentialService
-const checkValidity = () => {
-  error.newPassword = null
-  if (newPassword.value !== repeatNewPassword.value) {
-    error.newPassword = t('error.reset.pasword_missmatch')
-  } else {
-    error.newPassword = null
-  }
-}
-const onSubmit = async (e: Event) => {
+
+const hasError = computed(
+  () =>
+    error.password ||
+    error.repeatPassword ||
+    !password.value ||
+    !repeatPassword.value ||
+    password.value !== repeatPassword.value
+)
+const onSubmit = async () => {
   loading.value = true
   const token = route.query.token as string
-  checkValidity()
-  if (token && newPassword.value && error.newPassword == null) {
-    try {
-      await auth?.setPassword(token, newPassword.value)
-      successMessage.value = true
-    } catch (e: any) {
-      console.error(e)
-      error.auth = e?.message || t('error.login.unable_to_login')
-    }
-    loading.value = false
-  } else {
-    error.newPassword = t('error.reset.pswd_something_wrong')
+  try {
+    //if (token && !hasError.value) {
+    await auth?.setPassword(token, password.value)
+    success.value = true
+    emits('success')
+    //}
+  } catch (e: any) {
+    console.error(e)
+    const msg = erpApiGetErrorMessagesAsStr(e.data)
+    error.auth = msg || t('error.generic')
+    emits('error', error.auth)
+  } finally {
     loading.value = false
   }
 }
@@ -167,52 +111,29 @@ const onSubmit = async (e: Event) => {
 .reset-heading {
   @apply mb-10 text-center;
   &__title {
-    @apply mb-4 text-4xl font-black tracking-tight text-black md:text-5xl;
+    @apply mb-4 text-2xl font-black tracking-tight text-black md:text-4xl;
   }
   &__description {
-    @apply font-bold text-gray-500;
+    @apply text-gray-500;
   }
 }
 .reset-form {
-  @apply -m-3 flex flex-wrap;
+  @apply -m-3 mx-auto flex max-w-sm flex-wrap;
   &__submit {
-    @apply flex w-full items-center justify-center p-3;
-    .reset-btn {
-      @apply -m-2 flex flex-wrap md:justify-end;
-      &__wrapper {
-        @apply w-full p-2;
-        button {
-          @apply block w-full rounded-full bg-primary px-8 py-3.5 text-center text-lg font-bold text-white hover:bg-secondary focus:ring-2 focus:ring-primary;
-        }
-      }
+    @apply flex w-full justify-center p-3;
+    .submit__btn {
+      @apply btn btn-primary;
     }
-  }
-  &__row {
-    @apply w-full p-3 pb-0;
-    label {
-      @apply mb-2 block text-sm font-bold text-gray-500;
-    }
-    input {
-      @apply w-full appearance-none rounded-full border border-gray-100 bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:ring-4 focus:ring-secondary;
-    }
-    .pswd-container {
-      @apply overflow-hidden rounded-full border border-gray-200 focus-within:ring-4 focus-within:ring-secondary;
-      &__wrapper {
-        @apply flex flex-wrap;
-        .pswd-input {
-          @apply flex-1 bg-gray-100;
-          input {
-            @apply w-full appearance-none bg-gray-100 px-6 py-3.5 text-lg font-bold text-gray-500 placeholder-gray-500 outline-none focus:border-2 focus:outline-0 focus:ring-transparent active:bg-inherit;
-          }
-        }
-        .pswd-view {
-          @apply flex items-center justify-center bg-gray-100;
-          .view-icon {
-            @apply text-2xl text-gray-500;
-          }
-        }
-      }
-    }
+    // @apply flex w-full items-center justify-center p-3;
+    // .reset-btn {
+    //   @apply -m-2 flex flex-wrap md:justify-end;
+    //   &__wrapper {
+    //     @apply w-full p-2;
+    //     button {
+    //       @apply btn btn-primary;
+    //     }
+    //   }
+    // }
   }
   &__error {
     @apply pl-4 text-sm italic text-red-500;
@@ -223,6 +144,15 @@ const onSubmit = async (e: Event) => {
   }
 }
 .reset-success {
-  @apply flex flex-col items-center justify-center gap-4 rounded-3xl border border-success p-4 text-center text-gray-600;
+  @apply flex flex-col items-center justify-center gap-4;
+  &__message {
+    @apply flex items-center gap-2 text-lg;
+  }
+  &__link {
+    @apply btn btn-primary;
+  }
+  &__error {
+    @apply alert alert-error;
+  }
 }
 </style>
