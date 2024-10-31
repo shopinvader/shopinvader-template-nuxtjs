@@ -3,7 +3,8 @@ import type { LocaleObject } from '@nuxtjs/i18n'
 import type { Nuxt } from 'nuxt/schema'
 
 /**
- * Add i18n module to the app with top layer locales
+ * Add i18n module to the app with top layer locales.
+ * This is needed else the i18n module will merge all locales from all layers.
  * @param nuxt
  */
 export const addI18n = async (nuxt: Nuxt) => {
@@ -25,8 +26,7 @@ export const addI18n = async (nuxt: Nuxt) => {
     nuxt.options.i18n = {
       ...nuxt.options.i18n,
       locales,
-      defaultLocale: (locales[0] as LocaleObject)?.code,
-      strategy: 'prefix_except_default'
+      defaultLocale: (locales[0] as LocaleObject)?.code
     }
     config = nuxt.options.i18n || {}
   }
