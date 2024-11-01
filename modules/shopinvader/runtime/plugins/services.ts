@@ -233,16 +233,16 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   // Manage the language switch
   // --------------------------
-  nuxtApp.hook('i18n:localeSwitched', ({ newLocale }) => {
+  nuxtApp.hook('i18n:localeSwitched', async ({ newLocale }) => {
     // Convert the locale to the iso format (while trying to keep TS typing)
-    // We get 'en' in newLocale but Elastic services want 'en_en' or 'en_us' or 'en_fr'...
+    // We get 'en' in newLocale but Elastic services want 'en_en' or 'en_us'...
     const i18n = nuxtApp.$i18n as NuxtI18nOptions
     const locales = i18n.locales as unknown as Ref<LocaleObject[]>
     const locale = locales?.value?.find((l) => l.code === newLocale)
     const newIsoLocale = locale?.language || 'fr_fr'
     if (services) {
       for (const service of Object.values(services)) {
-        service.changeLocale(newIsoLocale)
+        await service.changeLocale(newIsoLocale)
       }
     }
   })

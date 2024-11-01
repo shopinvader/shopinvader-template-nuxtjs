@@ -89,7 +89,7 @@ export default defineNuxtModule<ShopinvaderConfig>({
       handler: resolve('./runtime/server/erpProxy.ts')
     })
 
-    /* I18n */
+    /* Manually add the I18n module to prevent config merge problems */
     await addI18n(nuxt)
 
     /** Components */
@@ -118,6 +118,6 @@ export default defineNuxtModule<ShopinvaderConfig>({
         config.elasticsearch.url
       )
     }
-    nuxt.callHook('shopinvader:loaded' as any, nuxt)
+    await nuxt.callHook('shopinvader:loaded' as any, nuxt)
   }
 })

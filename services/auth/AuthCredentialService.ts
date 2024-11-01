@@ -32,8 +32,8 @@ export class AuthCredentialService extends AuthService {
     }
   }
 
-  override init(services: ShopinvaderServiceList): Promise<any> {
-    super.init(services)
+  override async init(services: ShopinvaderServiceList) {
+    await super.init(services)
     if (this.getSession()) {
       this.profile()
     } else {
@@ -46,7 +46,6 @@ export class AuthCredentialService extends AuthService {
         await navigateTo(this.config.loginPage)
       }
     })
-    return Promise.resolve()
   }
 
   getConfig(): any {

@@ -37,7 +37,7 @@ export class BaseService {
   // Init is called after custom ShopInvader was allowed to replace or
   // add services in the global list of services. Use this method to
   // initialize all stuff you need to use in your service.
-  init(services: ShopinvaderServiceList) {
+  async init(services: ShopinvaderServiceList) {
     this.services = services
   }
 

@@ -26,8 +26,8 @@ export class AuthOIDCService extends AuthService {
     this.config = config
   }
 
-  override async init(services: ShopinvaderServiceList): Promise<any> {
-    super.init(services)
+  override async init(services: ShopinvaderServiceList) {
+    await super.init(services)
     if (!import.meta.env.SSR) {
       const { origin } = useRequestURL()
       this.redirectUri = new URL(this.config.redirectUri, origin).href
@@ -66,7 +66,6 @@ export class AuthOIDCService extends AuthService {
         }
       }
     }
-    return Promise.resolve()
   }
 
   getConfig(): any {

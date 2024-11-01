@@ -9,8 +9,8 @@ export class SaleService extends BaseServiceErp {
   public urlEndpointInvoice: string = ''
   public productService: ProductService | null = null
 
-  override init(services: ShopinvaderServiceList) {
-    super.init(services)
+  override async init(services: ShopinvaderServiceList) {
+    await super.init(services)
     this.productService = services.products
     this.urlEndpointInvoice = this.buildUrlEndpoint(this.erpBaseUrl, this.endpointInvoice)
   }
