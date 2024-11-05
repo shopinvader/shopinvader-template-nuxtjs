@@ -55,11 +55,10 @@ export abstract class AuthService extends BaseServiceLocalized {
     this.storage = nuxtStorage?.localStorage
   }
 
-  override init(services: ShopinvaderServiceList): Promise<any> {
-    super.init(services)
+  override async init(services: ShopinvaderServiceList) {
+    await super.init(services)
     this.urlEndpointAuth = this.buildUrlEndpoint(this.baseUrl, this.authEndpoint)
     this.urlEndpointUser = this.buildUrlEndpoint(this.baseUrl, this.userEndpoint)
-    return Promise.resolve()
   }
 
   buildUrlEndpoint(baseUrl: string, entrypoint: string): string {

@@ -8,7 +8,7 @@ export class BaseServiceLocalized extends BaseService {
     this.currentIsoLocale = isoLocale
   }
 
-  changeLocale(isoLocale: string) {
+  async changeLocale(isoLocale: string) {
     this.currentIsoLocale = isoLocale
   }
 }

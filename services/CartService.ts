@@ -1,8 +1,4 @@
-import type {
-  Address,
-  DeliveryPickupPoint,
-  Product
-} from '#models'
+import type { Address, DeliveryPickupPoint, Product } from '#models'
 import {
   CartLine as CartLineModel,
   Cart as CartModel,
@@ -72,8 +68,8 @@ export class CartService extends BaseServiceErp {
     this.transformCart = this.transformCart.bind(this)
   }
 
-  override init(services: ShopinvaderServiceList): void {
-    super.init(services)
+  override async init(services: ShopinvaderServiceList) {
+    await super.init(services)
     if (!import.meta.env.SSR) {
       const erpFetchWrapper = new ErpFetchWrapper(this.ofetch)
       const observer = new CartObserver(this.setCart)

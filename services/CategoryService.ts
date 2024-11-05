@@ -5,9 +5,6 @@ import esb, { MultiMatchQuery } from 'elastic-builder'
 export class CategoryService extends BaseServiceElastic {
   navCategories: Category[] | null = null
 
-  override async init(services: ShopinvaderServiceList) {
-    this.services = services
-  }
   async search(body: any): Promise<CategoryResult> {
     const result = await this.elasticSearch(body)
     const hits = result?.hits?.hits?.map((hit: any) => this.jsonToModel(hit._source))

@@ -31,7 +31,7 @@
               </div>
             </template>
             <div class="py-4 text-center">
-              <a href="/" class="btn btn-primary btn-outline btn-wide">
+              <a href="/" class="btn btn-outline btn-primary btn-wide">
                 {{ $t('btn.back') }}
               </a>
             </div>
@@ -51,11 +51,16 @@
 
 <script setup>
 const localePath = useLocalePath()
-defineProps({
+const props = defineProps({
   error: {
     type: Object,
     required: false,
     default: null
+  }
+})
+watchEffect(() => {
+  if (props.error) {
+    console.error(props.error)
   }
 })
 </script>
