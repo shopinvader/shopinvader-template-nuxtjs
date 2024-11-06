@@ -29,8 +29,11 @@ export class AuthOIDCService extends AuthService {
   override async init(services: ShopinvaderServiceList) {
     await super.init(services)
     if (!import.meta.env.SSR) {
-      const { origin } = useRequestURL()
-      this.redirectUri = new URL(this.config.redirectUri, origin).href
+      // After login, redirect to the OIDC intermediate page that will manage the token,
+      // clean the querystring end redirect to the targetURI.
+      // This intermediate page will redirect to the given "target" param or to / by default.
+      const { host, protocol } = useRequestURL()
+      this.redirectUri = new URL('/account/oidc-redirect', `${protocol}//${host}`).href
       this.clientOIDC = new UserManager({
         authority: this.config.authority,
         client_id: this.config.clientId,
@@ -57,13 +60,6 @@ export class AuthOIDCService extends AuthService {
       } catch (e) {
         await this.userUnloaded()
         console.error(e)
-      } finally {
-        // Use replaceState to redirect the user away and remove the querystring parameters
-        if (loginReturn) {
-          setTimeout(() => {
-            window.history.replaceState({}, document.title, window.location.pathname)
-          }, 300)
-        }
       }
     }
   }
@@ -98,14 +94,15 @@ export class AuthOIDCService extends AuthService {
   async loginRedirect(url?: string): Promise<any> {
     const query = window.location.search
     const { host, protocol } = useRequestURL()
-    const redirectURI = new URL(url || '', `${protocol}//${host}`).href
+    // Redirect to the OIDC intermediate page with the real target as a querystring parameter
+    const urlRedirect = this.redirectUri + '?target=' + encodeURIComponent(url || '/')
     let user = false
     try {
       user = this.getSession() ? await this.fetchUser() : false
       if (!user) {
         const loginReturn = query.includes('code=') && query.includes('state=')
         if (this.clientOIDC && !loginReturn) {
-          await this.clientOIDC.signinRedirect({ redirect_uri: redirectURI })
+          await this.clientOIDC.signinRedirect({ redirect_uri: urlRedirect })
         } else {
           throw new Error('User not loaded')
         }
