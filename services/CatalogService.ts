@@ -4,7 +4,7 @@ import { BaseServiceElastic } from '#services'
 export class CatalogService extends BaseServiceElastic {
   async search(body: any): Promise<CatalogResult> {
     body = {
-      ...body || {},
+      ...(body || {}),
       collapse: {
         field: 'url_key',
         inner_hits: [
@@ -33,20 +33,24 @@ export class CatalogService extends BaseServiceElastic {
     return { hits, total, aggregations, rawsHits }
   }
 
-  getByURLKey(urlKey: string, sku: string | null): Promise<CatalogResult> {
-    const bool: any = {
-      should: [
-        {
+  /**
+   * Get product or category by URL key or redirect URL key
+   * Boost product with specific SKU
+   */
+  getByURLKey(urls: string | string[], sku: string | null): Promise<CatalogResult> {
+    urls = Array.isArray(urls) ? urls : [urls]
+    const bool: any = { should: [] }
+    let boost = urls?.length
+    for (const field of ['url_key', 'redirect_url_key']) {
+      for (const url of urls) {
+        bool.should.push({
           terms: {
-            url_key: [urlKey]
+            [field]: [url],
+            boost
           }
-        },
-        {
-          terms: {
-            redirect_url_key: [urlKey]
-          }
-        }
-      ]
+        })
+      }
+      boost--
     }
     let query: any = { bool }
     if (sku) {
@@ -66,12 +70,33 @@ export class CatalogService extends BaseServiceElastic {
     }
     return this.search({ query })
   }
-
+  /**
+   * Get entity by URL key. Search in URL key and redirect URL key.
+   * Search also by cleaned URL key (removed end slash and index.html)
+   */
   async getEntityByURLKey(urlKey: string, sku: string | null): Promise<Product | Category | null> {
-    const result = await this.getByURLKey(urlKey, sku)
-    return result?.hits?.[0] || null
+    const urls = [urlKey]
+    // Clean URL (remove end slash and index.html) to get the right entity
+    const cleanedURL = this.cleanURL(urlKey)
+    if (cleanedURL !== urlKey) {
+      urls.push(cleanedURL)
+    }
+
+    const result = await this.getByURLKey(urls, sku)
+    const entity = result?.hits?.[0] || null
+    if (entity && cleanedURL !== urlKey) {
+      // Add URL to redirectUrlKey to redirect to the cleaned URL
+      entity.redirectUrlKey.push(urlKey)
+    }
+    return entity
   }
 
+  /**
+   * Cleans the URL to remove the trailing slash or .html .htm extension
+   * */
+  cleanURL(url: string): string {
+    return url.replace(/\/(index\.html?|)\/?$/, '')
+  }
   find(field: string, value: string[] | number[]): Promise<CatalogResult> {
     const terms: any = {}
     terms[field] = value
