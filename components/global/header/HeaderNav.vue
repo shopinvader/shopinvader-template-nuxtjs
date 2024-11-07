@@ -43,6 +43,8 @@
           </li>
         </ul>
       </li>
+      <!-- Hook to add element within navbar -->
+      <slot name="additional_navbar_elements"/>
     </ul>
   </nav>
 </template>
