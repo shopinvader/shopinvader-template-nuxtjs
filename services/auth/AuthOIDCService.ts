@@ -1,5 +1,5 @@
 import type { $Fetch } from 'ofetch'
-import { UserManager, WebStorageStateStore } from 'oidc-client-ts'
+import { UserManager, WebStorageStateStore, type UserManagerSettings } from 'oidc-client-ts'
 import type {
   oFetchRequestCtx,
   oFetchResponseErrorCtx
@@ -30,20 +30,27 @@ export class AuthOIDCService extends AuthService {
     await super.init(services)
     if (!import.meta.env.SSR) {
       // After login, redirect to the OIDC intermediate page that will manage the token,
-      // clean the querystring end redirect to the targetURI.
-      // This intermediate page will redirect to the given "target" param or to / by default.
-      const { host, protocol } = useRequestURL()
-      this.redirectUri = new URL('/account/oidc-redirect', `${protocol}//${host}`).href
-      this.clientOIDC = new UserManager({
+      // clean the querystring end redirect to the real target page ("target" param or to / by default).
+      // First, build the page URI the OIDC provider will redirect to after login
+      const localePath = useLocalePath()
+      const oidcRedirectPath = localePath(this.config.redirectUri || '/account/oidc-redirect')
+      // Complete the redirect URI with the origin (add the host and protocol)
+      const { origin } = useRequestURL()
+      this.redirectUri = new URL(oidcRedirectPath, origin).href
+      // Init the OIDC client
+      const settings: UserManagerSettings = {
         authority: this.config.authority,
         client_id: this.config.clientId,
         redirect_uri: this.redirectUri,
         response_type: this.config.responseType,
         scope: this.config.scope,
         post_logout_redirect_uri: new URL(this.config.postLogoutRedirectUri, origin).href,
-        userStore: new WebStorageStateStore({ store: window.localStorage }),
-        automaticSilentRenew: true
-      })
+        automaticSilentRenew: true,
+        // We let the OIDC lib manage the storage of the user for us (in local storage)
+        userStore: new WebStorageStateStore({ store: window.localStorage })
+      }
+      this.clientOIDC = new UserManager(settings)
+
       // Listen to OIDC events
       // Note: the 'addUserLoaded' event is raised when a user session has been established or re-established.
       this.clientOIDC.events.addUserLoaded(this.userLoaded.bind(this))
@@ -53,7 +60,13 @@ export class AuthOIDCService extends AuthService {
       const loginReturn = query.includes('code=') && query.includes('state=')
       try {
         if (loginReturn) {
+          // We come back from the login page of the OIDC provider, handle the login return
           await this.clientOIDC.signinCallback()
+          // Get the target page from the querystring
+          const target = new URLSearchParams(window.location.search).get('target')
+          const decodedTarget = target ? decodeURIComponent(target) : '/'
+          // Redirect to the target page
+          navigateTo(decodedTarget)
         } else if (this.getSession()) {
           await this.fetchUser()
         }
