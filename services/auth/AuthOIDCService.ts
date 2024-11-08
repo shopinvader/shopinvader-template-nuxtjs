@@ -29,14 +29,16 @@ export class AuthOIDCService extends AuthService {
   override async init(services: ShopinvaderServiceList) {
     await super.init(services)
     if (!import.meta.env.SSR) {
-      // After login, redirect to the OIDC intermediate page that will manage the token,
-      // clean the querystring end redirect to the real target page ("target" param or to / by default).
+      // After login, redirect to the OIDC intermediate page that will makes the user wait while
+      // we manage the token and redirect to the real target page ("target" param or to / by default).
+
       // First, build the page URI the OIDC provider will redirect to after login
       const localePath = useLocalePath()
       const oidcRedirectPath = localePath(this.config.redirectUri || '/account/oidc-redirect')
-      // Complete the redirect URI with the origin (add the host and protocol)
+      // Complete the redirect path with the origin (add the host and protocol to build the full URL)
       const { origin } = useRequestURL()
       this.redirectUri = new URL(oidcRedirectPath, origin).href
+
       // Init the OIDC client
       const settings: UserManagerSettings = {
         authority: this.config.authority,
@@ -56,23 +58,26 @@ export class AuthOIDCService extends AuthService {
       this.clientOIDC.events.addUserLoaded(this.userLoaded.bind(this))
       this.clientOIDC.events.addUserUnloaded(this.userUnloaded.bind(this))
 
-      const query = window.location.search
-      const loginReturn = query.includes('code=') && query.includes('state=')
-      try {
-        if (loginReturn) {
-          // We come back from the login page of the OIDC provider, handle the login return
+      // Are we coming back from the OIDC login page?
+      const urlQuery = window.location.search
+      if (urlQuery.includes('code=') && urlQuery.includes('state=')) {
+        // Handle the login return (get the token)
+        try {
           await this.clientOIDC.signinCallback()
+        } catch (e) {
+          console.error(e)
+        }
+        // Then redirect to the target page, but wait for the Nuxt app to be ready
+        // before redirecting else we get into trouble with the Nuxt router and i18n.
+        onNuxtReady(async () => {
           // Get the target page from the querystring
           const target = new URLSearchParams(window.location.search).get('target')
           const decodedTarget = target ? decodeURIComponent(target) : '/'
           // Redirect to the target page
-          navigateTo(decodedTarget)
-        } else if (this.getSession()) {
-          await this.fetchUser()
-        }
-      } catch (e) {
-        await this.userUnloaded()
-        console.error(e)
+          await navigateTo(decodedTarget, { replace: true })
+        })
+      } else if (this.getSession()) {
+        await this.fetchUser()
       }
     }
   }
