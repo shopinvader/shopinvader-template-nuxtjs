@@ -362,11 +362,12 @@ const search = async () => {
  */
 const changePage = async (from: number) => {
   page.from = from
-  await search()
+  loading.value = true
   if (window?.scrollTo) {
     window.scrollTo(0, 0)
     router.push({ query: { ...route.query, page: from / props.size + 1 } })
   }
+  await search()
 }
 
 const { data } = await useAsyncData(async () => {
@@ -390,16 +391,36 @@ watch(
   }
 )
 
+/**
+ * Refreshing page result when the user clicks on the “previous page” or “next page” button.
+ * Listening to the route change and updating the page number accordingly.
+ */
+router.afterEach((to, from) => {
+  if (to.path == from.path && to.href !== from.href && !loading.value) {
+    const from = to.query.page?.toString()
+      ? (parseInt(to.query.page.toString()) - 1) * props.size
+      : 0
+    if (from != page.from) {
+      page.from = from
+    }
+    search()
+  }
+})
+
 onMounted(async () => {
   await search()
 })
 
 // Provide some methods and data to the other components (to be injected)
 provide('search', () => {
-  // Reset the page to 0 when a new search is performed due to a filter change
-  page.from = 0
-  search()
+  if (page.from !== 0) {
+    // Reset the page to 0 when a new search is performed due to a filter change
+    changePage(0)
+  } else {
+    search()
+  }
 })
+
 provide('declareFilter', declareFilter)
 provide(
   'response',
