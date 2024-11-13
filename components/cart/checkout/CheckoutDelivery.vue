@@ -93,11 +93,56 @@
           </cart-total>
         </slot>
       </div>
+      <div class="checkout-delivery__message">
+        <slot name="delivery-message" :opened="opened">
+          <cart-checkout-delivery-message :opened="opened">
+            <template #info-message> </template>
+            <template #message-button>
+              <div class="msg-btn-wrapper">
+                <button
+                  type="button"
+                  class="msg-btn"
+                  @click="opened = !opened"
+                >
+                  <span class="msg-btn__label"> {{ $t('cart.delivery.message-btn') }}</span>
+                  <icon name="mdi:message-outline" class="msg-btn__icon" />
+                </button>
+              </div>
+            </template>
+            <template #action="{ opened }">
+              <modal-popup :opened="opened" @close="onClose">
+                <template #content>
+                  <div class="popup__content ">
+                    <textarea
+                      v-model="messageContent"
+                      class="textarea"
+                      rows="4"
+                      :placeholder="t('cart.delivery.message-label')"
+                    >
+                    </textarea>
+                    <button
+                      type="button"
+                      class="modal-btn "
+                      @click="onMessageSubmit"
+                    >
+                    {{t('cart.delivery.message-btn-label')}}
+                    </button>
+                  </div>
+                </template>
+              </modal-popup>
+            </template>
+          </cart-checkout-delivery-message>
+        </slot>
+      </div>
       <div class="checkout-delivery__footer">
-        <button type="button" class="btn btn-ghost" @click="back">
-          <icon name="left"></icon>
-          {{ t('cart.back') }}
-        </button>
+        <slot name="footer" :back="back" :opened="opened">
+          <div>
+            <button type="button" class="btn btn-ghost" @click="back">
+              <icon name="left"></icon>
+              {{ t('cart.back') }}
+            </button>
+          </div>
+        </slot>
       </div>
     </template>
     <div v-else class="checkout-delivery__summary">
@@ -121,18 +166,30 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { CartTotal, DeliveryGeneric, Spinner } from '#components'
+import {
+  CartTotal,
+  DeliveryGeneric,
+  Spinner,
+  ModalPopup,
+  CartCheckoutDeliveryMessage
+} from '#components'
 import type { DeliveryCarrier } from '#models'
+import type { Cart } from '@shopinvader/cart'
 interface CarrierWithComponent extends DeliveryCarrier {
   component: any
   carrier: DeliveryCarrier
 }
+const opened = ref(false)
+
 const emit = defineEmits({
   /** Emit to go to the next step */
   next: () => true,
   /** Emit to go back to the previous step */
-  back: () => true
+  back: () => true,
+  /** Emit to close de popup modal */
+  close: () => true
 })
+
 /**
  * Checkout delivery step.
  * This component is used in the Checkout funnel.
@@ -159,6 +216,7 @@ const selectedCarrier = ref(null as DeliveryCarrier | null)
 const carriers = shallowRef([] as CarrierWithComponent[])
 const error = ref(null as string | null)
 const loading = ref(false)
+const messageContent = ref('')
 
 const hasValidCarrier = computed(() => {
   if (selectedCarrier?.value) {
@@ -178,6 +236,28 @@ onMounted(async () => {
   await fetchCarriers()
 })
 
+const onClose = () => {
+  opened.value = false
+  emit('close')
+}
+const onMessageSubmit = async () => {
+  const cartService = useShopinvaderService('cart')
+  const cart = cartService.getCart()
+  if (cart?.value) {
+    cart.value.note = messageContent.value
+    console.log(cart?.value?.note, 'cart')
+
+    try {
+      loading.value = true
+      if (cart?.value) {
+        await cartService.update(cart.value)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  opened.value = false
+}
 const next = () => {
   if (hasValidCarrier.value) {
     emit('next')
@@ -285,13 +365,28 @@ const selectCarrier = async (carrier: DeliveryCarrier) => {
     @apply col-span-3 flex flex-col justify-between;
   }
   &__footer {
-    @apply col-span-3 flex justify-between;
+    @apply col-span-3 flex flex-col justify-between;
   }
   &__error {
     @apply col-span-3;
   }
   &__loading {
     @apply col-span-3 flex h-full flex-col items-center justify-center gap-4 md:col-span-2;
+  }
+  &__message {
+    .msg-btn-wrapper {
+      @apply flex items-center;
+      .msg-btn {
+        @apply px-6 btn-outline btn btn-primary btn-sm  flex items-center;
+        &__label {
+
+        }
+        &__icon {
+          @apply text-[0.85rem];
+        }
+
+      }
+    }
   }
   &__summary {
     @apply col-span-3 md:col-span-2;
