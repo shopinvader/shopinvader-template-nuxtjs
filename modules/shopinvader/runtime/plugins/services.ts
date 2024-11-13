@@ -226,7 +226,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // Init all services when the app is mounted
   // -----------------------------------------
   if (services) {
-    for (const service of Object.values(services)) {
+    // Init services in the order if the initSeq attribute
+    const orderedServiceList = Object.values(services).sort((a, b) => a.initSeq - b.initSeq)
+    for (const service of orderedServiceList) {
       await service.init(services)
     }
   }

@@ -31,6 +31,11 @@ export const useShopinvaderStore = defineStore('shopinvader', {
 })
 
 export class BaseService {
+  // Sequence of the service in the list of services. It is used to
+  // determine the order of execution of the services' Init method.
+  // The lower the number, the higher the service is in the list.
+  initSeq: number = 2147483647
+
   // List of all available services
   services: ShopinvaderServiceList | null = null
 

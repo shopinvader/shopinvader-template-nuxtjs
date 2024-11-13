@@ -24,7 +24,7 @@ export class BaseServiceElastic extends BaseServiceLocalized {
   }
 
   // Change indexes' names to match the current locale
-  override changeLocale(isoLocale: string): void {
+  override async changeLocale(isoLocale: string) {
     super.changeLocale(isoLocale)
     this.elasticUrl = this.buildLocalizedElasticUrl(this.elasticBaseUrl, this.elasticIndex)
   }
