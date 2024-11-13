@@ -121,6 +121,10 @@
       "discount": "Remise"
     },
     "delivery": {
+      "message-btn": "Message",
+      "message-text": "Un message à nous faire parvenir ?",
+      "message-label": "Votre message ici...",
+      "message-btn-label": "Envoyer",
       "method": {
         "title": "Méthode de livraison",
         "intro": "Sélectionnez une méthode de livraison",
@@ -449,5 +453,10 @@
       "thankyou_title": "Merci pour votre message !",
       "thankyou_description": "Nous reviendrons vers vous au plus vite."
     }
+  },
+  "modal-popup":{
+    "title": "Laissez- nous un message",
+    "placeholder": "Votre message...",
+    "btn-label": "Envoyer",
   }
 }
