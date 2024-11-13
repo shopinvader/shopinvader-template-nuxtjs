@@ -21,6 +21,25 @@
   .icon {
     font-size: 24px;
   }
+  .modal-popup {
+    .modal-box {
+      .popup {
+        &__content {
+          @apply flex flex-col items-center;  
+    
+          textarea {
+            @apply w-full;
+          }
+          .modal-btn {
+            @apply px-2 btn btn-primary btn-sm mt-2  py-1;
+          }
+          
+        }
+      }
+    }
+   
+  }
+  
   .form-control {
     .label,
     label {
@@ -34,4 +53,6 @@
       }
     }
   }
+  
+  
 }
