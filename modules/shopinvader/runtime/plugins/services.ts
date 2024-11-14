@@ -249,6 +249,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
   })
 
+  await nuxtApp.callHook('shopinvader:services_ready', services, shopinvaderConfig, nuxtApp)
+
   // Provide the services and fetchers to the app
   return {
     provide: {
