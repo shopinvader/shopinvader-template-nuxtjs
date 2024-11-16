@@ -40,8 +40,8 @@ export abstract class AuthService extends BaseServiceLocalized {
   private storage: any = null
 
   abstract getConfig(): any
-  abstract loginRedirect(url?: string): Promise<any>
-  abstract logoutRedirect(url?: string): Promise<any>
+  abstract loginRedirect(path?: string): Promise<any>
+  abstract logoutRedirect(path?: string): Promise<any>
   // Add those to the fetcher
   abstract erpInterceptorOnRequest(ctx: oFetchRequestCtx): Promise<void>
   abstract erpInterceptorOnResponseError(ctx: oFetchResponseErrorCtx): Promise<void>
@@ -78,7 +78,7 @@ export abstract class AuthService extends BaseServiceLocalized {
       const profile = await this.ofetch(this.urlEndpointUser)
       if (profile) {
         // Avoid to set the user if it's the same, else it will trigger "watch" everywhere in the app.
-        // This is needed because the OIDC service calls this method even on automatic session refresh.
+        // This is needed because, for example, the OIDC service calls this method even on automatic session refresh.
         const currentUser = this.getUser()
         const newUser = new User(profile)
         if (!isEqual(currentUser.value, newUser)) {
@@ -101,7 +101,7 @@ export abstract class AuthService extends BaseServiceLocalized {
   async setUser(data: AuthUserCredential | User | null): Promise<User | null> {
     const store = this.store()
     if (data) {
-      const user: User | null = data ? new User(data) : null
+      const user: User | null = data instanceof User ? data : data ? new User(data) : null
       store.setUser(user)
       this.setSession(user !== null)
       if (user !== null) {
