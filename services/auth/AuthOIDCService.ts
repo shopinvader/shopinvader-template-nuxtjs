@@ -161,7 +161,7 @@ export class AuthOIDCService extends AuthService {
   }
 
   async userUnloaded() {
-    console.log('User unloaded')
+    // Automatically called by the OIDC provider when we log the user out (signoutRedirect)
     try {
       await this.ofetch(this.urlEndpointAuth + '/signout', { method: 'POST' })
     } catch (e) {
