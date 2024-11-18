@@ -7,17 +7,15 @@
 definePageMeta({
   layout: false
 })
-// This page is only here to show a blank page with a spinner
-// while the OIDC provider manage the token and redirect to the right page.
+// This page is here to show a blank page with a spinner and redirect
+// to the right page while the OIDC provider manage the token (before this).
 
-// But if the user reach this page without OIDC parameters, then redirect to home page
-const localePath = useLocalePath()
-const router = useRouter()
-onMounted(() => {
-  const urlQuery = window.location.search
-  if (!urlQuery.includes('code=') || !urlQuery.includes('state=')) {
-    router.push(localePath({ path: '/' }))
-  }
+onMounted(async () => {
+  // Get the target page from the querystring
+  const target = new URLSearchParams(window.location.search).get('target')
+  const decodedTarget = target ? decodeURIComponent(target) : '/'
+  // Redirect to the target page
+  await navigateTo(decodedTarget, { replace: true })
 })
 </script>
 <style lang="scss">
