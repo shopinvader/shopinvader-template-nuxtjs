@@ -95,7 +95,7 @@
                     :total="page.total"
                     :from="page.from"
                     :size="page.size"
-                    @change="changePage($event)"
+                    @change="changePage"
                   >
                   </search-pagination>
                 </div>
@@ -109,19 +109,13 @@
             </div>
           </slot>
           <!-- @slot to display the pagination at the bottom of the page.-->
-          <slot
-            name="pagination"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :change-page="changePage"
-          >
+          <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
             <div v-if="pagination" class="search__pagination">
               <search-pagination
                 :total="page.total"
                 :from="page.from"
                 :size="page.size"
-                @change="changePage($event)"
+                @change="changePage"
               >
               </search-pagination>
             </div>
@@ -149,11 +143,13 @@ import type { SearchSortItem } from '#models'
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
+import isEqual from '~/utils/IsEqual'
 
 export interface Filter {
   name: string
   title: string
   values: any[]
+  urlParam: string
   setValues: (values: any[]) => void
   getValuesLabels: () => string
   getFilterAggregation: (query: Query | null) => FilterAggregation
@@ -276,6 +272,18 @@ const getFiltersAggs = () => {
 }
 
 /**
+ * changePage: display results from the given page number
+ * @param from: position of the first item to display
+ */
+const changePage = async (from: number) => {
+  page.from = from
+  if (window?.scrollTo) {
+    window.scrollTo(0, 0)
+    router.push({ query: { ...route.query, page: from / props.size + 1 } })
+  }
+}
+
+/**
  * Search: search function get items from provider
  */
 interface SearchResponse {
@@ -341,6 +349,7 @@ const fetchSearch = async (): Promise<SearchResponse> => {
       }
     }
   } catch (e: any) {
+    console.error(e)
     error.value = e?.message || e
   }
   return res
@@ -354,19 +363,6 @@ const search = async () => {
   response.value.suggestions = suggestions
   page.total = total
   loading.value = false
-}
-
-/**
- * changePage: display results from the given page number
- * @param from: position of the first item to display
- */
-const changePage = async (from: number) => {
-  page.from = from
-  await search()
-  if (window?.scrollTo) {
-    window.scrollTo(0, 0)
-    router.push({ query: { ...route.query, page: from / props.size + 1 } })
-  }
 }
 
 const { data } = await useAsyncData(async () => {
@@ -383,23 +379,33 @@ watch(
 )
 
 watch(
-  () => props.size,
-  async () => {
-    page.size = props.size
-    await changePage(0)
-  }
+  () => route.query,
+  (queries, oldQueries) => {
+    const watchedQueryParams = filters.map((f) => f.urlParam)
+    let filterHasChanged = false
+    for (const key of watchedQueryParams) {
+      let value = JSON.parse(queries?.[key]?.toString() || '[]')
+      let oldValue = JSON.parse(oldQueries?.[key]?.toString() || '[]')
+      value = !Array.isArray(value) ? [value] : value
+      oldValue = !Array.isArray(oldValue) ? [oldValue] : oldValue
+      if (!isEqual(value.sort(), oldValue.sort())) {
+        filterHasChanged = true
+        continue
+      }
+    }
+    if (filterHasChanged) {
+      page.from = 0
+    }
+    if (filterHasChanged || queries?.page != oldQueries?.page) {
+      search()
+    }
+  },
+  { deep: true }
 )
-
 onMounted(async () => {
   await search()
 })
 
-// Provide some methods and data to the other components (to be injected)
-provide('search', () => {
-  // Reset the page to 0 when a new search is performed due to a filter change
-  page.from = 0
-  search()
-})
 provide('declareFilter', declareFilter)
 provide(
   'response',

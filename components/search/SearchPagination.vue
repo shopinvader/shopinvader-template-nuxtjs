@@ -1,51 +1,32 @@
 <template>
   <Pagination :total="total" :size="size" :page="currentPage" @change="changePage" />
 </template>
-<script lang="ts">
-export default {
-  name: 'SearchPagination',
-  props: {
-    total: {
-      type: Number,
-      required: true
-    },
-    size: {
-      type: Number,
-      required: true
-    },
-    from: {
-      type: Number,
-      required: true
-    }
+<script lang="ts" setup>
+const props = defineProps({
+  total: {
+    type: Number,
+    required: true
   },
-  emits: ['change'],
-  computed: {
-    count(): number {
-      return Math.ceil(this.total / this.size)
-    },
-    pages(): number[] {
-      const pages = []
-      for (let i = this.currentPage - 2; i < this.currentPage; i++) {
-        if (i > 0) {
-          pages.push(i)
-        }
-      }
-      pages.push(this.currentPage)
-      for (let i = 1; i < 3; i++) {
-        if (this.currentPage + i <= this.count) {
-          pages.push(this.currentPage + i)
-        }
-      }
-      return pages
-    },
-    currentPage(): number {
-      return Math.ceil(this.from / this.size) + 1
-    }
+  size: {
+    type: Number,
+    required: true
   },
-  methods: {
-    changePage(page: number) {
-      this.$emit('change', (page - 1) * this.size)
-    }
+  from: {
+    type: Number,
+    required: true
   }
+})
+const emits = defineEmits(['change'])
+
+const currentPage = computed((): number => {
+  return Math.ceil(props.from / props.size) + 1
+})
+
+/**
+ * changePage: display results from the given page number
+ * @param from: position of the first item to display
+ */
+const changePage = (page: number) => {
+  emits('change', (page - 1) * props.size)
 }
 </script>
