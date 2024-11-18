@@ -10,37 +10,47 @@
         </div>
       </div>
     </slot>
-    <slot name="items" :items="data.items" :change="onSelectItem">
-      <template v-if="opened">
-        <div v-for="item in data.items" :key="item.key" class="searchfilter__items">
-          <slot name="items" :item="item" :change="onSelectItem">
+    <slot name="searchable" :items="data.items" :search="onTextSearch">
+      <div v-if="searchable && opened && data?.items?.length > 0" class="searchfilter__searchable">
+        <input
+          type="text"
+          v-model="textSearchQuery"
+          :placeholder="t('search.placeholder')"
+          class="searchable__input"
+        />
+      </div>
+    </slot>
+    <slot name="items" :items="itemsWithSearch" :change="setValues">
+      <div v-if="opened" class="searchfilter__items">
+        <template v-for="item in itemsWithSearch" :key="item.key">
+          <slot name="item" :item="item" :change="setValues">
             <label class="item" :class="{ 'item--active': data.selected.includes(item.key) }">
               <input
                 v-model="data.selected"
                 type="checkbox"
                 class="item__checkbox"
                 :value="item.key"
-                @change="onSelectItem()"
+                @change="() => setValues(data.selected)"
               />
               <span class="item__label" v-html="item?.label || item.key"></span>
               <span class="item__count">{{ item.doc_count }}</span>
             </label>
           </slot>
-        </div>
-      </template>
+        </template>
+      </div>
       <button
         v-if="opened && data?.total > size"
         class="btn btn-link btn-xs pt-3"
         @click="displayAll"
       >
-        <span v-if="sizeQuery == size">{{ $t('search.filters.all') }}</span>
-        <span v-else>{{ $t('search.filters.reduce') }}</span>
+        <span v-if="sizeQuery == size">{{ t('search.filters.all') }}</span>
+        <span v-else>{{ t('search.filters.reduce') }}</span>
       </button>
     </slot>
     <slot name="footer" :items="data.items" :size="size" :total="data?.total"> </slot>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { Aggregation, Query } from 'elastic-builder'
 import {
   CardinalityAggregation,
@@ -60,263 +70,271 @@ interface FacetItem {
   label: string
   doc_count: number
 }
-export default {
-  props: {
-    name: {
-      type: String,
-      required: true
-    },
-    close: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    field: {
-      type: String,
-      required: true
-    },
-    nestedPath: {
-      type: String,
-      required: false,
-      default: null
-    },
-    title: {
-      type: String,
-      required: true
-    },
-    filterItems: {
-      type: Function,
-      required: false,
-      default: null
-    },
-    cardinalityField: {
-      type: String,
-      required: false,
-      default: null
-    },
-    transformQuery: {
-      type: Function,
-      required: false,
-      default: null
-    },
-    transformItems: {
-      type: Function,
-      required: false,
-      default: null
-    },
-    transformData: {
-      type: Function,
-      required: false,
-      default: null
-    },
-    size: {
-      type: Number,
-      required: false,
-      default: 10
-    },
-    urlParam: {
-      type: String,
-      required: false,
-      default: null
-    }
+const props = defineProps({
+  name: {
+    type: String,
+    required: true
   },
-  async setup(props) {
-    const opened = ref(!props.close)
-    const sizeQuery = ref(props.size)
-    const data = reactive({
-      selected: [] as string[],
-      items: [] as FacetItem[],
-      total: 0
-    })
-    const declareFilter: ((params: Filter) => void) | null = inject('declareFilter') || null
-    const search: (() => void) | null = inject('search') || null
-    const response: (() => void) | null = inject('response') || null
+  close: {
+    type: Boolean,
+    required: false,
+    default: true
+  },
+  field: {
+    type: String,
+    required: true
+  },
+  nestedPath: {
+    type: String,
+    required: false,
+    default: null
+  },
+  title: {
+    type: String,
+    required: true
+  },
+  filterItems: {
+    type: Function,
+    required: false,
+    default: null
+  },
+  cardinalityField: {
+    type: String,
+    required: false,
+    default: null
+  },
+  transformQuery: {
+    type: Function,
+    required: false,
+    default: null
+  },
+  transformItems: {
+    type: Function,
+    required: false,
+    default: null
+  },
+  transformData: {
+    type: Function,
+    required: false,
+    default: null
+  },
+  size: {
+    type: Number,
+    required: false,
+    default: 10
+  },
+  searchable: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+  urlParam: {
+    type: String,
+    required: false,
+    default: null
+  },
+  alphabeticOrder: {
+    type: Boolean,
+    default: false
+  }
+})
 
-    const getValuesLabels = () => {
-      return data.selected.join(', ')
+const { t } = useI18n()
+const router = useRouter()
+const route = useRoute()
+
+const urlParam = props.urlParam || props.name
+const textSearchQuery = ref<string>('')
+const opened = ref(!props.close)
+const sizeQuery = ref(props.size)
+const data = reactive({
+  selected: [] as string[],
+  items: [] as FacetItem[],
+  total: 0
+})
+const declareFilter: ((params: Filter) => void) | null = inject('declareFilter') || null
+const response: (() => void) | null = inject('response') || null
+
+const getValuesLabels = () => {
+  return data.selected.join(', ')
+}
+
+const getFilterAggregation = (query: Query | null): FilterAggregation => {
+  // Initialize the main aggregation with terms aggregation based on provided props
+  let agg: TermsAggregation = new TermsAggregation(props.name, props.field).size(sizeQuery.value) // Set the size of the aggregation based on reactive sizeQuery value
+  if (props.alphabeticOrder) {
+    agg = agg.order('_key', 'asc') // Order the aggregation by term in ascending order
+  }
+  // If a transformQuery function is provided in props, apply it to modify the query
+  if (props.transformQuery !== null) {
+    query = props.transformQuery(query, props.name, props.field)
+  }
+  // If a cardinalityField is specified, add a cardinality aggregation to the main aggregation
+  if (props.cardinalityField !== null) {
+    agg.agg(cardinalityAggregation(props.name + '_cardinality', props.cardinalityField))
+  }
+  // Initialize the aggregations array with the main aggregation
+  let aggs: Aggregation[] = [agg]
+  // Create a cardinality aggregation to count unique values in the specified field
+  const uniqueAgg = new CardinalityAggregation('unique', props.field)
+  // If a nestedPath is specified, wrap the main and unique aggregations in a nested aggregation
+  if (props.nestedPath) {
+    aggs = [new NestedAggregation(props.name, props.nestedPath).aggs([agg, uniqueAgg])]
+  } else {
+    // If no nestedPath is specified, simply add the unique aggregation to the aggregations array
+    aggs.push(uniqueAgg)
+  }
+  // Wrap the aggregations in a filter aggregation that filters documents based on the provided query
+  // or a match all query if no query is provided
+  const filterAggregation = new FilterAggregation(
+    props.name,
+    query || new MatchAllQuery()
+  ).aggregations(aggs)
+
+  return filterAggregation
+}
+
+const getQueryAggregation = () => {
+  let aggs: Query | null = null
+  if (data?.selected?.length > 0) {
+    aggs = new TermsQuery(props.field, data?.selected || [])
+    if (props.nestedPath) {
+      aggs = new NestedQuery().path(props.nestedPath).query(aggs)
     }
+  }
+  return aggs
+}
 
-    const getFilterAggregation = (query: Query | null): FilterAggregation => {
-      // Initialize the main aggregation with terms aggregation based on provided props
-      const agg: Aggregation = new TermsAggregation(props.name, props.field)
-        .order('_key', 'asc') // Order the aggregation by term in ascending order
-        .size(sizeQuery.value) // Set the size of the aggregation based on reactive sizeQuery value
-      // If a transformQuery function is provided in props, apply it to modify the query
-      if (props.transformQuery !== null) {
-        query = props.transformQuery(query, props.name, props.field)
-      }
-      // If a cardinalityField is specified, add a cardinality aggregation to the main aggregation
-      if (props.cardinalityField !== null) {
-        agg.agg(cardinalityAggregation(props.name + '_cardinality', props.cardinalityField))
-      }
-      // Initialize the aggregations array with the main aggregation
-      let aggs: Aggregation[] = [agg]
-      // Create a cardinality aggregation to count unique values in the specified field
-      const uniqueAgg = new CardinalityAggregation('unique', props.field)
-      // If a nestedPath is specified, wrap the main and unique aggregations in a nested aggregation
-      if (props.nestedPath) {
-        aggs = [new NestedAggregation(props.name, props.nestedPath).aggs([agg, uniqueAgg])]
-      } else {
-        // If no nestedPath is specified, simply add the unique aggregation to the aggregations array
-        aggs.push(uniqueAgg)
-      }
-      // Wrap the aggregations in a filter aggregation that filters documents based on the provided query
-      // or a match all query if no query is provided
-      const filterAggregation = new FilterAggregation(
-        props.name,
-        query || new MatchAllQuery()
-      ).aggregations(aggs)
-      return filterAggregation
-    }
-
-    const getQueryAggregation = () => {
-      let aggs: Query | null = null
-      if (data?.selected?.length > 0) {
-        aggs = new TermsQuery(props.field, data?.selected || [])
-        if (props.nestedPath) {
-          aggs = new NestedQuery().path(props.nestedPath).query(aggs)
+const setValues = (values: any[]) => {
+  data.selected = values || []
+  if (urlParam) {
+    if (data.selected.length > 0) {
+      router.push({
+        query: {
+          ...route.query,
+          [urlParam]: JSON.stringify(data.selected)
         }
-      }
-      return aggs
-    }
-
-    const setValues = (values: any[]) => {
-      data.selected = values || []
-      refreshSearch()
-    }
-    if (declareFilter !== null) {
-      declareFilter({
-        name: props?.name || '',
-        title: props.title,
-        values: data?.selected,
-        setValues: setValues,
-        getValuesLabels,
-        getFilterAggregation,
-        getQueryAggregation
       })
-    }
-
-    const onSelectItem = () => {
-      refreshSearch()
-    }
-
-    const refreshSearch = () => {
-      if (props.urlParam) {
-        const $router = useRouter()
-        const $route = useRoute()
-        if (data.selected.length > 0) {
-          $router.push({
-            query: {
-              ...$route.query,
-              [props.urlParam]: JSON.stringify(data.selected)
-            }
-          })
-        } else {
-          const query = { ...$route.query }
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-          delete query[props.urlParam]
-          $router.push({ query })
-        }
-      }
-      if (search !== null) {
-        search()
-      }
-    }
-    const displayAll = () => {
-      if (sizeQuery.value == props.size) {
-        sizeQuery.value = data.total
-      } else {
-        sizeQuery.value = props.size
-      }
-      refreshSearch()
-    }
-    return {
-      response,
-      opened,
-      data,
-      sizeQuery,
-      onSelectItem,
-      setValues,
-      displayAll
-    }
-  },
-  watch: {
-    $route: {
-      handler: function () {
-        if (!import.meta.env.SSR && this.urlParam) {
-          const $route = useRoute()
-          try {
-            const query: string = ($route.query?.[this.urlParam] as string) || '[]'
-            const values: string[] = JSON.parse(query) || []
-            const isEqualValues = isEqual(values.sort(), this.data.selected.sort())
-            if (!isEqualValues) {
-              this.setValues(values)
-            }
-          } catch (e) {
-            const $router = useRouter()
-            const query = { ...$route.query }
-            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            delete query[this.urlParam]
-            $router.replace({ path: $route.path, query })
-          }
-        }
-      },
-      immediate: true,
-      deep: true
-    },
-    response: {
-      handler: function (response) {
-        if (response?.aggregations) {
-          const name = this.name
-          let items = []
-          let total = 0
-          const aggregations = response?.aggregations || {}
-
-          if (this.transformData !== null) {
-            const data = this.transformData(aggregations)
-            items = data?.items || []
-          } else {
-            let values = aggregations
-
-            while (values !== null) {
-              values = values?.[name] || null
-              if (values?.unique) {
-                total = values?.unique?.value
-              }
-              if (values?.buckets) {
-                items = values?.buckets
-                break
-              }
-            }
-          }
-
-          if (this.cardinalityField) {
-            for (const item of items) {
-              if (this.nestedPath) {
-                item.doc_count = null
-              } else {
-                item.doc_count = item[this.name + '_cardinality']?.value || item.doc_count
-              }
-            }
-          }
-
-          if (this.transformItems !== null) {
-            const transformedItems = this.transformItems(items)
-            items = transformedItems?.items || items
-          }
-          this.data.items = items || []
-          this.data.total = total || 0
-        }
-      },
-      deep: true
-    },
-    close(val, old) {
-      if (val !== old) {
-        this.opened = val
-      }
+    } else {
+      const query = { ...route.query }
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+      delete query[urlParam]
+      router.push({ query })
     }
   }
 }
+if (declareFilter !== null) {
+  declareFilter({
+    name: props?.name || '',
+    title: props.title,
+    values: data?.selected,
+    urlParam,
+    setValues,
+    getValuesLabels,
+    getFilterAggregation,
+    getQueryAggregation
+  })
+}
+
+const onTextSearch = (q: string) => {
+  textSearchQuery.value = q
+}
+
+/**
+ * Filter result according to textSearchQuery
+ */
+const itemsWithSearch = computed(() => {
+  if (textSearchQuery.value !== '') {
+    return data?.items?.filter((item) => {
+      return item.key?.search(new RegExp(textSearchQuery.value.toLowerCase(), 'i')) > -1
+    })
+  }
+  return data?.items
+})
+
+const displayAll = () => {
+  if (sizeQuery.value == props.size) {
+    sizeQuery.value = data.total
+  } else {
+    sizeQuery.value = props.size
+  }
+}
+watch(
+  () => response,
+  (response: any) => {
+    const aggregations = response?.value?.aggregations || null
+    if (aggregations) {
+      const name = props.name
+      let items = []
+      let total = 0
+      if (props.transformData !== null) {
+        const data = props.transformData(aggregations)
+        items = data?.items || []
+      } else {
+        let values = aggregations
+
+        while (values !== null) {
+          values = values?.[name] || null
+          if (values?.unique) {
+            total = values?.unique?.value
+          }
+          if (values?.buckets) {
+            items = values?.buckets
+            break
+          }
+        }
+      }
+
+      if (props.cardinalityField) {
+        for (const item of items) {
+          if (props.nestedPath) {
+            item.doc_count = null
+          } else {
+            item.doc_count = item[props.name + '_cardinality']?.value || item.doc_count
+          }
+        }
+      }
+
+      if (props.transformItems !== null) {
+        const transformedItems = props.transformItems(items)
+        items = transformedItems?.items || items
+      }
+      data.items = items || []
+      data.total = total || 0
+    }
+  },
+  { deep: true }
+)
+watch(
+  () => props.close,
+  (val, old) => {
+    if (val !== old) {
+      opened.value = val
+    }
+  }
+)
+watch(
+  () => route.query,
+  (query) => {
+    try {
+      const values: string[] = JSON.parse(query?.[urlParam]?.toString() || '[]')
+      if (!isEqual(values.sort(), data.selected.sort())) {
+        data.selected = values
+      }
+    } catch (e) {
+      setValues([])
+    }
+  }
+)
+
+onMounted(() => {
+  const queryValue = JSON.parse(route.query?.[urlParam]?.toString() || '[]')
+  if (queryValue && Array.isArray(queryValue)) {
+    data.selected = queryValue
+  } else {
+    data.selected = []
+  }
+})
 </script>
 <style lang="scss">
 .searchfilter {
@@ -342,6 +360,11 @@ export default {
       &__count {
         @apply text-gray-500;
       }
+    }
+  }
+  &__searchable {
+    .searchable__input {
+      @apply input input-xs input-bordered w-full rounded-sm;
     }
   }
 }
