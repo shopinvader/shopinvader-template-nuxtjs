@@ -26,7 +26,6 @@ if (appConfig?.search?.filters) {
       component = resolveComponent('SearchTermsAggregation')
     }
     let title = t(filter.title)
-    console.log(filter.title, t(filter.title))
     if (title == filter.title) {
       title = t(`filters.${filter.name}`)
       if (title == `filters.${filter.name}`) {
