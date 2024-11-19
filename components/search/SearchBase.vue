@@ -24,7 +24,75 @@
         :do-set-display-filters="doSetDisplayFilters"
       ></slot>
       <!-- @slot displaying results -->
-      <slot name="results" :items="items" :total="total" :response="response">
+      <slot name="results" :items="items" :total="total" :response="response" :loading="loading">
+        <div class="search__header">
+          <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
+          <slot
+            name="display-filters"
+            :sort="sort"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :items="items"
+            :do-change-page="changePage"
+            :do-set-display-filters="doSetDisplayFilters"
+            :loading="loading"
+          >
+            <div class="search__display-filters">
+              <!-- Displayed in small screen only to show the list of filters as aside. -->
+              <button type="button" @click="doSetDisplayFilters(true)">
+                {{ t('search.filter') }}
+              </button>
+            </div>
+          </slot>
+          <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
+          <slot
+            name="action"
+            :sort="sort"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :items="items"
+            :do-change-page="changePage"
+            :do-set-display-filters="doSetDisplayFilters"
+          ></slot>
+          <!-- @slot to display the sort select if sort options are available. -->
+          <slot name="sort" :sort="sort" :sort-options="sortOptions" :loading="loading">
+            <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
+              <label class="sort__label">{{ t('search.sort.label') }}</label>
+              <select v-model="sort" class="sort__select">
+                <option v-for="option in sortOptions" :key="option.value" :value="option">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+          </slot>
+          <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
+          <slot
+            name="stats"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :do-change-page="changePage"
+            :do-set-display-filters="doSetDisplayFilters"
+            :loading="loading"
+          >
+            <div class="search__stats">
+              <div class="total">
+                <span class="text-sm">{{ t('search.results.count', { count: page.total }) }}</span>
+              </div>
+              <div v-if="pagination" class="search__pagination">
+                <search-pagination
+                  :total="page.total"
+                  :from="page.from"
+                  :size="page.size"
+                  @change="changePage"
+                >
+                </search-pagination>
+              </div>
+            </div>
+          </slot>
+        </div>
         <template v-if="loading">
           <!-- @slot to display the loading animation -->
           <slot name="loading">
@@ -34,74 +102,6 @@
           </slot>
         </template>
         <template v-else-if="items?.length > 0">
-          <div class="search__header">
-            <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
-            <slot
-              name="display-filters"
-              :sort="sort"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :items="items"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            >
-              <div class="search__display-filters">
-                <!-- Displayed in small screen only to show the list of filters as aside. -->
-                <button type="button" @click="doSetDisplayFilters(true)">
-                  {{ t('search.filter') }}
-                </button>
-              </div>
-            </slot>
-            <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
-            <slot
-              name="action"
-              :sort="sort"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :items="items"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            ></slot>
-            <!-- @slot to display the sort select if sort options are available. -->
-            <slot name="sort" :sort="sort" :sort-options="sortOptions">
-              <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
-                <label class="sort__label">{{ t('search.sort.label') }}</label>
-                <select v-model="sort" class="sort__select">
-                  <option v-for="option in sortOptions" :key="option.value" :value="option">
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-            </slot>
-            <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
-            <slot
-              name="stats"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            >
-              <div class="search__stats">
-                <div class="total">
-                  <span class="text-sm">{{
-                    t('search.results.count', { count: page.total })
-                  }}</span>
-                </div>
-                <div v-if="pagination" class="search__pagination">
-                  <search-pagination
-                    :total="page.total"
-                    :from="page.from"
-                    :size="page.size"
-                    @change="changePage"
-                  >
-                  </search-pagination>
-                </div>
-              </div>
-            </slot>
-          </div>
           <!-- @slot to display the results. Please do fill it in your calling component! -->
           <slot name="items" :items="items" :total="total" :response="response">
             <div v-for="hit in items" :key="hit.id">
