@@ -1,22 +1,27 @@
 <template>
-  <div v-for="filter in filters" :key="filter.name">
+  <div v-for="filter in filtersWithComponents" :key="filter.name">
     <component :is="filter.component" v-bind="filter"></component>
   </div>
 </template>
 <script lang="ts" setup>
+import type { SearchFilterComponent } from '#models'
+
 const props = defineProps({
   filters: {
-    type: Array as PropType<FilterComponent[]>,
+    type: Array as PropType<SearchFilterComponent[]>,
     required: false,
-    default: () => []
+    default: () => {
+      const appConfig = useAppConfig()
+      return appConfig.search.filters || []
+    }
   }
 })
 const { t } = useI18n()
-const appConfig = useAppConfig()
+
 // Use shallowref to avoid vuejs reactivity warning
-const filters = shallowRef<FilterComponent[]>(props.filters)
-if (appConfig?.search?.filters) {
-  filters.value = appConfig.search.filters.map((filter: any) => {
+const filtersWithComponents = shallowRef<SearchFilterComponent[]>([])
+if (props?.filters) {
+  filtersWithComponents.value = props.filters.map((filter: any) => {
     let component: Component | string | null = null
     if (filter.type === 'range-price') {
       component = resolveComponent('SearchRangePrice')

@@ -55,9 +55,10 @@ export default {
         const productService = useShopinvaderService('products')
         return productService.fullTextQuery(query)
       } else {
-        const matchAllQuery = esb.boolQuery()
-        .must(esb.matchAllQuery())
-        .should(esb.termQuery('main', true))
+        const matchAllQuery = esb
+          .boolQuery()
+          .must(esb.matchAllQuery())
+          .should(esb.termQuery('main', true))
         return matchAllQuery
       }
     }
