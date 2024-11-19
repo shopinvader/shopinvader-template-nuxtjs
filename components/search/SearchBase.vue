@@ -333,7 +333,17 @@ const fetchSearch = async (): Promise<SearchResponse> => {
       body.postFilter(postFilter)
     }
     if (sort.value !== null) {
-      body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+      if (sort.value?.script) {
+        body.sort(
+          esb
+            .sort()
+            .type('number')
+            .script(sort.value.script)
+            .order(sort.value.order || 'asc')
+        )
+      } else {
+        body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+      }
     }
     const fetchedData = await props?.provider(body.toJSON())
     if (fetchedData) {
