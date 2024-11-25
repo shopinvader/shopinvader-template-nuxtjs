@@ -1,5 +1,5 @@
 <template>
-  <div v-if="value != null" class="searchfilter">
+  <div class="searchfilter">
     <slot name="title" :title="title">
       <div class="searchfilter__header" @click="opened = !opened">
         <div class="header__title">{{ title }}</div>
@@ -8,7 +8,14 @@
         </div>
       </div>
     </slot>
-    <slot name="items" :checked="checked" :change="onSelectItem">
+    <slot
+      name="items"
+      :checked="checked"
+      :label="label"
+      :total="total"
+      :change="onSelectItem"
+      :opened="opened"
+    >
       <div v-if="opened" class="searchfilter__items">
         <label class="item" :class="{ 'item--active': checked }">
           <input :checked="checked" @change="onSelectItem" type="checkbox" class="item__checkbox" />
@@ -83,10 +90,15 @@ const props = defineProps({
     required: false,
     default: null
   },
-  value: {
-    type: String,
+  checked: {
+    type: Boolean,
     required: false,
-    default: ''
+    default: null
+  },
+  value: {
+    type: [String, Array as PropType<string[]>, Number, Boolean],
+    required: false,
+    default: null
   },
   label: {
     type: String,
@@ -95,7 +107,7 @@ const props = defineProps({
   }
 })
 
-const checked = ref(false)
+const checked = ref(props.checked || false)
 const urlParam = props?.urlParam || props?.name
 const router = useRouter()
 const route = useRoute()
@@ -178,6 +190,12 @@ watch(
   }
 )
 
+watch(
+  () => props.checked,
+  (value) => {
+    setValue(value)
+  }
+)
 /**
  * Update total count after page.
  */
@@ -220,6 +238,9 @@ onMounted(() => {
     checked.value = true
   } else {
     checked.value = false
+  }
+  if (props?.checked !== null && props?.checked !== checked.value) {
+    setValue(props.checked)
   }
 })
 </script>

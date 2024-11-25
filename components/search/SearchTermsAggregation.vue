@@ -24,13 +24,12 @@
       <div v-if="opened" class="searchfilter__items">
         <template v-for="item in itemsWithSearch" :key="item.key">
           <slot name="item" :item="item" :change="setValues">
-            <label class="item" :class="{ 'item--active': data.selected.includes(item.key) }">
+            <label class="item" :class="{ 'item--active': selectedValues.includes(item.key) }">
               <input
-                v-model="data.selected"
+                v-model="selectedValues"
                 type="checkbox"
                 class="item__checkbox"
                 :value="item.key"
-                @change="() => setValues(data.selected)"
               />
               <span class="item__label" v-html="item?.label || item.key"></span>
               <span class="item__count">{{ item.doc_count }}</span>
@@ -152,11 +151,12 @@ const data = reactive({
   items: [] as FacetItem[],
   total: 0
 })
+
 const declareFilter: ((params: Filter) => void) | null = inject('declareFilter') || null
 const response: (() => void) | null = inject('response') || null
-
+const search: (() => void) | null = inject('search') || null
 const getValuesLabels = () => {
-  return data.selected.join(', ')
+  return selectedValues.value.join(', ')
 }
 
 const getFilterAggregation = (query: Query | null): FilterAggregation => {
@@ -194,10 +194,38 @@ const getFilterAggregation = (query: Query | null): FilterAggregation => {
   return filterAggregation
 }
 
+const selectedValues = computed({
+  get: () => {
+    try {
+      return JSON.parse(route?.query?.[urlParam]?.toString() || '[]')
+    } catch (e) {
+      return []
+    }
+  },
+  set: (values: string[]) => {
+    data.selected = values
+    if (urlParam) {
+      if (values.length > 0) {
+        router.push({
+          query: {
+            ...route.query,
+            [urlParam]: JSON.stringify(values)
+          }
+        })
+      } else {
+        const query = { ...route.query }
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete query[urlParam]
+        router.push({ query })
+      }
+    }
+  }
+})
 const getQueryAggregation = () => {
   let aggs: Query | null = null
-  if (data?.selected?.length > 0) {
-    aggs = new TermsQuery(props.field, data?.selected || [])
+  const values: string[] = JSON.parse(route?.query?.[urlParam]?.toString() || '[]')
+  if (values?.length > 0) {
+    aggs = new TermsQuery(props.field, values || [])
     if (props.nestedPath) {
       aggs = new NestedQuery().path(props.nestedPath).query(aggs)
     }
@@ -206,28 +234,13 @@ const getQueryAggregation = () => {
 }
 
 const setValues = (values: any[]) => {
-  data.selected = values || []
-  if (urlParam) {
-    if (data.selected.length > 0) {
-      router.push({
-        query: {
-          ...route.query,
-          [urlParam]: JSON.stringify(data.selected)
-        }
-      })
-    } else {
-      const query = { ...route.query }
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-      delete query[urlParam]
-      router.push({ query })
-    }
-  }
+  selectedValues.value = values || []
 }
 if (declareFilter !== null) {
   declareFilter({
     name: props?.name || '',
     title: props.title,
-    values: data?.selected,
+    values: selectedValues.value,
     urlParam,
     setValues,
     getValuesLabels,
@@ -258,7 +271,11 @@ const displayAll = () => {
   } else {
     sizeQuery.value = props.size
   }
+  if (search !== null) {
+    search()
+  }
 }
+
 watch(
   () => response,
   (response: any) => {
@@ -305,6 +322,7 @@ watch(
   },
   { deep: true }
 )
+
 watch(
   () => props.close,
   (val, old) => {
@@ -313,28 +331,6 @@ watch(
     }
   }
 )
-watch(
-  () => route.query,
-  (query) => {
-    try {
-      const values: string[] = JSON.parse(query?.[urlParam]?.toString() || '[]')
-      if (!isEqual(values.sort(), data.selected.sort())) {
-        data.selected = values
-      }
-    } catch (e) {
-      setValues([])
-    }
-  }
-)
-
-onMounted(() => {
-  const queryValue = JSON.parse(route.query?.[urlParam]?.toString() || '[]')
-  if (queryValue && Array.isArray(queryValue)) {
-    data.selected = queryValue
-  } else {
-    data.selected = []
-  }
-})
 </script>
 <style lang="scss">
 .searchfilter {
