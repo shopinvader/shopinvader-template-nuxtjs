@@ -390,7 +390,7 @@ watch(
 
 watch(
   () => route.query,
-  (queries, oldQueries) => {
+  async (queries, oldQueries) => {
     const watchedQueryParams = filters.map((f) => f.urlParam)
     let filterHasChanged = false
     for (const key of watchedQueryParams) {
@@ -404,10 +404,14 @@ watch(
       }
     }
     if (filterHasChanged) {
-      page.from = 0
+      if (page.from > 0) {
+        changePage(0)
+      }
+    } else {
+      page.from = parseInt(queries?.page?.toString() || '1') * props.size - props.size
     }
     if (filterHasChanged || queries?.page != oldQueries?.page) {
-      search()
+      await search()
     }
   },
   { deep: true }
@@ -427,6 +431,11 @@ provide(
   'filters',
   computed(() => filters)
 )
+
+// Provide some methods and data to the other components (to be injected)
+provide('search', () => {
+  search()
+})
 
 if (data?.value) {
   response.value.aggregations = data.value.aggregations
