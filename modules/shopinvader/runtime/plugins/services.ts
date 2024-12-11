@@ -81,14 +81,17 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   // Services need fetchers, build default ones
   const fetchers: ShopinvaderFetchersList = {
     elasticFetch: ofetch.create({}),
-    erpFetch: ofetch.create({
-      async onRequest({ request, options }) {
-        auth?.interceptorOnRequest({ request, options })
-      },
-      async onResponseError({ request, response, options }) {
-        auth?.interceptorOnResponseError({ request, response, options })
-      }
-    })
+    erpFetch: () => {
+      return null
+    }
+    // erpFetch: ofetch.create({
+    //   async onRequest({ request, options }) {
+    //     auth?.interceptorOnRequest({ request, options })
+    //   },
+    //   async onResponseError({ request, response, options }) {
+    //     auth?.interceptorOnResponseError({ request, response, options })
+    //   }
+    // })
   }
   // Let the child replace fetchers with theirs if needed
   await nuxtApp.callHook('shopinvader:fetchers', fetchers, shopinvaderConfig, nuxtApp)
