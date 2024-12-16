@@ -58,7 +58,7 @@
         -->
         <slot name="qty" :line="line" v-if="amount.total >= 0">
           <div class="label">
-            {{ $t('cart.line.quantity') }}
+            {{ t('cart.line.quantity') }}
             <span v-if="readonly === true">{{ line?.qty }}</span>
           </div>
           <div class="value">
@@ -78,11 +78,11 @@
           v-if="!readonly"
           type="button"
           class="btn btn-link btn-xs p-0 text-xs"
-          :title="$t('cart.line.delete')"
+          :title="t('cart.line.delete')"
           @click="deleteLine"
         >
           <icon name="remove" class="text-xl" />
-          {{ $t('cart.line.delete') }}
+          {{ t('cart.line.delete') }}
         </button>
       </div>
 
@@ -93,7 +93,7 @@
         -->
         <slot name="price" :line="line">
           <div class="label">
-            {{ $t('cart.line.total') }}
+            {{ t('cart.line.total') }}
           </div>
           <div class="value">
             <div v-if="line.amount.discountTotal !== 0" class="price__original">
@@ -159,9 +159,11 @@ export default defineNuxtComponent({
   },
   setup() {
     const localePath = useLocalePath()
+    const { t } = useI18n()
     return {
       localePath,
-      formatCurrency
+      formatCurrency,
+      t
     }
   },
   computed: {

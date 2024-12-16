@@ -186,58 +186,58 @@
   </div>
 </template>
 <script lang="ts" setup>
-  defineProps({
-    legalsLink: {
-      type: String,
-      required: false,
-      default: '/legals/privacy'
-    }
-  })
-  const loading = ref(false)
-  const firstname = ref('')
-  const lastname = ref('')
-  const password = ref('')
-  const login = ref('')
-  const accountIsCreated = ref(false)
-  const passwordView = ref(false)
-  const legals = ref(false)
-  const error = ref(false)
-  const fieldError = ref({
-    login: false,
-    password: false
-  })
+defineProps({
+  legalsLink: {
+    type: String,
+    required: false,
+    default: '/legals/privacy'
+  }
+})
+const loading = ref(false)
+const firstname = ref('')
+const lastname = ref('')
+const password = ref('')
+const login = ref('')
+const accountIsCreated = ref(false)
+const passwordView = ref(false)
+const legals = ref(false)
+const error = ref(false)
+const fieldError = ref({
+  login: false,
+  password: false
+})
 
-  const localePath = useLocalePath()
+const localePath = useLocalePath()
+const auth = useShopinvaderService('auth')
+const checkValidity = (input: 'login' | 'password', e: KeyboardEvent) => {
+  const target = e.target as HTMLInputElement
+  const validity = target?.checkValidity()
+  fieldError.value = {
+    ...fieldError.value,
+    [input]: !validity || target?.value === ''
+  }
+}
+
+const createAccount = async () => {
+  loading.value = true
+  error.value = false
   const auth = useShopinvaderService('auth')
-  const checkValidity = (input: 'login' | 'password', e: KeyboardEvent) => {
-    const target = e.target as HTMLInputElement
-    const validity = target?.checkValidity()
-    fieldError.value = {
-      ...fieldError.value,
-      [input]: !validity || target?.value === ''
+  const notifications = useNotification()
+  try {
+    if (legals.value === false) {
+      return
     }
+    await auth.registerUser(firstname.value + ' ' + lastname.value, password.value, login.value)
+    // Display success message
+    accountIsCreated.value = true
+  } catch (e) {
+    console.error(e)
+    error.value = true
+    notifications.addError($t('error.login.unable_to_login'))
+  } finally {
+    loading.value = false
   }
-
-  const createAccount = async () => {
-    loading.value = true
-    error.value = false
-    const auth = useShopinvaderService('auth')
-    const notifications = useNotification()
-    try {
-      if (legals.value === false) {
-        return
-      }
-      await auth.registerUser(firstname.value + ' ' + lastname.value, password.value, login.value)
-      // Display success message
-      accountIsCreated.value = true
-    } catch (e) {
-      console.error(e)
-      error.value = true
-      notifications.addError($t('error.login.unable_to_login'))
-    } finally {
-      loading.value = false
-    }
-  }
+}
 </script>
 <style lang="scss">
 .message {
@@ -246,10 +246,10 @@
   &__container {
     @apply w-full rounded-3xl bg-gray-100 px-8 py-20 text-center lg:px-20;
     .icon-wrapper {
-      @apply pb-6 text-center;
+      @apply pb-2 text-center;
 
       &__icon {
-        @apply inline rounded-full bg-success p-1 text-4xl text-white;
+        @apply h-16 w-16 rounded-full border bg-success p-1 text-white;
       }
     }
     .text-content {

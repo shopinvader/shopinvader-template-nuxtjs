@@ -1,23 +1,29 @@
 <template>
-  <div class="input-qty">
-    <!--
+  <div>
+    <div class="input-qty">
+      <!--
   	@slot Selector
 		@binding {number} qty quantity of the cart line
 		@binding {string} onChange callback function to fire quantity change save
 	  -->
-    <slot name="selector" v-bind="{ value }" :on-change="inputValue">
-      <icon class="input-qty__btn min" @click="decrQuantity()" name="minus" />
-      <input
-        ref="input"
-        v-model.number="value"
-        type="number"
-        class="input-qty__input"
-        @click="selectContent"
-        @keydown="keydown"
-        @keypress="isNumber($event)"
-      />
-      <icon class="input-qty__btn max" @click="incrQuantity()" name="plus" />
-    </slot>
+      <slot name="selector" v-bind="{ value }" :on-change="inputValue">
+        <button class="input-qty__btn min" @click="decrQuantity()">
+          <icon name="minus" />
+        </button>
+        <input
+          ref="input"
+          v-model.number="value"
+          type="number"
+          class="input-qty__input"
+          @click="selectContent"
+          @keydown="keydown"
+          @keypress="isNumber($event)"
+        />
+        <button class="input-qty__btn max" @click="incrQuantity()">
+          <icon name="plus" />
+        </button>
+      </slot>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -110,33 +116,11 @@ export default {
 .input-qty {
   @apply input input-bordered flex items-center gap-2;
   &__input {
-    @apply grow text-center w-24;
+    @apply grow text-center;
     appearance: textfield;
   }
   &__btn {
-    @apply cursor-pointer hover:text-primary-500;
-  }
-}
-.input-qty-old {
-  @apply w-52 rounded-full border-2 border-primary;
-  .cartline-qty {
-    @apply form-control mx-3 w-10 max-w-fit;
-    &__btn {
-      @apply btn btn-circle border-4 border-transparent bg-inherit text-3xl text-primary;
-      &.max {
-        @apply text-4xl;
-      }
-      &.min {
-        @apply text-xl;
-      }
-      &:hover {
-        @apply border-primary bg-secondary;
-      }
-    }
-    &__input {
-      @apply input w-full border-0 bg-inherit text-center text-lg font-bold text-primary;
-      appearance: textfield;
-    }
+    @apply flex h-full cursor-pointer items-center hover:text-primary-500;
   }
 }
 </style>

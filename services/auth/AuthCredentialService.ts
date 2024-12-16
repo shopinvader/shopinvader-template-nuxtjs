@@ -13,7 +13,9 @@ export interface AuthAPIConfig {
 }
 
 /**
- * AuthCredentialService
+ * AuthCredentialService : manage user authentication via login/logout request
+ * directly to the ERP API.
+ *
  * @description AuthCredentialService is a service to manage the user authentication
  * @extends AuthService
  */
@@ -34,9 +36,12 @@ export class AuthCredentialService extends AuthService {
 
   override async init(services: ShopinvaderServiceList) {
     await super.init(services)
+    /* check if the user is already logged in localStorage */
     if (this.getSession()) {
+      // fetch the user profile
       this.profile()
     } else {
+      // No session in localStorage, logout the user
       this.setUser(null)
     }
     this.logoutRedirect = this.logoutRedirect.bind(this)
@@ -96,32 +101,36 @@ export class AuthCredentialService extends AuthService {
   }
 
   /**
-   * login user
+   * login user via credentials API (directly with login and password to the API)
    * @param login
    * @param password
+   * @returns User | null return the user if the login is successful or null if the login failed
    */
-  async login(login: string, password: string) {
-    try {
-      const data = await this.ofetch(this.urlEndpointAuth + '/login', {
-        method: 'POST',
-        body: { login, password }
-      })
-      if (data?.login) {
-        await this.profile()
-      }
-    } catch (error) {
-      console.error(error)
-      throw error
+  async login(login: string, password: string): Promise<User | null> {
+    // user connection via raw request to avoid error rejection in case of 403 response code (wrong username or password)
+    const response = await this.ofetch.raw(this.urlEndpointAuth + '/login', {
+      method: 'POST',
+      body: { login, password },
+      ignoreResponseError: true
+    })
+    if (response.ok) {
+      // user found, fetch user data
+      return await this.profile()
+    } else if (response.status !== 403) {
+      // 403 (password error) is a valid response, we don't want to throw an error
+      throw new Error(await response.json())
     }
+    return null
   }
 
   /**
-   * logout user
+   * logout user via credentials API
    */
   async logout(): Promise<any> {
     await this.ofetch(this.urlEndpointAuth + '/logout', {
       method: 'POST'
     })
+    // remove the user from the store
     await this.setUser(null)
   }
 
