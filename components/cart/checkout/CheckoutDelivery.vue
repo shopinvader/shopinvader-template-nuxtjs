@@ -374,10 +374,11 @@ const selectCarrier = async (carrier: DeliveryCarrier) => {
     @apply col-span-3 flex h-full flex-col items-center justify-center gap-4 md:col-span-2;
   }
   &__message {
+    @apply max-md:col-span-3 ;
     .msg-btn-wrapper {
       @apply flex items-center;
       .msg-btn {
-        @apply px-6 btn-outline btn btn-primary btn-sm  flex items-center;
+        @apply px-4 md:px-6 btn-outline btn btn-primary btn-sm  flex items-center;
         &__label {
 
         }
