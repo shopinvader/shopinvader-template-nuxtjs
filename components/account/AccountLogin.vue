@@ -1,14 +1,12 @@
 <template>
-  <div
-    v-if="auth?.type=='credentials'"
-    class="account-login">
+  <div v-if="auth?.type == 'credentials'" class="account-login">
     <slot name="head">
       <div class="account-login__heading">
         <h2 class="heading__title">
-          {{ $t('account.login.welcome_back') }}
+          {{ t('account.login.welcome_back') }}
         </h2>
         <p class="heading__description">
-          {{ $t('account.login.description') }}
+          {{ t('account.login.description') }}
         </p>
       </div>
     </slot>
@@ -16,75 +14,59 @@
       <label class="form__control control-login">
         <div class="label">
           <span class="label-text">
-            {{ $t('account.address.email') }}
+            {{ t('account.address.email') }}
           </span>
         </div>
-        <input type="email" v-model="login" class="control__input" @keyup="checkValidity('login', $event)" :placeholder="$t('account.address.email')" />
-        <div class="label">
-          <span v-if="error.login" class="label-text-alt text-error">{{ $t('error.login.email') }}</span>
-        </div>
+        <input
+          type="email"
+          v-model="login"
+          class="control__input"
+          required
+          :placeholder="t('account.address.email')"
+        />
       </label>
-      <label class="form__control control-password">
-        <div class="label">
-          <span class="label-text">
-             {{ $t('account.login.password') }}
-          </span>
-        </div>
-        <label class="control__input">
-          <input
-            v-model="password"
-            :type="passwordView ? 'text' : 'password'"
-            :disabled="loading"
-            required
-            class="grow"
-            minlength="6"
-            :placeholder="passwordView ? '' : '*************'"
-            @keyup="checkValidity('password', $event)"
-          />
-          <button type="button" @click="passwordView = !passwordView" class="cursor-pointer text-lg">
-            <icon
-              class="view-icon"
-              :name="passwordView ? 'view': 'hide'"
-            />
-          </button>
-        </label>
-        <div class="label">
-          <span v-if="error.password" class="label-text-alt text-error">{{ $t('error.login.password') }}</span>
-        </div>
-        <div class="label">
-          <NuxtLink
+      <input-password
+        v-model="password"
+        :required="true"
+        placeholder="***********"
+        :disabled="loading"
+        pattern=".{6,}"
+      >
+        <template #label>
+          {{ t('account.login.password') }}
+        </template>
+        <template #error><span></span></template>
+        <template #label-bottom>
+          <nuxt-link
             class="label-text-alt underline"
             :to="{
               path: localePath('/account/password-reset'),
               query: { login }
             }"
           >
-            {{ $t('account.login.forgot_password') }}
-          </NuxtLink>
-        </div>
-      </label>
+            {{ t('account.login.forgot_password') }}
+          </nuxt-link>
+        </template>
+      </input-password>
       <div class="form__submit">
-        <div v-if="error.auth" class="submit__error" >
-          <icon class="text-xl" name="error" />
-            {{ error.auth }}
-        </div>
-        <button type="submit" class="submit__btn " :disabled="loading">
+        <button type="submit" class="submit__btn" :disabled="loading">
           <span v-if="loading" class="loading loading-spinner"></span>
-          {{ $t('account.login.sign_in') }}
+          {{ t('account.login.sign_in') }}
         </button>
+        <div v-if="error" class="submit__error">
+          <icon class="w-12" name="error" />
+          {{ error }}
+        </div>
       </div>
     </form>
     <div class="account-login__footer">
       <slot name="footer">
         <p class="footer-content">
           <span class="footer-content__text">
-            {{ $t('account.login.not_yet_account') }}
+            {{ t('account.login.not_yet_account') }}
           </span>
-          <nuxt-link
-            class="footer-content__link"
-            :to="localePath('/account/register')"
-          >
-            {{ $t('account.login.create_account') }}
+          <nuxt-link class="footer-content__link" :to="localePath('/account/register')">
+            {{ t('account.login.create_account') }}
           </nuxt-link>
         </p>
       </slot>
@@ -96,98 +78,78 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import type { AuthCredentialService } from '#services'
-import LogoVue from '../global/Logo.vue'
+import { erpApiGetErrorMessagesAsStr } from '~/utils/ErpApiHelper'
 
-export default defineNuxtComponent({
-  name: 'AccountLogin',
-  components: {
-    logo: LogoVue
-  },
-  data() {
-    return {
-      login: '' as string | null,
-      password: '' as string | null,
-      passwordView: false as boolean,
-      loading: false as boolean,
-      error: {
-        auth: null as string | null,
-        login: null as string | null,
-        password: null as string | null,
-        message: null as string | null
-      }
-    }
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const auth = useShopinvaderService('auth') as AuthCredentialService | null
+const localePath = useLocalePath()
+const auth = useShopinvaderService('auth') as AuthCredentialService | null
 
-    onMounted(async () => {
-      if (!auth?.getUser()?.value && auth?.type == 'oidc') {
-        const url = useRequestURL()
-        await auth?.loginRedirect(url?.href)
-      }
-    })
-    return {
-      localePath,
-      auth
-    }
-  },
-  methods: {
-    checkValidity(input: "login" | "password", e: Event) {
-      const target = e.target as HTMLInputElement
-      const validity = target?.checkValidity()
-      this.error = {
-        ...this.error,
-        [input] : !validity || target?.value === ''
-      }
-    },
-    async submit(_e: Event) {
-      const auth = this.auth
-      this.loading = true
-      if (this?.login && this?.password) {
-        try {
-          await auth?.login(this.login, this.password)
-          this.$emit('success')
-        } catch (e) {
-          this.error.auth = this.$t('error.login.unable_to_login')
-        } finally {
-          this.loading = false
-        }
-      }
-    }
+const emit = defineEmits(['success'])
+const { t } = useI18n()
+const login = ref<string>('')
+const password = ref<string>('')
+const loading = ref<boolean>(false)
+const error = ref<string | null>(null)
+
+onMounted(async () => {
+  if (!auth?.getUser()?.value && auth?.type == 'oidc') {
+    const url = useRequestURL()
+    await auth?.loginRedirect(url?.href)
   }
 })
+
+/*
+ * Submit the login form
+ */
+const submit = async (_e: Event) => {
+  loading.value = true
+  error.value = null
+
+  try {
+    login.value = login.value?.trim()
+    if (!login.value || !password.value) {
+      throw new Error(t('error.login.unable_to_login'))
+    }
+    const user = await auth?.login(login.value, password.value)
+    if (!user) {
+      // Null user means login failed
+      error.value = t('error.login.unable_to_login')
+    } else {
+      emit('success')
+    }
+  } catch (e) {
+    // Display the error message
+    error.value = erpApiGetErrorMessagesAsStr(e) || t('error.generic')
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 <style lang="scss">
 .account-login {
-  @apply flex flex-col max-w-sm;
+  @apply flex max-w-sm flex-col;
   &__form {
-
     @apply card card-body card-bordered rounded-b-none bg-white;
     .form {
       &__control {
-
         @apply form-control w-full max-w-xs;
         .control {
           &__input {
             @apply input input-bordered w-full max-w-xs;
           }
-
         }
         &.control-password {
-          .control__input{
+          .control__input {
             @apply flex items-center gap-2;
           }
         }
       }
       .form__control {
         &.control-password {
-
           .control {
             &__input {
-              @apply  items-center gap-2;
+              @apply items-center gap-2;
             }
           }
         }
@@ -196,7 +158,7 @@ export default defineNuxtComponent({
         @apply flex flex-col justify-center;
         .submit {
           &__error {
-            @apply flex items-center justify-center text-error py-4 gap-1;
+            @apply flex items-start justify-center gap-1 py-4 text-error;
           }
           &__btn {
             @apply btn btn-primary btn-block;
@@ -217,14 +179,14 @@ export default defineNuxtComponent({
     }
   }
   &__footer {
-    @apply card card-body bg-primary-800 text-primary-content rounded-t-none;
+    @apply card card-body rounded-t-none bg-primary-800 text-primary-content;
     .footer-content {
-      @apply flex flex-col justify-center items-center gap-2;
+      @apply flex flex-col items-center justify-center gap-2;
       &__text {
         @apply text-lg;
       }
       &__link {
-        @apply  btn btn-sm bg-white;
+        @apply btn btn-sm bg-white;
       }
     }
   }

@@ -73,10 +73,7 @@
             </nuxt-link>
           </slot>
         </div>
-        <div
-          class="content__variants"
-          v-if="variants !== null && variants.length > 1"
-        >
+        <div class="content__variants" v-if="variants !== null && variants.length > 1">
           <!-- @slot Variants content -->
           <slot
             name="variants"
@@ -188,14 +185,10 @@ onMounted(() => {
 })
 
 const changeVariant = (product: Product) => {
-  const item = new Product({
-    ...product.data,
-    variants: props.product.variants
-  })
-  variant.value = item
-  if (item?.sku) {
+  variant.value = product
+  if (product?.sku) {
     const route = useRoute()
-    router.push(localePath({ path: route.fullPath, query: { sku: item.sku } }))
+    router.push(localePath({ path: route.fullPath, query: { sku: product.sku } }))
   }
 }
 

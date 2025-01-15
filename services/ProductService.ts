@@ -151,7 +151,11 @@ export class ProductService extends BaseServiceElastic {
       product: hits?.[0] || null
     }
   }
-
+  async getVariantsByURLKey(urlKey: string, size: number): Promise<Product[]> {
+    const body = esb.requestBodySearch().query(new TermQuery('url_key', urlKey)).size(size)
+    const result = await this.elasticSearch(body.toJSON())
+    return this.hits(result?.hits?.hits || [])
+  }
   jsonToModel(json: any): Product {
     const role = this.store()?.getCurrentRole
     return new Product(json, role)
