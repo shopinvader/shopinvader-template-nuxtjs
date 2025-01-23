@@ -1,52 +1,59 @@
 <template>
-  <div v-if="data?.items?.length > 0" class="searchfilter">
+  <div
+    v-if="data?.items?.length > 0"
+    class="searchfilter"
+    :class="{ 'searchfilter--opened': opened }"
+  >
     <slot name="title" :title="title">
-      <div class="searchfilter__header" @click="opened = !opened">
-        <div class="header__title">
-          {{ title }}
-        </div>
+      <div class="searchfilter__header" @click="setToggle">
+        <div class="header__title">{{ title }}</div>
         <div class="header__close">
           <icon :name="opened ? 'up' : 'down'" />
         </div>
       </div>
     </slot>
-    <slot name="searchable" :items="data.items" :search="onTextSearch">
-      <div v-if="searchable && opened && data?.items?.length > 0" class="searchfilter__searchable">
-        <input
-          type="text"
-          v-model="textSearchQuery"
-          :placeholder="t('search.placeholder')"
-          class="searchable__input"
-        />
-      </div>
-    </slot>
-    <slot name="items" :items="itemsWithSearch" :change="setValues">
-      <div v-if="opened" class="searchfilter__items">
-        <template v-for="item in itemsWithSearch" :key="item.key">
-          <slot name="item" :item="item" :change="setValues">
-            <label class="item" :class="{ 'item--active': selectedValues.includes(item.key) }">
-              <input
-                v-model="selectedValues"
-                type="checkbox"
-                class="item__checkbox"
-                :value="item.key"
-              />
-              <span class="item__label" v-html="item?.label || item.key"></span>
-              <span class="item__count">{{ item.doc_count }}</span>
-            </label>
-          </slot>
-        </template>
-      </div>
-      <button
-        v-if="opened && data?.total > size"
-        class="btn btn-link btn-xs pt-3"
-        @click="displayAll"
-      >
-        <span v-if="sizeQuery == size">{{ t('search.filters.all') }}</span>
-        <span v-else>{{ t('search.filters.reduce') }}</span>
-      </button>
-    </slot>
-    <slot name="footer" :items="data.items" :size="size" :total="data?.total"> </slot>
+    <div class="content">
+      <slot name="searchable" :items="data.items" :search="onTextSearch">
+        <div
+          v-if="searchable && opened && data?.items?.length > 0"
+          class="searchfilter__searchable"
+        >
+          <input
+            type="text"
+            v-model="textSearchQuery"
+            :placeholder="t('search.placeholder')"
+            class="searchable__input"
+          />
+        </div>
+      </slot>
+      <slot name="items" :items="itemsWithSearch" :change="setValues">
+        <div v-if="opened" class="searchfilter__items">
+          <template v-for="item in itemsWithSearch" :key="item.key">
+            <slot name="item" :item="item" :change="setValues">
+              <label class="item" :class="{ 'item--active': selectedValues.includes(item.key) }">
+                <input
+                  v-model="selectedValues"
+                  type="checkbox"
+                  class="item__checkbox"
+                  :value="item.key"
+                />
+                <span class="item__label" v-html="item?.label || item.key"></span>
+                <span class="item__count">{{ item.doc_count }}</span>
+              </label>
+            </slot>
+          </template>
+        </div>
+        <button
+          v-if="opened && data?.total > size"
+          class="btn btn-link btn-xs pt-3"
+          @click="displayAll"
+        >
+          <span v-if="sizeQuery == size">{{ t('search.filters.all') }}</span>
+          <span v-else>{{ t('search.filters.reduce') }}</span>
+        </button>
+      </slot>
+      <slot name="footer" :items="data.items" :size="size" :total="data?.total"> </slot>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
@@ -69,6 +76,7 @@ interface FacetItem {
   label: string
   doc_count: number
 }
+const emit = defineEmits('toggle')
 const props = defineProps({
   name: {
     type: String,
@@ -248,7 +256,10 @@ if (declareFilter !== null) {
     getQueryAggregation
   })
 }
-
+const setToggle = () => {
+  opened.value = !opened.value
+  emit('toggle', props.name)
+}
 const onTextSearch = (q: string) => {
   textSearchQuery.value = q
 }
@@ -327,7 +338,7 @@ watch(
   () => props.close,
   (val, old) => {
     if (val !== old) {
-      opened.value = val
+      opened.value = !val
     }
   }
 )
