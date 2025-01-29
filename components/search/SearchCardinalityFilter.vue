@@ -1,7 +1,7 @@
 <template>
-  <div class="searchfilter">
+  <div class="searchfilter" :class="{ 'searchfilter--opened': opened }">
     <slot name="title" :title="title">
-      <div class="searchfilter__header" @click="opened = !opened">
+      <div class="searchfilter__header" @click="setToggle">
         <div class="header__title">{{ title }}</div>
         <div class="header__close">
           <icon :name="opened ? 'up' : 'down'" />
@@ -40,6 +40,7 @@ import {
   MatchAllQuery
 } from 'elastic-builder'
 
+const emit = defineEmits('toggle')
 const props = defineProps({
   name: {
     type: String,
@@ -231,6 +232,20 @@ watch(
   },
   { deep: true }
 )
+
+watch(
+  () => props.close,
+  (val, old) => {
+    if (val !== old) {
+      opened.value = !val
+    }
+  }
+)
+
+const setToggle = () => {
+  opened.value = !opened.value
+  emit('toggle', props.name)
+}
 
 onMounted(() => {
   const queryValue = JSON.parse(route.query?.[urlParam]?.toString() || 'false')

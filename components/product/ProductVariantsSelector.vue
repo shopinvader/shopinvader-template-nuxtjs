@@ -6,41 +6,52 @@
     </div>
     <div v-else class="product-variant-selector__axis">
       <label v-for="(values, name) of variantAttributes" :key="name" class="variant-axis">
-        <div class="variant-axis__name">{{ name }}</div>
+        <div class="variant-axis__name">
+          <slot name="axis-name" :axis="name" :values="values">
+            {{ name }}
+          </slot>
+        </div>
         <div class="variant-axis__values">
-          <template v-if="values?.length < 6">
-            <div v-for="value in values" :key="value.value">
-              <button
-                type="button"
-                class="values__btn"
-                :class="{
-                  'values__btn--selected': value.selected,
-                  'values__btn--unselected': !value.selected
-                }"
-                @click="onSelectVariant(name, value)"
+          <slot
+            name="axis-values"
+            :axis="name"
+            :values="values"
+            :on-select-variant="onSelectVariant"
+          >
+            <template v-if="values?.length < 6">
+              <div v-for="value in values" :key="value.value">
+                <button
+                  type="button"
+                  class="values__btn"
+                  :class="{
+                    'values__btn--selected': value.selected,
+                    'values__btn--unselected': !value.selected
+                  }"
+                  @click="onSelectVariant(name, value)"
+                  :disabled="!value.variant"
+                >
+                  {{ value.value }}
+                </button>
+              </div>
+            </template>
+            <select
+              v-else
+              class="values__select"
+              v-model="selectValues[name]"
+              @change="
+                () => onSelectVariant(name, values.find((v) => v.value === selectValues[name])!)
+              "
+            >
+              <option
+                v-for="value of values"
+                :key="value.value"
+                :value="value.value"
                 :disabled="!value.variant"
               >
                 {{ value.value }}
-              </button>
-            </div>
-          </template>
-          <select
-            v-else
-            class="values__select"
-            v-model="selectValues[name]"
-            @change="
-              () => onSelectVariant(name, values.find((v) => v.value === selectValues[name])!)
-            "
-          >
-            <option
-              v-for="value of values"
-              :key="value.value"
-              :value="value.value"
-              :disabled="!value.variant"
-            >
-              {{ value.value }}
-            </option>
-          </select>
+              </option>
+            </select>
+          </slot>
         </div>
       </label>
     </div>
@@ -52,10 +63,10 @@ import isEqual from '~/utils/IsEqual'
 interface VariantAttributeOptions {
   [key: string]: (string | number)[]
 }
-interface VariantAttributeSelector {
+export interface VariantAttributeSelector {
   [key: string]: VariantAttributeSelectorItem[]
 }
-interface VariantAttributeSelectorItem {
+export interface VariantAttributeSelectorItem {
   key: string
   value: string | number
   selected: boolean

@@ -2,6 +2,7 @@
   <div v-if="product !== null" class="product-cart" :class="cssClass">
     <slot
       name="input"
+      :line="line"
       :product="product"
       :qty="qty"
       :on-update-qty="updateQty"
