@@ -99,7 +99,11 @@ onMounted(async () => {
     if (!address?.isValidAddress()) {
       editAddress.value = address
     } else {
-      await setCartAddress(address)
+      try {
+        await setCartAddress(address)
+      } catch (e) {
+        console.error(e)
+      }
     }
   }
   loadingStep.value = false

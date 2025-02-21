@@ -200,7 +200,10 @@ const props = defineProps({
     default: true
   }
 })
-
+const auth = useShopinvaderService('auth')
+const logout = () => {
+  auth.logoutRedirect()
+}
 const localePath = useLocalePath()
 const cartService = useShopinvaderService('cart')
 const cart = cartService?.getCart() || ref(null)
@@ -322,7 +325,6 @@ const next = () => {
     currentStepIndex++
   }
   activeStep.value = checkoutSteps.value[currentStepIndex]
-
   if (currentStepIndex === checkoutSteps.value.length) {
     emit('next', { currentStepIndex })
   }
