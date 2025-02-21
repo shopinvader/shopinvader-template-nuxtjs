@@ -16,7 +16,7 @@
     </div>
     <!--------------------------------------------------->
     <!-- Results at right (fullscreen on small screen) -->
-    <div class="search__results">
+    <div class="search__results" ref="resultsContainer">
       <!-- @slot on top of the result part. Best place to display a title. -->
       <slot
         name="header"
@@ -93,7 +93,7 @@
             </div>
           </slot>
         </div>
-        <template v-if="loading">
+        <template v-if="pagination && loading">
           <!-- @slot to display the loading animation -->
           <slot name="loading">
             <div class="search__loading">
@@ -103,7 +103,15 @@
         </template>
         <template v-else-if="items?.length > 0">
           <!-- @slot to display the results. Please do fill it in your calling component! -->
-          <slot name="items" :items="items" :total="total" :response="response">
+          <slot
+            name="items"
+            :items="items"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :response="response"
+            :loading="loading"
+          >
             <div v-for="hit in items" :key="hit.id">
               <pre>{{ hit }}</pre>
             </div>
@@ -135,6 +143,7 @@
       </slot>
       <!-- @slot at the bottom of the result part -->
       <slot name="footer"></slot>
+      <div v-if="!pagination" ref="infinitScrollTrigger" class="results__infinitscroll"></div>
     </div>
   </div>
 </template>
@@ -202,7 +211,9 @@ const props = defineProps({
     }
   }
 })
-
+let observer: IntersectionObserver | null = null
+const infinitScrollTrigger = ref<HTMLElement | null>(null)
+const resultsContainer = ref<HTMLElement | null>(null)
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -219,9 +230,10 @@ const page = reactive({
 const response = ref({
   aggregations: null,
   suggestions: null,
-  hits: null,
+  hits: [] as any[],
   total: 0
 })
+let timer: NodeJS.Timeout | null = null
 const items = computed(() => {
   if (typeof props.transformResult == 'function') {
     return props.transformResult(response)
@@ -299,7 +311,7 @@ const fetchSearch = async (): Promise<SearchResponse> => {
   }
   const res = {
     aggregations: null,
-    hits: null,
+    hits: [] as any[],
     total: 0,
     suggestions: null
   } as SearchResponse
@@ -416,10 +428,69 @@ watch(
   },
   { deep: true }
 )
+
+/** Infinit Scroll: Load result */
+const loadMore = async () => {
+  if (!props.pagination) {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    loading.value = true
+    page.from = response.value?.hits?.length
+    if (page.from >= page.total) {
+      return
+    }
+    timer = setTimeout(async () => {
+      const { aggregations, hits, total, suggestions } = await fetchSearch()
+      response.value.aggregations = aggregations
+      if (hits?.length > 0 && Array.isArray(response.value.hits)) {
+        response.value.hits = [...(response.value.hits as any[]), ...(hits || [])]
+      }
+      response.value.suggestions = suggestions
+      page.total = total
+      loading.value = false
+    }, 500)
+  }
+}
+
+/** Infinit Scroll : Mount element observer */
+const mountInfinitScrollObserver = () => {
+  if (!infinitScrollTrigger.value) return null
+  if (resultsContainer.value) {
+    const { height } = resultsContainer.value.getBoundingClientRect()
+    infinitScrollTrigger.value.style.bottom = `${height * 0.8}px`
+  }
+
+  observer = new IntersectionObserver(([entry]) => {
+    if (entry && entry.isIntersecting) {
+      loadMore()
+    }
+  })
+
+  observer.observe(infinitScrollTrigger.value as HTMLElement)
+  observer.observe(document.querySelector('footer') as HTMLElement)
+}
+
+/** Infinit Scroll : Unmount element observer */
+const unMountInfinitScrollObserver = () => {
+  if (observer) {
+    observer.disconnect()
+  }
+  if (timer) {
+    clearTimeout(timer)
+  }
+}
+
 onMounted(async () => {
   await search()
+  if (!props.pagination) {
+    mountInfinitScrollObserver()
+  }
 })
 
+onUnmounted(() => {
+  unMountInfinitScrollObserver()
+})
 provide('declareFilter', declareFilter)
 provide(
   'response',
@@ -470,16 +541,21 @@ if (data?.value) {
     }
   }
   &__loading {
-    @apply flex min-h-screen w-full items-center justify-center;
+    @apply relative flex min-h-screen w-full items-center justify-center;
   }
   &__results {
-    @apply w-full px-4 lg:w-3/4 xl:w-4/5;
+    @apply relative w-full px-4 lg:w-3/4 xl:w-4/5;
     .results {
       &__noresults {
         @apply flex flex-col items-center justify-center py-32 text-xl;
       }
-      &___history {
+      &__history {
         @apply p-4;
+      }
+      &__infinitscroll {
+        content: '';
+        @apply absolute h-1 w-1;
+        bottom: 100px;
       }
     }
   }
