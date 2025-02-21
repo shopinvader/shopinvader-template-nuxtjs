@@ -7,7 +7,7 @@
           <slot name="message" :cart="cart">
             <div v-if="hasPendingTransactions" class="message">
               <icon name="info" class="icon"></icon>
-              {{ $t('cart.pending.checkout') }}
+              {{ t('cart.pending.checkout') }}
             </div>
           </slot>
         </div>
@@ -33,10 +33,10 @@
                 <div
                   class="total__checkout"
                   :class="{ 'tooltip tooltip-primary': cart?.hasPendingTransactions }"
-                  :data-tip="cart?.hasPendingTransactions && $t('cart.pending.checkout')"
+                  :data-tip="cart?.hasPendingTransactions && t('cart.pending.checkout')"
                 >
                   <button type="button" class="checkout__btn" @click="onNextStep">
-                    {{ $t('cart.summary.checkout') }}
+                    {{ t('cart.summary.checkout') }}
                     <icon name="right" class="text-lg"></icon>
                   </button>
                 </div>
@@ -71,7 +71,7 @@
 <script lang="ts" setup>
 import type { Cart } from '#models'
 const emits = defineEmits(['next'])
-const i18n = useI18n()
+const { t } = useI18n()
 const loading = ref(false)
 const hasPendingTransactions = ref(false)
 const cartService = useShopinvaderService('cart')
@@ -102,7 +102,13 @@ const onNextStep = () => {
 }
 
 useHead({
-  title: i18n.t('cart.title')
+  title: t('cart.title')
+})
+
+onMounted(() => {
+  if (!cart.value?.id) {
+    cartService.sync()
+  }
 })
 </script>
 <style lang="scss">

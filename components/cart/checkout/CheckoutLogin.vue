@@ -2,7 +2,7 @@
   <div v-show="!user" class="checkout-login">
     <!-- @slot Main content -->
     <slot name="body">
-      <account-login class="cart-login__form" @success="success"> </account-login>
+      <account-login class="cart-login__form"> </account-login>
     </slot>
   </div>
 </template>
