@@ -101,31 +101,46 @@
             </div>
           </slot>
         </template>
-        <template v-else-if="items?.length > 0">
-          <!-- @slot to display the results. Please do fill it in your calling component! -->
-          <slot
-            name="items"
-            :items="items"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :response="response"
-            :loading="loading"
+        <template v-else-if="page.total > 0">
+          <div
+            v-for="(itemsPage, p) in itemsPaginated"
+            class=""
+            :key="p"
+            ref="pageResultsContainer"
           >
-            <div v-for="hit in items" :key="hit.id">
-              <pre>{{ hit }}</pre>
-            </div>
-          </slot>
+            <!-- @slot to display the results. Please do fill it in your calling component! -->
+            <slot
+              name="items"
+              :items="itemsPage"
+              :total="page.total"
+              :from="page.from"
+              :size="page.size"
+              :response="response"
+              :loading="loading"
+            >
+              <div v-for="hit in items" :key="hit.id">
+                <pre>{{ hit }}</pre>
+              </div>
+            </slot>
+          </div>
           <!-- @slot to display the pagination at the bottom of the page.-->
           <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
-            <div v-if="pagination" class="search__pagination">
+            <div class="search__pagination">
               <search-pagination
+                v-if="pagination"
                 :total="page.total"
                 :from="page.from"
                 :size="page.size"
                 @change="changePage"
               >
               </search-pagination>
+              <div v-else class="search__infinitescroll">
+                <div>
+                  <button @click="scrollToTop" class="infinitescroll__up">
+                    <icon name="up" />
+                  </button>
+                </div>
+              </div>
             </div>
           </slot>
         </template>
@@ -211,9 +226,11 @@ const props = defineProps({
     }
   }
 })
-let observer: IntersectionObserver | null = null
+
+let observer: IntersectionObserver = null
 const infinitScrollTrigger = ref<HTMLElement | null>(null)
 const resultsContainer = ref<HTMLElement | null>(null)
+const pageResultsContainer = ref<HTMLElement[]>([])
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -235,11 +252,25 @@ const response = ref({
 })
 let timer: NodeJS.Timeout | null = null
 const items = computed(() => {
+  let items = []
   if (typeof props.transformResult == 'function') {
-    return props.transformResult(response)
+    items = props.transformResult(response)
   }
-  return response?.value.hits || []
+  items = response?.value.hits || []
+  return items.filter((item) => item !== null)
 })
+
+/** Use only for infinit scroll */
+const itemsPaginated = computed(() => {
+  const pages = []
+  const pageCount = Math.ceil(response?.value.hits?.length / props.size)
+  for (let i = 0; i < pageCount; i++) {
+    pages[i] = items.value.slice(i * props.size, (i + 1) * props.size)
+  }
+
+  return pages
+})
+
 const total = computed(() => {
   return response?.value.total
 })
@@ -291,10 +322,15 @@ const changePage = async (from: number) => {
   page.from = from
   if (window?.scrollTo) {
     window.scrollTo(0, 0)
-    router.push({ query: { ...route.query, page: from / props.size + 1 } })
+    router.push({ query: { ...route.query, page: Math.ceil(from / props.size + 1) } })
   }
 }
 
+const scrollToTop = () => {
+  if (window?.scrollTo) {
+    window.scrollTo(0, 0)
+  }
+}
 /**
  * Search: search function get items from provider
  */
@@ -316,10 +352,21 @@ const fetchSearch = async (): Promise<SearchResponse> => {
     suggestions: null
   } as SearchResponse
   try {
+    let size = props.size
+    let from = page.from
+    if (!props.pagination) {
+      /* Infinite scroll */
+      const to = page.from + page.size
+      from = response.value.hits.findIndex((hit) => !hit?.id)
+      if (from < 0) {
+        from = response.value?.hits?.length || 0
+      }
+      size = to - from
+    }
     error.value = null
     const postFilter = getFiltersQuery()
     const aggs: any[] = getFiltersAggs() || null
-    const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
+    const body = esb.requestBodySearch().query(props.query()).size(size).from(from)
 
     // Add suggesters if any
     if (props.suggesters) {
@@ -361,7 +408,20 @@ const fetchSearch = async (): Promise<SearchResponse> => {
     if (fetchedData) {
       const { aggregations, hits, total, suggestions } = fetchedData
       res.aggregations = aggregations || null
-      res.hits = hits
+      if (props.pagination) {
+        res.hits = hits || []
+      } else {
+        /** Merge result for infinit scroll */
+        for (let i = 0; i < from + size; i++) {
+          if (hits[i - from]) {
+            res.hits[i] = hits[i - from]
+          } else if (response.value?.hits?.[i]) {
+            res.hits[i] = response.value.hits[i]
+          } else {
+            res.hits[i] = null
+          }
+        }
+      }
       res.suggestions = suggestions
 
       if (props.cardinalityField) {
@@ -386,12 +446,6 @@ const search = async () => {
   page.total = total
   loading.value = false
 }
-
-const { data } = await useAsyncData(async () => {
-  const a = await fetchSearch()
-  return a
-})
-
 watch(
   () => sort.value,
   async () => {
@@ -416,8 +470,9 @@ watch(
       }
     }
     if (filterHasChanged) {
+      response.value.hits = []
       if (page.from > 0) {
-        changePage(0)
+        changePage(1)
       }
     } else {
       page.from = parseInt(queries?.page?.toString() || '1') * props.size - props.size
@@ -429,46 +484,26 @@ watch(
   { deep: true }
 )
 
-/** Infinit Scroll: Load result */
-const loadMore = async () => {
-  if (!props.pagination) {
-    if (timer) {
-      clearTimeout(timer)
-    }
-    loading.value = true
-    page.from = response.value?.hits?.length
-    if (page.from >= page.total) {
-      return
-    }
-    timer = setTimeout(async () => {
-      const { aggregations, hits, total, suggestions } = await fetchSearch()
-      response.value.aggregations = aggregations
-      if (hits?.length > 0 && Array.isArray(response.value.hits)) {
-        response.value.hits = [...(response.value.hits as any[]), ...(hits || [])]
-      }
-      response.value.suggestions = suggestions
-      page.total = total
-      loading.value = false
-    }, 500)
-  }
-}
-
 /** Infinit Scroll : Mount element observer */
 const mountInfinitScrollObserver = () => {
-  if (!infinitScrollTrigger.value) return null
-  if (resultsContainer.value) {
-    const { height } = resultsContainer.value.getBoundingClientRect()
-    infinitScrollTrigger.value.style.bottom = `${height * 0.8}px`
-  }
-
-  observer = new IntersectionObserver(([entry]) => {
-    if (entry && entry.isIntersecting) {
-      loadMore()
+  observer = new IntersectionObserver(
+    async ([entry]) => {
+      if (entry && entry.isIntersecting) {
+        const pageCount = Math.ceil(page.total / props.size)
+        const currentPage = itemsPaginated.value?.length
+        if (currentPage < pageCount) {
+          router.push({ query: { ...route.query, page: currentPage + 1 } })
+        }
+      }
+    },
+    {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.8
     }
-  })
+  )
 
   observer.observe(infinitScrollTrigger.value as HTMLElement)
-  observer.observe(document.querySelector('footer') as HTMLElement)
 }
 
 /** Infinit Scroll : Unmount element observer */
@@ -482,15 +517,23 @@ const unMountInfinitScrollObserver = () => {
 }
 
 onMounted(async () => {
+  if (Object.values(route.query)?.length) {
+    response.value.hits = []
+  }
   await search()
   if (!props.pagination) {
     mountInfinitScrollObserver()
+    const queryPage = parseInt(route.query.page?.toString() || '1')
+    if (queryPage && pageResultsContainer.value?.[queryPage]) {
+      pageResultsContainer.value?.[queryPage].scrollIntoView()
+    }
   }
 })
 
 onUnmounted(() => {
   unMountInfinitScrollObserver()
 })
+
 provide('declareFilter', declareFilter)
 provide(
   'response',
@@ -506,6 +549,11 @@ provide(
 // Provide some methods and data to the other components (to be injected)
 provide('search', () => {
   search()
+})
+
+const { data } = await useAsyncData(async () => {
+  const a = await fetchSearch()
+  return a
 })
 
 if (data?.value) {
@@ -554,13 +602,26 @@ if (data?.value) {
       }
       &__infinitscroll {
         content: '';
-        @apply absolute h-1 w-1;
-        bottom: 100px;
+        @apply absolute bottom-0 -z-50 h-5 w-5;
       }
     }
   }
   &__pagination {
     @apply py-5 text-center;
+  }
+  &__infinitescroll {
+    @apply min-h-16;
+    .infinitescroll {
+      &__more {
+        @apply btn btn-outline btn-primary btn-sm;
+      }
+      &__up {
+        @apply btn btn-circle btn-primary fixed bottom-16 right-4 z-10 text-white shadow;
+        .icon {
+          @apply h-5 w-5 text-ellipsis text-lg;
+        }
+      }
+    }
   }
   &__header {
     @apply flex flex-wrap items-center justify-end gap-2 md:justify-between;
