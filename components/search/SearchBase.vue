@@ -14,85 +14,78 @@
         </button>
       </div>
     </div>
-    <!--------------------------------------------------->
-    <!-- Results at right (fullscreen on small screen) -->
-    <div class="search__results" ref="resultsContainer">
+    <div class="search__header">
       <!-- @slot on top of the result part. Best place to display a title. -->
       <slot
         name="header"
         :do-change-page="changePage"
         :do-set-display-filters="doSetDisplayFilters"
       ></slot>
+    </div>
+    <div class="search__actions">
+      <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
+      <slot
+        name="display-filters"
+        :sort="sort"
+        :total="page.total"
+        :from="page.from"
+        :size="page.size"
+        :items="items"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+        :loading="loading"
+      >
+        <div class="search__display-filters">
+          <!-- Displayed in small screen only to show the list of filters as aside. -->
+          <button type="button" @click="doSetDisplayFilters(true)">
+            {{ t('search.filter') }}
+          </button>
+        </div>
+      </slot>
+      <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
+      <slot
+        name="action"
+        :sort="sort"
+        :total="page.total"
+        :from="page.from"
+        :size="page.size"
+        :items="items"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+      ></slot>
+      <!-- @slot to display the sort select if sort options are available. -->
+      <slot name="sort" :sort="sort" :sort-options="sortOptions" :loading="loading">
+        <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
+          <label class="sort__label">{{ t('search.sort.label') }}</label>
+          <select v-model="sort" class="sort__select">
+            <option v-for="option in sortOptions" :key="option.value" :value="option">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </slot>
+      <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
+      <slot
+        name="stats"
+        :total="page.total"
+        :from="page.from"
+        :size="page.size"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+        :loading="loading"
+      >
+        <div class="search__stats">
+          <div class="total">
+            <span class="text-sm">{{ t('search.results.count', { count: page.total }) }}</span>
+          </div>
+        </div>
+      </slot>
+    </div>
+    <!--------------------------------------------------->
+    <!-- Results at right (fullscreen on small screen) -->
+    <div class="search__results" ref="resultsContainer">
       <!-- @slot displaying results -->
       <slot name="results" :items="items" :total="total" :response="response" :loading="loading">
-        <div class="search__header">
-          <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
-          <slot
-            name="display-filters"
-            :sort="sort"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :items="items"
-            :do-change-page="changePage"
-            :do-set-display-filters="doSetDisplayFilters"
-            :loading="loading"
-          >
-            <div class="search__display-filters">
-              <!-- Displayed in small screen only to show the list of filters as aside. -->
-              <button type="button" @click="doSetDisplayFilters(true)">
-                {{ t('search.filter') }}
-              </button>
-            </div>
-          </slot>
-          <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
-          <slot
-            name="action"
-            :sort="sort"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :items="items"
-            :do-change-page="changePage"
-            :do-set-display-filters="doSetDisplayFilters"
-          ></slot>
-          <!-- @slot to display the sort select if sort options are available. -->
-          <slot name="sort" :sort="sort" :sort-options="sortOptions" :loading="loading">
-            <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
-              <label class="sort__label">{{ t('search.sort.label') }}</label>
-              <select v-model="sort" class="sort__select">
-                <option v-for="option in sortOptions" :key="option.value" :value="option">
-                  {{ option.label }}
-                </option>
-              </select>
-            </div>
-          </slot>
-          <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
-          <slot
-            name="stats"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :do-change-page="changePage"
-            :do-set-display-filters="doSetDisplayFilters"
-            :loading="loading"
-          >
-            <div class="search__stats">
-              <div class="total">
-                <span class="text-sm">{{ t('search.results.count', { count: page.total }) }}</span>
-              </div>
-              <div v-if="pagination" class="search__pagination">
-                <search-pagination
-                  :total="page.total"
-                  :from="page.from"
-                  :size="page.size"
-                  @change="changePage"
-                >
-                </search-pagination>
-              </div>
-            </div>
-          </slot>
-        </div>
         <template v-if="pagination && loading">
           <!-- @slot to display the loading animation -->
           <slot name="loading">
@@ -565,9 +558,9 @@ if (data?.value) {
 </script>
 <style lang="scss" scoped>
 .search {
-  @apply flex min-h-screen flex-row flex-wrap;
+  @apply grid min-h-screen grid-cols-1 gap-2 px-2 py-4 lg:grid-cols-4 xl:grid-cols-5;
   &__filters {
-    @apply hidden w-full p-1 py-4 lg:flex lg:w-1/4 xl:w-1/5;
+    @apply row-span-5 hidden h-full w-full p-1 py-4 lg:flex;
     .filters {
       &__action {
         @apply hidden;
@@ -588,11 +581,20 @@ if (data?.value) {
       }
     }
   }
+  &__header {
+    @apply flex w-full flex-wrap items-center justify-stretch gap-2 pt-3 md:justify-between lg:col-span-3 xl:col-span-4;
+    .search__pagination {
+      @apply py-0;
+    }
+  }
+  &__actions {
+    @apply flex flex-col justify-between gap-2 py-2 lg:col-span-3 xl:col-span-4;
+  }
   &__loading {
-    @apply relative flex min-h-screen w-full items-center justify-center;
+    @apply relative flex min-h-screen w-full items-center justify-center lg:col-span-3 xl:col-span-4;
   }
   &__results {
-    @apply relative w-full px-4 lg:w-3/4 xl:w-4/5;
+    @apply relative w-full px-4 lg:col-span-3 xl:col-span-4;
     .results {
       &__noresults {
         @apply flex flex-col items-center justify-center py-32 text-xl;
@@ -607,10 +609,10 @@ if (data?.value) {
     }
   }
   &__pagination {
-    @apply py-5 text-center;
+    @apply py-5 text-center lg:col-span-3 xl:col-span-4;
   }
   &__infinitescroll {
-    @apply min-h-16;
+    @apply min-h-16 lg:col-span-3 xl:col-span-4;
     .infinitescroll {
       &__more {
         @apply btn btn-outline btn-primary btn-sm;
@@ -623,14 +625,12 @@ if (data?.value) {
       }
     }
   }
-  &__header {
-    @apply flex flex-wrap items-center justify-end gap-2 md:justify-between;
+
+  &__stats {
+    @apply flex w-full flex-grow flex-wrap items-center justify-between pb-4;
     .search__pagination {
       @apply py-0;
     }
-  }
-  &__stats {
-    @apply flex w-full flex-grow flex-wrap items-center justify-between pb-4;
   }
   &__sort {
     @apply flex flex-row items-center;

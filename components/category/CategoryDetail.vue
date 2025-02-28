@@ -94,7 +94,7 @@ onMounted(() => {
 <style lang="scss">
 .category-detail {
   &__header {
-    @apply border-b p-4;
+    @apply w-full;
     .header__name {
       @apply text-2xl font-bold;
     }
