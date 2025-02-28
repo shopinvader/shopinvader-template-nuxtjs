@@ -21,9 +21,7 @@
       </slot>
     </template>
     <template #header>
-      <div class="pt-4">
-        <slot name="header"></slot>
-      </div>
+      <slot name="header"></slot>
       <search-selected-filters></search-selected-filters>
     </template>
     <template #action>
