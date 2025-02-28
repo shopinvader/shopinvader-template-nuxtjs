@@ -23,11 +23,13 @@
           />
         </div>
       </div>
-      <ul class="slider-indicators">
+      <ul v-if="images.length > 1" class="slider-indicators">
         <li
           v-for="(image, index) in images"
           :key="'img-indicator' + index"
+         
           class="slider-indicators__items"
+          :class="'w-1/' + images.length"
           @click="slideCarousel(index + 1)"
         >
           <nuxt-img
@@ -35,22 +37,20 @@
             class="items-image"
             :alt="image.medium?.alt"
             :title="image.medium?.alt"
-            :height="70"
-            :width="70"
-            :placeholder="img(image.small?.src || '', { h: 70, f: 'webp', blur: 2, q: 10 })"
           />
         </li>
       </ul>
-      <div class="slider-indicators-mobile">
-        <div
+      <div v-if="images.length > 1" class="slider-indicators-mobile">
+        <a
           v-for="(image, index) in images"
           :key="'img-indicator' + index"
-          @click="slideCarousel(index + 1)"
+          :href="'#item' + index"
+          :data-item="'item' + index"
           ref="indicators"
           class="slider-indicators-mobile__items"
         >
           <icon name="radix-icons:dot-filled" class="items-icons"></icon>
-        </div>
+        </a>
       </div>
     </template>
     <template v-else>
@@ -71,24 +71,23 @@
         </div>
       </div>
     </template>
-
     <client-only>
       <aside-drawer :open="selectedImage!== null" class-content="image-zoom" @close="selectedImage = null">
         <template #content>
           <div v-if="selectedImage && selectedImage?.xlarge" class="image-zoom__zoom">
             <figure
-              @mousemove="onImageHover"
+             
               class="zoom__image"
-              :style="`background-image: url(${img(selectedImage?.xlarge?.src, { h: 1500, f: 'webp', blur: 0, q: 100 })})`"
+              
             >
               <NuxtPicture
                 v-if="selectedImage.xlarge?.src"
                 :src="selectedImage.xlarge?.src"
                 :alt="selectedImage.xlarge?.alt"
                 :title="selectedImage.xlarge?.alt"
-                height="1000"
-                quality="1000"
-                :placeholder="img(selectedImage.xlarge?.src, { h: 1000, f: 'webp', blur: 2, q: 10 })"
+                height="800"
+                quality="800"
+                :placeholder="img(selectedImage.xlarge?.src, { h: 800, f: 'webp', blur: 2, q: 10 })"
                 format="webp"
               />
             </figure>
@@ -173,7 +172,7 @@ const onImageHover = (e:MouseEvent) => {
   }
   .item-image {
     img {
-      @apply mx-auto max-h-96 min-h-max p-6 object-contain max-sm:w-full lg:max-h-[500px] cursor-zoom-in;
+      @apply h-96 mx-auto md:max-h-96 md:min-h-max max-sm:p-0 p-6 object-contain max-sm:w-full lg:max-h-[500px] cursor-zoom-in;
     }
   }
 }
@@ -182,12 +181,12 @@ const onImageHover = (e:MouseEvent) => {
   &__items {
     @apply cursor-pointer rounded bg-gray-100 hover:bg-gray-200 w-16 h-16 overflow-hidden flex items-center justify-center;
     .items-image {
-      @apply mx-auto object-fill p-2;
+      @apply h-full mx-auto object-fill p-2;
     }
   }
 }
 .slider-indicators-mobile {
-  @apply flex flex-wrap w-full justify-center gap-1 py-6 lg:hidden;
+  @apply flex flex-wrap w-full justify-center gap-1 py-1 lg:hidden;
   &__items {
     @apply h-full transition  ease-linear;
     .items-icons {
@@ -198,15 +197,16 @@ const onImageHover = (e:MouseEvent) => {
 .aside-drawer__side.image-zoom {
   @apply w-screen max-w-full lg:max-w-7xl;
   .image-zoom__zoom {
-    @apply flex flex-col lg:flex-row items-start justify-center gap-2 w-full;
+    @apply flex flex-col lg:flex-row items-start justify-center gap-2 w-full h-full;
     .zoom {
       &__image {
+        height: 100%;
         background-position: 50% 50%;
-        background-size: 2000px;
+        background-size: 799px;
         background-repeat: no-repeat;
-        @apply overflow-hidden cursor-zoom-in w-full relative ;
+        @apply overflow-hidden  w-full relative text-center max-h-full;
         img {
-          @apply cursor-zoom-in hover:opacity-0 block w-full bg-white;
+          @apply mx-auto block w-auto h-full max-w-full  bg-white;
           transition: opacity .5s;
         }
       }
@@ -216,6 +216,9 @@ const onImageHover = (e:MouseEvent) => {
           @apply card card-bordered overflow-hidden cursor-pointer w-20 h-20 flex items-center justify-center;
           &__selected {
             @apply border-primary-500;
+          }
+          .items-image {
+            @apply max-h-max p-3;
           }
         }
       }
