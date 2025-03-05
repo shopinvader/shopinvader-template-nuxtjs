@@ -1,6 +1,6 @@
 <template>
   <div class="aside-menu drawer" :class="{ 'side-menu': sideMenu }">
-    <input :id="name" type="checkbox" class="drawer-toggle" v-model="isOpen" />
+    <input :id="name" type="checkbox" class="drawer-toggle" v-model="isOpen" aria-lable="Open aside drawer" />
     <div class="drawer-content flex flex-col">
       <slot name="top"></slot>
       <div class="content" :class="classContent">
