@@ -16,8 +16,11 @@
             :class="zoom ? 'image-zoom' : ''"
             :alt="image.large?.alt"
             :title="image.large?.alt"
-            :img-attrs="{ height: 500 }"
-            :placeholder="img(image.large?.src, { h: 500, f: 'webp', q: 10 })"
+            :img-attrs="{ height: 384 }"
+            :placeholder="img(image.large?.src, { h: 384, f: 'webp', q: 10 })"
+            sizes="384px"
+            :height="384"
+            :width="384"
             format="webp"
             @click="onImageZoom(image)"
           />
@@ -33,24 +36,29 @@
           @click="slideCarousel(index + 1)"
         >
           <nuxt-img
-            :src="image.medium?.src"
+            :src="image.small?.src"
             class="items-image"
-            :alt="image.medium?.alt"
-            :title="image.medium?.alt"
+            :alt="image.small?.alt"
+            :title="image.small?.alt"
+            format="webp"
+            loading="lazy"
+            :height="70"
+            :width="70"
+            :placeholder="img(image.small?.src || '', { h: 70, f: 'webp', blur: 2, q: 8 })"
           />
         </li>
       </ul>
       <div v-if="images.length > 1" class="slider-indicators-mobile">
-        <a
+        <div
           v-for="(image, index) in images"
           :key="'img-indicator' + index"
-          :href="'#item' + index"
+          @click="slideCarousel(index + 1)"
           :data-item="'item' + index"
           ref="indicators"
-          class="slider-indicators-mobile__items"
+          class="slider-indicators-mobile__items cursor-pointer                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               "
         >
           <icon name="radix-icons:dot-filled" class="items-icons"></icon>
-        </a>
+        </div>
       </div>
     </template>
     <template v-else>
@@ -67,6 +75,8 @@
             :title="image.large?.alt"
             :class="zoom ? 'product-image-zoom' : ''"
             class="mx-auto max-h-full min-h-max w-full p-6"
+            loading="lazy"
+            format="webp"
           />
         </div>
       </div>
@@ -89,6 +99,7 @@
                 quality="800"
                 :placeholder="img(selectedImage.xlarge?.src, { h: 800, f: 'webp', blur: 2, q: 10 })"
                 format="webp"
+                loading="lazy"
               />
             </figure>
             <ul class="zoom__indicators">
@@ -106,6 +117,7 @@
                   :title="image.medium?.alt"
                   :height="120"
                   :width="120"
+                  format="webp"
                   :placeholder="img(image.medium?.src || '', { h: 120, f: 'webp', blur: 2, q: 10 })"
                 />
               </li>

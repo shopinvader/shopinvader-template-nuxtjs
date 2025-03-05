@@ -15,6 +15,7 @@
         @click="selectContent"
         @keydown="keydown"
         @keypress="isNumber($event)"
+        aria-label="Quantity increase or decrease"
       />
       <icon class="input-qty__btn max" @click="incrQuantity()" name="plus" />
     </slot>

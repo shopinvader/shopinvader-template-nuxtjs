@@ -4,7 +4,12 @@
       :src="imageSized.src"
       :alt="imageSized.alt"
       :title="imageSized.alt"
-      :placeholder="img(imageSized.src, { f: 'webp', blur: 2, q: 10 })"
+      :placeholder="img(imageSized.src, { f: 'webp', blur: 4, q: 10})"
+      sizes="sm:150px md:214px lg:260px"
+      :width="260"
+      :height="252"
+      format="webp"
+      :quality="3"
     />
   </figure>
 </template>
