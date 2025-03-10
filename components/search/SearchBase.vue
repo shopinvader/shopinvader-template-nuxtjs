@@ -24,7 +24,75 @@
         :do-set-display-filters="doSetDisplayFilters"
       ></slot>
       <!-- @slot displaying results -->
-      <slot name="results" :items="items" :total="total" :response="response">
+      <slot name="results" :items="items" :total="total" :response="response" :loading="loading">
+        <div class="search__header">
+          <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
+          <slot
+            name="display-filters"
+            :sort="sort"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :items="items"
+            :do-change-page="changePage"
+            :do-set-display-filters="doSetDisplayFilters"
+            :loading="loading"
+          >
+            <div class="search__display-filters">
+              <!-- Displayed in small screen only to show the list of filters as aside. -->
+              <button type="button" @click="doSetDisplayFilters(true)">
+                {{ t('search.filter') }}
+              </button>
+            </div>
+          </slot>
+          <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
+          <slot
+            name="action"
+            :sort="sort"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :items="items"
+            :do-change-page="changePage"
+            :do-set-display-filters="doSetDisplayFilters"
+          ></slot>
+          <!-- @slot to display the sort select if sort options are available. -->
+          <slot name="sort" :sort="sort" :sort-options="sortOptions" :loading="loading">
+            <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
+              <label class="sort__label">{{ t('search.sort.label') }}</label>
+              <select v-model="sort" class="sort__select">
+                <option v-for="option in sortOptions" :key="option.value" :value="option">
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+          </slot>
+          <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
+          <slot
+            name="stats"
+            :total="page.total"
+            :from="page.from"
+            :size="page.size"
+            :do-change-page="changePage"
+            :do-set-display-filters="doSetDisplayFilters"
+            :loading="loading"
+          >
+            <div class="search__stats">
+              <div class="total">
+                <span class="text-sm">{{ t('search.results.count', { count: page.total }) }}</span>
+              </div>
+              <div v-if="pagination" class="search__pagination">
+                <search-pagination
+                  :total="page.total"
+                  :from="page.from"
+                  :size="page.size"
+                  @change="changePage"
+                >
+                </search-pagination>
+              </div>
+            </div>
+          </slot>
+        </div>
         <template v-if="loading">
           <!-- @slot to display the loading animation -->
           <slot name="loading">
@@ -34,74 +102,6 @@
           </slot>
         </template>
         <template v-else-if="items?.length > 0">
-          <div class="search__header">
-            <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
-            <slot
-              name="display-filters"
-              :sort="sort"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :items="items"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            >
-              <div class="search__display-filters">
-                <!-- Displayed in small screen only to show the list of filters as aside. -->
-                <button type="button" @click="doSetDisplayFilters(true)">
-                  {{ t('search.filter') }}
-                </button>
-              </div>
-            </slot>
-            <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
-            <slot
-              name="action"
-              :sort="sort"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :items="items"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            ></slot>
-            <!-- @slot to display the sort select if sort options are available. -->
-            <slot name="sort" :sort="sort" :sort-options="sortOptions">
-              <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
-                <label class="sort__label">{{ t('search.sort.label') }}</label>
-                <select v-model="sort" class="sort__select">
-                  <option v-for="option in sortOptions" :key="option.value" :value="option">
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-            </slot>
-            <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
-            <slot
-              name="stats"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            >
-              <div class="search__stats">
-                <div class="total">
-                  <span class="text-sm">{{
-                    t('search.results.count', { count: page.total })
-                  }}</span>
-                </div>
-                <div v-if="pagination" class="search__pagination">
-                  <search-pagination
-                    :total="page.total"
-                    :from="page.from"
-                    :size="page.size"
-                    @change="changePage($event)"
-                  >
-                  </search-pagination>
-                </div>
-              </div>
-            </slot>
-          </div>
           <!-- @slot to display the results. Please do fill it in your calling component! -->
           <slot name="items" :items="items" :total="total" :response="response">
             <div v-for="hit in items" :key="hit.id">
@@ -109,19 +109,13 @@
             </div>
           </slot>
           <!-- @slot to display the pagination at the bottom of the page.-->
-          <slot
-            name="pagination"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :change-page="changePage"
-          >
+          <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
             <div v-if="pagination" class="search__pagination">
               <search-pagination
                 :total="page.total"
                 :from="page.from"
                 :size="page.size"
-                @change="changePage($event)"
+                @change="changePage"
               >
               </search-pagination>
             </div>
@@ -149,11 +143,13 @@ import type { SearchSortItem } from '#models'
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
+import isEqual from '~/utils/IsEqual'
 
 export interface Filter {
   name: string
   title: string
   values: any[]
+  urlParam: string
   setValues: (values: any[]) => void
   getValuesLabels: () => string
   getFilterAggregation: (query: Query | null) => FilterAggregation
@@ -276,6 +272,18 @@ const getFiltersAggs = () => {
 }
 
 /**
+ * changePage: display results from the given page number
+ * @param from: position of the first item to display
+ */
+const changePage = async (from: number) => {
+  page.from = from
+  if (window?.scrollTo) {
+    window.scrollTo(0, 0)
+    router.push({ query: { ...route.query, page: from / props.size + 1 } })
+  }
+}
+
+/**
  * Search: search function get items from provider
  */
 interface SearchResponse {
@@ -325,7 +333,17 @@ const fetchSearch = async (): Promise<SearchResponse> => {
       body.postFilter(postFilter)
     }
     if (sort.value !== null) {
-      body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+      if (sort.value?.script) {
+        body.sort(
+          esb
+            .sort()
+            .type('number')
+            .script(sort.value.script)
+            .order(sort.value.order || 'asc')
+        )
+      } else {
+        body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+      }
     }
     const fetchedData = await props?.provider(body.toJSON())
     if (fetchedData) {
@@ -341,6 +359,7 @@ const fetchSearch = async (): Promise<SearchResponse> => {
       }
     }
   } catch (e: any) {
+    console.error(e)
     error.value = e?.message || e
   }
   return res
@@ -354,19 +373,6 @@ const search = async () => {
   response.value.suggestions = suggestions
   page.total = total
   loading.value = false
-}
-
-/**
- * changePage: display results from the given page number
- * @param from: position of the first item to display
- */
-const changePage = async (from: number) => {
-  page.from = from
-  await search()
-  if (window?.scrollTo) {
-    window.scrollTo(0, 0)
-    router.push({ query: { ...route.query, page: from / props.size + 1 } })
-  }
 }
 
 const { data } = await useAsyncData(async () => {
@@ -383,23 +389,37 @@ watch(
 )
 
 watch(
-  () => props.size,
-  async () => {
-    page.size = props.size
-    await changePage(0)
-  }
+  () => route.query,
+  async (queries, oldQueries) => {
+    const watchedQueryParams = filters.map((f) => f.urlParam)
+    let filterHasChanged = false
+    for (const key of watchedQueryParams) {
+      let value = JSON.parse(queries?.[key]?.toString() || '[]')
+      let oldValue = JSON.parse(oldQueries?.[key]?.toString() || '[]')
+      value = !Array.isArray(value) ? [value] : value
+      oldValue = !Array.isArray(oldValue) ? [oldValue] : oldValue
+      if (!isEqual(value.sort(), oldValue.sort())) {
+        filterHasChanged = true
+        continue
+      }
+    }
+    if (filterHasChanged) {
+      if (page.from > 0) {
+        changePage(0)
+      }
+    } else {
+      page.from = parseInt(queries?.page?.toString() || '1') * props.size - props.size
+    }
+    if (filterHasChanged || queries?.page != oldQueries?.page) {
+      await search()
+    }
+  },
+  { deep: true }
 )
-
 onMounted(async () => {
   await search()
 })
 
-// Provide some methods and data to the other components (to be injected)
-provide('search', () => {
-  // Reset the page to 0 when a new search is performed due to a filter change
-  page.from = 0
-  search()
-})
 provide('declareFilter', declareFilter)
 provide(
   'response',
@@ -411,6 +431,11 @@ provide(
   'filters',
   computed(() => filters)
 )
+
+// Provide some methods and data to the other components (to be injected)
+provide('search', () => {
+  search()
+})
 
 if (data?.value) {
   response.value.aggregations = data.value.aggregations
