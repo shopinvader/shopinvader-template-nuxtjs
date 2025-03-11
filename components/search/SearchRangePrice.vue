@@ -181,14 +181,16 @@ export default {
 
     const setValues = (values: any[]) => {
       data.selected = values
-      refreshSearch()
     }
     if (declareFilter !== null) {
       declareFilter({
         name: props?.name || '',
         title: props.title,
         values: data?.selected,
-        setValues: setValues,
+        setValues: (values: any[]) => {
+          data.selected = values || []
+          refreshSearch()
+        },
         getValuesLabels,
         getFilterAggregation,
         getQueryAggregation

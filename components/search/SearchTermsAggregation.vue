@@ -52,7 +52,7 @@ import {
   TermsQuery,
   cardinalityAggregation
 } from 'elastic-builder'
-import { inject, reactive } from 'vue'
+import { inject, onMounted, reactive } from 'vue'
 import isEqual from '~/utils/IsEqual'
 import type { Filter } from './SearchBase.vue'
 interface FacetItem {
@@ -121,6 +121,8 @@ export default {
     }
   },
   async setup(props) {
+    const router = useRouter()
+    const route = useRoute()
     const opened = ref(!props.close)
     const sizeQuery = ref(props.size)
     const data = reactive({
@@ -182,14 +184,16 @@ export default {
 
     const setValues = (values: any[]) => {
       data.selected = values || []
-      refreshSearch()
     }
     if (declareFilter !== null) {
       declareFilter({
         name: props?.name || '',
         title: props.title,
         values: data?.selected,
-        setValues: setValues,
+        setValues: (values: any[]) => {
+          data.selected = values || []
+          refreshSearch()
+        },
         getValuesLabels,
         getFilterAggregation,
         getQueryAggregation
@@ -202,20 +206,18 @@ export default {
 
     const refreshSearch = () => {
       if (props.urlParam) {
-        const $router = useRouter()
-        const $route = useRoute()
         if (data.selected.length > 0) {
-          $router.push({
+          router.push({
             query: {
-              ...$route.query,
+              ...route.query,
               [props.urlParam]: JSON.stringify(data.selected)
             }
           })
         } else {
-          const query = { ...$route.query }
+          const query = { ...route.query }
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete query[props.urlParam]
-          $router.push({ query })
+          router.push({ query })
         }
       }
       if (search !== null) {
@@ -230,6 +232,35 @@ export default {
       }
       refreshSearch()
     }
+
+    /**
+     * Watch the route query for changes and update the selected values if the urlParam is provided
+     */
+    router.afterEach((event) => {
+      if (props?.urlParam) {
+        const { query } = event
+        try {
+          const values: string[] = JSON.parse((query?.[props?.urlParam] as string) || '[]') || []
+          const isEqualValues = isEqual(values.sort(), data.selected.sort())
+          if (!isEqualValues) {
+            setValues(values)
+          }
+        } catch (e) {
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          delete query[props?.urlParam]
+          router.replace({ path: route.path, query })
+        }
+      }
+    })
+
+    if (props?.urlParam) {
+      /**
+       * Initialize the selected values based on the urlParam provided in props
+       */
+      const query = route.query
+      const values: string[] = JSON.parse((query?.[props?.urlParam] as string) || '[]') || []
+      setValues(values)
+    }
     return {
       response,
       opened,
@@ -241,29 +272,6 @@ export default {
     }
   },
   watch: {
-    $route: {
-      handler: function () {
-        if (!import.meta.env.SSR && this.urlParam) {
-          const $route = useRoute()
-          try {
-            const query: string = ($route.query?.[this.urlParam] as string) || '[]'
-            const values: string[] = JSON.parse(query) || []
-            const isEqualValues = isEqual(values.sort(), this.data.selected.sort())
-            if (!isEqualValues) {
-              this.setValues(values)
-            }
-          } catch (e) {
-            const $router = useRouter()
-            const query = { ...$route.query }
-            // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-            delete query[this.urlParam]
-            $router.replace({ path: $route.path, query })
-          }
-        }
-      },
-      immediate: true,
-      deep: true
-    },
     response: {
       handler: function (response) {
         if (response?.aggregations) {
