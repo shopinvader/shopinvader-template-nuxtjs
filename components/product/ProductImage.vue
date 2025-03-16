@@ -9,7 +9,7 @@
       :width="260"
       :height="252"
       format="webp"
-      :quality="3"
+      :quality="10"
     />
   </figure>
 </template>

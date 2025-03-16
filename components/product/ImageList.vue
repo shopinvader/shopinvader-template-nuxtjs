@@ -22,6 +22,7 @@
             :height="384"
             :width="384"
             format="webp"
+            quality="10"
             @click="onImageZoom(image)"
           />
         </div>
