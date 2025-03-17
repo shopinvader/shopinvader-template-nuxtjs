@@ -21,31 +21,30 @@
       </slot>
     </template>
     <template #header>
-      <div class="pt-4">
-        <slot name="header"></slot>
-      </div>
+      <slot name="header"></slot>
       <search-selected-filters></search-selected-filters>
     </template>
     <template #action>
-      <slot name="action"></slot>
-      <div class="search-product__display">
-        <button
-          @click="displayMode = 'grid'"
-          class="btn-grid btn"
-          :class="{ 'btn--selected': displayMode == 'grid' }"
-        >
-          <icon name="product-grid"></icon>
-          {{ t('search.display_mode.grid') }}
-        </button>
-        <button
-          @click="displayMode = 'list'"
-          class="btn-list btn"
-          :class="{ 'btn--selected': displayMode == 'list' }"
-        >
-          <icon name="product-list"></icon>
-          {{ t('search.display_mode.list') }}
-        </button>
-      </div>
+      <slot name="action" :display-mode="displayMode" :change-display-mode="changeDisplayMode">
+        <div class="search-product__display">
+          <button
+            @click="displayMode = 'grid'"
+            class="btn-grid btn"
+            :class="{ 'btn--selected': displayMode == 'grid' }"
+          >
+            <icon name="product-grid"></icon>
+            {{ t('search.display_mode.grid') }}
+          </button>
+          <button
+            @click="displayMode = 'list'"
+            class="btn-list btn"
+            :class="{ 'btn--selected': displayMode == 'list' }"
+          >
+            <icon name="product-list"></icon>
+            {{ t('search.display_mode.list') }}
+          </button>
+        </div>
+      </slot>
     </template>
     <template #items="{ items }">
       <div
@@ -56,7 +55,7 @@
         }"
       >
         <template v-for="(item, index) in items">
-          <slot name="product" :product="item">
+          <slot name="product" :product="item" :display-mode="displayMode" :index="index">
             <product-hit
               :key="item.id"
               :product="item"
@@ -111,6 +110,9 @@ defineProps({
   }
 })
 const { t } = useI18n()
+const changeDisplayMode = (mode: string) => {
+  displayMode.value = mode
+}
 </script>
 <style lang="scss">
 .search-product {

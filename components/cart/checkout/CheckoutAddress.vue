@@ -93,8 +93,18 @@ onMounted(async () => {
   if (!cart.value || !addressService) return
   if (!cart.value?.hasValidAddresses()) {
     const addresses = await addressService.search('')
-    editAddress.value =
+    const address =
       addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
+
+    if (!address?.isValidAddress()) {
+      editAddress.value = address
+    } else {
+      try {
+        await setCartAddress(address)
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
   loadingStep.value = false
 })
@@ -145,10 +155,7 @@ const saveAddress = async (address: Address) => {
       } else {
         editAddress.value = address = await addressService.create(address)
       }
-      await cartService.setAddress('delivery', address)
-      if (!cart.value?.invoicing?.address?.isValidAddress()) {
-        await cartService.setAddress('invoicing', address)
-      }
+      await setCartAddress(address)
       if (cart.value?.hasValidAddresses()) {
         emit('next')
       }
@@ -162,6 +169,13 @@ const saveAddress = async (address: Address) => {
     } finally {
       loading.value = false
     }
+  }
+}
+
+const setCartAddress = async (address: Address) => {
+  await cartService.setAddress('delivery', address)
+  if (!cart.value?.invoicing?.address?.isValidAddress()) {
+    await cartService.setAddress('invoicing', address)
   }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="layout-checkout">
     <div id="header-target"></div>
     <slot name="header">
       <header-lite> </header-lite>
@@ -15,10 +15,11 @@
   </div>
 </template>
 <style lang="scss">
-main {
-  @apply container mx-auto flex-grow;
+.layout-checkout {
+  main {
+    @apply container mx-auto flex-grow;
+  }
 }
-
 #app {
   @apply flex min-h-screen flex-col;
 }

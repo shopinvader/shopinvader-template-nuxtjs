@@ -46,6 +46,7 @@
           </tr>
         </tbody>
       </table>
+      <slot name="content" :rows="lines" :count="totalCount" :search="search"> </slot>
     </div>
     <div class="data-table__footer">
       <slot name="footer">

@@ -14,18 +14,79 @@
         </button>
       </div>
     </div>
-    <!--------------------------------------------------->
-    <!-- Results at right (fullscreen on small screen) -->
-    <div class="search__results">
+    <div class="search__header">
       <!-- @slot on top of the result part. Best place to display a title. -->
       <slot
         name="header"
         :do-change-page="changePage"
         :do-set-display-filters="doSetDisplayFilters"
       ></slot>
+    </div>
+    <div class="search__actions">
+      <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
+      <slot
+        name="display-filters"
+        :sort="sort"
+        :total="page.total"
+        :from="page.from"
+        :size="page.size"
+        :items="items"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+        :loading="loading"
+      >
+        <div class="search__display-filters">
+          <!-- Displayed in small screen only to show the list of filters as aside. -->
+          <button type="button" @click="doSetDisplayFilters(true)">
+            {{ t('search.filter') }}
+          </button>
+        </div>
+      </slot>
+      <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
+      <slot
+        name="action"
+        :sort="sort"
+        :total="page.total"
+        :from="page.from"
+        :size="page.size"
+        :items="items"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+      ></slot>
+      <!-- @slot to display the sort select if sort options are available. -->
+      <slot name="sort" :sort="sort" :sort-options="sortOptions" :loading="loading">
+        <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
+          <label class="sort__label">{{ t('search.sort.label') }}</label>
+          <select v-model="sort" class="sort__select">
+            <option v-for="option in sortOptions" :key="option.value" :value="option">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+      </slot>
+      <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
+      <slot
+        name="stats"
+        :total="page.total"
+        :from="page.from"
+        :size="page.size"
+        :do-change-page="changePage"
+        :do-set-display-filters="doSetDisplayFilters"
+        :loading="loading"
+      >
+        <div class="search__stats">
+          <div class="total">
+            <span class="text-sm">{{ t('search.results.count', { count: page.total }) }}</span>
+          </div>
+        </div>
+      </slot>
+    </div>
+    <!--------------------------------------------------->
+    <!-- Results at right (fullscreen on small screen) -->
+    <div class="search__results" ref="resultsContainer">
       <!-- @slot displaying results -->
-      <slot name="results" :items="items" :total="total" :response="response">
-        <template v-if="loading">
+      <slot name="results" :items="items" :total="total" :response="response" :loading="loading">
+        <template v-if="pagination && loading">
           <!-- @slot to display the loading animation -->
           <slot name="loading">
             <div class="search__loading">
@@ -33,97 +94,46 @@
             </div>
           </slot>
         </template>
-        <template v-else-if="items?.length > 0">
-          <div class="search__header">
-            <!-- @slot to display the button that toggle the aside menu with filters in small screen mode -->
+        <template v-else-if="page.total > 0">
+          <div
+            v-for="(itemsPage, p) in itemsPaginated"
+            class=""
+            :key="p"
+            ref="pageResultsContainer"
+          >
+            <!-- @slot to display the results. Please do fill it in your calling component! -->
             <slot
-              name="display-filters"
-              :sort="sort"
+              name="items"
+              :items="itemsPage"
               :total="page.total"
               :from="page.from"
               :size="page.size"
-              :items="items"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
+              :response="response"
+              :loading="loading"
             >
-              <div class="search__display-filters">
-                <!-- Displayed in small screen only to show the list of filters as aside. -->
-                <button type="button" @click="doSetDisplayFilters(true)">
-                  {{ t('search.filter') }}
-                </button>
-              </div>
-            </slot>
-            <!-- @slot to display the action buttons. Please do fill it in your calling component! -->
-            <slot
-              name="action"
-              :sort="sort"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :items="items"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            ></slot>
-            <!-- @slot to display the sort select if sort options are available. -->
-            <slot name="sort" :sort="sort" :sort-options="sortOptions">
-              <div class="search__sort" v-if="sortOptions && sortOptions.length > 0">
-                <label class="sort__label">{{ t('search.sort.label') }}</label>
-                <select v-model="sort" class="sort__select">
-                  <option v-for="option in sortOptions" :key="option.value" :value="option">
-                    {{ option.label }}
-                  </option>
-                </select>
-              </div>
-            </slot>
-            <!-- @slot to display the results informations (number of results...). Please do fill it in your calling component! -->
-            <slot
-              name="stats"
-              :total="page.total"
-              :from="page.from"
-              :size="page.size"
-              :do-change-page="changePage"
-              :do-set-display-filters="doSetDisplayFilters"
-            >
-              <div class="search__stats">
-                <div class="total">
-                  <span class="text-sm">{{
-                    t('search.results.count', { count: page.total })
-                  }}</span>
-                </div>
-                <div v-if="pagination" class="search__pagination">
-                  <search-pagination
-                    :total="page.total"
-                    :from="page.from"
-                    :size="page.size"
-                    @change="changePage($event)"
-                  >
-                  </search-pagination>
-                </div>
+              <div v-for="hit in items" :key="hit.id">
+                <pre>{{ hit }}</pre>
               </div>
             </slot>
           </div>
-          <!-- @slot to display the results. Please do fill it in your calling component! -->
-          <slot name="items" :items="items" :total="total" :response="response">
-            <div v-for="hit in items" :key="hit.id">
-              <pre>{{ hit }}</pre>
-            </div>
-          </slot>
           <!-- @slot to display the pagination at the bottom of the page.-->
-          <slot
-            name="pagination"
-            :total="page.total"
-            :from="page.from"
-            :size="page.size"
-            :change-page="changePage"
-          >
-            <div v-if="pagination" class="search__pagination">
+          <slot name="pagination" :total="page.total" :from="page.from" :size="page.size">
+            <div class="search__pagination">
               <search-pagination
+                v-if="pagination"
                 :total="page.total"
                 :from="page.from"
                 :size="page.size"
-                @change="changePage($event)"
+                @change="changePage"
               >
               </search-pagination>
+              <div v-else class="search__infinitescroll">
+                <div>
+                  <button @click="scrollToTop" class="infinitescroll__up">
+                    <icon name="up" />
+                  </button>
+                </div>
+              </div>
             </div>
           </slot>
         </template>
@@ -141,6 +151,7 @@
       </slot>
       <!-- @slot at the bottom of the result part -->
       <slot name="footer"></slot>
+      <div v-if="!pagination" ref="infinitScrollTrigger" class="results__infinitscroll"></div>
     </div>
   </div>
 </template>
@@ -149,11 +160,13 @@ import type { SearchSortItem } from '#models'
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
+import isEqual from '~/utils/IsEqual'
 
 export interface Filter {
   name: string
   title: string
   values: any[]
+  urlParam: string
   setValues: (values: any[]) => void
   getValuesLabels: () => string
   getFilterAggregation: (query: Query | null) => FilterAggregation
@@ -207,6 +220,10 @@ const props = defineProps({
   }
 })
 
+let observer: IntersectionObserver = null
+const infinitScrollTrigger = ref<HTMLElement | null>(null)
+const resultsContainer = ref<HTMLElement | null>(null)
+const pageResultsContainer = ref<HTMLElement[]>([])
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
@@ -223,15 +240,30 @@ const page = reactive({
 const response = ref({
   aggregations: null,
   suggestions: null,
-  hits: null,
+  hits: [] as any[],
   total: 0
 })
+let timer: NodeJS.Timeout | null = null
 const items = computed(() => {
+  let items = []
   if (typeof props.transformResult == 'function') {
-    return props.transformResult(response)
+    items = props.transformResult(response)
   }
-  return response?.value.hits || []
+  items = response?.value.hits || []
+  return items.filter((item) => item !== null)
 })
+
+/** Use only for infinit scroll */
+const itemsPaginated = computed(() => {
+  const pages = []
+  const pageCount = Math.ceil(response?.value.hits?.length / props.size)
+  for (let i = 0; i < pageCount; i++) {
+    pages[i] = items.value.slice(i * props.size, (i + 1) * props.size)
+  }
+
+  return pages
+})
+
 const total = computed(() => {
   return response?.value.total
 })
@@ -276,6 +308,23 @@ const getFiltersAggs = () => {
 }
 
 /**
+ * changePage: display results from the given page number
+ * @param from: position of the first item to display
+ */
+const changePage = async (from: number) => {
+  page.from = from
+  if (window?.scrollTo) {
+    window.scrollTo(0, 0)
+    router.push({ query: { ...route.query, page: Math.ceil(from / props.size + 1) } })
+  }
+}
+
+const scrollToTop = () => {
+  if (window?.scrollTo) {
+    window.scrollTo(0, 0)
+  }
+}
+/**
  * Search: search function get items from provider
  */
 interface SearchResponse {
@@ -291,15 +340,26 @@ const fetchSearch = async (): Promise<SearchResponse> => {
   }
   const res = {
     aggregations: null,
-    hits: null,
+    hits: [] as any[],
     total: 0,
     suggestions: null
   } as SearchResponse
   try {
+    let size = props.size
+    let from = page.from
+    if (!props.pagination) {
+      /* Infinite scroll */
+      const to = page.from + page.size
+      from = response.value.hits.findIndex((hit) => !hit?.id)
+      if (from < 0) {
+        from = response.value?.hits?.length || 0
+      }
+      size = to - from
+    }
     error.value = null
     const postFilter = getFiltersQuery()
     const aggs: any[] = getFiltersAggs() || null
-    const body = esb.requestBodySearch().query(props.query()).size(page.size).from(page.from)
+    const body = esb.requestBodySearch().query(props.query()).size(size).from(from)
 
     // Add suggesters if any
     if (props.suggesters) {
@@ -325,13 +385,36 @@ const fetchSearch = async (): Promise<SearchResponse> => {
       body.postFilter(postFilter)
     }
     if (sort.value !== null) {
-      body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+      if (sort.value?.script) {
+        body.sort(
+          esb
+            .sort()
+            .type('number')
+            .script(sort.value.script)
+            .order(sort.value.order || 'asc')
+        )
+      } else {
+        body.sort(esb.sort(sort.value.value, sort.value.order || 'asc'))
+      }
     }
     const fetchedData = await props?.provider(body.toJSON())
     if (fetchedData) {
       const { aggregations, hits, total, suggestions } = fetchedData
       res.aggregations = aggregations || null
-      res.hits = hits
+      if (props.pagination) {
+        res.hits = hits || []
+      } else {
+        /** Merge result for infinit scroll */
+        for (let i = 0; i < from + size; i++) {
+          if (hits[i - from]) {
+            res.hits[i] = hits[i - from]
+          } else if (response.value?.hits?.[i]) {
+            res.hits[i] = response.value.hits[i]
+          } else {
+            res.hits[i] = null
+          }
+        }
+      }
       res.suggestions = suggestions
 
       if (props.cardinalityField) {
@@ -341,6 +424,7 @@ const fetchSearch = async (): Promise<SearchResponse> => {
       }
     }
   } catch (e: any) {
+    console.error(e)
     error.value = e?.message || e
   }
   return res
@@ -355,25 +439,6 @@ const search = async () => {
   page.total = total
   loading.value = false
 }
-
-/**
- * changePage: display results from the given page number
- * @param from: position of the first item to display
- */
-const changePage = async (from: number) => {
-  page.from = from
-  await search()
-  if (window?.scrollTo) {
-    window.scrollTo(0, 0)
-    router.push({ query: { ...route.query, page: from / props.size + 1 } })
-  }
-}
-
-const { data } = await useAsyncData(async () => {
-  const a = await fetchSearch()
-  return a
-})
-
 watch(
   () => sort.value,
   async () => {
@@ -383,23 +448,85 @@ watch(
 )
 
 watch(
-  () => props.size,
-  async () => {
-    page.size = props.size
-    await changePage(0)
-  }
+  () => route.query,
+  async (queries, oldQueries) => {
+    const watchedQueryParams = filters.map((f) => f.urlParam)
+    let filterHasChanged = false
+    for (const key of watchedQueryParams) {
+      let value = JSON.parse(queries?.[key]?.toString() || '[]')
+      let oldValue = JSON.parse(oldQueries?.[key]?.toString() || '[]')
+      value = !Array.isArray(value) ? [value] : value
+      oldValue = !Array.isArray(oldValue) ? [oldValue] : oldValue
+      if (!isEqual(value.sort(), oldValue.sort())) {
+        filterHasChanged = true
+        continue
+      }
+    }
+    if (filterHasChanged) {
+      response.value.hits = []
+      if (page.from > 0) {
+        changePage(1)
+      }
+    } else {
+      page.from = parseInt(queries?.page?.toString() || '1') * props.size - props.size
+    }
+    if (filterHasChanged || queries?.page != oldQueries?.page) {
+      await search()
+    }
+  },
+  { deep: true }
 )
 
+/** Infinit Scroll : Mount element observer */
+const mountInfinitScrollObserver = () => {
+  observer = new IntersectionObserver(
+    async ([entry]) => {
+      if (entry && entry.isIntersecting) {
+        const pageCount = Math.ceil(page.total / props.size)
+        const currentPage = itemsPaginated.value?.length
+        if (currentPage < pageCount) {
+          router.push({ query: { ...route.query, page: currentPage + 1 } })
+        }
+      }
+    },
+    {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.8
+    }
+  )
+
+  observer.observe(infinitScrollTrigger.value as HTMLElement)
+}
+
+/** Infinit Scroll : Unmount element observer */
+const unMountInfinitScrollObserver = () => {
+  if (observer) {
+    observer.disconnect()
+  }
+  if (timer) {
+    clearTimeout(timer)
+  }
+}
+
 onMounted(async () => {
+  if (Object.values(route.query)?.length) {
+    response.value.hits = []
+  }
   await search()
+  if (!props.pagination) {
+    mountInfinitScrollObserver()
+    const queryPage = parseInt(route.query.page?.toString() || '1')
+    if (queryPage && pageResultsContainer.value?.[queryPage]) {
+      pageResultsContainer.value?.[queryPage].scrollIntoView()
+    }
+  }
 })
 
-// Provide some methods and data to the other components (to be injected)
-provide('search', () => {
-  // Reset the page to 0 when a new search is performed due to a filter change
-  page.from = 0
-  search()
+onUnmounted(() => {
+  unMountInfinitScrollObserver()
 })
+
 provide('declareFilter', declareFilter)
 provide(
   'response',
@@ -412,6 +539,16 @@ provide(
   computed(() => filters)
 )
 
+// Provide some methods and data to the other components (to be injected)
+provide('search', () => {
+  search()
+})
+
+const { data } = await useAsyncData(async () => {
+  const a = await fetchSearch()
+  return a
+})
+
 if (data?.value) {
   response.value.aggregations = data.value.aggregations
   response.value.hits = data.value.hits
@@ -421,9 +558,9 @@ if (data?.value) {
 </script>
 <style lang="scss" scoped>
 .search {
-  @apply flex min-h-screen flex-row flex-wrap;
+  @apply grid min-h-screen grid-cols-1 gap-2 px-2 py-4 lg:grid-cols-4 xl:grid-cols-5;
   &__filters {
-    @apply hidden w-full p-1 py-4 lg:flex lg:w-1/4 xl:w-1/5;
+    @apply row-span-5 hidden h-full w-full p-1 py-4 lg:flex;
     .filters {
       &__action {
         @apply hidden;
@@ -444,31 +581,56 @@ if (data?.value) {
       }
     }
   }
-  &__loading {
-    @apply flex min-h-screen w-full items-center justify-center;
-  }
-  &__results {
-    @apply w-full px-4 lg:w-3/4 xl:w-4/5;
-    .results {
-      &__noresults {
-        @apply flex flex-col items-center justify-center py-32 text-xl;
-      }
-      &___history {
-        @apply p-4;
-      }
-    }
-  }
-  &__pagination {
-    @apply py-5 text-center;
-  }
   &__header {
-    @apply flex flex-wrap items-center justify-end gap-2 md:justify-between;
+    @apply flex w-full flex-wrap items-center justify-stretch gap-2 pt-3 md:justify-between lg:col-span-3 xl:col-span-4;
     .search__pagination {
       @apply py-0;
     }
   }
+  &__actions {
+    @apply flex flex-col justify-between gap-2 py-2 lg:col-span-3 xl:col-span-4;
+  }
+  &__loading {
+    @apply relative flex min-h-screen w-full items-center justify-center lg:col-span-3 xl:col-span-4;
+  }
+  &__results {
+    @apply relative w-full px-4 lg:col-span-3 xl:col-span-4;
+    .results {
+      &__noresults {
+        @apply flex flex-col items-center justify-center py-32 text-xl;
+      }
+      &__history {
+        @apply p-4;
+      }
+      &__infinitscroll {
+        content: '';
+        @apply absolute bottom-0 -z-50 h-5 w-5;
+      }
+    }
+  }
+  &__pagination {
+    @apply py-5 text-center lg:col-span-3 xl:col-span-4;
+  }
+  &__infinitescroll {
+    @apply min-h-16 lg:col-span-3 xl:col-span-4;
+    .infinitescroll {
+      &__more {
+        @apply btn btn-outline btn-primary btn-sm;
+      }
+      &__up {
+        @apply btn btn-circle btn-primary fixed bottom-16 right-4 z-10 text-white shadow;
+        .icon {
+          @apply h-5 w-5 text-ellipsis text-lg;
+        }
+      }
+    }
+  }
+
   &__stats {
     @apply flex w-full flex-grow flex-wrap items-center justify-between pb-4;
+    .search__pagination {
+      @apply py-0;
+    }
   }
   &__sort {
     @apply flex flex-row items-center;
