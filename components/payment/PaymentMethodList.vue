@@ -71,7 +71,7 @@
               <input type="checkbox" v-model="legals" class="checkbox" required />
               <i18n-t tag="span" keypath="payment.legals.intro" class="label-text pl-1">
                 <template #link>
-                  <NuxtLinkLocale to="/legals/terms" class="text-nuxt-lightgreen">
+                  <NuxtLinkLocale to="/legals/terms" class="text-nuxt-lightgreen" target="_blank">
                     {{ t('payment.legals.link') }}
                   </NuxtLinkLocale>
                 </template>
@@ -148,6 +148,9 @@ onMounted(async () => {
       throw new Error('Payable not available')
     }
     modes.value = await paymentService.getPaymentMethods(payable)
+    if (modes.value.length > 0) {
+      selectedPaymentMethod.value = modes.value[0]
+    }
   } catch (e: any) {
     error.value = e
     console.error(e)
