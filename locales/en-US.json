@@ -370,7 +370,8 @@
       "total": "Total",
       "shipping": "Shipping",
       "untaxed": "Total untaxed",
-      "tax": "Tax"
+      "tax": "Tax",
+      "subtotal": "Subtotal"
     },
     "status": {
       "cancel": "Canceled",

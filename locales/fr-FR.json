@@ -389,7 +389,8 @@
       "total": "Total",
       "shipping": "Frais de port",
       "untaxed": "Total HT",
-      "tax": "TVA"
+      "tax": "TVA",
+      "subtotal": "Sous-total"
     },
     "status": {
       "cancel": "Annulée",

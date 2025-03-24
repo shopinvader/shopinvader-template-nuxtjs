@@ -352,7 +352,8 @@
       "total": "Total",
       "shipping": "Envío",
       "untaxed": "Total libre de impuestos",
-      "tax": "Impuestos"
+      "tax": "Impuestos",
+      "subtotal": "Subtotal"
     },
     "status": {
       "cancel": "Cancelada",

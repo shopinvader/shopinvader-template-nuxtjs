@@ -110,39 +110,47 @@
       </div>
       <div class="footer__total">
         <slot name="total" :sale="sale">
-          <div class="mb-10">
-            <div v-if="sale?.amount?.discountTotal !== 0" class="total__item">
-              <span class="font-medium">
-                {{ t('sale.amount.discount') }}
-              </span>
-              <span class="font-heading font-bold">
-                - {{ formatCurrency(sale?.amount?.discountTotal || 0) }}
-              </span>
-            </div>
-            <div class="total__item">
-              <span class="font-medium">
-                {{ t('sale.amount.untaxed') }}
-              </span>
-              <span class="font-heading font-bold">
-                {{ formatCurrency(sale?.amount?.untaxed || 0) }}
-              </span>
-            </div>
-            <div class="total__item">
-              <span class="font-medium">
-                {{ t('sale.amount.tax') }}
-              </span>
-              <span class="font-heading font-bold">
-                {{ formatCurrency(sale?.amount?.tax || 0) }}
-              </span>
-            </div>
-            <div class="total__item">
-              <span class="font-medium">
-                {{ t('sale.amount.total') }}
-              </span>
-              <span class="font-heading font-bold">
-                {{ formatCurrency(sale?.amount?.total || 0) }}
-              </span>
-            </div>
+          <div v-if="sale?.amount?.discountTotal !== 0" class="total__item">
+            <span class="item__label">
+              {{ t('sale.amount.discount') }}
+            </span>
+            <span class="item__value">
+              - {{ formatCurrency(sale?.amount?.discountTotal || 0) }}
+            </span>
+          </div>
+          <div class="total__item">
+            <span class="item__label">
+              {{ t('sale.amount.untaxed') }}
+            </span>
+            <span class="item__value">
+              {{ formatCurrency(sale?.amount?.untaxedWithoutShipping || 0) }}
+              <sub>{{ t('product.price.tax_excluded') }}</sub>
+            </span>
+          </div>
+          <div v-if="sale?.delivery?.amount?.untaxed" class="total__item">
+            <span class="item__label">
+              {{ sale?.delivery?.selectedCarrier?.name }}
+            </span>
+            <span class="item__value">
+              {{ formatCurrency(sale?.delivery?.amount?.untaxed || 0) }}
+              <sub>{{ t('product.price.tax_excluded') }}</sub>
+            </span>
+          </div>
+          <div class="total__item">
+            <span class="item__label">
+              {{ t('sale.amount.tax') }}
+            </span>
+            <span class="item__value">
+              {{ formatCurrency(sale?.amount?.tax || 0) }}
+            </span>
+          </div>
+          <div class="total__item">
+            <span class="item__label">
+              {{ t('sale.amount.total') }}
+            </span>
+            <span class="item__value">
+              {{ formatCurrency(sale?.amount?.total || 0) }}
+            </span>
           </div>
         </slot>
       </div>
@@ -228,6 +236,17 @@ const { t, locale } = useI18n()
         .total {
           &__item {
             @apply flex justify-between rounded-full px-10 py-3 odd:bg-gray-100;
+            .item {
+              &__label {
+                @apply w-3/4 text-sm;
+              }
+              &__value {
+                @apply flex flex-nowrap items-center gap-0.5 text-right text-sm;
+                sub {
+                  @apply text-xs;
+                }
+              }
+            }
           }
         }
       }

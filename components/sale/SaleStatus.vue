@@ -41,7 +41,7 @@ defineProps({
     @apply before:bg-info;
   }
   &.state--estimated {
-    @apply before:bg-info;
+    @apply before:bg-success;
   }
 }
 </style>

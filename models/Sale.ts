@@ -61,7 +61,7 @@ export class Sale extends Model {
     }
     this.amount = data.amount ? new SaleAmount(data.amount) : null
     this.delivery = data.delivery ? new SaleDelivery(data.delivery) : null
-    this.customerRef = data?.customer_ref
+    this.customerRef = data?.client_order_ref
     this.suiteName = data?.suite_name
     this.payment = data.payment ? new SalePaiement(data.payment) : null
   }
