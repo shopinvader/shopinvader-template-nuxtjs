@@ -67,6 +67,19 @@ export class CatalogService extends BaseServiceElastic {
           ]
         }
       }
+    } else {
+      query = {
+        bool: {
+          must: [{ bool }],
+          should: [
+            {
+              terms: {
+                main: [true]
+              }
+            }
+          ]
+        }
+      }
     }
     return this.search({ query })
   }

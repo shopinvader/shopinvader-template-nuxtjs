@@ -131,9 +131,14 @@ watch(
 const linkToProduct = () => {
   const path = linkPath.value || null
   if (path) {
+    let query = {}
+    const { variantCount, sku, main } = variant?.value || {}
+    if (!main && variantCount && variantCount > 1) {
+      query = { sku }
+    }
     router.push({
       path,
-      query: { sku: variant.value?.sku }
+      query
     })
   }
 }
