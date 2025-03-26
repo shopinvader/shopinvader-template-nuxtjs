@@ -25,6 +25,9 @@
         </slot>
       </div>
     </template>
+    <template #filters>
+      <slot name="filters"></slot>
+    </template>
     <template #footer>
       <slot name="footer" :category="category">
         <div v-html="category.description"></div>

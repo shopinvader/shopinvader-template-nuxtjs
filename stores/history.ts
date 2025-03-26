@@ -1,22 +1,27 @@
 import { defineStore } from 'pinia'
-import type { Category } from '~/models'
-import { Product } from '~/models'
+import { type Category, Product } from '#models'
 
+interface ScrollHistory {
+  url: string
+  y: number
+}
 // Store history on queries, products and the last category
 export const useHistoryStore = defineStore('history', {
   state: () => ({
     queries: [] as string[],
     products: [] as Product[],
-    lastCategory: null as Category | null
+    lastCategory: null as Category | null,
+    lastSearchScroll: null as ScrollHistory | null
   }),
 
   persist: {
     storage: persistedState.localStorage,
-    afterRestore(ctx) {
+    afterRestore(ctx: any) {
       const data = ctx?.store?.products || null
       if (data) {
         ctx.store.products = data.map((p: any) => new Product(p))
       }
+      ctx.store.lastSearchScroll = null
     }
   },
   getters: {

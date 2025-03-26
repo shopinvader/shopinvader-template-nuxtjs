@@ -160,6 +160,7 @@ import type { SearchSortItem } from '#models'
 import type { Query } from 'elastic-builder'
 import esb, { CardinalityAggregation, FilterAggregation } from 'elastic-builder'
 import { provide, reactive, type PropType } from 'vue'
+import { useHistoryStore } from '~/stores/history'
 import isEqual from '~/utils/IsEqual'
 
 export interface Filter {
@@ -498,7 +499,13 @@ const mountInfinitScrollObserver = () => {
 
   observer.observe(infinitScrollTrigger.value as HTMLElement)
 }
-
+const history = useHistoryStore()
+const onWindowScroll = () => {
+  history.lastSearchScroll = {
+    url: route.fullPath,
+    y: window.scrollY
+  }
+}
 /** Infinit Scroll : Unmount element observer */
 const unMountInfinitScrollObserver = () => {
   if (observer) {
@@ -516,15 +523,22 @@ onMounted(async () => {
   await search()
   if (!props.pagination) {
     mountInfinitScrollObserver()
-    const queryPage = parseInt(route.query.page?.toString() || '1')
-    if (queryPage && pageResultsContainer.value?.[queryPage]) {
-      pageResultsContainer.value?.[queryPage].scrollIntoView()
+    const lastSearchScroll = history.lastSearchScroll
+    if (lastSearchScroll?.url === route.fullPath && lastSearchScroll?.y) {
+      window.scrollTo(0, lastSearchScroll?.y)
+    } else {
+      const queryPage = parseInt(route.query.page?.toString() || '1')
+      if (queryPage && pageResultsContainer.value?.[queryPage]) {
+        pageResultsContainer.value?.[queryPage].scrollIntoView()
+      }
     }
+    document.addEventListener('scroll', onWindowScroll)
   }
 })
 
 onUnmounted(() => {
   unMountInfinitScrollObserver()
+  document.removeEventListener('scroll', onWindowScroll)
 })
 
 provide('declareFilter', declareFilter)
