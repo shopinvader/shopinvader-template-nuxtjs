@@ -243,6 +243,22 @@ export class CartService extends BaseServiceErp {
     await this.update(cart)
   }
 
+  async setAddresses(deliveryAddress: Address, invoicingAddress: Address) {
+    const cart = this.getCart()?.value || null
+    let changed = false
+    if (!cart) return null
+    if (deliveryAddress?.id !== cart.delivery.address?.id) {
+      cart.delivery.address = deliveryAddress
+      changed = true
+    }
+    if (invoicingAddress?.id !== cart.invoicing.address?.id) {
+      cart.invoicing.address = invoicingAddress
+      changed = true
+    }
+    if (!changed) return null
+    await this.update(cart)
+  }
+
   /**
    * Set shipping mode on the current cart
    * Get carrier list via DeliveryCarrier service

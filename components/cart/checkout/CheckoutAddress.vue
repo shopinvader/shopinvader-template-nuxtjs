@@ -85,28 +85,32 @@ const loading = ref(false)
 const loadingStep = ref(true)
 const error = ref(null as string | null)
 
-const deliveryAddress = computed(() => {
-  return cart.value?.delivery?.address || new Address({})
-})
-
 onMounted(async () => {
-  if (!cart.value || !addressService) return
-  if (!cart.value?.hasValidAddresses()) {
-    const addresses = await addressService.search('')
-    const address =
-      addresses.find((a: Address) => a.id == deliveryAddress.value?.id) || addresses[0]
+  try {
+    loadingStep.value = true
+    if (!cart.value || !addressService) return
 
-    if (!address?.isValidAddress()) {
-      editAddress.value = address
+    const addresses = await addressService.search('')
+    const deliveryAddressId = cart.value?.delivery?.address?.id
+    const invoicingAddressId = cart.value?.invoicing?.address?.id
+    const deliveryAddress =
+      addresses.find((a: Address) => a.id == deliveryAddressId) || addresses[0]
+    const invoicingAddress =
+      addresses.find((a: Address) => a.id == invoicingAddressId) ||
+      addresses.find((a: Address) => a.type == 'invoicing')
+
+    if (!invoicingAddress?.isValidAddress()) {
+      editAddress.value = deliveryAddress
+    } else if (!deliveryAddress?.isValidAddress()) {
+      editAddress.value = deliveryAddress
     } else {
-      try {
-        await setCartAddress(address)
-      } catch (e) {
-        console.error(e)
-      }
+      await cartService.setAddresses(deliveryAddress, invoicingAddress)
     }
+  } catch (e) {
+    console.error(e)
+  } finally {
+    loadingStep.value = false
   }
-  loadingStep.value = false
 })
 
 const submit = () => {
