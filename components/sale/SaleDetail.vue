@@ -53,6 +53,11 @@
       </slot>
       <div class="header__info">
         <slot name="info" :sale="sale"></slot>
+        <div v-if="sale?.delivery?.pickings && sale?.delivery?.pickings?.length > 1" class="alert">
+          <icon name="info" class="icon" />
+          {{ t('sale.delivery.pickings.multiple') }}
+          <sale-picking :sale="sale" />
+        </div>
       </div>
       <div class="header__progess">
         <slot name="progress" :sale="sale">

@@ -354,6 +354,7 @@
     "name": "Number",
     "state": "Status",
     "quantity": "Quantity {qty}",
+    "quantity_delivered": "Delivered quantity {qty}",
     "price": "Total {price}",
     "product_link": "View product",
     "invoicing": {
@@ -363,7 +364,8 @@
       "address": "Delivery address",
       "pickings": {
         "link": "Tracking link",
-        "title": "Tracking"
+        "title": "Tracking",
+        "multiple": "This order is shipped in multiple shipments."
       }
     },
     "amount": {
@@ -387,7 +389,17 @@
   },
   "picking": {
     "tracking": "Tracking number",
-    "deliveryDate": "Delivery date"
+    "deliveryDate": "Delivery date",
+    "quantity": "Quantity",
+    "product": "Article",
+    "status": {
+      "draft": "Waiting",
+      "waiting": "Waiting",
+      "confirmed": "Waiting",
+      "assigned": "Waiting",
+      "done": "Shipped",
+      "cancel": "Cancelled"
+    }
   },
   "payment": {
     "select": "Select",

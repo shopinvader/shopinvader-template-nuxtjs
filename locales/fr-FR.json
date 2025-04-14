@@ -372,6 +372,7 @@
     "name": "Numéro",
     "state": "Statut",
     "quantity": "Quantité {qty}",
+    "quantity_delivered": "Quantité livrée {qty}",
     "price": "Total {price}",
     "product_link": "Voir le produit",
     "invoicing": {
@@ -379,9 +380,11 @@
     },
     "delivery": {
       "address": "Adresse de livraison",
+
       "pickings": {
         "link": "Suivre ma commande",
-        "title": "Suivi de commande"
+        "title": "Suivi de commande",
+        "multiple": "Cette commande est expédiée en plusieurs envois"
       }
     },
     "amount": {
@@ -406,7 +409,17 @@
   },
   "picking": {
     "tracking": "Numéro de suivi",
-    "deliveryDate": "Date de livraison"
+    "deliveryDate": "Date de livraison",
+    "quantity": "Quantité",
+    "product": "Article",
+    "status": {
+      "draft": "En attente",
+      "waiting": "En attente",
+      "confirmed": "En attente",
+      "assigned": "En attente",
+      "done": "Expédiée",
+      "cancel": "Annulée"
+    }
   },
   "payment": {
     "select": "Payer",
