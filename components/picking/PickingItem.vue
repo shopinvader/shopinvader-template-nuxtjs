@@ -37,7 +37,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="line in picking?.lines" :key="line.id">
+            <tr v-for="(line, index) in picking?.lines" :key="line.id || index">
               <td class="line__name">
                 {{ line?.product?.name || line?.productName }}
               </td>
