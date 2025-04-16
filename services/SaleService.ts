@@ -1,4 +1,4 @@
-import { Sale } from '#models'
+import { PickingLine, Sale } from '#models'
 import type { ProductService } from '#services'
 import { BaseServiceErp } from '#services'
 
@@ -61,6 +61,19 @@ export class SaleService extends BaseServiceErp {
         }
         return line
       })
+
+      /** Picking */
+      if (sale?.delivery?.pickings) {
+        for (const picking of sale.delivery.pickings) {
+          picking.lines = picking.lines.map((line: PickingLine) => {
+            const product = res.hits.find((product: any) => product.id === line.productId) || null
+            if (product) {
+              line.product = product
+            }
+            return line
+          })
+        }
+      }
     }
     return sale
   }

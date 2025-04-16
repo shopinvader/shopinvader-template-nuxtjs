@@ -336,6 +336,7 @@
     "name": "Número",
     "state": "Estado",
     "quantity": "cantidad {qty}",
+    "quantity_delivered": "cantidad entregada {qty}",
     "price": "Total {price}",
     "product_link": "Ver el producto",
     "invoicing": {
@@ -345,7 +346,8 @@
       "address": "Dirección de entrega",
       "pickings": {
         "link": "Siga mi orden",
-        "title": "Seguimiento de pedidos"
+        "title": "Seguimiento de pedidos",
+        "multiple": "Este pedido se envía en varios envíos."
       }
     },
     "amount": {
@@ -369,7 +371,17 @@
   },
   "picking": {
     "tracking": "Número de seguimiento",
-    "deliveryDate": "Fecha de entrega"
+    "deliveryDate": "Fecha de entrega",
+    "quantity": "Cantidad",
+    "product": "Article",
+    "status": {
+      "draft": "En procesamiento",
+      "waiting": "En procesamiento",
+      "confirmed": "En procesamiento",
+      "assigned": "En procesamiento",
+      "done": "Enviado",
+      "cancel": "Cancelado"
+    }
   },
   "payment": {
     "select": "Seleccionar",

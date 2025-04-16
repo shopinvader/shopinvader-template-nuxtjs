@@ -7,7 +7,7 @@
         @click="download('sale', sale.id)"
       >
         <icon name="printer" class="text-2xl"></icon>
-        <span class="ml-2">{{ $t('btn.download') }}</span>
+        <span class="ml-2">{{ t('btn.download') }}</span>
       </button>
     </template>
   </sale-detail>
@@ -19,6 +19,7 @@
 import type { Sale } from '#models'
 const loading = ref(false)
 const error = ref('')
+const { t } = useI18n()
 const props = defineProps({
   sale: {
     type: Object as PropType<Sale>,

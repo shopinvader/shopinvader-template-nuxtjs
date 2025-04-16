@@ -24,14 +24,17 @@
                 target="_blank"
                 class="underline"
               >
-                {{ $t('sale.product_link') }}
+                {{ t('sale.product_link') }}
               </nuxt-link>
             </div>
           </slot>
         </div>
         <div class="content__qty">
           <slot name="qty" :line="line">
-            {{ $t('sale.quantity', { qty: line.qty }) }}
+            {{ t('sale.quantity', { qty: line.qty }) }}
+            <div v-if="line?.qtyDelivered" class="value">
+              | {{ t('sale.quantity_delivered', { qty: line?.qtyDelivered }) }}
+            </div>
           </slot>
         </div>
       </div>
@@ -64,6 +67,7 @@ const props = defineProps({
     required: true
   }
 })
+const { t } = useI18n()
 const localePath = useLocalePath()
 const router = useRouter()
 
@@ -95,7 +99,7 @@ const linkToProduct = () => {
         @apply pb-3;
       }
       &__qty {
-        @apply text-gray-500;
+        @apply flex gap-2 text-sm text-gray-500;
       }
       &__price {
         @apply flex flex-row p-2;
