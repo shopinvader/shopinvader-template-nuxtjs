@@ -208,7 +208,7 @@ const localePath = useLocalePath()
 const cartService = useShopinvaderService('cart')
 const cart = cartService?.getCart() || ref(null)
 const { t } = useI18n()
-const displayCart = ref(false)
+const displayCart = ref(true)
 
 /** Default steps of the checkout funnel */
 const defaultSteps: checkoutStep[] = [
