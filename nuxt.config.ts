@@ -78,9 +78,9 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-delay-hydration',
-    '@nuxt/content',
     '@nuxtjs/robots',
-    '@nuxtjs/seo'
+    '@nuxtjs/seo',
+    '@nuxtjs/i18n'
   ],
 
   piniaPersistedstate: {
@@ -133,7 +133,7 @@ export default defineNuxtConfig({
     ],
     debug: false,
     lazy: true,
-    langDir: 'locales',
+    langDir: 'i18n/locales/',
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
