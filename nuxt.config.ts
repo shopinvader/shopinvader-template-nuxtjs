@@ -5,7 +5,13 @@ const dir = dirname(fileURLToPath(import.meta.url))
 export default defineNuxtConfig({
   nitro: {
     compressPublicAssets: true,
-    minify: true
+    minify: true,
+    storage: {
+      db: {
+        driver: "fs",
+        base: "./.data/db",
+      },
+    },
   },
 
   delayHydration: {
@@ -78,9 +84,9 @@ export default defineNuxtConfig({
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-delay-hydration',
-    '@nuxt/content',
     '@nuxtjs/robots',
-    '@nuxtjs/seo'
+    '@nuxtjs/seo',
+    '@nuxtjs/i18n'
   ],
 
   piniaPersistedstate: {
@@ -133,7 +139,6 @@ export default defineNuxtConfig({
     ],
     debug: false,
     lazy: true,
-    langDir: 'locales',
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
     detectBrowserLanguage: {
@@ -150,7 +155,6 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-
   routeRules: {
     '/': {
       index: true,

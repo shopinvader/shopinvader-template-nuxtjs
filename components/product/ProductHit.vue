@@ -153,7 +153,7 @@ const linkToProduct = () => {
     @apply absolute left-1 top-2 z-10;
   }
   &__image {
-    @apply relative aspect-square max-h-full cursor-pointer overflow-hidden pb-2;
+    @apply relative max-h-full cursor-pointer overflow-hidden pb-2;
     .product-image {
       @apply h-full w-full rounded-md;
       img {
