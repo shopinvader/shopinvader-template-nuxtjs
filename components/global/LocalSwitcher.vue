@@ -24,7 +24,8 @@ const currentLocalIcon = computed(() => {
 })
 
 const availableLocales = computed(() => {
-  return locales.value.filter((i) => i.code !== locale.value)
+  //return locales.value.filter((i) => i.code !== locale.value)
+  return []
 })
 </script>
 
