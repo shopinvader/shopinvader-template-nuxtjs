@@ -17,6 +17,7 @@
             :axis="name"
             :values="values"
             :on-select-variant="onSelectVariant"
+            :change-variant="changeVariant"
           >
             <template v-if="values?.length < 6">
               <div v-for="value in values" :key="value.value">
@@ -38,9 +39,7 @@
               v-else
               class="values__select"
               v-model="selectValues[name]"
-              @change="
-                () => onSelectVariant(name, values.find((v) => v.value === selectValues[name])!)
-              "
+              @change="() => changeVariant(values.find((v) => v.value === selectValues[name])!)"
             >
               <option
                 v-for="value of values"
@@ -58,7 +57,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import type { Product, VariantAttributes } from '#models'
+import type { Product } from '#models'
 import isEqual from '~/utils/IsEqual'
 interface VariantAttributeOptions {
   [key: string]: (string | number)[]
@@ -129,10 +128,7 @@ const variantAttributes = computed((): VariantAttributeSelector => {
             [key]: value
           })
         ) || []
-      const variant =
-        filteredVariant?.find((v) => v.variantAttributes[key] === value) ||
-        filteredVariant?.[0] ||
-        null
+      const variant = filteredVariant?.find((v) => v.variantAttributes[key] === value) || null
 
       if (!attributes[key]) {
         attributes[key] = []
