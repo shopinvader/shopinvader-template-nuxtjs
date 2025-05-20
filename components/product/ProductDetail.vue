@@ -1,5 +1,8 @@
 <template>
   <div v-if="variant !== null" class="product-detail" :class="cssclass">
+    <slot name="schema-seo" :product="variant">
+      <product-seo-schema v-if="variant" :product="variant" />
+    </slot>
     <div class="product-detail__header">
       <!-- @slot Breadcrumbs content -->
       <slot name="breadcrumbs" :variant="variant">
@@ -158,8 +161,7 @@
   </dev-only>
 </template>
 <script lang="ts" setup>
-import type { ProductCategory, ProductPrice } from '#models'
-import { Product } from '#models'
+import type { ProductCategory, Product, ProductPrice } from '#models'
 import { useHistoryStore } from '~/stores/history'
 
 const props = defineProps({
@@ -262,12 +264,6 @@ try {
           item: localePath({ path: '/' + variant.value?.urlKey })
         }
       ]
-    }),
-    defineProduct({
-      name: variant.value?.name,
-      description: variant.value?.shortDescription,
-      image: variant.value?.images?.[0]?.medium?.src,
-      sku: variant.value?.sku
     })
   ])
 } catch {
