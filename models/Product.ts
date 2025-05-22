@@ -151,4 +151,29 @@ export class Product extends Model {
       })
     }
   }
+  getStructuredData() {
+    const image: string = this.images?.map((img: any) => img?.large?.src || null)[0] || ''
+    const offers = []
+    if (this.pricesList?.default && this.pricesList?.default?.value) {
+      offers.push({
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        price: this.pricesList?.default?.value || 0,
+        priceCurrency: 'EUR'
+      })
+    }
+    const data: any = {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      id: this?.id?.toString(),
+      name: this.name,
+      description: `${this.shortDescription} ${this.shortName}`,
+      sku: this.sku,
+      url: `/${this.urlKey}?sku=${this.sku}`,
+      image,
+      offers
+    }
+
+    return data
+  }
 }
