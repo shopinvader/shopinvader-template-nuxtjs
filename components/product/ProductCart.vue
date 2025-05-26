@@ -23,6 +23,7 @@
       :disabled-add-to-cart="isDisabledAddToCart"
     >
       <button
+        v-if="!isDisabledAddToCart"
         type="button"
         class="product-cart__add"
         :disabled="isDisabledAddToCart"

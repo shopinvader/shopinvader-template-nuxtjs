@@ -107,11 +107,11 @@
           <!-- @slot Price content -->
           <slot name="price" :variant="variant">
             <client-only>
-              <lazy-product-price v-if="price !== null" :price="price" css-class="py-4 text-right">
+              <product-price v-if="price !== null" :price="price" css-class="py-4 text-right">
                 <template #price>
                   <slot name="price" :price="price"></slot>
                 </template>
-              </lazy-product-price>
+              </product-price>
             </client-only>
           </slot>
         </div>
@@ -119,7 +119,7 @@
           <!-- @slot Price content -->
           <slot name="add-to-cart" :variant="variant">
             <client-only>
-              <lazy-product-cart v-if="variant !== null" :product="variant"></lazy-product-cart>
+              <product-cart v-if="variant !== null" :product="variant"></product-cart>
             </client-only>
           </slot>
         </div>

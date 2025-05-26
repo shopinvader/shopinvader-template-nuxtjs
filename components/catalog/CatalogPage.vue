@@ -18,15 +18,25 @@ let localeRoute: string = localePath('/')
 if (localeRoute == '/') {
   localeRoute = ''
 }
+const product = ref<Product | null>(null)
+const category = ref<Category | null>(null)
 const fullPath = route?.fullPath || ''
 const path = route?.path?.replace?.(localeRoute, '').substring(1) || ''
-const { data } = await useAsyncData('entity', async () => {
+const { data } = await useAsyncData(path, async () => {
   const catalog = useShopinvaderService('catalog')
   const sku = route?.query?.sku?.toString() || null
   const entity = await catalog.getEntityByURLKey(path, sku)
   return entity || false
 })
 const entity = data.value
+if(entity instanceof Product) {
+  product.value = entity
+} else if (entity instanceof Category) {
+  category.value = entity
+} else {
+  product.value = null
+  category.value = null
+}
 const slots = useSlots()
 /** Create error if no fallback slot is set */
 if (!entity && !slots?.fallback) {
@@ -63,6 +73,5 @@ if (entity) {
         : null
   })
 }
-const product = computed(() => (entity instanceof Product ? entity : null))
-const category = computed(() => (entity instanceof Category ? entity : null))
+
 </script>
