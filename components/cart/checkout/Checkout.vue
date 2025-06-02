@@ -72,7 +72,7 @@
                 </button>
               </div>
               <div v-if="displayCart" class="cart__lines">
-                <cart-lines :lines="cart?.lines" :readonly="true"></cart-lines>
+                <cart-lines :lines="cart?.lines" :readonly="false"></cart-lines>
               </div>
             </slot>
           </div>
