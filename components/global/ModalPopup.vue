@@ -26,7 +26,7 @@ const props = defineProps({
 })
 watch( () => props.opened, (opened) => {
   if(document?.body) {
-    if (opened) {
+    if (opened && message?.value) {
       message?.value?.showModal()
     } else {
       message?.value?.close()

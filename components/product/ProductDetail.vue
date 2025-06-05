@@ -277,7 +277,7 @@ try {
     @apply absolute left-10 top-16 z-10;
   }
   &__header {
-    @apply w-full flex-grow;
+    @apply w-full flex-grow max-md:flex-col;
   }
   &__image {
     @apply w-full py-4 md:w-1/2 md:pr-5 lg:w-3/5;
@@ -286,9 +286,9 @@ try {
     }
   }
   &__content {
-    @apply w-full pt-5 md:w-1/2 md:px-2 lg:w-2/5;
+    @apply w-full lg:pt-5 md:w-1/2 md:px-2 lg:w-2/5;
     .content {
-      @apply sticky top-24;
+      @apply sticky lg:top-24 lg:p-2 pt-0 ;
       &__header {
         @apply order-3 mb-4 border-b;
         .header {
@@ -325,7 +325,7 @@ try {
         }
       }
       &__price {
-        @apply mt-4 min-h-48 border-t sm:min-h-14;
+        @apply mt-4  min-h-32 border-t sm:min-h-14;
       }
       &__cart {
         @apply sm:min-h-28;
