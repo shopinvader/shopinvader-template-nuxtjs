@@ -8,10 +8,10 @@ export default defineNuxtConfig({
     minify: true,
     storage: {
       db: {
-        driver: "fs",
-        base: "./.data/db",
-      },
-    },
+        driver: 'fs',
+        base: './.data/db'
+      }
+    }
   },
 
   delayHydration: {
@@ -81,7 +81,6 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/eslint',
     '@nuxt/fonts',
-    '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-delay-hydration',
     '@nuxtjs/robots',
