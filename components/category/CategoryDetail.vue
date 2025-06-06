@@ -42,15 +42,15 @@
 import { Category, type CategoryParent } from '#models'
 import esb from 'elastic-builder'
 import type { PropType } from 'vue'
-
 import { useHistoryStore } from '~/stores/history'
+
+const localePath = useLocalePath()
 const props = defineProps({
   category: {
     type: Object as PropType<Category>,
     required: true
   }
 })
-const localePath = useLocalePath()
 
 const breadcrumb = computed(() => {
   const t = useI18n().t

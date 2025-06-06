@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        heading: 'Urbanist',
+        heading: 'Open Sans',
         sans: 'Open Sans'
       },
       colors: {

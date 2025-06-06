@@ -77,10 +77,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/sitemap',
     'nuxt-schema-org',
-    'nuxt-delay-hydration',
-    '@nuxt/content',
+    //'nuxt-delay-hydration',
     '@nuxtjs/robots',
-    '@nuxtjs/seo'
   ],
 
   piniaPersistedstate: {

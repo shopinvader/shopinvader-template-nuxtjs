@@ -13,7 +13,7 @@ export class SettingService extends BaseServiceErp {
   }
 
   override async init(service: ShopinvaderServiceList) {
-    await super.init(service)
+    //await super.init(service)
     const res = await this.getAll()
     if (res) {
       this.setValues(res)

@@ -20,7 +20,7 @@ if (localeRoute == '/') {
 }
 const fullPath = route?.fullPath || ''
 const path = route?.path?.replace?.(localeRoute, '').substring(1) || ''
-const { data } = await useAsyncData('entity', async () => {
+const { data } = await useAsyncData(`entity-${fullPath}`, async () => {
   const catalog = useShopinvaderService('catalog')
   const sku = route?.query?.sku?.toString() || null
   const entity = await catalog.getEntityByURLKey(path, sku)
