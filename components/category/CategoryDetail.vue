@@ -94,7 +94,9 @@ onMounted(() => {
   useHistoryStore()?.setLastCategory(props.category)
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .category-detail {
   &__header {
     @apply w-full;

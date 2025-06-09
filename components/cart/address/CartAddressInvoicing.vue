@@ -107,7 +107,9 @@ watch(
   }
 )
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-address-invoicing {
   @apply flex w-full justify-end;
   .cart-address-invoicing__btn {

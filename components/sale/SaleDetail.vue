@@ -174,7 +174,9 @@ defineProps({
 })
 const { t, locale } = useI18n()
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .sale {
   @apply border p-4;
   &__header {

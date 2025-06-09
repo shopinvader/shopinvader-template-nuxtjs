@@ -123,7 +123,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-address-delivery {
   &__same-address {
     @apply text-right text-sm text-gray-500 pt-4 pb-2;

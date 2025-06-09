@@ -5,5 +5,6 @@ module.exports = {
   trailingComma: 'none',
   tabWidth: 2,
   printWidth: 100,
+  tailwindFunctions: ['tv'],
   plugins: ['prettier-plugin-tailwindcss']
 }

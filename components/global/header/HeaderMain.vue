@@ -24,15 +24,15 @@
             <search-autocomplete></search-autocomplete>
           </div>
           <div class="content__icons">
-            <lazy-cart-icon />
+            <!-- <lazy-cart-icon />
             <lazy-header-user />
-            <lazy-local-switcher />
+            <lazy-local-switcher /> -->
           </div>
         </slot>
       </template>
       <template #menu="{ context }">
         <slot name="menu">
-          <header-nav :collapsible="context == 'side'"></header-nav>
+          <!-- <header-nav :collapsible="context == 'side'"></header-nav> -->
         </slot>
       </template>
     </aside-menu>
@@ -74,7 +74,8 @@ onMounted(() => {
   window.addEventListener('scroll', handleScroll)
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
 body {
   --header-height: 0;
   padding-top: var(--header-height);

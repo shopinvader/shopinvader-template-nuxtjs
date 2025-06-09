@@ -113,7 +113,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .autocomplete-loading {
   @apply flex h-32 items-center justify-center;
 }

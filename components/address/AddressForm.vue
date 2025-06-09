@@ -190,7 +190,9 @@ const save = (e: Event) => {
   emit('submit', model.value)
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .address-form {
   @apply w-full;
   .label {
@@ -205,7 +207,7 @@ const save = (e: Event) => {
     }
   }
   .input {
-    @apply input-bordered;
+    @apply ;
   }
   .select {
     @apply select-bordered;

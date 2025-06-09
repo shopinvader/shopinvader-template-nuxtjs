@@ -91,7 +91,9 @@ onMounted(async () => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .checkout-validated {
   @apply my-10 flex flex-col items-center justify-center gap-6 py-16;
   &__title {
@@ -104,7 +106,7 @@ onMounted(async () => {
     @apply flex items-center gap-2 text-center text-lg lg:text-2xl;
   }
   &__message {
-    @apply card card-body card-bordered prose text-center;
+    @apply card card-body  prose text-center;
   }
   &__sale {
     @apply w-full border-t px-5;

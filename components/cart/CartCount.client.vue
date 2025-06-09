@@ -15,7 +15,9 @@
     return cart?.value?.lines?.length || 0
   })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-count {
   @apply badge badge-secondary absolute right-1 top-1 text-xs font-semibold text-white shadow-md;
   animation: navbar-slideup 0.5s ease-in-out;

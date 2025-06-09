@@ -188,7 +188,9 @@ watch(props.product, async (product, oldProduct) => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .product-variant-selector {
   @apply min-h-16 transition-all duration-300 ease-in-out;
   &--loading {
@@ -213,7 +215,7 @@ watch(props.product, async (product, oldProduct) => {
             }
           }
           &__select {
-            @apply select select-bordered select-sm max-w-xs;
+            @apply select select-sm max-w-xs;
           }
         }
       }

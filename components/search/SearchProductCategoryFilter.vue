@@ -353,7 +353,9 @@ watch(
   { immediate: true, deep: true }
 )
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .searchfilter {
   @apply card mb-3 p-5 hover:bg-gray-100;
   &__header {

@@ -1,7 +1,7 @@
 <template>
   <nuxt-layout name="login">
     <template #body>
-      <div class="card card-body card-bordered max-w-2xl bg-white">
+      <div class="card card-body  max-w-2xl bg-white">
         <account-password-reset></account-password-reset>
       </div>
     </template>

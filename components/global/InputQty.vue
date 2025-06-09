@@ -112,9 +112,11 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .input-qty {
-  @apply input input-bordered flex items-center gap-2;
+  @apply input  flex items-center gap-2;
   &__input {
     @apply grow text-center;
     appearance: textfield;

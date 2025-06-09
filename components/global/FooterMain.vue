@@ -37,7 +37,9 @@ const { data:categories } = await useLazyAsyncData(
   }
 )
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .footer {
   @apply w-screen bg-white p-10;
   &__body {

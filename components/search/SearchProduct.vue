@@ -114,7 +114,9 @@ const changeDisplayMode = (mode: string) => {
   displayMode.value = mode
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .search-product {
   &__results {
     &--grid {

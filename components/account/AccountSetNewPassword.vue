@@ -107,7 +107,9 @@ const onSubmit = async () => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .reset-heading {
   @apply mb-10 text-center;
   &__title {

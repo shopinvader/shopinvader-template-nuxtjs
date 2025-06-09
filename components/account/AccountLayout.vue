@@ -125,7 +125,9 @@ const currentPage = computed(() => {
   return items.value.find((item) => item.slug === props.slug) || null
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-layout {
   @apply w-full gap-1 lg:flex;
   &__loading {

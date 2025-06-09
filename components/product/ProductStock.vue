@@ -1,59 +1,71 @@
 <template>
-  <slot v-if="state !== null" name="stock-status">
-    <div class="stock-status">
-      <div v-if="state == 'in_stock'" class="stock-status__available">
-        <icon name="check" class="stock-icon" />
-        <span class="stock-text">{{ t('product.stock.available') }}</span>
-      </div>
-      <div v-else-if="state == 'in_limited_stock'" class="stock-status__ending">
-        <icon name="attention" class="stock-icon" />
-        <span class="stock-text">{{ t('product.stock.ending_soon') }}</span>
-      </div>
-      <div v-else-if="state == 'resupplying'" class="stock-status__ending">
-        <icon name="attention" class="stock-icon" />
-        <span class="stock-text">{{ t('product.stock.resupplying') }}</span>
-      </div>
-      <div v-else-if="state == 'out_of_stock'" class="stock-status__out-of-stock">
-        <icon name="mdi:package-variant-remove" class="stock-icon" />
-        <span class="stock-text">{{ t('product.stock.not_available') }}</span>
-      </div>
-      <div v-else-if="state == 'soon_available'" class="stock-status__soon_available">
-        <icon name="hugeicons:package-process" class="stock-icon" />
-        <span class="stock-text">{{ t('product.stock.soon_available') }}</span>
-      </div>
-      <div v-else class="stock-status__unknown">
-        <span class="stock-text">{{ state }}</span>
-      </div>
+  <slot v-if="state !== null">
+    <div :class="ui.root({ class: 'stock-status' })">
+      <u-icon :name="icon" :class="ui.icon({ class: 'stock-icon' })"/>
+      <span  :class="ui.text({ class: 'stock-text' })">{{ label }}</span>
     </div>
   </slot>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import type { ProductStock } from '#models'
-import type { PropType } from 'vue'
+import theme from '~/theme/ProductStock'
+export type ProductStockUi = typeof theme
+export interface ProductStockProps {
+  stock?: ProductStock
+  ui?: ProductStockUi
+}
+</script>
+<script lang="ts" setup>
+const props = defineProps<ProductStockProps>()
 const { t } = useI18n()
-
-const props = defineProps({
-  stock: {
-    type: Object as PropType<ProductStock>,
-    required: false,
-    default: () => {
-      return null
-    }
-  }
-})
+const ui = computed(() => componentUI('ProductStock', theme, props?.ui)({ state: state.value }))
 
 const state = computed<string | null>(() => {
-  let state = props.stock?.global?.state || null
-  if (!state && qty) {
-    state = qty.value !== null && qty.value > 0 ? 'in_stock' : 'out_of_stock'
+  const state = props.stock?.global?.state || null
+  if (!state) {
+    const qty = props.stock?.global?.qty || null
+    if (qty?.value && qty.value > 0) {
+      return 'in_stock'
+    }
   }
-  return state
+  return state || 'out_of_stock'
 })
-const qty = computed<number | null>(() => {
-  return props.stock?.global?.qty || null
+const label = computed(() => {
+  switch (state.value) {
+    case 'in_stock':
+      return t('product.stock.available')
+    case 'in_limited_stock':
+      return t('product.stock.ending_soon')
+    case 'resupplying':
+      return t('product.stock.resupplying')
+    case 'out_of_stock':
+      return t('product.stock.not_available')
+    case 'soon_available':
+      return t('product.stock.soon_available')  
+    default:
+      return ''
+  }
+  return t(`product.stock.${state.value}`)
+})
+const icon = computed(() => {
+  switch (state.value) {
+    case 'in_stock':
+      return 'check'
+    case 'in_limited_stock':
+    case 'resupplying':
+      return 'attention'
+    case 'out_of_stock':
+      return 'mdi:package-variant-remove'
+    case 'soon_available':
+      return 'hugeicons:package-process'
+    default:
+      return 'check'
+  }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .stock-status {
   &__available {
     @apply flex max-w-max py-1 text-sm text-primary;

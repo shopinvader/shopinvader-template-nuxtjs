@@ -40,7 +40,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .searchSelectedFilters {
   @apply flex flex-wrap gap-2 px-6 py-4;
   &-button {

@@ -53,7 +53,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .checkout-address {
   &__footer {
     @apply flex justify-between;

@@ -111,14 +111,16 @@ onMounted(() => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart {
   @apply grid h-full grid-cols-3 gap-4 py-5;
   grid-template-rows: auto auto 1fr;
-  &__loading {
+  .cart__loading {
     @apply col-span-3 flex h-64 items-center justify-center;
   }
-  &__message {
+  .cart__message {
     @apply col-span-3 py-3;
     .message {
       @apply alert;
@@ -127,16 +129,16 @@ onMounted(() => {
       }
     }
   }
-  &__lines {
+  .cart__lines {
     @apply col-span-3 row-span-2 xl:col-span-2;
     .cart-lines {
       @apply w-full;
     }
   }
-  &__coupon {
+  .cart__coupon {
     @apply col-span-3 col-start-1 md:col-span-1 lg:col-start-2 xl:col-start-3;
     .total {
-      &__checkout {
+      .total__checkout {
         @apply w-full;
         .checkout__btn {
           @apply btn btn-secondary mt-6 w-full;
@@ -144,7 +146,7 @@ onMounted(() => {
       }
     }
   }
-  &__total {
+  .cart__total {
     @apply col-span-3 md:col-span-2 md:col-start-2 lg:col-span-1 lg:col-start-3;
     .total {
       &__checkout {
@@ -155,7 +157,7 @@ onMounted(() => {
       }
     }
   }
-  &__empty {
+  .cart__empty {
     @apply col-span-3 flex items-center justify-center p-10;
   }
 }

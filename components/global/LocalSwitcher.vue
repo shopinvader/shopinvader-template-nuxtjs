@@ -28,7 +28,9 @@ const availableLocales = computed(() => {
 })
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .locale-switcher {
   &__btn {
     @apply m-1 flex items-center pb-5;

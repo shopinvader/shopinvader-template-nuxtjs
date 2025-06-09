@@ -13,7 +13,7 @@
               <input
                 type="text"
                 :placeholder="t('account.address.search')"
-                class="input input-bordered"
+                class="input "
                 v-model="searchQuery"
                 @input="searchAddress(searchQuery)"
               />
@@ -204,7 +204,9 @@ const createAddress = () => {
   editedAddress.value = address
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .addresses {
   @apply flex flex-col;
 

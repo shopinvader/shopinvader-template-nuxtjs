@@ -75,7 +75,9 @@ const linkToProduct = () => {
   router.push({ path: `/${props.line.product.urlKey}` })
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .line {
   @apply flex flex-wrap items-start rounded-lg border-2 p-3 md:items-center;
   &__image {

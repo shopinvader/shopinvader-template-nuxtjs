@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div>
+    <UApp>
       <NuxtLoadingIndicator color="#000"/>
       <NuxtLayout>
         <div>
           <NuxtPage />
         </div>
       </NuxtLayout>
-    </div>
+    </UApp>
   </div>
 </template>
 <script setup lang="ts">

@@ -55,7 +55,9 @@ onMounted(() => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .payment-transaction {
   @apply flex h-40 items-center justify-center;
 }

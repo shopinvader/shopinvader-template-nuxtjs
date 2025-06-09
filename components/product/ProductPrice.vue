@@ -1,55 +1,42 @@
 <template>
-  <div v-if="price !== null" class="product-price" :class="cssClass">
+  <div v-if="price !== null" :class="ui.root({ class: 'product-price' })">
     <slot name="price" :price="price">
-      <div v-if="hasDiscount" class="product-price__original">
+      <div v-if="hasDiscount" :class="ui.original({ class: 'product-price__original'})">
         {{ formatCurrency(price.original_value) }}
       </div>
-      <div class="product-price__value" :class="{ 'product-price__value--discount': hasDiscount }">
+      <div :class="ui.value({ class: 'product-price__value'})">
         {{ formatCurrency(price.value) }}
       </div>
-      <sub v-if="price.tax_included" class="product-price__tax">
-        {{ $t('product.price.tax_included') }}
-      </sub>
-      <sub v-else class="product-price__tax">
-        {{ $t('product.price.tax_excluded') }}
+      <sub :class="ui.tax({ class: 'product-price__tax' })">
+        <template v-if="price.tax_included">
+          {{ $t('product.price.tax_included') }}
+        </template>
+        <template v-else>
+          {{ $t('product.price.tax_excluded') }}
+        </template>
       </sub>
     </slot>
   </div>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import type { ProductPrice } from '#models'
-import type { PropType } from 'vue'
 import { formatCurrency } from '~/utils/StringHelper'
+import theme from '~/theme/ProductPrice'
 
-const props = defineProps({
-  price: {
-    type: Object as PropType<ProductPrice>,
-    required: true
-  },
-  cssClass: {
-    type: String,
-    default: ''
-  }
-})
+export type ProductPriceUi = typeof theme
+export interface ProductHitProps {
+  price: ProductPrice
+  class?: string
+  ui?: ProductPriceUi
+}
+</script>
+<script lang="ts" setup>
+const props = defineProps<ProductHitProps>()
 
 const hasDiscount = computed(() => {
   return props.price.original_value !== props.price.value
 })
+
+const ui = computed(() => componentUI('ProductPrice', theme, props.ui)({discounted: hasDiscount.value}))
+
 </script>
-<style lang="scss">
-.product-price {
-  @apply flex w-full flex-wrap items-center justify-end gap-x-1;
-  &__value {
-    @apply pb-0 text-3xl font-semibold leading-6;
-    &--discount {
-      @apply text-3xl text-error;
-    }
-  }
-  &__tax {
-    @apply text-xs font-normal text-gray-500;
-  }
-  &__original {
-    @apply text-lg font-normal text-gray-500 line-through;
-  }
-}
-</style>

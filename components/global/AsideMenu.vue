@@ -81,7 +81,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .aside-menu.drawer {
   @apply h-auto transition duration-1000 ease-in;
   overflow: visible;

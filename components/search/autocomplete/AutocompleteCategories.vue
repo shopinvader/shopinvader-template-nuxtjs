@@ -67,7 +67,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .autocomplete-category {
   @apply flex flex-wrap gap-2 p-2;
   &__hit {

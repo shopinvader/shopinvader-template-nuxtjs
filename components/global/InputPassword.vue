@@ -102,14 +102,16 @@ watch(model, () => {
   }, 400)
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .input-password {
   @apply form-control w-full;
   &__label {
     @apply label;
   }
   &__input {
-    @apply input input-bordered flex items-center gap-2;
+    @apply input  flex items-center gap-2;
     input {
       @apply grow;
       &--error {

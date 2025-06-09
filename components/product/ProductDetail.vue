@@ -1,58 +1,45 @@
 <template>
-  <div v-if="variant !== null" class="product-detail" :class="cssclass">
+  <div v-if="variant !== null" :class="ui.root({ class: ['product-detail', props.class] })">
     <slot name="schema-seo" :product="variant">
       <product-seo-schema v-if="variant" :product="variant" />
     </slot>
-    <div class="product-detail__header">
+    <div :class="ui.header({ class: 'product-detail__header' })">
       <!-- @slot Breadcrumbs content -->
       <slot name="breadcrumbs" :variant="variant">
-        <div class="breadcrumbs text-sm max-lg:hidden">
-          <ul>
-            <li>
-              <nuxt-link :to="localePath({ path: '/' })">
-                {{ t('navbar.home') }}
-              </nuxt-link>
-            </li>
-            <li v-for="category in breadcrumbs" :key="category.id">
-              <nuxt-link :to="localePath({ path: '/' + category.urlKey })">
-                {{ category.name }}
-              </nuxt-link>
-            </li>
-            <li>
-              {{ variant?.model?.name || variant?.name }}
-            </li>
-          </ul>
-        </div>
-        <div class="lg:hidden">
-          <nuxt-link
-            v-if="lastCategory"
-            :to="localePath({ path: '/' + lastCategory.urlKey })"
-            class="btn btn-ghost btn-sm lg:hidden"
-          >
-            <icon name="left" class="mr-2" />
-            {{ lastCategory.name }}
-          </nuxt-link>
-        </div>
+        <ProductBreadcrumb
+          :product="variant"
+          :ui="theme?.components?.productBreadcrumb"
+        />
       </slot>
       <slot name="intro" :variant="variant"></slot>
     </div>
-    <div class="product-detail__tag">
+    <div :class="ui.tag({class: 'product-detail__tag'})">
       <slot name="tags" :variant="variant">
-        <product-tags v-if="variant" :product="variant" />
+        <product-tags 
+          v-if="variant"
+          :product="variant"
+          :ui="theme?.components?.productTags"
+        />
       </slot>
     </div>
-    <div class="product-detail__image">
+    <div :class="ui.image({class: 'product-detail__image'})">
       <!-- @slot Image content -->
       <slot name="image" :images="variant.images || []" :variant="variant">
-        <product-image-list :images="variant.images || []" :slider="true" />
+        <product-image-list
+          :images="variant.images || []"
+          :slider="true"
+          :ui="theme?.components?.productImageList"
+        />
       </slot>
     </div>
-    <div class="product-detail__content">
+    <div :class="ui.content({class: 'product-detail__content'})">
       <div class="content">
         <div class="content__header">
           <div class="content__ref">
             <!-- @slot Ref content -->
-            <slot name="ref" :variant="variant"> {{ t('product.ref') }} {{ variant.sku }} </slot>
+            <slot name="ref" :variant="variant"> 
+              {{ t('product.ref') }} {{ variant.sku }} 
+            </slot>
           </div>
           <!-- @slot Header content -->
           <slot name="header" :variant="variant">
@@ -160,31 +147,24 @@
     <lazy-debug-json-viewer :data="variant"></lazy-debug-json-viewer>
   </dev-only>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import type { ProductCategory, Product, ProductPrice } from '#models'
-import { useHistoryStore } from '~/stores/history'
-
-const props = defineProps({
-  product: {
-    type: Object as PropType<Product>,
-    required: true
-  },
-  cssclass: {
-    type: String,
-    default: ''
-  }
-})
+import theme from '~/theme/ProductDetail'
+export interface ProductDetailProps {
+  product: Product | null
+  class?: string
+  ui?: typeof theme
+}
+export type ProductDetailUi = typeof theme
+</script>
+<script lang="ts" setup>
+const props = defineProps<ProductDetailProps>()
+const ui = componentUI('ProductDetail', theme, props?.ui)({})
 
 const { t } = useI18n()
 const localePath = useLocalePath()
 const variant = ref<Product>(props.product)
 const router = useRouter()
-
-onMounted(() => {
-  if (variant.value?.sku) {
-    useHistoryStore()?.addProduct(variant.value)
-  }
-})
 
 const changeVariant = (product: Product) => {
   variant.value = product
@@ -194,22 +174,6 @@ const changeVariant = (product: Product) => {
   }
 }
 
-const breadcrumbs = computed(() => {
-  const lastCategoryId: number | null = useHistoryStore()?.lastCategory?.id || null
-  const categories = variant.value.categories || []
-  let category: ProductCategory | null =
-    categories.find((c: any) => c.findCategory(lastCategoryId)) || categories[0] || null
-  const items = []
-  while (category) {
-    items.unshift(category)
-    category = category?.childs?.[0] || null
-  }
-  return items
-})
-
-const lastCategory = computed(() => {
-  return breadcrumbs.value[breadcrumbs.value.length - 1] || null
-})
 const variants = computed<Product[]>(() => {
   return (props.product?.variants as Product[]) || null
 })
@@ -270,8 +234,10 @@ try {
   // do nothing
 }
 </script>
-<style lang="scss">
-.product-detail {
+<style>
+@reference "@/assets/css/main.css";
+
+.product-detail---old {
   @apply relative flex flex-wrap p-3 max-md:flex-col md:p-5;
   &__tag {
     @apply absolute left-10 top-16 z-10;

@@ -60,7 +60,9 @@ const download = async (action: string, id: number) => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .sale {
   &__loading {
     @apply flex h-96 items-center justify-center;

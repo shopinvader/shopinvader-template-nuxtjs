@@ -21,7 +21,9 @@ definePageMeta({
   layout: false
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .login {
   @apply flex min-h-screen flex-col items-center overflow-hidden bg-gradient-to-tr from-white to-gray-100;
   &__header {

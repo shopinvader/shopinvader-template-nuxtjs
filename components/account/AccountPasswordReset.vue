@@ -106,7 +106,9 @@ const submit = async (e: Event) => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .reset-heading {
   @apply mb-10 text-center;
   &__title {
@@ -124,7 +126,7 @@ const submit = async (e: Event) => {
       @apply label;
     }
     input {
-      @apply input input-bordered w-full;
+      @apply input  w-full;
     }
   }
   &__error {

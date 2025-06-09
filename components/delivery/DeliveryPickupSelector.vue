@@ -88,7 +88,9 @@ watch(
   }
 )
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .delivery-pickup {
   @apply flex flex-col items-center gap-2 border-t pt-2 text-sm;
   &__error {
@@ -109,7 +111,7 @@ watch(
             @apply label;
           }
           &__input {
-            @apply input input-sm input-bordered w-full max-w-xs;
+            @apply input input-sm  w-full max-w-xs;
           }
         }
       }

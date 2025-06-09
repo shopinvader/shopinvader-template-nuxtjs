@@ -13,7 +13,7 @@
             <input
               type="text"
               :value="profile?.login || ''"
-              class="input input-bordered w-full max-w-xs"
+              class="input  w-full max-w-xs"
               disabled
             />
           </div>
@@ -28,7 +28,7 @@
             <input
               type="text"
               value="**********"
-              class="input input-bordered w-full max-w-xs"
+              class="input  w-full max-w-xs"
               disabled
             />
             <label class="label">
@@ -69,7 +69,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-profile {
   @apply border-b pb-4;
 }

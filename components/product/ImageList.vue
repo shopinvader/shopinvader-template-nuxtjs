@@ -1,5 +1,55 @@
 <template>
   <div>
+    <div 
+      v-if="slider"
+      :class="ui.root({ class: 'product-image-list' })"
+    >
+      <UCarousel
+        ref="carousel"
+        v-slot="{ item }"
+        arrows
+        :items="images"
+        :prev="{ onClick: onClickPrev }"
+        :next="{ onClick: onClickNext }"
+        @select="onSelect"
+        class="max-w-sm mx-auto"
+      >
+        <NuxtPicture
+          v-if="item.large?.src"
+          :src="item.large?.src"
+          class="mx-auto max-h-96 min-h-max p-6 object-contain max-sm:w-full lg:max-h-[500px] cursor-zoom-in"
+          :alt="item.large?.alt"
+          :title="item.large?.alt"
+          :img-attrs="{ height: 500 }"
+          :placeholder="img(item.large?.src, { h: 500, f: 'webp', q: 10 })"
+          format="webp"
+          @click="onImageZoom(item)"
+        />
+      </UCarousel>
+
+      <div class="flex gap-1 justify-center pt-4 mx-auto">
+        <div
+          v-for="(image, index) in images"
+          :key="index"
+          class="cursor-pointer rounded bg-gray-100 hover:bg-gray-200 w-16 h-16 overflow-hidden flex items-center justify-center"
+          :class="{ 'opacity-100': activeIndex === index }"
+          @click="select(index)"
+        >
+          <nuxt-img
+            :src="image.medium?.src"
+            class="mx-auto object-fill p-2"
+            :alt="image.medium?.alt"
+            :title="image.medium?.alt"
+            :height="70"
+            :width="70"
+            :placeholder="img(image.small?.src || '', { h: 70, f: 'webp', blur: 2, q: 10 })"
+          />
+        </div>
+      </div>
+    </div>
+
+
+    <!--
     <template v-if="slider">
       <div class="image-slider" ref="sliderElement">
         <div
@@ -71,75 +121,60 @@
         </div>
       </div>
     </template>
-
+-->
     <client-only>
-      <aside-drawer :open="selectedImage!== null" class-content="image-zoom" @close="selectedImage = null">
+      <UDrawer
+        v-model:open="selectedImage"
+        direction="left"
+      >
         <template #content>
-          <div v-if="selectedImage && selectedImage?.xlarge" class="image-zoom__zoom">
-            <figure
-              @mousemove="onImageHover"
-              class="zoom__image"
-              :style="`background-image: url(${img(selectedImage?.xlarge?.src, { h: 1500, f: 'webp', blur: 0, q: 100 })})`"
-            >
-              <NuxtPicture
-                v-if="selectedImage.xlarge?.src"
-                :src="selectedImage.xlarge?.src"
-                :alt="selectedImage.xlarge?.alt"
-                :title="selectedImage.xlarge?.alt"
-                height="1000"
-                quality="1000"
-                :placeholder="img(selectedImage.xlarge?.src, { h: 1000, f: 'webp', blur: 2, q: 10 })"
-                format="webp"
-              />
-            </figure>
-            <ul class="zoom__indicators">
-              <li
-                v-for="(image, index) in images"
-                :key="'modal-indicator' + index"
-                class="indicators__items"
-                :class="selectedImage === image ? 'indicators__items__selected' : ''"
-                @click="selectedImage = image"
-              >
-                <nuxt-img
-                  :src="image.medium?.src"
-                  class="items-image"
-                  :alt="image.medium?.alt"
-                  :title="image.medium?.alt"
-                  :height="120"
-                  :width="120"
-                  :placeholder="img(image.medium?.src || '', { h: 120, f: 'webp', blur: 2, q: 10 })"
-                />
-              </li>
-            </ul>
-          </div>
+          <UCard variant="soft">
+            {{  selectedImage?.large?.alt || 'Zoomed Image' }}
+            <template #footer>
+              
+            </template>
+          </UCard>
         </template>
-        <template #footer>
-          <div>
-            <button class="btn btn-primary" @click="selectedImage = null">
-              {{ $t('actions.close') }}
-            </button>
-          </div>
-        </template>
-      </aside-drawer>
+      </UDrawer>
+      
     </client-only>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts">
 import  { type ProductImageSet } from '#models'
-defineProps({
-  images: {
-    type: Array as PropType<ProductImageSet[]>,
-    required: true
-  },
-  slider: {
-    type: Boolean
-  },
-  zoom: {
-    type: Boolean,
-    default: true
-  }
-})
+import theme from '~/theme/ProductImageList'
+export type ProductImageListUi = typeof theme
+export interface ProductImageListProps {
+  images: ProductImageSet[]
+  slider?: boolean
+  zoom?: boolean
+  ui?: ProductImageListUi
+}
+
+</script>
+<script lang="ts" setup>
+const props = defineProps<ProductImageListProps>()
+const carousel = useTemplateRef('carousel')
+const ui = componentUI('ProductImageList', theme, props?.ui ||{})({})
+console.log('theme', theme, ui)
+const activeIndex = ref(0)
+const onClickPrev = () => {
+  activeIndex.value--
+}
+const onClickNext = () => {
+  activeIndex.value++
+}
+const onSelect = (index: number) => {
+  activeIndex.value = index
+}
+const select = (index: number) => {
+  activeIndex.value = index
+  carousel.value?.emblaApi?.scrollTo(index)
+}
+
+
+
 const img = useImage()
 const sliderElement = ref()
 const selectedImage = ref<ProductImageSet | null>(null)
@@ -165,7 +200,9 @@ const onImageHover = (e:MouseEvent) => {
 
 }
 </script>
-<style lang="scss">
+<!-- <style>
+@reference "@/assets/css/main.css";
+
 .image-slider {
   @apply carousel w-full items-center rounded max-md:h-full min-h-[500px];
   &__item {
@@ -213,7 +250,7 @@ const onImageHover = (e:MouseEvent) => {
       &__indicators {
         @apply flex flex-row lg:flex-col gap-1 lg:gap-2 items-center;
         .indicators__items {
-          @apply card card-bordered overflow-hidden cursor-pointer w-20 h-20 flex items-center justify-center;
+          @apply card  overflow-hidden cursor-pointer w-20 h-20 flex items-center justify-center;
           &__selected {
             @apply border-primary-500;
           }
@@ -222,4 +259,4 @@ const onImageHover = (e:MouseEvent) => {
     }
   }
 }
-</style>
+</style> -->

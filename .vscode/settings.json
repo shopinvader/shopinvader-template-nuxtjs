@@ -2,6 +2,9 @@
   "editor.tabSize": 2,
   "editor.formatOnSave": false,
   "scss.lint.unknownAtRules": "ignore",
+  "tailwindCSS.experimental.classRegex": [
+    ["([\"'`][^\"'`]*.*?[\"'`])", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
   "[vue]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },

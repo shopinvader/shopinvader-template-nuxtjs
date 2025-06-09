@@ -202,7 +202,7 @@
                       type="file"
                       @change="(e) => addFile(e)"
                       ref="inputFile"
-                      class="file-input file-input-bordered w-full"
+                      class="file-input file- w-full"
                       :class="fileError ? 'file-input-error' : 'file-input-primary'"
                       :disabled="loading"
                       autocomplete="off"
@@ -323,7 +323,9 @@ const save = async (e: Event) => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .component-section {
   @apply py-20;
   &__container {

@@ -343,7 +343,9 @@ watch(
   }
 )
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .searchfilter {
   @apply card mb-3 bg-gray-50 p-5 hover:bg-gray-100;
   &__header {
@@ -371,7 +373,7 @@ watch(
   }
   &__searchable {
     .searchable__input {
-      @apply input input-xs input-bordered w-full rounded-sm;
+      @apply input input-xs  w-full rounded-sm;
     }
   }
 }

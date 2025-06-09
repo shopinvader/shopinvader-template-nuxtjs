@@ -166,7 +166,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .search-autocomplete {
   @apply relative w-full;
   .backdrop {
@@ -175,7 +177,7 @@ export default {
   &__form {
     .form {
       &__input {
-        @apply input input-bordered relative flex items-center gap-2 pr-0;
+        @apply input  relative flex items-center gap-2 pr-0;
         .search-input {
           @apply grow bg-transparent;
           &:focus {

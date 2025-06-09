@@ -70,7 +70,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .autocomplete-history {
   &__item {
     @apply flex items-center justify-between p-1;

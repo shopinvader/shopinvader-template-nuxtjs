@@ -1,94 +1,107 @@
 <template>
-  <div
-    class="product-hit"
-    :class="{
-      'product-hit--inline': inline,
-      'product-hit--loading': !variant,
-      [props.cssClass]: true
+  <UCard
+    :ui="{
+      root: ui.root({ class: 'product-hit'}),
+      header: ui.header({ class: 'product-hit__header' }),
+      body: ui.body({ class: 'product-hit__body' }),
+      footer: ui.footer({ class: 'product-hit__footer' }),
     }"
   >
-    <slot name="header"></slot>
-    <div class="product-hit__tag">
-      <slot name="tags" :product="variant">
-        <product-tags v-if="variant" :product="variant" />
-      </slot>
-    </div>
-    <div class="product-hit__image">
-      <slot name="images" :product="variant" :images="variant?.images || null">
-        <product-image
-          v-if="variant?.images && variant.images.length > 0"
-          :image="variant.images[0]"
-          @click="linkToProduct()"
-        >
-        </product-image>
-        <div v-else class="noimage" @click="linkToProduct()"></div>
-      </slot>
-    </div>
-    <div class="product-hit__body">
-      <slot name="body" :product="variant">
-        <div class="body__title">
-          <slot name="title" :product="variant">
-            <nuxt-link v-if="linkPath" :to="linkPath">
-              {{ variant?.model?.name || variant?.name }}
-            </nuxt-link>
-          </slot>
-        </div>
-        <div class="body__variants">
-          <slot name="variants" :variants="variants">
-            <div v-if="variant?.variantCount && variant?.variantCount > 1">
-              {{ $t('product.variants.count', { count: variant?.variantCount }) }}
-            </div>
-          </slot>
-        </div>
-        <div class="body__desc">
+    <template #header>
+      <slot name="header" :product="variant"></slot>
+      <div :class="ui.tag({ class: 'product-hit__tag'})">
+        <slot name="tags" :product="variant">
+          <product-tags 
+            v-if="variant" 
+            :product="variant"
+            :ui="theme?.components?.productTags"
+          />
+        </slot>
+      </div>
+      <div :class="ui.image({ class: 'product-hit__image'})">
+        <slot name="images" :product="variant" :images="variant?.images || null">
+          <product-image
+            v-if="variant?.images && variant.images.length > 0"
+            :image="variant.images[0]"
+            :ui="theme?.components?.productImage"
+            @click="linkToProduct()"
+          >
+          </product-image>
+          <div v-else class="noimage" @click="linkToProduct()"></div>
+        </slot>
+      </div>
+    </template>
+    <slot name="body" :product="variant">
+      <div :class="ui.title({ class: 'body__title' })">
+        <slot name="title" :product="variant">
+          <nuxt-link v-if="linkPath" :to="linkPath">
+            {{ variant?.model?.name || variant?.name }}
+          </nuxt-link>
+        </slot>
+      </div>
+      <div :class="ui.variants({ class: 'body__variants' })">
+        <slot name="variants" :variants="variants">
+          <div v-if="variant?.variantCount && variant?.variantCount > 1">
+            {{ t('product.variants.count', { count: variant?.variantCount }) }}
+          </div>
+        </slot>
+      </div>
+      <div :class="ui.desc({ class: 'body__desc' })">
+        <div>
           <slot name="desc" :product="variant"></slot>
         </div>
-        <div class="body__stock">
-          <slot name="product-stock" :product="variant">
-            <product-stock v-if="variant && variant?.stock !== null" :stock="variant?.stock">
-            </product-stock>
-          </slot>
-        </div>
-        <div class="body__price">
-          <slot name="price" :product="variant" :price="price">
-            <product-price v-if="price !== null" :price="price"> </product-price>
-          </slot>
-        </div>
-
-        <div v-if="!readonly" class="body__actions">
-          <slot name="actions" :product="variant"> </slot>
-        </div>
-      </slot>
-    </div>
-    <div class="product-hit__footer">
+      </div>
+      <div :class="ui.stock({ class: 'body__stock' })">
+        <slot name="product-stock" :product="variant">
+          <product-stock 
+            v-if="variant && variant?.stock !== null" 
+            :stock="variant?.stock"
+            :ui="theme?.components?.productStock"
+          />
+        </slot>
+      </div>
+      <div :class="ui.price({ class: 'body__price' })">
+        <slot name="price" :product="variant" :price="price">
+          <product-price v-if="price !== null" :price="price" :ui="theme?.components?.productPrice"/>
+        </slot>
+      </div>
+      <div v-if="!readonly && !!slots.actions" :class="ui.actions({ class: 'body__actions' })">
+        <slot name="actions" :product="variant"> </slot>
+      </div>
+    </slot>
+    <template v-if="!!slots.footer" #footer>
       <slot name="footer" :product="variant"></slot>
-    </div>
-  </div>
+    </template>
+  </UCard>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import type { Product, ProductPrice } from '#models'
-import type { PropType } from 'vue'
-const props = defineProps({
-  product: {
-    type: Object as PropType<Product>,
-    required: false,
-    default: null
-  },
-  inline: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-  readonly: {
-    type: Boolean,
-    required: false,
-    default: false
-  },
-  cssClass: {
-    type: String,
-    default: ''
-  }
-})
+import theme from '~/theme/ProductHit'
+export type ProductHitUi = typeof theme
+export interface ProductHitProps {
+  product?: Product | null
+  inline?: boolean
+  readonly?: boolean
+  ui?: ProductHitUi
+}
+export interface ProductHitSlots {
+  header?: { product: Product | null }
+  body?: { product: Product | null, variants?: Product[] }
+  footer?: { product: Product | null }
+  images?: { product: Product | null, images: string[] | null }
+  title?: { product: Product | null }
+  desc?: { product: Product | null }
+  price?: { product: Product | null, price: ProductPrice | null }
+  actions?: { product: Product | null }
+  tags?: { product: Product | null }
+}
+</script>
+<script lang="ts" setup>
+const props = defineProps<ProductHitProps>()
+const slots = defineSlots<ProductHitSlots>()
+const { t } = useI18n()
+const ui = computed(() => componentUI('ProductHit', theme, props.ui)({}))
+
 const localePath = useLocalePath()
 const authService = useShopinvaderService('auth')
 const router = useRouter()
@@ -142,128 +155,5 @@ const linkToProduct = () => {
     })
   }
 }
+
 </script>
-<style lang="scss">
-.product-hit {
-  @apply card card-bordered relative flex h-full flex-col p-2 duration-300 ease-in hover:rounded-md hover:shadow-xl lg:p-3;
-  align-self: flex-end;
-  flex-direction: column;
-  align-items: stretch;
-  &__tag {
-    @apply absolute left-1 top-2 z-10;
-  }
-  &__image {
-    @apply relative aspect-square max-h-full cursor-pointer overflow-hidden pb-2;
-    .product-image {
-      @apply h-full w-full rounded-md;
-      img {
-        @apply card h-full w-full object-contain transition-transform hover:scale-125;
-      }
-    }
-    .noimage {
-      @apply card h-full w-full bg-slate-100;
-    }
-  }
-
-  &__body {
-    @apply card-body grow px-0 py-2 text-sm;
-
-    .body__title {
-      @apply line-clamp-2;
-      flex-grow: 1;
-      cursor: pointer;
-    }
-    .body__body {
-      flex-grow: 1;
-      cursor: pointer;
-    }
-    .body__actions {
-      @apply card-actions pt-2;
-      .product-cart {
-        &__add {
-          @apply btn-circle;
-          .add-label {
-            @apply hidden;
-          }
-        }
-      }
-      .cart-line-qty {
-        @apply w-40 bg-primary;
-        .cartline-qty {
-          &__btn {
-            @apply bg-inherit text-white;
-
-            &:hover {
-              @apply border-primary bg-secondary;
-            }
-          }
-          &__input {
-            @apply border-0 bg-inherit text-white;
-          }
-        }
-      }
-    }
-    .body__price {
-      .product-price {
-        @apply justify-start;
-        &__value {
-          @apply text-lg font-bold;
-        }
-      }
-      @apply text-right;
-    }
-    .body__variants {
-      @apply text-xs text-gray-600;
-    }
-  }
-  &--inline {
-    flex-direction: row;
-    .product-hit__image {
-      @apply w-1/5 md:w-1/6;
-    }
-    .product-hit__body {
-      @apply flex flex-col flex-wrap justify-between pl-6 md:flex-row;
-      .body__title {
-        @apply md:order-1 md:w-1/3;
-      }
-      .body__desc {
-        @apply md:order-3 md:w-2/3;
-      }
-      .body__price {
-        @apply md:order-2 md:w-1/3 md:border-l md:p-3;
-        .product-price {
-          @apply justify-end;
-        }
-      }
-      .body__actions {
-        @apply md:order-5 md:w-1/3 md:p-3;
-      }
-      .body__stock {
-        @apply md:order-4 md:w-2/3;
-      }
-    }
-  }
-  &--loading {
-    .product-hit {
-      &__image {
-        .noimage {
-          @apply animate-pulse cursor-default rounded-lg bg-gray-200;
-        }
-      }
-      &__body {
-        .body {
-          &__title {
-            @apply h-3 w-2/3 animate-pulse cursor-default rounded-lg bg-gray-200;
-          }
-          &__desc {
-            @apply h-3 w-full animate-pulse cursor-default rounded-lg bg-gray-200;
-          }
-          &__price {
-            @apply h-3 w-1/3 animate-pulse cursor-default items-end rounded-lg bg-gray-200;
-          }
-        }
-      }
-    }
-  }
-}
-</style>

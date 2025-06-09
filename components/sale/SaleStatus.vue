@@ -12,7 +12,9 @@ defineProps({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .status {
   @apply relative m-0 pl-4 text-sm;
   &:before {

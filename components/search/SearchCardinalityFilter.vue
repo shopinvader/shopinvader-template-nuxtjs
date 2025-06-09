@@ -259,7 +259,9 @@ onMounted(() => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .searchfilter {
   @apply mb-3 bg-gray-50 p-5 hover:bg-gray-100;
   &__header {

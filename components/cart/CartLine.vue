@@ -1,211 +1,227 @@
 <template>
-  <div class="cartline" :class="{ 'cartline--pending': hasPendingTransactions }">
-    <div class="cartline__image">
-      <!--
-        @slot Cart line's image content
-        @binding {ProductImage} images - images of the product cart line
-      -->
+  <uCard 
+    :ui="{
+      root: ui.root({ class: 'cartline' }),
+      body: ui.content({ class: 'cartline__content' }),
+    }"
+  >
+    <div :class="ui.image({ class: 'cartline__image' })">
       <slot v-if="product" name="image" :images="product?.images || null">
-        <product-image
+        <ProductImage
           v-if="product && product?.images && product.images.length > 0"
           :image="product.images[0]"
           class="product-hit__image"
           @click="linkToProduct()"
-        >
-        </product-image>
+          :ui="ui?.components?.ProductImage"
+        />
       </slot>
     </div>
-    <div class="cartline__content">
-      <div class="content__header">
-        <!--
-          @slot Content before the title
-          @binding {CartLine} line - cart line
-        -->
-        <slot name="header" :line="line"></slot>
-      </div>
-
-      <div class="content__title">
-        <!--
-          @slot Title content
-          @binding {CartLine} line - cart line
-        -->
-        <slot name="title" :line="line">
-          <template v-if="product">
-            <nuxt-link class="title" :to="localePath('/' + product.urlKey)">
-              {{ product?.model?.name || product?.name }}
-            </nuxt-link>
-            <ul class="shortTitle">
-              <li v-for="[key, value] in attributes" :key="key">
-                {{ value }}
-              </li>
-            </ul>
-          </template>
-          <template v-else>
-            <div class="title">
-              {{ line?.name }}
-            </div>
-          </template>
-        </slot>
-        <slot name="stock" :stock="product?.stock">
-          <product-stock v-if="product?.stock" :stock="product?.stock" />
-        </slot>
-      </div>
-
-      <div class="content__qty">
-        <!--
-          @slot Quantity selector content
-          @binding {CartLine} line - cart line
-        -->
-        <slot name="qty" :line="line" v-if="amount.total >= 0">
-          <div class="label">
-            {{ t('cart.line.quantity') }}
-            <span v-if="readonly === true">{{ line?.qty }}</span>
-          </div>
-          <div class="value">
-            <cart-line-qty v-if="!readonly" :line="line"></cart-line-qty>
-          </div>
-        </slot>
-      </div>
-      <div class="content__body">
-        <!--
-          @slot Body content
-          @binding {CartLine} line - cart line
-        -->
-        <slot name="body" :line="line"></slot>
-      </div>
-      <div class="content__delete">
-        <button
-          v-if="!readonly"
-          type="button"
-          class="btn btn-link btn-xs p-0 text-xs"
-          :title="t('cart.line.delete')"
-          @click="deleteLine"
-        >
-          <icon name="remove" class="text-xl" />
-          {{ t('cart.line.delete') }}
-        </button>
-      </div>
-
-      <div class="content__price">
-        <!--
-          @slot price content
-          @binding {CartLine} line - cart line
-        -->
-        <slot name="price" :line="line">
-          <div class="label">
-            {{ t('cart.line.total') }}
-          </div>
-          <div class="value">
-            <div v-if="line.amount.discountTotal !== 0" class="price__original">
-              {{ formatCurrency(amount.totalWithoutDiscount) }}
-            </div>
-            <div class="price__value">
-              {{ formatCurrency(amount.total) }}
-            </div>
-          </div>
-        </slot>
-      </div>
-      <div class="content__footer">
-        <!--
-          @slot footer content
-          @binding {CartLine} line - cart line
-        -->
-        <slot name="footer" :line="line"></slot>
-      </div>
+    <div v-if="!!slots?.header" :class="ui.header({ class: 'content__header' })">
+      <slot name="header" :line="line"></slot>
     </div>
-  </div>
+    <div :class="ui.title({ class: 'content__title' })">
+      <slot name="title" :line="line">
+        <template v-if="product">
+          <nuxt-link class="title" :to="localePath('/' + product.urlKey)">
+            {{ product?.model?.name || product?.name }}
+          </nuxt-link>
+        </template>
+        <template v-else>
+          <div class="title">
+            {{ line?.name }}
+          </div>
+        </template>
+      </slot>
+    </div>
+    <div :class="ui.subtitle({ class: 'content__subtitle' })">
+      <slot name="subtitle" :line="line">
+        <ul class="flex divide-x divide-solid text-xs text-gray-500 shortTitle">
+          <li v-for="[key, value] in attributes" :key="key">
+            {{ value }}
+          </li>
+        </ul>
+      </slot>
+    </div>
+    <div :class="ui.stock({ class: 'content__stock' })">
+      <slot name="stock" :stock="product?.stock">
+        <ProductStock v-if="product?.stock" :stock="product?.stock" :ui="ui.components?.stock"/>
+      </slot>
+    </div>
+    <div :class="ui.quantity({ class: 'content__qty' })">
+      <slot name="qty" :line="line" v-if="amount.total >= 0">
+        <div class="label">
+          {{ t('cart.line.quantity') }}
+          <span v-if="readonly === true">{{ line?.qty }}</span>
+        </div>
+        <div class="value">
+          <cart-line-qty v-if="!readonly" :line="line"></cart-line-qty>
+        </div>
+      </slot>
+    </div>
+    <div v-if="!!slots?.body" :class="ui.body({ class: 'content__body' })">
+      <slot name="body" :line="line"></slot>
+    </div>
+    <div :class="ui?.delete?.({ class: 'content__delete' })">
+      <slot v-if="!readonly" name="delete" :line="line" :delete-line="deleteLine">
+        <UButton
+          type="button"
+          variant="link"
+          size="sm"
+          leading-icon="remove"
+          color="neutral"
+          :class="ui?.deleteLink?.({ class: 'delete_link' })"
+          :label="t('cart.line.delete')"
+          @click="deleteLine"
+        />
+      </slot>
+    </div>
+
+    <div :class="ui.price({ class: 'content__price' })">
+      <slot name="price" :line="line">
+        <div class="label">
+          {{ t('cart.line.total') }}
+        </div>
+        <div v-if="line.amount.discountTotal !== 0" class="line-through text-gray-400 price__original">
+          {{ formatCurrency(amount.totalWithoutDiscount) }}
+        </div>
+        <div class="price__value">
+          {{ formatCurrency(amount.total) }}
+        </div>
+      </slot>
+    </div>
+    <div v-if="!!slots?.footer" :class="ui.footer({ class: 'content__footer' })">
+      <slot name="footer" :line="line" />
+    </div>
+  </uCard>
 </template>
 <script lang="ts">
-import { CartLine, CartLineAmount } from '#models'
-import type { PropType } from 'vue'
+import { type CartLine, type CartLineAmount } from '#models'
 import { formatCurrency } from '~/utils/StringHelper'
-import ProductImageVue from '../product/ProductImage.vue'
-import CartLineQtyVue from './CartLineQty.vue'
+
+import theme, { type CartLineUI } from '~/theme/CartLine'
+export interface CartLineProps {
+  // The cart line to display
+  line: CartLine
+  ui?: CartLineUI
+  // If the line is readonly (can't be modified)
+  readonly?: boolean
+}
+export interface CartLineEmits {
+  /**
+   * Called after the line is deleted
+   * @param line The current line
+   */
+  deleteLine: (line: CartLine) => void
+}
+export interface CartLineSlots {
+  /**
+   * Slot for the image of the product
+   * @binding {ProductImage} images - images of the product cart line
+   */
+  image?: (props: { images: CartLine['product']['images'] }) => any
+  /**
+   * Slot for the header content
+   * @binding {CartLine} line - cart line
+   */
+  header?: (props: { line: CartLine }) => any
+  /**
+   * Slot for the title content
+   * @binding {CartLine} line - cart line
+   */
+  title?: (props: { line: CartLine }) => any
+  /**
+   * Slot for the subtitle content
+   * @binding {CartLine} line - cart line
+   */
+  subtitle?: (props: { line: CartLine }) => any
+  /**
+   * Slot for the stock content
+   * @binding {CartLine} stock - stock of the product
+   */
+  stock?: (props: { stock: CartLine['product']['stock'] }) => any
+  /**
+   * Slot for the quantity selector content
+   * @binding {CartLine} line - cart line
+   */
+  qty?: (props: { line: CartLine }) => any
+  /**
+   * Slot for the body content
+   * @binding {CartLine} line - cart line
+   */
+  body?: (props: { line: CartLine }) => any
+  /**
+   * Slot for the delete button content
+   * @binding {CartLine} line - cart line
+   * @binding {Function} deleteLine - function to delete the line
+   */
+  delete?: (props: { line: CartLine, deleteLine: () => void }) => any
+  /**
+   * Slot for the price content
+   * @binding {CartLine} line - cart line
+   */
+  price?: (props: { line: CartLine }) => any
+  /**
+   * Slot for the footer content
+   * @binding {CartLine} line - cart line
+   */
+  footer?: (props: { line: CartLine }) => any
+}
+</script>
+<script lang="ts" setup>
 
 /**
  * Display a line of the cart
- * @displayName Cart Line
- * @component CartLine
- * @example default
  */
-export default defineNuxtComponent({
-  name: 'CartLine',
-  components: {
-    'product-image': ProductImageVue,
-    'cart-line-qty': CartLineQtyVue
-  },
-  props: {
-    // The cart line to display
-    line: {
-      type: Object as PropType<CartLine>,
-      required: true,
-      default: null
-    },
-    // If the line is readonly (can't be modified)
-    readonly: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
-  emits: {
-    /**
-     * Called after the line is deleted
-     * @param line The current line
-     */
-    deleteLine: (line: any) => {
-      return line instanceof CartLine
-    }
-  },
-  setup() {
-    const localePath = useLocalePath()
-    const { t } = useI18n()
-    return {
-      localePath,
-      formatCurrency,
-      t
-    }
-  },
-  computed: {
-    amount(): CartLineAmount {
-      return this.line?.amount || new CartLineAmount({})
-    },
-    product() {
-      return this.line?.product || null
-    },
-    hasPendingTransactions() {
-      return this.line?.hasPendingTransactions || false
-    },
-    attributes() {
-      if (!this.product) return []
-      return Object.entries(this.product?.variantAttributes) || []
-    }
-  },
-  methods: {
-    /**
-     * Redirect to the product page
-     */
-    linkToProduct() {
-      if (this.product) {
-        this.$router.push({
-          path: '/' + this.product?.urlKey
-        })
-      }
-    },
-    deleteLine() {
-      const cartService = useShopinvaderService('cart')
-      if (cartService !== null) {
-        cartService.deleteItem(this.line)
-      }
-      this.$emit('deleteLine', this.line)
-    }
-  }
+const props = defineProps<CartLineProps>()
+const emit = defineEmits<CartLineEmits>()
+const slots = defineSlots<CartLineSlots>()
+const ui = componentUI('CartLine', theme, props?.ui)({})
+const localePath = useLocalePath()
+const cartService = useShopinvaderService('cart')
+const router = useRouter()
+const { t } = useI18n()
+
+const amount = computed(() => {
+  return props.line?.amount || new CartLineAmount({})
 })
+const product = computed(() => {
+  return props.line?.product || null
+})
+const hasPendingTransactions = computed(() => {
+  return props.line?.hasPendingTransactions || false
+})
+const attributes = computed(() => {
+  if (!product.value) return []
+  return Object.entries(product.value?.variantAttributes) || []
+})
+/**
+ * Redirect to the product page
+ */
+const linkToProduct = () => {
+  if (product.value) {
+    router.push({
+      path: '/' + product.value?.urlKey
+    })
+  }
+}
+const deleteLine = () => {
+  
+  if (cartService !== null) {
+    cartService.deleteItem(props.line)
+  }
+  if (props?.line) {
+    emit('deleteLine', props.line)
+  }
+}
+
+
 </script>
 
-<style lang="scss">
-.cartline {
-  @apply card card-bordered card-side mb-2 flex justify-center p-3 sm:flex-nowrap;
+<style>
+@reference "@/assets/css/main.css";
+
+.cartline--- {
+  @apply card  card-side mb-2 flex justify-center p-3 sm:flex-nowrap;
   &--pending {
     .cartline__content {
       .content__price .value {

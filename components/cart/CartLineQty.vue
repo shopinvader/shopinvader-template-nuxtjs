@@ -91,4 +91,6 @@ export default {
   }
 }
 </script>
-<style lang="scss"></style>
+<style>
+@reference "@/assets/css/main.css";
+</style>

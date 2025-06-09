@@ -116,7 +116,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .checkout-payment {
   @apply grid grid-cols-1 gap-6 md:grid-cols-3;
   &__header {

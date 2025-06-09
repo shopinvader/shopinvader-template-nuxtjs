@@ -14,7 +14,9 @@
     <Notifications />
   </div>
 </template>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .layout-checkout {
   main {
     @apply container mx-auto flex-grow;

@@ -17,4 +17,6 @@ const submit = () => {
   router.push(localePath('/checkout'))
 }
 </script>
-<style lang="scss"></style>
+<style>
+@reference "@/assets/css/main.css";
+</style>

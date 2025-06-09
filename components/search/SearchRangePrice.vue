@@ -304,7 +304,9 @@ export default {
 }
 </script>
 <style src="@vueform/slider/themes/default.css"></style>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .filter-price-range.searchfilter {
   .searchfilter {
     @apply mb-3 bg-gray-50 p-5 hover:bg-gray-100;

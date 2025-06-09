@@ -193,7 +193,9 @@ onUnmounted(() => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .data-table {
   @apply flex w-full flex-col gap-2 overflow-x-auto;
   &__content {
@@ -204,7 +206,7 @@ onUnmounted(() => {
       tbody {
         @apply gap-3 max-lg:flex max-lg:w-full max-lg:flex-col;
         tr.data-line {
-          @apply w-full gap-1 max-lg:card max-lg:card-bordered hover:bg-gray-50 max-lg:grid max-lg:grid-cols-2;
+          @apply w-full gap-1 max-lg:card max-lg: hover:bg-gray-50 max-lg:grid max-lg:grid-cols-2;
           .data-line__cell {
             @apply flex-col max-lg:flex max-lg:py-1;
             .cell {

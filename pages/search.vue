@@ -42,7 +42,9 @@ const query = () => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .searchProduct-queryString {
   @apply px-6 pt-4 font-heading text-xl;
 }

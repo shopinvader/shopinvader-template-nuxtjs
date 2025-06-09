@@ -183,7 +183,9 @@ const setCartAddress = async (address: Address) => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .checkout-address {
   @apply flex flex-col gap-6;
   &__form {

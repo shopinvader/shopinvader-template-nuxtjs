@@ -35,7 +35,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-empty {
   @apply flex flex-col items-center justify-center py-4;
   &__title {

@@ -15,7 +15,9 @@
   </nuxt-link>
 </template>
 <script lang="ts" setup></script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-icon {
   @apply relative flex px-2 pb-5;
   .button {

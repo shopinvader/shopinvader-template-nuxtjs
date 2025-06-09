@@ -1,5 +1,6 @@
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
+import tailwindcss from "@tailwindcss/vite";
 const dir = dirname(fileURLToPath(import.meta.url))
 
 export default defineNuxtConfig({
@@ -7,11 +8,15 @@ export default defineNuxtConfig({
     compressPublicAssets: true,
     minify: true
   },
-
+  vite: { 
+    plugins: [
+      tailwindcss()
+    ]
+  },
   delayHydration: {
     mode: 'init'
   },
-
+  css: ['~/assets/css/main.css'],
   app: {
     head: {
       templateParams: {
@@ -23,7 +28,7 @@ export default defineNuxtConfig({
     }
   },
 
-  css: ['~/assets/css/main.scss'],
+  
 
   runtimeConfig: {
     // Serveur-side only configuration
@@ -67,7 +72,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/critters',
     '@nuxt/icon',
-    '@nuxtjs/tailwindcss',
+    '@nuxt/ui',
+    //'@nuxtjs/tailwindcss',
     join(dir, 'modules/shopinvader'),
     '@pinia/nuxt',
     '@pinia-plugin-persistedstate/nuxt',

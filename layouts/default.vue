@@ -16,7 +16,9 @@
   </div>
 </template>
 <script lang="ts" setup></script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .layout-default {
   main {
     @apply container mx-auto flex-grow;

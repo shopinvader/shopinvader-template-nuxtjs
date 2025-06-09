@@ -71,7 +71,9 @@ export default defineNuxtComponent({
 })
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-navbar {
   @apply h-full;
   &__content {

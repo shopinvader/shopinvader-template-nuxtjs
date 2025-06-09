@@ -55,7 +55,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .variants {
   @apply flex flex-wrap py-2;
   &__hit {

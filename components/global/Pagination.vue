@@ -66,7 +66,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .pagination {
   @apply join gap-1;
   &__btn {

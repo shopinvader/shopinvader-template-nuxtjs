@@ -39,7 +39,9 @@ defineProps({
 })
 const emit = defineEmits(['select'])
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .method {
   @apply flex w-full cursor-pointer gap-2 rounded border p-4 transition-all duration-300 ease-in-out hover:border-primary hover:shadow-md;
   &--selected {

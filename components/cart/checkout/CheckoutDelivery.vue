@@ -256,7 +256,9 @@ const selectCarrier = async (carrier: DeliveryCarrier) => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .checkout-delivery {
   @apply grid grid-cols-3 gap-6;
   &__items {

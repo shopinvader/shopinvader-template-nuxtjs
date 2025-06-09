@@ -21,7 +21,9 @@ const notifications = computed(() => {
   return notifications.messages
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .toast {
   @apply whitespace-normal;
   .alert {

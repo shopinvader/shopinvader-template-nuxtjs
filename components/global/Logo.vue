@@ -32,7 +32,9 @@ const config = useAppConfig()
 const logoUrl = config.theme.logo
 
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .logo-container {
   img {
     max-width: 300px;

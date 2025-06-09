@@ -43,7 +43,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .header-lite {
   @apply bg-gray-100 py-5;
   &__content {

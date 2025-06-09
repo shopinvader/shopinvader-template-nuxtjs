@@ -34,7 +34,9 @@ defineProps({
 const isOpen = ref(false)
 const { t } = useI18n()
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .sale-pickings {
   @apply inline-block;
   &__link {

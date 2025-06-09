@@ -63,7 +63,9 @@ export default defineNuxtComponent({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 body {
   &.aside--opened {
     @apply max-h-screen overflow-hidden;

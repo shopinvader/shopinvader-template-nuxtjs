@@ -58,7 +58,9 @@ export default defineNuxtComponent({
 })
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .product-links {
   &__title {
     flex-grow: 1;

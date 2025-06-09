@@ -33,7 +33,9 @@ defineProps({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-lines {
   @apply flex h-full w-full flex-col items-center justify-stretch;
   .cartline {

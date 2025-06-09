@@ -63,7 +63,9 @@ const navigateToSale = async (order: Sale) => {
   await navigateTo(localePath({ path: `/account/sales/${order?.id}` }))
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .sale-order-list {
   .sale {
     &__name {

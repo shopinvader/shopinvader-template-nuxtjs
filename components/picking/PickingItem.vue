@@ -62,9 +62,11 @@ defineProps({
 })
 const { t, locale } = useI18n()
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .picking-item {
-  @apply card card-body card-bordered p-4;
+  @apply card card-body  p-4;
   &__carrier {
     @apply flex items-center gap-2;
     .carrier__name {

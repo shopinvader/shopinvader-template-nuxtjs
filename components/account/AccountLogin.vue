@@ -126,17 +126,19 @@ const submit = async (_e: Event) => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-login {
   @apply flex max-w-sm flex-col;
   &__form {
-    @apply card card-body card-bordered rounded-b-none bg-white;
+    @apply card card-body  rounded-b-none bg-white;
     .form {
       &__control {
         @apply form-control w-full max-w-xs;
         .control {
           &__input {
-            @apply input input-bordered w-full max-w-xs;
+            @apply input  w-full max-w-xs;
           }
         }
         &.control-password {

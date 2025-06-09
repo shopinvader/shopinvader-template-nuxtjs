@@ -119,5 +119,25 @@ export default defineAppConfig({
   },
   search: {
     filters: []
+  },
+  ui: {
+    ProductHit: {
+      slots: {
+        root: 'bg-gray-50/50',
+        header: '',
+      },
+      components: {
+        price: {
+          slots: {
+            root: 'text-green-500'
+          }
+        }
+      },
+    },
+    ProductPrice: {
+      slots: {
+        root: 'border'
+      }
+    }
   }
 })

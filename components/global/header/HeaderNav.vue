@@ -55,7 +55,9 @@ const { data: categories, status } = await useLazyAsyncData('categories', async 
   return await categoryService.getNavCategories()
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .drawer-content {
   .navbar {
     &--pending {

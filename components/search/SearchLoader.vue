@@ -4,7 +4,9 @@
   </div>
 </template>
 <script lang="ts" setup></script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .search-loader {
   @apply mt-24 grid h-full w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3;
 }

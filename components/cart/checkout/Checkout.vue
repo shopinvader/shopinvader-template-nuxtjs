@@ -356,10 +356,12 @@ const change = () => {
 }
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .checkout {
   @apply p-4;
-  &__header {
+  .checkout__header {
     @apply sticky left-0 top-0 z-10 hidden w-full border-b bg-gray-50 py-4 md:block;
     .checkout-stepper {
       @apply flex w-full flex-row justify-center md:gap-8;
@@ -396,25 +398,25 @@ const change = () => {
       }
     }
   }
-  &__cart {
+  .checkout__cart {
     @apply mt-3 flex flex-row flex-wrap items-center justify-start gap-2 bg-slate-100 p-3;
-    .cart {
-      &__icon {
+    
+      .cart__icon {
         @apply text-4xl text-primary;
       }
-      &__body {
-        @apply flex flex-grow flex-col justify-start text-sm;
-        .body {
-          &__title {
-            @apply font-bold text-primary;
-          }
+    
+    .cart__body {
+      @apply flex flex-grow flex-col justify-start text-sm;
+      .body {
+        &__title {
+          @apply font-bold text-primary;
         }
       }
-      &__lines {
-        @apply w-full flex-grow;
-        .cartline {
-          @apply border-0 bg-white text-sm;
-        }
+    }
+    .cart__lines {
+      @apply w-full flex-grow;
+      .cartline {
+        @apply border-0 bg-white text-sm;
       }
     }
   }

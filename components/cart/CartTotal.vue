@@ -81,9 +81,11 @@ const { t } = useI18n()
 const cartService = useShopinvaderService('cart')
 const cart = cartService.getCart()
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-total {
-  @apply card card-body card-bordered bg-gray-100;
+  @apply card card-body  bg-gray-100;
   &__title {
     @apply border-b font-heading text-xl;
   }

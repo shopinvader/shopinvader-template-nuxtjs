@@ -33,7 +33,9 @@ onMounted(async () => {
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .payment-stripe {
   @apply flex min-h-20 flex-col items-center;
   &__error {

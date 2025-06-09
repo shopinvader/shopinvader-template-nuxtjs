@@ -60,7 +60,7 @@
                 type="text"
                 required
                 :placeholder="$t('account.address.firstname')"
-                class="input input-bordered w-full"
+                class="input  w-full"
               />
             </div>
             <div class="form-control max-md:col-span-2">
@@ -75,7 +75,7 @@
                 type="text"
                 required
                 :placeholder="$t('account.address.lastname')"
-                class="input input-bordered w-full"
+                class="input  w-full"
               />
             </div>
             <div class="form-control col-span-2 w-full">
@@ -90,8 +90,8 @@
                 type="email"
                 required
                 :placeholder="$t('account.address.email')"
-                class="input input-bordered w-full"
-                :class="{ 'input-bordered-error': fieldError.login }"
+                class="input  w-full"
+                :class="{ '-error': fieldError.login }"
                 @keyup="checkValidity('login', $event)"
               />
               <div class="label">
@@ -107,9 +107,9 @@
                 </span>
               </label>
               <div
-                class="input input-bordered flex w-full items-center"
+                class="input  flex w-full items-center"
                 :class="{
-                  'input-bordered-error': fieldError.password,
+                  '-error': fieldError.password,
                   'input-disabled': loading
                 }"
               >
@@ -239,7 +239,9 @@ const createAccount = async () => {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .message {
   @apply my-8 flex flex-wrap md:items-center;
 

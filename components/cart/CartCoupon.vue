@@ -10,7 +10,7 @@
         <input
           type="text"
           :placeholder="$t('cart.coupon.title')"
-          class="input input-bordered w-full"
+          class="input  w-full"
           :class="{
             'input-success': success,
             'input-error': error
@@ -64,7 +64,9 @@ const applyCoupon = async () => {
 }
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .cart-coupon {
   @apply card card-body bg-gray-100;
 }

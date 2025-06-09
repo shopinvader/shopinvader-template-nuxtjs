@@ -27,7 +27,9 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-link {
   @apply card card-body flex w-auto cursor-pointer flex-row  items-center bg-base-100 p-5 sm:flex-col sm:justify-center;
   &__icon {

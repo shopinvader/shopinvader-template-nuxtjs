@@ -19,7 +19,9 @@ defineProps({
   }
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .picking-list {
   &__content {
     @apply flex w-full flex-col gap-3;

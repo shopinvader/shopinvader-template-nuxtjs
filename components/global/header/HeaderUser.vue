@@ -31,7 +31,9 @@ const next = async () => {
   await auth?.loginRedirect(localePath({ name: 'account' }))
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .header-user {
   @apply relative flex pb-5;
   &--logged {

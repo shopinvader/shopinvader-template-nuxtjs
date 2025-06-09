@@ -37,7 +37,9 @@ const login = async () => {
   await auth?.loginRedirect(localePath({ name: 'account' }))
 }
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .btm-nav {
   @apply text-xs drop-shadow-2xl md:hidden;
   animation: navbar-slideup 0.5s ease-in-out;

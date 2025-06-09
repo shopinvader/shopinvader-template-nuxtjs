@@ -18,7 +18,9 @@ onMounted(async () => {
   await navigateTo(decodedTarget, { replace: true })
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .oidcRedirect {
   display: flex;
   justify-content: center;

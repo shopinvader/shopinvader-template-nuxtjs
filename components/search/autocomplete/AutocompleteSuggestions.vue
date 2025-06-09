@@ -47,7 +47,9 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .autocomplete-suggestion {
   @apply flex flex-col gap-2 p-2;
   li {

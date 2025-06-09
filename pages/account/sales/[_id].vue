@@ -49,7 +49,9 @@ try {
 }
 </script>
 
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-sale {
   &__error {
     @apply alert alert-error;

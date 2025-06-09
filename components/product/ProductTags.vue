@@ -1,47 +1,43 @@
 <template>
-  <div class="product-tags">
-    <div v-if="hasDiscount" class="tag">
-      {{ $t('product.discount.tag', { discount }) }}
-    </div>
+  <div :class="ui.root({ class: 'product-tags' })">
+    <slot name="tags" :product="props.product" :has-discount="hasDiscount" :discount="discount">
+      <UBadge v-if="hasDiscount" :label="t('product.discount.tag', { discount })" :ui="ui?.components?.badge" />
+    </slot>
   </div>
 </template>
 <script lang="ts">
 import type { Product } from '#models'
-import type { PropType } from 'vue'
-export default {
-  name: 'ProductTags',
-  props: {
-    product: {
-      type: Object as PropType<Product>,
-      required: true
-    }
-  },
-  computed: {
-    price() {
-      return this.product.price
-    },
-    hasDiscount(): boolean {
-      if (this.price === null) {
-        return false
-      }
-      return this.price.original_value !== this.price.value
-    },
-    discount(): string {
-      if (!this.price) {
-        return ''
-      }
-      const { value, original_value } = this.price
-      const discount = ((original_value - value) / original_value) * 100
-      return Math.round(discount).toString()
-    }
-  }
+import theme, { type ProductTagsUI } from '~/theme/ProductTags'
+export interface ProductTagsProps {
+  product: Product
+  ui?: ProductTagsUI
+}
+export interface ProductTagsSlots {
+  tags?: { product: Product; hasDiscount: boolean; discount: string }
 }
 </script>
-<style lang="scss">
-.product-tags {
-  @apply flex flex-col gap-2;
-  .tag {
-    @apply badge badge-error font-bold;
+<script lang="ts" setup>
+const props = defineProps<ProductTagsProps>()
+defineSlots<ProductTagsSlots>()
+
+const { t } = useI18n()
+const ui = componentUI('ProductTags', theme, props.ui)({})
+
+const price = computed(() => {
+  return props.product.price
+})
+const hasDiscount = computed(() => {
+  if (!price.value) {
+    return false
   }
-}
-</style>
+  return price.value.original_value !== price.value.value
+})
+const discount = computed(() => {
+  if (!price.value) {
+    return ''
+  }
+  const { value, original_value } = price.value
+  const discount = ((original_value - value) / original_value) * 100
+  return Math.round(discount).toString()
+})
+</script>

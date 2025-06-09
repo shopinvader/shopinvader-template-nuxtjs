@@ -29,8 +29,10 @@ useSeoMeta({
   title: t('account.sales.title')
 })
 </script>
-<style lang="scss">
+<style>
+@reference "@/assets/css/main.css";
+
 .account-sales {
-  @apply card card-body card-bordered rounded-xl shadow-xl;
+  @apply card card-body  rounded-xl shadow-xl;
 }
 </style>
