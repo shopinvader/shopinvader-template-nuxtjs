@@ -128,7 +128,8 @@
       }
     },
     "summary": {
-      "checkout": "Checkout"
+      "checkout": "Checkout",
+      "error": "Your cart contains items that are no longer available or cannot be ordered. Please update your cart before continuing."
     },
     "address": {
       "warning": "The selected addresses are not complete",

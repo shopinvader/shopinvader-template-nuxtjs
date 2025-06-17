@@ -138,7 +138,8 @@
       }
     },
     "summary": {
-      "checkout": "Commander"
+      "checkout": "Commander",
+      "error": "Votre panier contient des articles qui ne sont plus disponibles ou qui ne peuvent pas être commandés. Veuillez mettre à jour votre panier avant de continuer."
     },
     "address": {
       "warning": "Les adresses sélectionnées ne sont pas complètes",
