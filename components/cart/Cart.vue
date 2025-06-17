@@ -32,8 +32,8 @@
               <template #footer>
                 <div
                   class="total__checkout"
-                  :class="{ 'tooltip tooltip-primary': cart?.hasPendingTransactions }"
-                  :data-tip="cart?.hasPendingTransactions && t('cart.pending.checkout')"
+                  :class="{ 'tooltip tooltip-primary': cartError }"
+                  :data-tip="cartError"
                 >
                   <button type="button" class="checkout__btn" @click="onNextStep">
                     {{ t('cart.summary.checkout') }}
@@ -96,10 +96,20 @@ watch(
 
 const lineCount = computed(() => cart?.value?.lines?.length || 0)
 const onNextStep = () => {
-  if (!hasPendingTransactions.value) {
+  if (!hasPendingTransactions.value && cart.value?.isReadyToConfirm()) {
     emits('next')
   }
 }
+
+const cartError = computed(() => {
+  if (cart.value?.hasPendingTransactions) {
+    return t('cart.pending.checkout')
+  }
+  if (!cart.value?.isReadyToConfirm()) {
+    return t('cart.summary.error')
+  }
+  return null
+})
 
 useHead({
   title: t('cart.title')

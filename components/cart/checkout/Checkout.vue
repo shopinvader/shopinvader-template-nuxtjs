@@ -354,6 +354,18 @@ const scrollToStep = (position: number) => {
 const change = () => {
   emit('change')
 }
+
+watch(
+  () => cart.value,
+  (c) => {
+    console.log('cart changed', c, c?.isReadyToConfirm())
+    if (c && !c?.isReadyToConfirm()) {
+      console.warn('Cart is not valid, redirecting to cart page')
+      navigateTo(localePath('/cart'))
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <style lang="scss">

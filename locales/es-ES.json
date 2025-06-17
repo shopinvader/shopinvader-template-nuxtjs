@@ -132,7 +132,8 @@
       }
     },
     "summary": {
-      "checkout": "Confirmar"
+      "checkout": "Confirmar",
+      "error": "Su carrito contiene artículos que ya no están disponibles o que no se pueden pedir. Por favor, actualice su carrito antes de continuar."
     },
     "address": {
       "warning": "Las direcciones elegidas no están completas.",

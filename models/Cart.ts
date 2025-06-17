@@ -97,4 +97,8 @@ export class Cart extends Model {
   hasSameAddress() {
     return this.invoicing?.address?.id === this.delivery?.address?.id
   }
+
+  isReadyToConfirm() {
+    return this.lines.length > 0
+  }
 }
