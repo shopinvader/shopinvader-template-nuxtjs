@@ -443,6 +443,10 @@ const search = async () => {
 watch(
   () => sort.value,
   async () => {
+    response.value.hits = []
+    if (page.from > 0) {
+      changePage(1)
+    }
     await search()
   },
   { deep: true }
