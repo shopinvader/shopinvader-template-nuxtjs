@@ -20,10 +20,12 @@ defineProps({
 })
 </script>
 <style lang="scss">
-.message-wrapper {
-  @apply w-full text-xs;
+.checkout-delivery__message {
+  @apply w-full;
+  .message-wrapper {
+  @apply  text-xs w-full rounded border border-info p-4 transition-all duration-300 ease-in-out hover:border-primary hover:shadow-md;
   &__content {
-    @apply flex justify-between items-center rounded border border-info p-4 transition-all duration-300 ease-in-out hover:border-primary hover:shadow-md;
+    @apply flex justify-between items-center p-3;
 
     .message-icon {
       @apply text-info flex-none mr-1;
@@ -34,4 +36,6 @@ defineProps({
     }
   }
 }
+}
+
 </style>

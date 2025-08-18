@@ -245,12 +245,13 @@ const onMessageSubmit = async () => {
   const cart = cartService.getCart()
   if (cart?.value) {
     cart.value.note = messageContent.value
-    console.log(cart?.value?.note, 'cart')
+    
 
     try {
       loading.value = true
       if (cart?.value) {
         await cartService.update(cart.value)
+        fetchCarriers()
       }
     } catch (err) {
       console.log(err)
