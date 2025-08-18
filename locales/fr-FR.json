@@ -122,7 +122,7 @@
     },
     "delivery": {
       "message-btn": "Message",
-      "message-text": "Un message à nous faire parvenir ?",
+      "message-text": "Un message lié à la livraison à nous faire parvenir ? Votre message sera joint à votre commande.",
       "message-label": "Votre message ici...",
       "message-btn-label": "Envoyer",
       "method": {
