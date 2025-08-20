@@ -142,16 +142,18 @@ export class AuthCredentialService extends AuthService {
    * @returns
    */
   override async registerUser(
-    name: string,
+    firstname: string,
+    lastname: string,
     password: string,
     login: string
   ): Promise<AuthUserCredential | null> {
     let request = null
-    if (login && password && name) {
+    if (login && password && firstname && lastname) {
       request = await this.ofetch(this.urlEndpointAuth + '/register', {
         method: 'POST',
         body: {
-          name,
+          firstname,
+          lastname,
           login,
           password
         }
