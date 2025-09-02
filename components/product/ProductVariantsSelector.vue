@@ -28,24 +28,20 @@
                     'values__btn--selected': value.selected,
                     'values__btn--unselected': !value.selected
                   }"
-                  @click="onSelectVariant(name, value)"
+                  @click="onSelectVariant(value)"
                   :disabled="!value.variant"
                 >
                   {{ value.value }}
                 </button>
               </div>
             </template>
-            <select
-              v-else
-              class="values__select"
-              v-model="selectValues[name]"
-              @change="() => changeVariant(values.find((v) => v.value === selectValues[name])!)"
-            >
+            <select v-else class="values__select" @change="(e) => onChangeSelect(values, e)">
               <option
                 v-for="value of values"
                 :key="value.value"
                 :value="value.value"
                 :disabled="!value.variant"
+                :selected="value.selected"
               >
                 {{ value.value }}
               </option>
@@ -145,7 +141,6 @@ const variantAttributes = computed((): VariantAttributeSelector => {
 })
 
 /** Methods */
-
 const getVariants = async (product: Product): Promise<Product[]> => {
   try {
     loading.value = true
@@ -160,7 +155,25 @@ const getVariants = async (product: Product): Promise<Product[]> => {
   }
 }
 
-const onSelectVariant = async (name: string | number, value: VariantAttributeSelectorItem) => {
+/**
+ * Handle HTML select change event
+ * Due to a issue with Vue and reactivity and Chrome, we cannot used v-model and have to use HTML event
+ * @param name string | number Axis name
+ * @param values VariantAttributeSelectorItem[] Axis values
+ * @param e HTMLSelectElement change event
+ */
+const onChangeSelect = async (values: VariantAttributeSelectorItem[], e: Event) => {
+  const selectElement = e?.currentTarget as HTMLSelectElement
+
+  if (!selectElement?.value) return null
+  const value: VariantAttributeSelectorItem | null =
+    values.find((v) => v.value === selectElement?.value) || null
+  if (value) {
+    await onSelectVariant(value)
+  }
+}
+
+const onSelectVariant = async (value: VariantAttributeSelectorItem) => {
   selectValues.value = value.variant?.variantAttributes || {}
   changeVariant(value)
 }
@@ -178,15 +191,18 @@ const changeVariant = async ({ variant }: VariantAttributeSelectorItem) => {
 products.value = await getVariants(props.product)
 
 /** Watcher */
-watch(props.product, async (product, oldProduct) => {
-  if (product.urlKey !== oldProduct.urlKey) {
-    products.value = await getVariants(product)
+watch(
+  () => props.product,
+  async (product, oldProduct) => {
+    if (product.urlKey !== oldProduct.urlKey) {
+      products.value = await getVariants(product)
+    }
+    if (selectedVariant.value.id !== product.id) {
+      selectedVariant.value = product
+      selectValues.value = { ...product.variantAttributes }
+    }
   }
-  if (selectedVariant.value.id !== product.id) {
-    selectedVariant.value = product
-    selectValues.value = { ...product.variantAttributes }
-  }
-})
+)
 </script>
 <style lang="scss">
 .product-variant-selector {
