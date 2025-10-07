@@ -5,7 +5,7 @@ export class CartDiscount extends Model {
   taxIncluded: number
   constructor(data: any) {
     super(data)
-    this.value = data?.reward_amount || 0
-    this.taxIncluded = data?.reward_amount_tax_incl || 0
+    this.value = data?.discount_untaxed || 0
+    this.taxIncluded = data?.discount_total || 0
   }
 }
