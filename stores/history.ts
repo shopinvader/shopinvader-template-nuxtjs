@@ -16,13 +16,16 @@ export const useHistoryStore = defineStore('history', {
 
   persist: {
     storage: persistedState.localStorage,
-    afterRestore(ctx: any) {
-      const data = ctx?.store?.products || null
-      if (data) {
-        ctx.store.products = data.map((p: any) => new Product(p))
-      }
-      ctx.store.lastSearchScroll = null
+    serializer: {
+      deserialize: (data: string)=> {
+        const pasedData: any = JSON.parse(data)
+        if(pasedData?.products){
+          pasedData.products = pasedData.products.map((p: any) => new Product(p))
+        }
+        return pasedData
+      },
     }
+   
   },
   getters: {
     getQueries(): string[] {
