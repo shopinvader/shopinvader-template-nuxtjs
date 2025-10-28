@@ -16,12 +16,13 @@ const localePath = useLocalePath()
 const { product } = props
 let productSchema = {}
 if (product) {
+  const url = useRequestURL()
   const image: string = product.images?.map((img: any) => img?.large?.src || null)[0] || ''
   if (product?.variantCount > 1) {
     const hasVariant: any[] =
       product.variants?.map((variant: Product) => {
         const data = variant.getStructuredData()
-        data.url = withSiteUrl(localePath(`/${data.urlKey}`))
+        data.url = url.origin + (localePath(`${data.url}`))
         return data
       }) || []
 
@@ -31,13 +32,13 @@ if (product) {
       productGroupID: product.urlKey,
       name: product.model?.name,
       description: product.shortDescription,
-      url: withSiteUrl(localePath(`/${product.urlKey}`)),
+      url: url.origin + localePath(`${product.urlKey}?sku=${product.sku}`),
       image,
       hasVariant
     }
   } else {
     const data = product.getStructuredData()
-    data.url = withSiteUrl(localePath(`/${product.urlKey}`))
+    data.url = url.origin  + (localePath(`${data.url}`))
     productSchema = data
   }
 }

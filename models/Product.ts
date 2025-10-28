@@ -158,10 +158,34 @@ export class Product extends Model {
       offers.push({
         '@type': 'Offer',
         availability: 'https://schema.org/InStock',
-        price: this.pricesList?.default?.value || 0,
-        priceCurrency: 'EUR'
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          price:
+            new Intl.NumberFormat('fr-FR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }).format(this.pricesList?.default?.value) || 0,
+          priceCurrency: 'EUR',
+          description: 'Prix TTC'
+        }
+      })
+    } else {
+      offers.push({
+        '@type': 'Offer',
+        availability: 'https://schema.org/InStock',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          price:
+            new Intl.NumberFormat('fr-FR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }).format(this.pricesList?.default?.value) || 0,
+          priceCurrency: 'EUR',
+          description: this.pricesList?.default?.value ? 'Prix TTC' : 'Prix sur demande'
+        }
       })
     }
+   
     const data: any = {
       '@context': 'https://schema.org',
       '@type': 'Product',
@@ -173,7 +197,8 @@ export class Product extends Model {
       image,
       offers
     }
-
+   
+    console.log('data product url', data)
     return data
   }
 }
