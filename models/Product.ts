@@ -180,7 +180,6 @@ export class Product extends Model {
       ]
     }
 
-    console.log('data product url', data)
     return data
   }
 }
