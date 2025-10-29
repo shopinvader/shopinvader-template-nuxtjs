@@ -153,14 +153,14 @@ export class Product extends Model {
   }
   getStructuredData() {
     const image: string = this.images?.map((img: any) => img?.large?.src || null)[0] || ''
-    const offers = []
-    if (this.pricesList?.default && this.pricesList?.default?.value) {
-      offers.push({
-        '@type': 'Offer',
-        availability: 'https://schema.org/InStock',
-        price: this.pricesList?.default?.value || 0,
-        priceCurrency: 'EUR'
-      })
+    const priceSpecification = {
+      '@type': 'PriceSpecification',
+      price: '0.00',
+      priceCurrency: 'EUR'
+    }
+    if (this.pricesList?.default?.value) {
+      const price = this.pricesList?.default?.value || 0
+      priceSpecification.price = price.toFixed(2)
     }
     const data: any = {
       '@context': 'https://schema.org',
@@ -171,9 +171,16 @@ export class Product extends Model {
       sku: this.sku,
       url: `/${this.urlKey}?sku=${this.sku}`,
       image,
-      offers
+      offers: [
+        {
+          '@type': 'Offer',
+          availability: 'https://schema.org/InStock',
+          priceSpecification
+        }
+      ]
     }
 
+    console.log('data product url', data)
     return data
   }
 }
