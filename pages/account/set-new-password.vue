@@ -17,6 +17,6 @@ if (auth?.type !== 'credentials') {
 }
 
 definePageMeta({
-  layout: false
+  layout: 'empty'
 })
 </script>

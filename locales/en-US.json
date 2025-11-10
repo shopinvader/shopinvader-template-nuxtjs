@@ -17,16 +17,20 @@
       "name_desc": "Z-A"
     },
     "autocomplete": {
-      "noresults": "No result found",
-      "search": "Search ",
-      "suggestions": "Suggestions",
-      "category": "Category",
-      "product": "Search product for '{query}'",
-      "products_history": "You have recently viewed",
-      "queries": "My searches",
-      "clear": "Clear",
-      "seeall": "See all results"
-    },
+    "noresults": "No results",
+    "search": "Search",
+    "suggestions": "Search suggestions",
+    "category": "Categories",
+    "product": "Product search for '{query}'",
+    "products_history": "Previously viewed products",
+    "queries": "My recent searches",
+    "clear": "Clear",
+    "seeall": "See all"
+  },
+  "display_mode": {
+    "grid": "Grid",
+    "list": "List"
+  },
     "filters": {
       "all": "See all",
       "reduce": "Reduce"
@@ -111,6 +115,10 @@
       "tax": "Tax"
     },
     "delivery": {
+      "message-btn": "Message",
+      "message-text": "Have a message to send us?",
+      "message-label": "Your message here...",
+      "message-btn-label": "Send",
       "method": {
         "title": "Delivery method",
         "free": "Free",

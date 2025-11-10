@@ -75,11 +75,9 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/eslint',
     '@nuxt/fonts',
-    '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-delay-hydration',
     '@nuxt/content',
-    '@nuxtjs/robots',
     '@nuxtjs/seo'
   ],
 

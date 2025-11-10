@@ -124,9 +124,9 @@ const { data: categories, status } = await useLazyAsyncData('categories', async 
               }
             }
             .item__level2 {
-              @apply flex flex-col border-l border-black pl-3;
+              @apply flex flex-col pl-3;
               .level2__item {
-                @apply border-b py-2;
+                @apply border-b-0 py-2;
               }
               ul {
                 @apply pl-3;
