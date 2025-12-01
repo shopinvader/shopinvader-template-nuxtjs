@@ -25,8 +25,8 @@ $ git clone https://github.com/shopinvader/shopinvader-template-nuxtjs.git YOUR_
 Make sure to install the dependencies:
 
 ```bash
-# yarn
-yarn install
+# pnpm
+pnpm install
 
 ```
 
@@ -36,8 +36,8 @@ You can use NVM to manage your node versions.
 ```bash
 nvm use
 or
-nvm install 18
-nvm use 18
+nvm install 22
+nvm use 22
 
 ```
 ## Development Server
@@ -45,7 +45,7 @@ nvm use 18
 Start the development server on http://localhost:3000
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 ## Production
@@ -53,23 +53,15 @@ yarn dev
 Build the application for production:
 
 ```bash
-yarn build
+pnpm build
 ```
 
 Locally preview production build:
 
 ```bash
-yarn preview
+pnpm preview
 ```
 Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
-
-## Add App Basic Auth
-
-You can add basic auth to your app by adding the following environment variables:
-
-```bash
-NUXT_BASIC_AUTH="user1:pass1;user2:pass2"
-```
 
 ## Shopinvader Services
 
