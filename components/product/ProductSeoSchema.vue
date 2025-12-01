@@ -22,7 +22,7 @@ if (product) {
     const hasVariant: any[] =
       product.variants?.map((variant: Product) => {
         const data = variant.getStructuredData()
-        data.url = url.origin + (localePath(`${data.url}`))
+        data.url = url.href
         return data
       }) || []
 
@@ -32,13 +32,13 @@ if (product) {
       productGroupID: product.urlKey,
       name: product.model?.name,
       description: product.shortDescription,
-      url: url.origin + localePath(`${product.urlKey}?sku=${product.sku}`),
+      url: url.href,
       image,
       hasVariant
     }
   } else {
     const data = product.getStructuredData()
-    data.url = url.origin  + (localePath(`${data.url}`))
+    data.url =  url.href
     productSchema = data
   }
 }
