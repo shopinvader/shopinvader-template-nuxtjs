@@ -65,7 +65,7 @@
           <span class="footer-content__text">
             {{ t('account.login.not_yet_account') }}
           </span>
-          <nuxt-link class="footer-content__link" :to="localePath('/account/register')">
+          <nuxt-link class="footer-content__link" :to="localePath({path: '/account/register'})">
             {{ t('account.login.create_account') }}
           </nuxt-link>
         </p>
