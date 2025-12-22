@@ -17,7 +17,10 @@ const { product } = props
 let productSchema = {}
 if (product) {
   const url = useRequestURL()
-  const image: string = product.images?.map((img: any) => img?.large?.src || null)[0] || ''
+  //max 10 images sent
+  const image: string[] = product.images?.map((img: any) => img?.large?.src || '').slice(0, 9) || []
+  
+  
   if (product?.variantCount > 1) {
     const hasVariant: any[] =
       product.variants?.map((variant: Product) => {
