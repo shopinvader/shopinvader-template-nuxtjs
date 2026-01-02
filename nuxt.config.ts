@@ -81,11 +81,8 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/eslint',
     '@nuxt/fonts',
-    '@nuxtjs/sitemap',
     'nuxt-schema-org',
     'nuxt-delay-hydration',
-    '@nuxtjs/robots',
-    '@nuxtjs/seo',
     '@nuxtjs/i18n'
   ],
 
