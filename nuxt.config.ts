@@ -1,17 +1,15 @@
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 const dir = dirname(fileURLToPath(import.meta.url))
-
 export default defineNuxtConfig({
-  nitro: {
-    compressPublicAssets: true,
-    minify: true
+  postcss: {
+    plugins: {
+      tailwindcss: {
+        config: join(dir, 'tailwind.config.ts')
+      },
+      autoprefixer: {}
+    }
   },
-
-  delayHydration: {
-    mode: 'init'
-  },
-
   app: {
     head: {
       templateParams: {
@@ -22,9 +20,7 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/svg', href: '/favicon.svg' }]
     }
   },
-
-  css: ['~/assets/css/main.scss'],
-
+  css: ['./app/assets/css/main.scss'],
   runtimeConfig: {
     // Serveur-side only configuration
     basicAuth: process.env.NUXT_BASIC_AUTH || '',
@@ -63,48 +59,26 @@ export default defineNuxtConfig({
       }
     }
   },
-
   modules: [
-    '@nuxtjs/critters',
-    '@nuxt/icon',
-    '@nuxtjs/tailwindcss',
-    join(dir, 'modules/shopinvader'),
-    '@pinia/nuxt',
-    '@pinia-plugin-persistedstate/nuxt',
-    '@vueuse/motion/nuxt',
-    '@nuxt/image',
-    '@nuxt/eslint',
+    '@nuxtjs/i18n',
     '@nuxt/fonts',
-    '@nuxtjs/sitemap',
-    'nuxt-schema-org',
-    'nuxt-delay-hydration',
+    '@nuxt/icon',
+    '@nuxt/image',
     '@nuxt/content',
+    '@nuxtjs/seo',
     '@nuxtjs/robots',
-    '@nuxtjs/seo'
+    "nuxt-site-config",
+    'nuxt-schema-org',
+    '@nuxtjs/robots',
+    '@nuxtjs/sitemap',
+    '@pinia/nuxt',
+    'pinia-plugin-persistedstate/nuxt',
+    '@vueuse/motion/nuxt',
+    join(dir, 'modules/shopinvader')
   ],
 
-  piniaPersistedstate: {
-    cookieOptions: {
-      sameSite: 'strict'
-    },
-    storage: 'localStorage'
-  },
-
-  image: {
-    format: ['webp']
-  },
-
-  pages: true,
-
-  sitemap: {
-    sources: ['/api/_sitemap-urls'],
-    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
-  },
-
-  critters: {
-    config: {
-      preload: 'swap'
-    }
+  build: {
+    transpile: ['@shopinvader/cart']
   },
 
   i18n: {
@@ -132,7 +106,6 @@ export default defineNuxtConfig({
       }
     ],
     debug: false,
-    lazy: true,
     langDir: 'locales',
     defaultLocale: 'en',
     strategy: 'prefix_except_default',
@@ -143,14 +116,13 @@ export default defineNuxtConfig({
     }
   },
 
-  build: {
-    transpile: ['@shopinvader/cart']
+  image: {
+    format: ['webp']
   },
-
-  devtools: {
-    enabled: true
+  sitemap: {
+    sources: ['/api/_sitemap-urls'],
+    exclude: ['/cart', '/checkout', '/template/**', '/account', '/account/**', '/_shopinvader']
   },
-
   routeRules: {
     '/': {
       index: true,
@@ -174,13 +146,8 @@ export default defineNuxtConfig({
       ssr: false
     }
   },
-
   site: {
     url: 'https://example.com',
     name: 'My Website'
-  },
-
-  fonts: {},
-
-  compatibilityDate: '2024-07-22'
+  }
 })

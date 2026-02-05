@@ -1,4 +1,4 @@
-import { localePath, navigateTo } from '#imports'
+import { useLocalePath, navigateTo } from '#imports'
 import type { User } from '#models'
 import { AuthService, type AuthUserCredential } from '#services'
 import type { $Fetch } from 'ofetch'
@@ -26,6 +26,7 @@ export class AuthCredentialService extends AuthService {
 
   constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthAPIConfig) {
     super(isoLocale, ofetch, baseUrl)
+    const localePath = useLocalePath()
     this.config = config
     this.config = {
       ...config,
@@ -37,6 +38,7 @@ export class AuthCredentialService extends AuthService {
   override async init(services: ShopinvaderServiceList) {
     await super.init(services)
     /* check if the user is already logged in localStorage */
+    
     if (this.getSession()) {
       // fetch the user profile
       this.profile()

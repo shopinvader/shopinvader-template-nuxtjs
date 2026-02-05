@@ -1,4 +1,4 @@
-import deepCopy from '~/utils/DeepCopy'
+import deepCopy from '../app/utils/DeepCopy'
 
 export interface Record {
   [field: string]: any

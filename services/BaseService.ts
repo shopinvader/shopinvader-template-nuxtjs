@@ -46,7 +46,8 @@ export class BaseService {
     this.services = services
   }
 
-  store() {
-    return useShopinvaderStore()
+  public store() {
+    const pinia = usePinia()
+    return useShopinvaderStore(pinia)
   }
 }

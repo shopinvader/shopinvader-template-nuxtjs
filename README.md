@@ -3,11 +3,11 @@
 [![License][license-src]][license-href]
 [![Nuxt][nuxt-src]][nuxt-href]
 
-shopinvader-template-nuxtjs is a Nuxt 3 VueJS open-source template for ShopInvader the
+shopinvader-template-nuxtjs is a Nuxt 4 VueJS open-source template for ShopInvader the
 e-commerce solution for Odoo.
 
 See [shopinvader.com](https://shopinvader.com)
-Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+Look at the [nuxt 4 documentation](https://nuxt.com/docs/4.x) to learn more.
 
 ## About
 
@@ -61,7 +61,7 @@ Locally preview production build:
 ```bash
 yarn preview
 ```
-Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
+Checkout the [deployment documentation](https://nuxt.com/docs/4.x/getting-started/deployment) for more information.
 
 ## Add App Basic Auth
 

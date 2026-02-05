@@ -16,7 +16,7 @@ import { useShopinvaderLogger } from './runtime/utils/logger'
 
 import type { HookResult, Nuxt } from 'nuxt/schema'
 import {
-  addI18n,
+  getI18nConfig,
   addModelsServicesTemplates,
   addOriginalComponents,
   configMerge
@@ -61,6 +61,18 @@ export default defineNuxtModule<ShopinvaderConfig>({
     name: 'shopinvader',
     configKey: 'shopinvader'
   },
+  moduleDependencies(nuxt) {
+    const dependencies: Record<string, any> = {
+      '@pinia/nuxt': {
+        version: '^0.11.3'
+      },
+      '@nuxtjs/i18n': {
+        overrides: {},
+        default: getI18nConfig(nuxt)
+      }
+    }
+    return dependencies
+  },
   defaults: {
     erp: {
       key: 'default',
@@ -97,9 +109,6 @@ export default defineNuxtModule<ShopinvaderConfig>({
       route: '/shopinvader/**',
       handler: resolve('./runtime/server/erpProxy.ts')
     })
-
-    /* Manually add the I18n module to prevent config merge problems */
-    await addI18n(nuxt)
 
     /** Components */
     if (config.layerOptions?.originalComponents) {
