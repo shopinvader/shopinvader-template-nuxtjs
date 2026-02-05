@@ -178,18 +178,17 @@ async function buildindexFileContent(
 
 // Scan all layers for models and services and create a single file for each via the prepare:types Nuxt hook
 export const addModelsServicesTemplates = async (nuxt: Nuxt) => {
-  const applicationRoot = nuxt.options.srcDir
+  const applicationRoot = nuxt.options.rootDir
   const types = ['models', 'services']
   const cwd = process.cwd()
-
   // Paths can be different on Windows because of the backslashes, so we need to clean them
   const cleanedCwd = cwd.replace(/\\/g, '/')
   const cleanedApplicationRoot = applicationRoot.replace(/\\/g, '/')
-
   // If the application root is not the current working directory then it means we are in a parent layer
   // and we need to set its aliases to the application directories.
   // This case happend when we launch the "yarn install" command that calls the "nuxt prepare"
   // of the application AND of the other layers.
+
   if (cleanedCwd != cleanedApplicationRoot) {
     const relativePath = cleanedApplicationRoot.replace(cleanedCwd, '')
     logger.log(

@@ -1,4 +1,4 @@
 export * from './addFilesTemplates'
-export * from './addI18n'
+export * from './getI18nConfig'
 export * from './addOriginalComponents'
 export { configMerge } from './configMerge'

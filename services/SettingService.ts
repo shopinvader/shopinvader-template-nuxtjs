@@ -23,7 +23,7 @@ export class SettingService extends BaseServiceErp {
   async getAll(): Promise<Settings | null> {
     let data = {}
     try {
-      data = (await this.ofetch(this.urlEndpoint)) || {}
+     data = (await this.ofetch(this.urlEndpoint)) || {}
     } catch (e) {
       console.error('Error while fetching settings', e)
       return null

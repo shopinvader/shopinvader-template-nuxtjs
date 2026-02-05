@@ -1,7 +1,7 @@
 import { addComponent, createResolver, resolveFiles } from '@nuxt/kit'
 import type { Nuxt } from 'nuxt/schema'
 import { useShopinvaderLogger } from './logger'
-
+import * as path from 'path'
 /**
  * Add components from other original layers with the component name prefix "original"
  * Allow to reuse components from master layer in child layers
@@ -9,19 +9,15 @@ import { useShopinvaderLogger } from './logger'
  */
 export const addOriginalComponents = async (nuxt: Nuxt) => {
   const logger = useShopinvaderLogger()
-
   const layers = nuxt.options._layers
   if (layers.length > 1) {
     for (const layer of layers) {
-      if (layer.cwd !== nuxt.options.srcDir) {
+      if (layer.cwd !== nuxt.options.rootDir) {
         const { resolve } = createResolver(layer.cwd)
-        const files = await resolveFiles(resolve('./components'), '**/*.vue')
+        const files = await resolveFiles(resolve('./app/components'), '**/*.vue')
         for (const filePath of files) {
           /* get name from filePath  */
-          const name = `Original${filePath
-            .replace(/\.vue$/, '')
-            .split('/')
-            .pop()}`
+          const name = `Original${path.basename(filePath).split('.')[0]}`
           await addComponent({
             name,
             filePath,

@@ -1,13 +1,12 @@
 import { User } from '#models'
 import mitt from 'mitt'
-import nuxtStorage from 'nuxt-storage'
 import type { $Fetch } from 'ofetch'
 import { storeToRefs } from 'pinia'
 import type {
   oFetchRequestCtx,
   oFetchResponseErrorCtx
 } from '~/modules/shopinvader/runtime/types/ShopinvaderConfig'
-import isEqual from '~/utils/IsEqual'
+import isEqual from '../app/utils/IsEqual'
 import { BaseServiceLocalized } from './BaseServiceLocalized'
 
 export interface AuthUserCredential {
@@ -52,7 +51,7 @@ export abstract class AuthService extends BaseServiceLocalized {
     super(isoLocale)
     this.ofetch = ofetch
     this.baseUrl = baseUrl
-    this.storage = nuxtStorage?.localStorage
+    this.storage = window?.localStorage || null
   }
 
   override async init(services: ShopinvaderServiceList) {
@@ -120,7 +119,7 @@ export abstract class AuthService extends BaseServiceLocalized {
 
   setSession(value: boolean | null) {
     if (value) {
-      this.storage?.setData?.('auth_user', value, 10, 'd')
+      this.storage?.setItem?.('auth_user', value)
     } else {
       this.storage?.removeItem?.('auth_user')
     }
@@ -146,7 +145,10 @@ export abstract class AuthService extends BaseServiceLocalized {
   }
 
   getSession(): boolean {
-    return this.storage?.getData('auth_user') || false
+    if(!this.storage?.getItem) {
+      return false
+    }
+    return this.storage?.getItem('auth_user') || false
   }
 
   /**

@@ -2,7 +2,9 @@ import daisyui from 'daisyui'
 import type { Config } from 'tailwindcss'
 import colors from 'tailwindcss/colors'
 export default {
-  content: [],
+  content: [
+    "./app/**/*.{js,ts,vue}",
+  ],
   plugins: [daisyui],
   theme: {
     extend: {
