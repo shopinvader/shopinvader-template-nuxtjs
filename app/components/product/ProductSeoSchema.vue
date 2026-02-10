@@ -44,5 +44,5 @@ if (product) {
 if (props?.transformData && typeof props?.transformData === 'function') {
   productSchema = props?.transformData(productSchema)
 }
-//useSchemaOrg(productSchema)
+useSchemaOrg(productSchema)
 </script>

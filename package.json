@@ -33,6 +33,7 @@
     "elastic-builder": "^4.1.0",
     "nuxt": "^4.3.0",
     "nuxt-schema-org": "^5.0.10",
+    "nuxt-site-config": "^3.2.19",
     "oidc-client-ts": "^3.4.1",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

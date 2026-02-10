@@ -70,6 +70,7 @@ export default defineNuxtConfig({
     'nuxt-schema-org',
     '@nuxtjs/robots',
     '@nuxtjs/sitemap',
+    'nuxt-site-config',
     '@pinia/nuxt',
     'pinia-plugin-persistedstate/nuxt',
     '@vueuse/motion/nuxt',

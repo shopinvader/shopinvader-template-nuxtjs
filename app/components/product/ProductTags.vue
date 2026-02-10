@@ -18,7 +18,7 @@ export default {
   },
   computed: {
     price() {
-      return this.product.price
+      return this.product?.price
     },
     hasDiscount(): boolean {
       if (this.price === null) {
