@@ -30,14 +30,14 @@ yarn install
 
 ```
 
-Node version >= 18 is required.
+Node version >= 24 is required.
 You can use NVM to manage your node versions.
 
 ```bash
 nvm use
 or
-nvm install 18
-nvm use 18
+nvm install 24
+nvm use 24
 
 ```
 ## Development Server
@@ -45,7 +45,7 @@ nvm use 18
 Start the development server on http://localhost:3000
 
 ```bash
-yarn dev
+pnpm dev
 ```
 
 ## Production
@@ -53,13 +53,13 @@ yarn dev
 Build the application for production:
 
 ```bash
-yarn build
+pnpm build
 ```
 
 Locally preview production build:
 
 ```bash
-yarn preview
+pnpm preview
 ```
 Checkout the [deployment documentation](https://nuxt.com/docs/4.x/getting-started/deployment) for more information.
 
