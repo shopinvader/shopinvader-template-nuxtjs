@@ -5,13 +5,13 @@
         <button
           type="button"
           class="btn btn-circle btn-warning text-white shadow-xl"
-          @click="toggle = toggle!"
+          @click="toggle = !toggle"
         >
           JSON
         </button>
       </div>
       <input id="my-modal-4" type="checkbox" class="modal-toggle" :checked="toggle" />
-      <div class="modal cursor-pointer" @click="toggle = toggle!">
+      <div class="modal cursor-pointer" @click="toggle = !toggle">
         <div class="modal-box relative w-11/12 max-w-5xl p-0">
           <div v-if="data" class="mockup-code">
             <pre
