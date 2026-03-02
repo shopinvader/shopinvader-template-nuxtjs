@@ -1,5 +1,8 @@
 <template>
-  <div class="toast" :class="[classPositionX, classPositionY]">
+  <div
+    class="toast toast-end toast-top absolute right-0 my-10 flex flex-col items-end gap-2 whitespace-normal"
+    :class="[classPositionX, classPositionY]"
+  >
     <toast
       v-for="notification in notifications"
       :key="notification.message"
