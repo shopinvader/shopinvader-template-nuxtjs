@@ -1,4 +1,4 @@
-import { localePath, navigateTo } from '#imports'
+import { navigateTo } from '#imports'
 import type { User } from '#models'
 import { AuthService, type AuthUserCredential } from '#services'
 import type { $Fetch } from 'ofetch'
@@ -27,6 +27,7 @@ export class AuthCredentialService extends AuthService {
   constructor(isoLocale: string, ofetch: $Fetch, baseUrl: string, config: AuthAPIConfig) {
     super(isoLocale, ofetch, baseUrl)
     this.config = config
+    const localePath = useLocalePath()
     this.config = {
       ...config,
       loginPage: localePath(config.loginPage) as string,
