@@ -24,7 +24,7 @@ export default {
       if (this.price === null) {
         return false
       }
-      return this.price.original_value !== this.price.value
+      return this.price?.original_value !== this.price.value
     },
     discount(): string {
       if (!this.price) {
